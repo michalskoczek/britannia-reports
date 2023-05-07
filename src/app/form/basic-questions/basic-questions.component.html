@@ -1,0 +1,58 @@
+<div class="row mt-5">
+  <div class="col-12 mb-4">
+    <h2 class="subtitle">Podstawowe informacje</h2>
+  </div>
+</div>
+
+<div class="row">
+  <form [formGroup]="basicForm" class="col-12">
+    <div class="row">
+      <mat-form-field class="col-12 my-1">
+        <mat-label>Imię i nazwisko ucznia</mat-label>
+        <input matInput type="text" formControlName="studentName" />
+      </mat-form-field>
+    </div>
+
+    <div class="row form-field">
+      <mat-form-field class="col-6 my-1">
+        <mat-label>Wybierz datę</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="date" />
+        <mat-hint>DD/MM/RRRR</mat-hint>
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="picker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field class="col-6 my-1">
+        <mat-label>Klasa</mat-label>
+        <input matInput type="text" [disabled]="true" formControlName="class" />
+      </mat-form-field>
+    </div>
+
+    <div class="row form-field">
+      <mat-form-field class="col-6 my-1">
+        <mat-label>Lektor</mat-label>
+        <input matInput type="text" formControlName="instructor" />
+      </mat-form-field>
+
+      <mat-form-field class="col-6 my-1">
+        <mat-label>Tytuł podręcznika</mat-label>
+        <input matInput type="text" formControlName="studentBookTitle" />
+      </mat-form-field>
+    </div>
+
+    <div class="row form-field">
+      <mat-form-field class="col-6 my-1">
+        <mat-label>Kurs</mat-label>
+        <input matInput type="text" formControlName="course" />
+      </mat-form-field>
+
+      <mat-form-field class="col-6 my-1">
+        <mat-label>Zrealizowany materiał</mat-label>
+        <input matInput type="text" formControlName="realizedMaterial" />
+      </mat-form-field>
+    </div>
+  </form>
+</div>
