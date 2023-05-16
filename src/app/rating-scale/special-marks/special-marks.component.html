@@ -1,0 +1,61 @@
+<form>
+  <mat-form-field class="w-100">
+    <mat-label>Uzyskane oceny</mat-label>
+    <textarea matInput></textarea>
+  </mat-form-field>
+
+  <mat-form-field class="w-100">
+    <mat-label>Bieżące postępy</mat-label>
+    <input matInput />
+  </mat-form-field>
+
+  <mat-form-field class="w-100">
+    <mat-label>Frekwencja</mat-label>
+    <input matInput type="text" />
+  </mat-form-field>
+
+  <mat-form-field class="w-50 px-2">
+    <mat-label>Zaangażowanie i udział w lekcjach</mat-label>
+    <mat-select>
+      <mat-option *ngFor="let mark of marks" [value]="mark">
+        {{ mark }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="w-50 px-2">
+    <mat-label>Skupienie uwagi na lekcjach</mat-label>
+    <mat-select>
+      <mat-option *ngFor="let mark of marks" [value]="mark">
+        {{ mark }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="w-50 px-2">
+    <mat-label>Prowadzenie zeszytu, notatek</mat-label>
+    <mat-select>
+      <mat-option *ngFor="let mark of marks" [value]="mark">
+        {{ mark }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="w-50 px-2">
+    <mat-label>Zachowanie</mat-label>
+    <mat-select>
+      <mat-option *ngFor="let mark of marks" [value]="mark">
+        {{ mark }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="w-50 px-2">
+    <mat-label>Szacunek do nauczyciela i innych kursantów z grupy</mat-label>
+    <mat-select>
+      <mat-option *ngFor="let mark of marks" [value]="mark">
+        {{ mark }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</form>

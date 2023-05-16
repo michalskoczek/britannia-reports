@@ -6,6 +6,7 @@ import { HeaderModule } from './header/header.module';
 import { BasicQuestionsModule } from './form/basic-questions/basic-questions.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RatingScaleModule } from './rating-scale/rating-scale.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -15,6 +16,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     HeaderModule,
     ReactiveFormsModule,
     BasicQuestionsModule,
+    RatingScaleModule,
   ],
   providers: [{ provide: LOCALE_ID, useValue: 'pl-PL' }],
   bootstrap: [AppComponent],
