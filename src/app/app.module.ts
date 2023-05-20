@@ -7,6 +7,7 @@ import { BasicQuestionsModule } from './form/basic-questions/basic-questions.mod
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RatingScaleModule } from './rating-scale/rating-scale.module';
+import { ProficiencyLevelModule } from './proficiency-level/proficiency-level.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -17,6 +18,7 @@ import { RatingScaleModule } from './rating-scale/rating-scale.module';
     ReactiveFormsModule,
     BasicQuestionsModule,
     RatingScaleModule,
+    ProficiencyLevelModule,
   ],
   providers: [{ provide: LOCALE_ID, useValue: 'pl-PL' }],
   bootstrap: [AppComponent],

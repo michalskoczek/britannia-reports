@@ -1,0 +1,95 @@
+<div class="row mt-5">
+  <div class="col-12 mb-4">
+    <h2 class="subtitle">Poziom biegłości</h2>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <mat-accordion class="example-headers-align" multi>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title> Opis</mat-panel-title>
+        </mat-expansion-panel-header>
+        <p>
+          Zależy nam na tym, by jak najwcześniej diagnozować poziom umiejętności
+          dzieci, by jak najszybciej łączyć je w grupy według poziomu ich
+          umiejętności, by mogły rozwijać się językowo w swoim tempie i jak
+          najpełniej korzystać z lekcji. Jak co roku na wiosnę została
+          przeprowadzona diagnoza poziomu języka naszych uczniów według
+          Europejskiego Systemu Kształcenia Językowego z wykorzystaniem próbnych
+          egzaminów Cambridge. W klasie 4 oczekiwany poziom umiejętności to
+          wejście na poziom A1, co testujemy drugim egzaminem dla dzieci:
+          Cambridge Movers.
+        </p>
+        <p>
+          Testy Cambridge dla dzieci to testy przekrojowe, diagnostyczne - nie
+          można ich nie zdać, mają wskazać poziom biegłości językowej. Ważne są
+          procenty. Uznajemy, że dziecko wskoczyło na dany poziom biegłości
+          uzyskując minimum 60%. Jednak by stwierdzić, że dziecko faktycznie
+          osiągnęło dany poziom językowy i może przystąpić do oficjalnego
+          egzaminu Cambridge powinno osiągnąć min. 80% z testów próbnych.
+          Uczniowie zazwyczaj przystępują do oficjalnego testu Movers w klasie
+          5. Na testach próbnych diagnozujemy umiejętności Słuchania oraz
+          Czytania i Pisania. Na egzaminie jest też Mówienie, co ćwiczymy i
+          sprawdzamy na bieżąco.
+        </p>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</div>
+
+<div class="row mt-3">
+  <div class="col-12">
+    <p>Wyniki próbnych testów ucznia</p>
+  </div>
+  <div class="col-6">
+    <p>Listening</p>
+    <mat-form-field class="px-3">
+      <mat-label>MOVERS Test 1</mat-label>
+      <input matInput type="text" />
+    </mat-form-field>
+
+    <mat-form-field class="px-3">
+      <mat-label>MOVERS Test 2</mat-label>
+      <input matInput type="text" />
+    </mat-form-field>
+  </div>
+  <div class="col-6">
+    <p>Reading & Writing</p>
+    <mat-form-field class="px-3">
+      <mat-label>MOVERS Test 1</mat-label>
+      <input matInput type="text" />
+    </mat-form-field>
+
+    <mat-form-field class="px-3">
+      <mat-label>MOVERS Test 2</mat-label>
+      <input matInput type="text" />
+    </mat-form-field>
+  </div>
+</div>
+
+<div class="row mt-3">
+  <div class="col-12">
+    <form [formGroup]="commentsForm">
+      <div formArrayName="comments" class="row">
+        <div class="col-12 mb-3">
+          <button
+            mat-raised-button
+            color="primary"
+            aria-label="Add"
+            (click)="addNextComment()"
+          >
+            Dodaj komentarz
+          </button>
+        </div>
+        <ng-container *ngFor="let comment of comments.controls; let i = index">
+          <mat-form-field class="col-8">
+            <mat-label>Komentarz {{ i + 1 }}</mat-label>
+            <input matInput type="text" [formControlName]="i" />
+          </mat-form-field>
+        </ng-container>
+      </div>
+    </form>
+  </div>
+</div>
