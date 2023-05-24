@@ -10,6 +10,7 @@ import { RatingScaleModule } from './rating-scale/rating-scale.module';
 import { ProficiencyLevelModule } from './proficiency-level/proficiency-level.module';
 import { ExaminationRecommendationModule } from './examination-recommendation/examination-recommendation.module';
 import { SignatureModule } from './signature/signature.module';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent],
@@ -23,6 +24,7 @@ import { SignatureModule } from './signature/signature.module';
     ProficiencyLevelModule,
     ExaminationRecommendationModule,
     SignatureModule,
+    HttpClientModule,
   ],
   providers: [{ provide: LOCALE_ID, useValue: 'pl-PL' }],
   bootstrap: [AppComponent],
