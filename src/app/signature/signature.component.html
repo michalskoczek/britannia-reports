@@ -6,11 +6,18 @@
 
 <div class="row">
   <div class="col-12">
-    <form>
+    <form [formGroup]="signatureForm" (ngSubmit)="generatePDF(signatureForm)">
       <mat-form-field class="w-100 px-2">
         <mat-label>Podpis</mat-label>
-        <textarea matInput></textarea>
+        <textarea matInput formControlName="signature"></textarea>
       </mat-form-field>
+      <div class="row">
+        <div class="col-12 d-flex justify-content-end">
+          <button mat-raised-button color="primary" type="submit">
+            Generuj PDF
+          </button>
+        </div>
+      </div>
     </form>
   </div>
 </div>
