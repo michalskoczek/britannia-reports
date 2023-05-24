@@ -35,10 +35,6 @@ export class SpecialMarksComponent implements OnInit {
   }
 
   public generatePDF(form: FormGroup): any {
-    console.log(form.value, form.value.teacher);
-
-    let date = new Date(form.value.date).toLocaleDateString();
-
     let docDefinition = {
       content: [
         {

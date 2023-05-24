@@ -1,0 +1,22 @@
+@import "../assets/styles/variables";
+@import "../assets/styles/mixins";
+
+.header {
+  @include flex-center;
+
+  margin: 15px;
+
+  .img {
+    width: 230px;
+    height: 80px;
+  }
+
+  .title {
+    font: 600 32px/40px $font;
+    color: $main-color;
+  }
+}
+
+.subtitle {
+  font: 600 20px/24px $font;
+}

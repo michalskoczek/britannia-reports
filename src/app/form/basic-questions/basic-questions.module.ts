@@ -23,6 +23,6 @@ import { MatButtonModule } from '@angular/material/button';
     MatSelectModule,
     MatButtonModule,
   ],
-  providers: [{ provide: MAT_DATE_LOCALE, useValue: 'pl-PL' }, DatePipe],
+  providers: [{ provide: MAT_DATE_LOCALE, useValue: 'pl-PL' }],
 })
 export class BasicQuestionsModule {}

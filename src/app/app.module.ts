@@ -11,6 +11,16 @@ import { ProficiencyLevelModule } from './proficiency-level/proficiency-level.mo
 import { ExaminationRecommendationModule } from './examination-recommendation/examination-recommendation.module';
 import { SignatureModule } from './signature/signature.module';
 import { HttpClientModule } from '@angular/common/http';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MAT_DATE_LOCALE, MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import { MatTableModule } from '@angular/material/table';
+import { SpecialMarksModule } from './rating-scale/special-marks/special-marks.module';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @NgModule({
   declarations: [AppComponent],
@@ -25,8 +35,24 @@ import { HttpClientModule } from '@angular/common/http';
     ExaminationRecommendationModule,
     SignatureModule,
     HttpClientModule,
+    MatButtonModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatOptionModule,
+    MatSelectModule,
+    MatMomentDateModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatTableModule,
+    SpecialMarksModule,
+    MatExpansionModule,
   ],
-  providers: [{ provide: LOCALE_ID, useValue: 'pl-PL' }],
+  providers: [
+    { provide: LOCALE_ID, useValue: 'pl-PL' },
+    { provide: MAT_DATE_LOCALE, useValue: 'pl-PL' },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

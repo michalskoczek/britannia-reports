@@ -1,8 +1,528 @@
 <div class="container pb-5">
-  <app-header></app-header>
-  <app-basic-questions></app-basic-questions>
-  <app-rating-scale></app-rating-scale>
-  <app-proficiency-level></app-proficiency-level>
-  <app-examination-recommendation></app-examination-recommendation>
-  <app-signature></app-signature>
+  <header class="row header">
+    <img
+      class="col-3 img"
+      src="../../assets/images/britannia_logo.svg"
+      alt="britannia-logo"
+    />
+    <h1 class="col-9 title">
+      Britannia Reports - generator raportów dla klasy IV
+    </h1>
+  </header>
+
+  <form [formGroup]="form" (ngSubmit)="generatePDF(form)" class="col-12">
+    <div class="row mt-5">
+      <div class="col-12 mb-4">
+        <h2 class="subtitle">Podstawowe informacje</h2>
+      </div>
+    </div>
+
+    <div class="row">
+      <mat-form-field class="col-12 my-1">
+        <mat-label>Imię i nazwisko ucznia</mat-label>
+        <input matInput type="text" formControlName="studentName" />
+        <mat-error
+          *ngIf="this.form.controls['studentName'].hasError('required')"
+          >Pole jest wymagane
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="row form-field">
+      <mat-form-field class="col-6 my-1">
+        <mat-label>Wybierz datę</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="date" />
+        <mat-error *ngIf="this.form.controls['date'].hasError('required')"
+          >Pole jest wymagane
+        </mat-error>
+        <mat-hint>DD.M.RRRR</mat-hint>
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="picker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field class="col-6 my-1">
+        <mat-label>Klasa</mat-label>
+        <mat-select name="class" formControlName="class">
+          <mat-option *ngFor="let class of classes" [value]="class">
+            {{ class }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="this.form.controls['class'].hasError('required')"
+          >Pole jest wymagane
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="row form-field">
+      <mat-form-field class="col-6 my-1">
+        <mat-label>Lektor</mat-label>
+        <mat-select name="teacher" formControlName="teacher">
+          <mat-option *ngFor="let teacher of teachers" [value]="teacher">
+            {{ teacher }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="this.form.controls['teacher'].hasError('required')"
+          >Pole jest wymagane
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="col-6 my-1">
+        <mat-label>Tytuł podręcznika</mat-label>
+        <mat-select name="class" formControlName="studentBookTitle">
+          <mat-option *ngFor="let book of books" [value]="book">
+            {{ book }}
+          </mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="this.form.controls['studentBookTitle'].hasError('required')"
+          >Pole jest wymagane
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="row form-field">
+      <mat-form-field class="col-6 my-1">
+        <mat-label>Kurs</mat-label>
+        <mat-select name="course" formControlName="course">
+          <mat-option *ngFor="let course of courses" [value]="course">
+            {{ course }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="this.form.controls['course'].hasError('required')"
+          >Pole jest wymagane
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="col-12 my-1">
+        <mat-label>Zrealizowany materiał</mat-label>
+        <textarea
+          matInput
+          type="text"
+          formControlName="realizedMaterial"
+        ></textarea>
+        <mat-error
+          *ngIf="this.form.controls['realizedMaterial'].hasError('required')"
+          >Pole jest wymagane
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-12 mb-4">
+        <h2 class="subtitle">Oceny</h2>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-2">
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+          <ng-container matColumnDef="percent">
+            <th mat-header-cell *matHeaderCellDef>Procent</th>
+            <td mat-cell *matCellDef="let element">{{ element.percent }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="mark">
+            <th mat-header-cell *matHeaderCellDef>Ocena</th>
+            <td mat-cell *matCellDef="let element">{{ element.mark }}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </div>
+
+      <div class="col-10">
+        <mat-form-field class="w-100 px-2">
+          <mat-label>Uzyskane oceny</mat-label>
+          <textarea matInput formControlName="marks"></textarea>
+          <mat-hint>Opis oceny można znaleźć w dzienniku EduSky:</mat-hint>
+          <mat-error *ngIf="this.form.controls['marks'].hasError('required')"
+            >Pole jest wymagane
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="w-100 px-2">
+          <mat-label>Bieżące postępy</mat-label>
+          <input matInput formControlName="avgMark" />
+          <mat-hint>Średnia ocen</mat-hint>
+          <mat-error *ngIf="this.form.controls['avgMark'].hasError('required')"
+            >Pole jest wymagane
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="w-100 px-2">
+          <mat-label>Frekwencja w %</mat-label>
+          <input matInput type="number" formControlName="frequency" />
+          <mat-error
+            *ngIf="this.form.controls['frequency'].hasError('required')"
+            >Pole jest wymagane
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="w-50 px-2">
+          <mat-label>Zaangażowanie i udział w lekcjach</mat-label>
+          <mat-select formControlName="involvement">
+            <mat-option *ngFor="let mark of marks" [value]="mark.value">
+              {{ mark.viewValue }}
+            </mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="this.form.controls['involvement'].hasError('required')"
+            >Pole jest wymagane
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="w-50 px-2">
+          <mat-label>Prowadzenie zeszytu, notatek</mat-label>
+          <mat-select formControlName="lead">
+            <mat-option *ngFor="let mark of marks" [value]="mark.value">
+              {{ mark.viewValue }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="this.form.controls['lead'].hasError('required')"
+            >Pole jest wymagane
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="w-50 px-2">
+          <mat-label
+            >Szacunek do nauczyciela i innych kursantów z grupy
+          </mat-label>
+          <mat-select formControlName="respect">
+            <mat-option *ngFor="let mark of marks" [value]="mark.value">
+              {{ mark.viewValue }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="this.form.controls['respect'].hasError('required')"
+            >Pole jest wymagane
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="w-50 px-2">
+          <mat-label>Skupienie uwagi na lekcjach</mat-label>
+          <mat-select formControlName="focus">
+            <mat-option *ngFor="let mark of marks" [value]="mark.value">
+              {{ mark.viewValue }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="this.form.controls['focus'].hasError('required')"
+            >Pole jest wymagane
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="w-50 px-2">
+          <mat-label>Zachowanie</mat-label>
+          <mat-select formControlName="behaviour">
+            <mat-option *ngFor="let mark of marks" [value]="mark.value">
+              {{ mark.viewValue }}
+            </mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="this.form.controls['behaviour'].hasError('required')"
+            >Pole jest wymagane
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-12 mb-4">
+        <h2 class="subtitle">Poziom biegłości</h2>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <mat-accordion class="example-headers-align" multi>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title> Opis</mat-panel-title>
+            </mat-expansion-panel-header>
+            <p>
+              Zależy nam na tym, by jak najwcześniej diagnozować poziom
+              umiejętności dzieci, by jak najszybciej łączyć je w grupy według
+              poziomu ich umiejętności, by mogły rozwijać się językowo w swoim
+              tempie i jak najpełniej korzystać z lekcji. Jak co roku na wiosnę
+              została przeprowadzona diagnoza poziomu języka naszych uczniów
+              według Europejskiego Systemu Kształcenia Językowego z
+              wykorzystaniem próbnych egzaminów Cambridge. W klasie 4 oczekiwany
+              poziom umiejętności to wejście na poziom A1, co testujemy drugim
+              egzaminem dla dzieci: Cambridge Movers.
+            </p>
+            <p>
+              Testy Cambridge dla dzieci to testy przekrojowe, diagnostyczne -
+              nie można ich nie zdać, mają wskazać poziom biegłości językowej.
+              Ważne są procenty. Uznajemy, że dziecko wskoczyło na dany poziom
+              biegłości uzyskując minimum 60%. Jednak by stwierdzić, że dziecko
+              faktycznie osiągnęło dany poziom językowy i może przystąpić do
+              oficjalnego egzaminu Cambridge powinno osiągnąć min. 80% z testów
+              próbnych. Uczniowie zazwyczaj przystępują do oficjalnego testu
+              Movers w klasie 5. Na testach próbnych diagnozujemy umiejętności
+              Słuchania oraz Czytania i Pisania. Na egzaminie jest też Mówienie,
+              co ćwiczymy i sprawdzamy na bieżąco.
+            </p>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-12">
+        <p>Wyniki próbnych testów ucznia</p>
+      </div>
+      <div class="col-6">
+        <p>Listening</p>
+        <mat-form-field class="px-3">
+          <mat-label>MOVERS Test 1</mat-label>
+          <input matInput type="text" />
+        </mat-form-field>
+
+        <mat-form-field class="px-3">
+          <mat-label>MOVERS Test 2</mat-label>
+          <input matInput type="text" />
+        </mat-form-field>
+      </div>
+      <div class="col-6">
+        <p>Reading & Writing</p>
+        <mat-form-field class="px-3">
+          <mat-label>MOVERS Test 1</mat-label>
+          <input matInput type="text" />
+        </mat-form-field>
+
+        <mat-form-field class="px-3">
+          <mat-label>MOVERS Test 2</mat-label>
+          <input matInput type="text" />
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-12">
+        <div formArrayName="comments" class="row">
+          <div class="col-12 mb-3">
+            <button
+              type="button"
+              mat-raised-button
+              color="primary"
+              aria-label="Add"
+              (click)="addNextComment()"
+            >
+              Dodaj komentarz
+            </button>
+          </div>
+          <ng-container
+            *ngFor="let comment of comments.controls; let i = index"
+          >
+            <mat-form-field class="col-8">
+              <mat-label>Komentarz {{ i + 1 }}</mat-label>
+              <input matInput type="text" [formControlName]="i" />
+            </mat-form-field>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-12 mb-4">
+        <h2 class="subtitle">Informacje egzaminacyjne</h2>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <mat-form-field class="w-100 px-2">
+          <mat-label>Rekomendacje egzaminacyjne</mat-label>
+          <textarea matInput formControlName="examRecommendation"></textarea>
+        </mat-form-field>
+
+        <div class="row">
+          <div class="col-12">
+            <mat-accordion class="example-headers-align" multi>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Dodatkowe informacje egzaminacyjne
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <ul>
+                  <li>
+                    <p>
+                      BRITANNIA jest autoryzowanym Cambridge Preparation Centre,
+                      więc nasi uczniowie co roku zdają egzaminy na miejscu w
+                      szkole. Uczniowie mogą zdawać u nas egzaminy na wszystkich
+                      poziomach zaawansowania.
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      Egzaminy organizowane są w czerwcu. W tym roku data
+                      egzaminów przypada na 16 czerwca.
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      Do egzaminu Movers dzieci podchodzą zazwyczaj w 5 klasie,
+                      ale dzieci osiągające wysokie wyniki mogą podejść do tego
+                      egzaminu już w klasie 4.
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      Samo doświadczenie przystąpienia do prawdziwego egzaminu i
+                      jego atmosfery jest ogromnie cenne. Przygotowuje dzieci
+                      mentalnie do zdawania kolejnych ważnych egzaminów,
+                      uodparnia je na stres i podnosi samoocenę. Daje dzieciom
+                      dużo motywacji do nauki, a po otrzymaniu certyfikatu z
+                      Anglii na naszej doniosłej uroczystości także wielką dozę
+                      satysfakcji i chęci do dalszego podnoszenia swoich
+                      umiejętności. Dzieci czują się naprawdę wyróżnione
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      Przede wszystkim jest to także najbardziej wiarygodne
+                      potwierdzenie uzyskanych umiejętności językowych. Wyniki i
+                      certyfikaty przysyłane są z Anglii. Co ważne, testy dla
+                      dzieci nie są oceniane jako: zdany/niezdany. Na
+                      certyfikacie widnieje liczba tarcz z każdej części testu.
+                      Można otrzymać maksymalnie 5 tarcz z każdej części, w
+                      sumie maksymalnie 15 tarcz za cały egzamin.
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      Rekomendujemy zdawanie egzaminu po otrzymaniu co najmniej
+                      80% z testów próbnych. Podejście do egzaminu ma być dla
+                      dziecka nagrodą i motywacją. Uczestnictwo nie jest
+                      obowiązkowe.
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      Informacyjnie dodam, że koszt egzaminu w tym roku to 310zł
+                      - płatność jest na konto ośrodka egzaminacyjnego, nie do
+                      nas. My jesteśmy przewodnikami w drodze do sukcesu Państwa
+                      dziecka.
+                    </p>
+                  </li>
+                </ul>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+        </div>
+
+        <div class="row mt-4">
+          <div class="col-12">
+            <mat-accordion class="example-headers-align" multi>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>Organizacja kolejnego roku</mat-panel-title>
+                </mat-expansion-panel-header>
+                <p>
+                  Całoroczna praca ucznia, jego zaangażowanie i stopień
+                  opanowania materiału, wyniki testów bieżących oraz próbnych
+                  egzaminów diagnozujących są dla nas ważne i stanowią podstawę
+                  do kwalifikacji do grup o zbliżonych kompetencjach językowych
+                  w kolejnym roku szkolnym. Bierzemy też pod uwagę indywidualne
+                  zdolności oraz stopień motywacji ucznia w trakcie całego roku
+                  szkolnego.
+                </p>
+                <p>
+                  Staramy się maksymalnie wspierać potencjał językowy uczniów i
+                  łączyć dzieci według umiejętności. Gdy tylko jest to możliwe,
+                  tworzymy trzy rodzaje kursów:
+                </p>
+                <ol>
+                  <li>
+                    <p>
+                      BFT czyli BRITANNIA Fast Track – dla uczniów celujących i
+                      wzorowych, którzy mają wyniki od 90% wzwyż, wyróżniają się
+                      swobodą w komunikacji i aktywnie wykorzystują poznane
+                      treści, są otwarci i maksymalnie zaangażowani w naukę,
+                      regularnie i w szybszym tempie podchodzą do kolejnych
+                      egzaminów Cambridge. Często w tej grupie znajdują się
+                      dzieci, które w kolejnych latach startują w konkursach
+                      językowych lub wybierają dwujęzyczne profile w liceum.
+                      Grupy BFT zazwyczaj nie są grupami dowożonymi, są złożone
+                      z dzieci z różnych klas i szkół.
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      BRT czyli BRITANNIA Regular Track – dla uczniów, którzy
+                      opanowali materiał bardzo dobrze i dobrze, są zawsze
+                      przygotowani, oraz chętni i zmotywowani, by posługiwać się
+                      angielskim i osiągać jak najlepsze rezultaty; zależy im,
+                      by jak najlepiej poznać angielski. Uczniowie z tej grupy
+                      zazwyczaj regularnie podchodzą do kolejnych egzaminów
+                      Cambridge.
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      BST czyli BRITANNIA Support Track – dla uczniów
+                      osiągających wyniki poniżej 65% oraz tych, którzy
+                      potrzebują więcej wsparcia w opanowaniu materiału i z
+                      nieśmiałością podchodzą do aktywizacji mówienia i muszą
+                      bardziej otworzyć się na naukę.
+                    </p>
+                  </li>
+                </ol>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+        </div>
+
+        <div formArrayName="recommendations" class="row mt-4">
+          <div class="col-12 mb-3">
+            <button
+              type="button"
+              mat-raised-button
+              color="primary"
+              aria-label="Add"
+              (click)="addNextRecommendation()"
+            >
+              Dodaj rekomendację
+            </button>
+          </div>
+          <ng-container
+            *ngFor="
+              let recommendation of recommendations.controls;
+              let i = index
+            "
+          >
+            <mat-form-field class="col-8">
+              <mat-label>Rekomendacja {{ i + 1 }}</mat-label>
+              <input matInput type="text" [formControlName]="i" />
+            </mat-form-field>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-12 mb-4">
+        <h2 class="subtitle">Podpis</h2>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <mat-form-field class="w-100 px-2">
+          <mat-label>Podpis</mat-label>
+          <textarea matInput formControlName="signature"></textarea>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12 d-flex justify-content-end">
+        <button mat-raised-button color="primary" type="submit">
+          Generuj PDF
+        </button>
+      </div>
+    </div>
+  </form>
 </div>
