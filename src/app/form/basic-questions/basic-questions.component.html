@@ -5,11 +5,19 @@
 </div>
 
 <div class="row">
-  <form [formGroup]="basicForm" class="col-12">
+  <form
+    [formGroup]="basicForm"
+    (ngSubmit)="generatePDF(basicForm)"
+    class="col-12"
+  >
     <div class="row">
       <mat-form-field class="col-12 my-1">
         <mat-label>Imię i nazwisko ucznia</mat-label>
         <input matInput type="text" formControlName="studentName" />
+        <mat-error
+          *ngIf="this.basicForm.controls['studentName'].hasError('required')"
+          >Pole jest wymagane</mat-error
+        >
       </mat-form-field>
     </div>
 
@@ -17,7 +25,10 @@
       <mat-form-field class="col-6 my-1">
         <mat-label>Wybierz datę</mat-label>
         <input matInput [matDatepicker]="picker" formControlName="date" />
-        <mat-hint>DD/MM/RRRR</mat-hint>
+        <mat-error *ngIf="this.basicForm.controls['date'].hasError('required')"
+          >Pole jest wymagane</mat-error
+        >
+        <mat-hint>DD.M.RRRR</mat-hint>
         <mat-datepicker-toggle
           matIconSuffix
           [for]="picker"
@@ -27,32 +38,83 @@
 
       <mat-form-field class="col-6 my-1">
         <mat-label>Klasa</mat-label>
-        <input matInput type="text" [disabled]="true" formControlName="class" />
+        <mat-select name="class" formControlName="class">
+          <mat-option *ngFor="let class of classes" [value]="class">
+            {{ class }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="this.basicForm.controls['class'].hasError('required')"
+          >Pole jest wymagane</mat-error
+        >
       </mat-form-field>
     </div>
 
     <div class="row form-field">
       <mat-form-field class="col-6 my-1">
         <mat-label>Lektor</mat-label>
-        <input matInput type="text" formControlName="instructor" />
+        <mat-select name="teacher" formControlName="teacher">
+          <mat-option *ngFor="let teacher of teachers" [value]="teacher">
+            {{ teacher }}
+          </mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="this.basicForm.controls['teacher'].hasError('required')"
+          >Pole jest wymagane</mat-error
+        >
       </mat-form-field>
 
       <mat-form-field class="col-6 my-1">
         <mat-label>Tytuł podręcznika</mat-label>
-        <input matInput type="text" formControlName="studentBookTitle" />
+        <mat-select name="class" formControlName="studentBookTitle">
+          <mat-option *ngFor="let book of books" [value]="book">
+            {{ book }}
+          </mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="
+            this.basicForm.controls['studentBookTitle'].hasError('required')
+          "
+          >Pole jest wymagane</mat-error
+        >
       </mat-form-field>
     </div>
 
     <div class="row form-field">
       <mat-form-field class="col-6 my-1">
         <mat-label>Kurs</mat-label>
-        <input matInput type="text" formControlName="course" />
+        <mat-select name="course" formControlName="course">
+          <mat-option *ngFor="let course of courses" [value]="course">
+            {{ course }}
+          </mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="this.basicForm.controls['course'].hasError('required')"
+          >Pole jest wymagane</mat-error
+        >
       </mat-form-field>
 
-      <mat-form-field class="col-6 my-1">
+      <mat-form-field class="col-12 my-1">
         <mat-label>Zrealizowany materiał</mat-label>
-        <input matInput type="text" formControlName="realizedMaterial" />
+        <textarea
+          matInput
+          type="text"
+          formControlName="realizedMaterial"
+        ></textarea>
+        <mat-error
+          *ngIf="
+            this.basicForm.controls['realizedMaterial'].hasError('required')
+          "
+          >Pole jest wymagane</mat-error
+        >
       </mat-form-field>
+    </div>
+
+    <div class="row">
+      <div class="col-12 d-flex justify-content-end">
+        <button mat-raised-button color="primary" type="submit">
+          Generuj PDF
+        </button>
+      </div>
     </div>
   </form>
 </div>
