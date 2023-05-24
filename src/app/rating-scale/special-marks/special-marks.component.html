@@ -1,61 +1,103 @@
-<form>
+<form [formGroup]="specialMarksForm" (ngSubmit)="generatePDF(specialMarksForm)">
   <mat-form-field class="w-100 px-2">
     <mat-label>Uzyskane oceny</mat-label>
-    <textarea matInput></textarea>
+    <textarea matInput formControlName="marks"></textarea>
+    <mat-hint>Opis oceny można znaleźć w dzienniku EduSky: </mat-hint>
+    <mat-error
+      *ngIf="this.specialMarksForm.controls['marks'].hasError('required')"
+      >Pole jest wymagane</mat-error
+    >
   </mat-form-field>
 
   <mat-form-field class="w-100 px-2">
     <mat-label>Bieżące postępy</mat-label>
-    <input matInput />
+    <input matInput formControlName="avgMark" />
+    <mat-hint>Średnia ocen</mat-hint>
+    <mat-error
+      *ngIf="this.specialMarksForm.controls['avgMark'].hasError('required')"
+      >Pole jest wymagane</mat-error
+    >
   </mat-form-field>
 
   <mat-form-field class="w-100 px-2">
-    <mat-label>Frekwencja</mat-label>
-    <input matInput type="text" />
+    <mat-label>Frekwencja w %</mat-label>
+    <input matInput type="number" formControlName="frequency" />
+    <mat-error
+      *ngIf="this.specialMarksForm.controls['frequency'].hasError('required')"
+      >Pole jest wymagane</mat-error
+    >
   </mat-form-field>
 
   <mat-form-field class="w-50 px-2">
     <mat-label>Zaangażowanie i udział w lekcjach</mat-label>
-    <mat-select>
-      <mat-option *ngFor="let mark of marks" [value]="mark">
-        {{ mark }}
+    <mat-select formControlName="involvement">
+      <mat-option *ngFor="let mark of marks" [value]="mark.value">
+        {{ mark.viewValue }}
       </mat-option>
     </mat-select>
-  </mat-form-field>
-
-  <mat-form-field class="w-50 px-2">
-    <mat-label>Skupienie uwagi na lekcjach</mat-label>
-    <mat-select>
-      <mat-option *ngFor="let mark of marks" [value]="mark">
-        {{ mark }}
-      </mat-option>
-    </mat-select>
+    <mat-error
+      *ngIf="this.specialMarksForm.controls['involvement'].hasError('required')"
+      >Pole jest wymagane</mat-error
+    >
   </mat-form-field>
 
   <mat-form-field class="w-50 px-2">
     <mat-label>Prowadzenie zeszytu, notatek</mat-label>
-    <mat-select>
-      <mat-option *ngFor="let mark of marks" [value]="mark">
-        {{ mark }}
+    <mat-select formControlName="lead">
+      <mat-option *ngFor="let mark of marks" [value]="mark.value">
+        {{ mark.viewValue }}
       </mat-option>
     </mat-select>
-  </mat-form-field>
-
-  <mat-form-field class="w-50 px-2">
-    <mat-label>Zachowanie</mat-label>
-    <mat-select>
-      <mat-option *ngFor="let mark of marks" [value]="mark">
-        {{ mark }}
-      </mat-option>
-    </mat-select>
+    <mat-error
+      *ngIf="this.specialMarksForm.controls['lead'].hasError('required')"
+      >Pole jest wymagane</mat-error
+    >
   </mat-form-field>
 
   <mat-form-field class="w-50 px-2">
     <mat-label>Szacunek do nauczyciela i innych kursantów z grupy</mat-label>
-    <mat-select>
-      <mat-option *ngFor="let mark of marks" [value]="mark">
-        {{ mark }}
+    <mat-select formControlName="respect">
+      <mat-option *ngFor="let mark of marks" [value]="mark.value">
+        {{ mark.viewValue }}
       </mat-option>
     </mat-select>
+    <mat-error
+      *ngIf="this.specialMarksForm.controls['respect'].hasError('required')"
+      >Pole jest wymagane</mat-error
+    >
   </mat-form-field>
+
+  <mat-form-field class="w-50 px-2">
+    <mat-label>Skupienie uwagi na lekcjach</mat-label>
+    <mat-select formControlName="focus">
+      <mat-option *ngFor="let mark of marks" [value]="mark.value">
+        {{ mark.viewValue }}
+      </mat-option>
+    </mat-select>
+    <mat-error
+      *ngIf="this.specialMarksForm.controls['focus'].hasError('required')"
+      >Pole jest wymagane</mat-error
+    >
+  </mat-form-field>
+
+  <mat-form-field class="w-50 px-2">
+    <mat-label>Zachowanie</mat-label>
+    <mat-select formControlName="behaviour">
+      <mat-option *ngFor="let mark of marks" [value]="mark.value">
+        {{ mark.viewValue }}
+      </mat-option>
+    </mat-select>
+    <mat-error
+      *ngIf="this.specialMarksForm.controls['behaviour'].hasError('required')"
+      >Pole jest wymagane</mat-error
+    >
+  </mat-form-field>
+
+  <div class="row">
+    <div class="col-12 d-flex justify-content-end">
+      <button mat-raised-button color="primary" type="submit">
+        Generuj PDF
+      </button>
+    </div>
+  </div>
 </form>

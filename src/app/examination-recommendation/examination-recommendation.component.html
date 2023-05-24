@@ -6,10 +6,10 @@
 
 <div class="row">
   <div class="col-12">
-    <form [formGroup]="commentsForm">
+    <form [formGroup]="commentsForm" (ngSubmit)="generatePDF(commentsForm)">
       <mat-form-field class="w-100 px-2">
         <mat-label>Rekomendacje egzaminacyjne</mat-label>
-        <textarea matInput></textarea>
+        <textarea matInput formControlName="recommendation"></textarea>
       </mat-form-field>
 
       <div class="row">
@@ -153,6 +153,7 @@
       <div formArrayName="comments" class="row mt-4">
         <div class="col-12 mb-3">
           <button
+            type="button"
             mat-raised-button
             color="primary"
             aria-label="Add"
@@ -167,6 +168,14 @@
             <input matInput type="text" [formControlName]="i" />
           </mat-form-field>
         </ng-container>
+      </div>
+
+      <div class="row">
+        <div class="col-12 d-flex justify-content-end">
+          <button mat-raised-button color="primary" type="submit">
+            Generuj PDF
+          </button>
+        </div>
       </div>
     </form>
   </div>
