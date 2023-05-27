@@ -30,13 +30,17 @@
 
   <mat-form-field class="w-50 px-2">
     <mat-label>Zaangażowanie i udział w lekcjach</mat-label>
-    <mat-select formControlName="involvement">
+    <mat-select formControlName="involvementInLessons">
       <mat-option *ngFor="let mark of marks" [value]="mark.value">
         {{ mark.viewValue }}
       </mat-option>
     </mat-select>
     <mat-error
-      *ngIf="this.specialMarksForm.controls['involvement'].hasError('required')"
+      *ngIf="
+        this.specialMarksForm.controls['involvementInLessons'].hasError(
+          'required'
+        )
+      "
       >Pole jest wymagane</mat-error
     >
   </mat-form-field>

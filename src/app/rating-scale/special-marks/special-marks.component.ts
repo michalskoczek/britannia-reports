@@ -213,7 +213,7 @@ export class SpecialMarksComponent implements OnInit {
             body: [
               [
                 { text: 'Zaangażowanie i udział w lekcjach' },
-                { text: `${form.value.involvement}` },
+                { text: `${form.value.involvementInLessons}` },
               ],
               [
                 { text: 'Prowadzenie zeszytu, notatek' },
@@ -253,7 +253,7 @@ export class SpecialMarksComponent implements OnInit {
       marks: new FormControl(null, Validators.required),
       avgMark: new FormControl(null, Validators.required),
       frequency: new FormControl(null, Validators.required),
-      involvement: new FormControl(null, Validators.required),
+      involvementInLessons: new FormControl(null, Validators.required),
       lead: new FormControl(null, Validators.required),
       respect: new FormControl(null, Validators.required),
       focus: new FormControl(null, Validators.required),

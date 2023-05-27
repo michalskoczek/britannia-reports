@@ -21,6 +21,7 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MatTableModule } from '@angular/material/table';
 import { SpecialMarksModule } from './rating-scale/special-marks/special-marks.module';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [AppComponent],
@@ -48,6 +49,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatTableModule,
     SpecialMarksModule,
     MatExpansionModule,
+    MatCheckboxModule,
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'pl-PL' },

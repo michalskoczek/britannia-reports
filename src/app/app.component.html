@@ -5,9 +5,7 @@
       src="../../assets/images/britannia_logo.svg"
       alt="britannia-logo"
     />
-    <h1 class="col-9 title">
-      Britannia Reports - generator raportów dla klasy IV
-    </h1>
+    <h1 class="col-9 title">Britannia Reports - generator raportów</h1>
   </header>
 
   <form [formGroup]="form" (ngSubmit)="generatePDF(form)" class="col-12">
@@ -164,13 +162,15 @@
 
         <mat-form-field class="w-50 px-2">
           <mat-label>Zaangażowanie i udział w lekcjach</mat-label>
-          <mat-select formControlName="involvement">
+          <mat-select formControlName="involvementInLessons">
             <mat-option *ngFor="let mark of marks" [value]="mark.value">
               {{ mark.viewValue }}
             </mat-option>
           </mat-select>
           <mat-error
-            *ngIf="this.form.controls['involvement'].hasError('required')"
+            *ngIf="
+              this.form.controls['involvementInLessons'].hasError('required')
+            "
             >Pole jest wymagane
           </mat-error>
         </mat-form-field>
@@ -213,10 +213,95 @@
           </mat-error>
         </mat-form-field>
 
+        <p class="w-100">Ocena opisowa</p>
+
+        <mat-form-field class="w-50 px-2">
+          <mat-label>Wymowa</mat-label>
+          <mat-select formControlName="pronunciation">
+            <mat-option
+              *ngFor="let mark of pronunciationMarks"
+              [value]="mark.value"
+            >
+              {{ mark.viewValue }}
+            </mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="this.form.controls['pronunciation'].hasError('required')"
+            >Pole jest wymagane
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="w-50 px-2">
+          <mat-label>Słownictwo</mat-label>
+          <mat-select formControlName="vocabulary">
+            <mat-option
+              *ngFor="let mark of vocabularyMarks"
+              [value]="mark.value"
+            >
+              {{ mark.viewValue }}
+            </mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="this.form.controls['vocabulary'].hasError('required')"
+            >Pole jest wymagane
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="w-50 px-2">
+          <mat-label>Przygotowanie do zajęć</mat-label>
+          <mat-select formControlName="prepareToLecture">
+            <mat-option
+              *ngFor="let mark of prepareToLectureMarks"
+              [value]="mark.value"
+            >
+              {{ mark.viewValue }}
+            </mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="this.form.controls['prepareToLecture'].hasError('required')"
+            >Pole jest wymagane
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="w-50 px-2">
+          <mat-label>Prace domowe</mat-label>
+          <mat-select formControlName="homeworks">
+            <mat-option
+              *ngFor="let mark of homeworksMarks"
+              [value]="mark.value"
+            >
+              {{ mark.viewValue }}
+            </mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="this.form.controls['homeworks'].hasError('required')"
+            >Pole jest wymagane
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="w-50 px-2">
+          <mat-label>Zaangażowanie</mat-label>
+          <mat-select formControlName="involvement">
+            <mat-option
+              *ngFor="let mark of involvementMarks"
+              [value]="mark.value"
+            >
+              {{ mark.viewValue }}
+            </mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="this.form.controls['involvement'].hasError('required')"
+            >Pole jest wymagane
+          </mat-error>
+        </mat-form-field>
+
         <mat-form-field class="w-50 px-2">
           <mat-label>Zachowanie</mat-label>
           <mat-select formControlName="behaviour">
-            <mat-option *ngFor="let mark of marks" [value]="mark.value">
+            <mat-option
+              *ngFor="let mark of behaviourMarks"
+              [value]="mark.value"
+            >
               {{ mark.viewValue }}
             </mat-option>
           </mat-select>
@@ -225,6 +310,13 @@
             >Pole jest wymagane
           </mat-error>
         </mat-form-field>
+      </div>
+
+      <div class="col-12">
+        <small
+          >* Ocena celująca przyznawana jest za osiągnięcia specjalne, w
+          szczególności za wyróżniające się odpowiedzi ustne lub pisemne.</small
+        >
       </div>
     </div>
 
@@ -271,33 +363,558 @@
 
     <div class="row mt-3">
       <div class="col-12">
-        <p>Wyniki próbnych testów ucznia</p>
+        <p>WYNIKI PRÓBNYCH EGZAMINÓW CAMBRIDGE</p>
       </div>
-      <div class="col-6">
-        <p>Listening</p>
-        <mat-form-field class="px-3">
-          <mat-label>MOVERS Test 1</mat-label>
-          <input matInput type="text" />
-        </mat-form-field>
-
-        <mat-form-field class="px-3">
-          <mat-label>MOVERS Test 2</mat-label>
-          <input matInput type="text" />
-        </mat-form-field>
-      </div>
-      <div class="col-6">
-        <p>Reading & Writing</p>
-        <mat-form-field class="px-3">
-          <mat-label>MOVERS Test 1</mat-label>
-          <input matInput type="text" />
-        </mat-form-field>
-
-        <mat-form-field class="px-3">
-          <mat-label>MOVERS Test 2</mat-label>
-          <input matInput type="text" />
+      <div class="col-12">
+        <mat-form-field class="w-100">
+          <mat-label>Rodzaj egzaminu</mat-label>
+          <mat-select formControlName="typeOfExam">
+            <mat-option
+              *ngFor="let exam of examsSelect"
+              [value]="exam"
+              (click)="onSelectTypeOfExam(exam)"
+            >
+              {{ exam }}
+            </mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="this.form.controls['typeOfExam'].hasError('required')"
+            >Pole jest wymagane
+          </mat-error>
         </mat-form-field>
       </div>
     </div>
+
+    <ng-container
+      *ngIf="
+        selectedTypeOfExam === 'Cambridge STARTERS' ||
+        selectedTypeOfExam === 'Cambridge MOVERS' ||
+        selectedTypeOfExam === 'Cambridge FLYERS'
+      "
+    >
+      <div class="row">
+        <p style="font-weight: 600" class="col-12 mt-3">Słuchanie</p>
+
+        <div formArrayName="listeningA1Array" class="col-12">
+          <ng-container *ngFor="let exam of examsCount; let i = index">
+            <div [formGroupName]="i">
+              <mat-form-field>
+                <mat-label>Data</mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="picker"
+                  formControlName="date"
+                />
+                <mat-hint>DD.M.RRRR</mat-hint>
+                <mat-datepicker-toggle
+                  matIconSuffix
+                  [for]="picker"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field class="mx-4">
+                <mat-label>Test {{ i + 1 }}</mat-label>
+                <input matInput type="number" formControlName="score" />
+              </mat-form-field>
+
+              <mat-form-field>
+                <mat-label>Zdajemy?</mat-label>
+                <mat-select formControlName="result">
+                  <mat-option
+                    *ngFor="let result of resultOfExam"
+                    [value]="result"
+                  >
+                    {{ result }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="row">
+        <p style="font-weight: 600" class="col-12 mt-3">Czytanie i Pisanie</p>
+
+        <div formArrayName="writingAndReadingA1Array" class="col-12">
+          <ng-container *ngFor="let exam of examsCount; let i = index">
+            <div [formGroupName]="i">
+              <mat-form-field>
+                <mat-label>Data</mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="picker"
+                  formControlName="date"
+                />
+                <mat-hint>DD.M.RRRR</mat-hint>
+                <mat-datepicker-toggle
+                  matIconSuffix
+                  [for]="picker"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field class="mx-4">
+                <mat-label>Test {{ i + 1 }}</mat-label>
+                <input matInput type="number" formControlName="score" />
+              </mat-form-field>
+
+              <mat-form-field>
+                <mat-label>Zdajemy?</mat-label>
+                <mat-select formControlName="result">
+                  <mat-option
+                    *ngFor="let result of resultOfExam"
+                    [value]="result"
+                  >
+                    {{ result }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="row">
+        <p style="font-weight: 600" class="col-12 mt-3">Mówienie</p>
+
+        <div formArrayName="speakingA1Array" class="col-12">
+          <ng-container *ngFor="let exam of examsCount; let i = index">
+            <div [formGroupName]="i">
+              <mat-form-field>
+                <mat-label>Data</mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="picker"
+                  formControlName="date"
+                />
+                <mat-hint>DD.M.RRRR</mat-hint>
+                <mat-datepicker-toggle
+                  matIconSuffix
+                  [for]="picker"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field class="mx-4">
+                <mat-label>Test {{ i + 1 }}</mat-label>
+                <input matInput type="number" formControlName="score" />
+              </mat-form-field>
+
+              <mat-form-field>
+                <mat-label>Zdajemy?</mat-label>
+                <mat-select formControlName="result">
+                  <mat-option
+                    *ngFor="let result of resultOfExam"
+                    [value]="result"
+                  >
+                    {{ result }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container
+      *ngIf="
+        selectedTypeOfExam === 'Cambridge A2 Key for Schools' ||
+        selectedTypeOfExam === 'Cambridge B1 Preliminary for Schools'
+      "
+    >
+      <div class="row">
+        <p style="font-weight: 600" class="col-12 mt-3">Słuchanie</p>
+
+        <div formArrayName="listeningA2B1Array" class="col-12">
+          <ng-container *ngFor="let exam of examsCount; let i = index">
+            <div [formGroupName]="i">
+              <mat-form-field>
+                <mat-label>Data</mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="picker"
+                  formControlName="date"
+                />
+                <mat-hint>DD.M.RRRR</mat-hint>
+                <mat-datepicker-toggle
+                  matIconSuffix
+                  [for]="picker"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field class="mx-4">
+                <mat-label>Test {{ i + 1 }}</mat-label>
+                <input matInput type="number" formControlName="score" />
+              </mat-form-field>
+
+              <mat-form-field>
+                <mat-label>Zdajemy?</mat-label>
+                <mat-select formControlName="result">
+                  <mat-option
+                    *ngFor="let result of resultOfExam"
+                    [value]="result"
+                  >
+                    {{ result }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="row">
+        <p style="font-weight: 600" class="col-12 mt-3">Czytanie</p>
+
+        <div formArrayName="readingA2B1Array" class="col-12">
+          <ng-container *ngFor="let exam of examsCount; let i = index">
+            <div [formGroupName]="i">
+              <mat-form-field>
+                <mat-label>Data</mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="picker"
+                  formControlName="date"
+                />
+                <mat-hint>DD.M.RRRR</mat-hint>
+                <mat-datepicker-toggle
+                  matIconSuffix
+                  [for]="picker"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field class="mx-4">
+                <mat-label>Test {{ i + 1 }}</mat-label>
+                <input matInput type="number" formControlName="score" />
+              </mat-form-field>
+
+              <mat-form-field>
+                <mat-label>Zdajemy?</mat-label>
+                <mat-select formControlName="result">
+                  <mat-option
+                    *ngFor="let result of resultOfExam"
+                    [value]="result"
+                  >
+                    {{ result }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="row">
+        <p style="font-weight: 600" class="col-12 mt-3">Pisanie</p>
+
+        <div formArrayName="writingA2B1Array" class="col-12">
+          <ng-container *ngFor="let exam of examsCount; let i = index">
+            <div [formGroupName]="i">
+              <mat-form-field>
+                <mat-label>Data</mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="picker"
+                  formControlName="date"
+                />
+                <mat-hint>DD.M.RRRR</mat-hint>
+                <mat-datepicker-toggle
+                  matIconSuffix
+                  [for]="picker"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field class="mx-4">
+                <mat-label>Test {{ i + 1 }}</mat-label>
+                <input matInput type="number" formControlName="score" />
+              </mat-form-field>
+
+              <mat-form-field>
+                <mat-label>Zdajemy?</mat-label>
+                <mat-select formControlName="result">
+                  <mat-option
+                    *ngFor="let result of resultOfExam"
+                    [value]="result"
+                  >
+                    {{ result }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="row">
+        <p style="font-weight: 600" class="col-12 mt-3">Mówienie</p>
+
+        <div formArrayName="speakingA2B1Array" class="col-12">
+          <ng-container *ngFor="let exam of examsCount; let i = index">
+            <div [formGroupName]="i">
+              <mat-form-field>
+                <mat-label>Data</mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="picker"
+                  formControlName="date"
+                />
+                <mat-hint>DD.M.RRRR</mat-hint>
+                <mat-datepicker-toggle
+                  matIconSuffix
+                  [for]="picker"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field class="mx-4">
+                <mat-label>Test {{ i + 1 }}</mat-label>
+                <input matInput type="number" formControlName="score" />
+              </mat-form-field>
+
+              <mat-form-field>
+                <mat-label>Zdajemy?</mat-label>
+                <mat-select formControlName="result">
+                  <mat-option
+                    *ngFor="let result of resultOfExam"
+                    [value]="result"
+                  >
+                    {{ result }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container
+      *ngIf="
+        selectedTypeOfExam === 'Cambridge B2 First for Schools' ||
+        selectedTypeOfExam === 'Cambridge C1 Advanced'
+      "
+    >
+      <div class="row">
+        <p style="font-weight: 600" class="col-12 mt-3">Listening</p>
+
+        <div formArrayName="listeningB2C1Array" class="col-12">
+          <ng-container *ngFor="let exam of examsCount; let i = index">
+            <div [formGroupName]="i">
+              <mat-form-field>
+                <mat-label>Data</mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="picker"
+                  formControlName="date"
+                />
+                <mat-hint>DD.M.RRRR</mat-hint>
+                <mat-datepicker-toggle
+                  matIconSuffix
+                  [for]="picker"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field class="mx-4">
+                <mat-label>Test {{ i + 1 }}</mat-label>
+                <input matInput type="number" formControlName="score" />
+              </mat-form-field>
+
+              <mat-form-field>
+                <mat-label>Zdajemy?</mat-label>
+                <mat-select formControlName="result">
+                  <mat-option
+                    *ngFor="let result of resultOfExam"
+                    [value]="result"
+                  >
+                    {{ result }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="row">
+        <p style="font-weight: 600" class="col-12 mt-3">Reading</p>
+
+        <div formArrayName="readingB2C1Array" class="col-12">
+          <ng-container *ngFor="let exam of examsCount; let i = index">
+            <div [formGroupName]="i">
+              <mat-form-field>
+                <mat-label>Data</mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="picker"
+                  formControlName="date"
+                />
+                <mat-hint>DD.M.RRRR</mat-hint>
+                <mat-datepicker-toggle
+                  matIconSuffix
+                  [for]="picker"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field class="mx-4">
+                <mat-label>Test {{ i + 1 }}</mat-label>
+                <input matInput type="number" formControlName="score" />
+              </mat-form-field>
+
+              <mat-form-field>
+                <mat-label>Zdajemy?</mat-label>
+                <mat-select formControlName="result">
+                  <mat-option
+                    *ngFor="let result of resultOfExam"
+                    [value]="result"
+                  >
+                    {{ result }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="row">
+        <p style="font-weight: 600" class="col-12 mt-3">Use of English</p>
+
+        <div formArrayName="useOfEnglishB2C1Array" class="col-12">
+          <ng-container *ngFor="let exam of examsCount; let i = index">
+            <div [formGroupName]="i">
+              <mat-form-field>
+                <mat-label>Data</mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="picker"
+                  formControlName="date"
+                />
+                <mat-hint>DD.M.RRRR</mat-hint>
+                <mat-datepicker-toggle
+                  matIconSuffix
+                  [for]="picker"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field class="mx-4">
+                <mat-label>Test {{ i + 1 }}</mat-label>
+                <input matInput type="number" formControlName="score" />
+              </mat-form-field>
+
+              <mat-form-field>
+                <mat-label>Zdajemy?</mat-label>
+                <mat-select formControlName="result">
+                  <mat-option
+                    *ngFor="let result of resultOfExam"
+                    [value]="result"
+                  >
+                    {{ result }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="row">
+        <p style="font-weight: 600" class="col-12 mt-3">Writing</p>
+
+        <div formArrayName="writingB2C1Array" class="col-12">
+          <ng-container *ngFor="let exam of examsCount; let i = index">
+            <div [formGroupName]="i">
+              <mat-form-field>
+                <mat-label>Data</mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="picker"
+                  formControlName="date"
+                />
+                <mat-hint>DD.M.RRRR</mat-hint>
+                <mat-datepicker-toggle
+                  matIconSuffix
+                  [for]="picker"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field class="mx-4">
+                <mat-label>Test {{ i + 1 }}</mat-label>
+                <input matInput type="number" formControlName="score" />
+              </mat-form-field>
+
+              <mat-form-field>
+                <mat-label>Zdajemy?</mat-label>
+                <mat-select formControlName="result">
+                  <mat-option
+                    *ngFor="let result of resultOfExam"
+                    [value]="result"
+                  >
+                    {{ result }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="row">
+        <p style="font-weight: 600" class="col-12 mt-3">Speaking</p>
+
+        <div formArrayName="speakingB2C1Array" class="col-12">
+          <ng-container *ngFor="let exam of examsCount; let i = index">
+            <div [formGroupName]="i">
+              <mat-form-field>
+                <mat-label>Data</mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="picker"
+                  formControlName="date"
+                />
+                <mat-hint>DD.M.RRRR</mat-hint>
+                <mat-datepicker-toggle
+                  matIconSuffix
+                  [for]="picker"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field class="mx-4">
+                <mat-label>Test {{ i + 1 }}</mat-label>
+                <input matInput type="number" formControlName="score" />
+              </mat-form-field>
+
+              <mat-form-field>
+                <mat-label>Zdajemy?</mat-label>
+                <mat-select formControlName="result">
+                  <mat-option
+                    *ngFor="let result of resultOfExam"
+                    [value]="result"
+                  >
+                    {{ result }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="selectedTypeOfExam === ''">
+      Wybierz rodzaj egzaminu
+    </ng-container>
+
     <div class="row mt-3">
       <div class="col-12">
         <div formArrayName="comments" class="row">
@@ -332,8 +949,36 @@
 
     <div class="row">
       <div class="col-12">
+        <mat-checkbox (change)="onCheckboxChange()"
+          >W tym roku szkolnym rekomenduję podejście do egzaminu</mat-checkbox
+        >
+      </div>
+      <div class="col-12" *ngIf="isChecked">
+        <mat-form-field>
+          <mat-label>Egzamin</mat-label>
+          <mat-select formControlName="examRecommendationResult">
+            <mat-option
+              *ngFor="let result of examsRecommendations"
+              [value]="result"
+            >
+              {{ result }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-12">
+        <mat-checkbox
+          >W tym roku nie rekomenduję podchodzenia do egzaminu
+          Cambridge.</mat-checkbox
+        >
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
         <mat-form-field class="w-100 px-2">
-          <mat-label>Rekomendacje egzaminacyjne</mat-label>
+          <mat-label>Dodatkowe rekomendacje egzaminacyjne</mat-label>
           <textarea matInput formControlName="examRecommendation"></textarea>
         </mat-form-field>
 
@@ -475,6 +1120,23 @@
           </div>
         </div>
 
+        <div class="row mt-4">
+          <div class="col-12">
+            <p>W przyszłym roku szkolnym rekomenduję naukę w trybie:</p>
+            <mat-form-field class="w-50">
+              <mat-label>Tryb</mat-label>
+              <mat-select formControlName="learningRecommendations">
+                <mat-option
+                  *ngFor="let recommendation of learningRecommendations"
+                  [value]="recommendation"
+                >
+                  {{ recommendation }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
         <div formArrayName="recommendations" class="row mt-4">
           <div class="col-12 mb-3">
             <button
@@ -484,7 +1146,7 @@
               aria-label="Add"
               (click)="addNextRecommendation()"
             >
-              Dodaj rekomendację
+              Dodaj własną rekomendację
             </button>
           </div>
           <ng-container
