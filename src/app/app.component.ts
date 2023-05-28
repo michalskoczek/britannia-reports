@@ -514,9 +514,9 @@ export class AppComponent implements OnInit {
         },
         {
           text:
-            'Zależy nam na tym, by jak najwcześniej diagnozować poziom umiejętności dzieci, by jak najszybciej łączyć je w grupy według poziomu ich umiejętności, by mogły rozwijać się językowo w swoim tempie i jak najpełniej korzystać z lekcji. Jak co roku na wiosnę została przeprowadzona diagnoza poziomu języka naszych uczniów według Europejskiego Systemu Kształcenia Językowego z wykorzystaniem próbnych egzaminów Cambridge. W klasie 4 oczekiwany poziom umiejętności to wejście na poziom A1, co testujemy drugim egzaminem dla dzieci: Cambridge Movers.\n' +
+            'Zależy nam na tym, by jak najwcześniej diagnozować poziom umiejętności dzieci, by jak najszybciej łączyć je w grupy według poziomu ich umiejętności, by mogły rozwijać się językowo w swoim tempie i jak najpełniej korzystać z lekcji. Jak co roku została przeprowadzona diagnoza poziomu języka naszych uczniów według Europejskiego Systemu Kształcenia Językowego z wykorzystaniem próbnych egzaminów Cambridge. \n' +
             '\n' +
-            'Testy Cambridge dla dzieci to testy przekrojowe, diagnostyczne - nie można ich nie zdać, mają wskazać poziom biegłości językowej. Ważne są procenty. Uznajemy, że dziecko wskoczyło na dany poziom biegłości uzyskując minimum 60%. Jednak by stwierdzić, że dziecko faktycznie osiągnęło dany poziom językowy i może przystąpić do oficjalnego egzaminu Cambridge powinno osiągnąć min. 80% z testów próbnych. Uczniowie zazwyczaj przystępują do oficjalnego testu Movers w klasie 5. Na testach próbnych diagnozujemy umiejętności Słuchania oraz Czytania i Pisania. Na egzaminie jest też Mówienie, co ćwiczymy i sprawdzamy na bieżąco.',
+            'Testy Cambridge dla dzieci to testy przekrojowe, diagnostyczne - nie można ich nie zdać, mają wskazać poziom biegłości językowej. Ważne są procenty. Uznajemy, że uczeń wskoczył na dany poziom biegłości uzyskując minimum 60%. Jednak by stwierdzić, że uczeń faktycznie osiągnęł dany poziom językowy i może przystąpić do oficjalnego egzaminu Cambridge powinien osiągnąć ok. 80% z testów próbnych. Na testach próbnych diagnozujemy umiejętności Słuchania oraz Czytania i Pisania. Na egzaminie jest też Mówienie, co ćwiczymy i sprawdzamy na bieżąco.',
         },
         {
           style: 'tableExample',
