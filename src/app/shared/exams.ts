@@ -37,12 +37,10 @@ export const examsCount: string[] = ['first', 'second', 'third'];
 
 export const additionalExamInformations: string[] = [
   'BRITANNIA jest autoryzowanym Cambridge Preparation Centre, więc nasi uczniowie co roku zdają egzaminy na miejscu w szkole. Uczniowie mogą zdawać u nas egzaminy na wszystkich poziomach zaawansowania.',
-  'Egzaminy organizowane są w czerwcu. W tym roku data egzaminów przypada na 16 czerwca.',
-  'Do egzaminu Movers dzieci podchodzą zazwyczaj w 5 klasie, ale dzieci osiągające wysokie wyniki mogą podejść do tego egzaminu już w klasie 4.',
+  'Egzaminy organizowane są w czerwcu.',
   'Samo doświadczenie przystąpienia do prawdziwego egzaminu i jego atmosfery jest ogromnie cenne. Przygotowuje dzieci mentalnie do zdawania kolejnych ważnych egzaminów, uodparnia je na stres i podnosi samoocenę. Daje dzieciom dużo motywacji do nauki, a po otrzymaniu certyfikatu z Anglii na naszej doniosłej uroczystości także wielką dozę satysfakcji i chęci do dalszego podnoszenia swoich umiejętności. Dzieci czują się naprawdę wyróżnione.',
-  'Przede wszystkim jest to także najbardziej wiarygodne potwierdzenie uzyskanych umiejętności językowych. Wyniki i certyfikaty przysyłane są z Anglii. Co ważne, testy dla dzieci nie są oceniane jako: zdany/niezdany. Na certyfikacie widnieje liczba tarcz z każdej części testu. Można otrzymać maksymalnie 5 tarcz z każdej części, w sumie maksymalnie 15 tarcz za cały egzamin.',
-  'Rekomendujemy zdawanie egzaminu po otrzymaniu co najmniej 80% z testów próbnych. Podejście do egzaminu ma być dla dziecka nagrodą i motywacją. Uczestnictwo nie jest obowiązkowe.',
-  'Informacyjnie dodam, że koszt egzaminu w tym roku to 310zł - płatność jest na konto ośrodka egzaminacyjnego, nie do nas. My jesteśmy przewodnikami w drodze do sukcesu Państwa dziecka.',
+  'Przede wszystkim jest to także najbardziej wiarygodne potwierdzenie uzyskanych umiejętności językowych. Wyniki i certyfikaty przysyłane są z Anglii. Podejście do egzaminu ma być dla dziecka nagrodą i motywacją. Uczestnictwo nie jest obowiązkowe.',
+  'Płatność jest dla ośrodka egzaminacyjnego, nie dla nas. My jesteśmy przewodnikami w drodze do sukcesu Państwa dziecka.',
 ];
 
 export const learningRecommendations: string[] = [
