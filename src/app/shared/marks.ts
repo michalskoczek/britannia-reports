@@ -20,8 +20,8 @@ export const marks: Marks[] = [
 
 export const pronunciationMarks: Marks[] = [
   {
-    viewValue: '5 - X ma nienaganną wymowę',
-    value: 'X ma nienaganną wymowę',
+    viewValue: '5 - X ma nienaganną wymowę.',
+    value: 'X ma nienaganną wymowę.',
   },
   {
     viewValue:

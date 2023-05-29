@@ -26,6 +26,16 @@
       </mat-form-field>
     </div>
 
+    <div class="row">
+      <mat-form-field class="col-12 my-1">
+        <mat-label>Imię ucznia do wyświetlenia w tekście (np. Jaś)</mat-label>
+        <input matInput type="text" formControlName="name" />
+        <mat-error *ngIf="this.form.controls['name'].hasError('required')"
+          >Pole jest wymagane
+        </mat-error>
+      </mat-form-field>
+    </div>
+
     <div class="row form-field">
       <mat-form-field class="col-6 my-1">
         <mat-label>Wybierz datę</mat-label>
@@ -160,20 +170,20 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field class="w-50 px-2">
-          <mat-label>Zaangażowanie i udział w lekcjach</mat-label>
-          <mat-select formControlName="involvementInLessons">
-            <mat-option *ngFor="let mark of marks" [value]="mark.value">
-              {{ mark.viewValue }}
-            </mat-option>
-          </mat-select>
-          <mat-error
-            *ngIf="
-              this.form.controls['involvementInLessons'].hasError('required')
-            "
-            >Pole jest wymagane
-          </mat-error>
-        </mat-form-field>
+        <!--        <mat-form-field class="w-50 px-2">-->
+        <!--          <mat-label>Zaangażowanie i udział w lekcjach</mat-label>-->
+        <!--          <mat-select formControlName="involvementInLessons">-->
+        <!--            <mat-option *ngFor="let mark of marks" [value]="mark.value">-->
+        <!--              {{ mark.viewValue }}-->
+        <!--            </mat-option>-->
+        <!--          </mat-select>-->
+        <!--          <mat-error-->
+        <!--            *ngIf="-->
+        <!--              this.form.controls['involvementInLessons'].hasError('required')-->
+        <!--            "-->
+        <!--            >Pole jest wymagane-->
+        <!--          </mat-error>-->
+        <!--        </mat-form-field>-->
 
         <mat-form-field class="w-50 px-2">
           <mat-label>Prowadzenie zeszytu, notatek</mat-label>
@@ -337,24 +347,21 @@
               Zależy nam na tym, by jak najwcześniej diagnozować poziom
               umiejętności dzieci, by jak najszybciej łączyć je w grupy według
               poziomu ich umiejętności, by mogły rozwijać się językowo w swoim
-              tempie i jak najpełniej korzystać z lekcji. Jak co roku na wiosnę
-              została przeprowadzona diagnoza poziomu języka naszych uczniów
-              według Europejskiego Systemu Kształcenia Językowego z
-              wykorzystaniem próbnych egzaminów Cambridge. W klasie 4 oczekiwany
-              poziom umiejętności to wejście na poziom A1, co testujemy drugim
-              egzaminem dla dzieci: Cambridge Movers.
+              tempie i jak najpełniej korzystać z lekcji. Jak co roku została
+              przeprowadzona diagnoza poziomu języka naszych uczniów według
+              Europejskiego Systemu Kształcenia Językowego z wykorzystaniem
+              próbnych egzaminów Cambridge.
             </p>
             <p>
               Testy Cambridge dla dzieci to testy przekrojowe, diagnostyczne -
               nie można ich nie zdać, mają wskazać poziom biegłości językowej.
-              Ważne są procenty. Uznajemy, że dziecko wskoczyło na dany poziom
-              biegłości uzyskując minimum 60%. Jednak by stwierdzić, że dziecko
-              faktycznie osiągnęło dany poziom językowy i może przystąpić do
-              oficjalnego egzaminu Cambridge powinno osiągnąć min. 80% z testów
-              próbnych. Uczniowie zazwyczaj przystępują do oficjalnego testu
-              Movers w klasie 5. Na testach próbnych diagnozujemy umiejętności
-              Słuchania oraz Czytania i Pisania. Na egzaminie jest też Mówienie,
-              co ćwiczymy i sprawdzamy na bieżąco.
+              Ważne są procenty. Uznajemy, że uczeń wskoczył na dany poziom
+              biegłości uzyskując minimum 60%. Jednak by stwierdzić, że uczeń
+              faktycznie osiągnęł dany poziom językowy i może przystąpić do
+              oficjalnego egzaminu Cambridge powinien osiągnąć ok. 80% z testów
+              próbnych. Na testach próbnych diagnozujemy umiejętności Słuchania
+              oraz Czytania i Pisania. Na egzaminie jest też Mówienie, co
+              ćwiczymy i sprawdzamy na bieżąco.
             </p>
           </mat-expansion-panel>
         </mat-accordion>
@@ -949,9 +956,11 @@
 
     <div class="row">
       <div class="col-12">
-        <mat-checkbox (change)="onCheckboxChange()"
-          >W tym roku szkolnym rekomenduję podejście do egzaminu</mat-checkbox
-        >
+        <mat-checkbox
+          (change)="onCheckboxChange()"
+          formControlName="examRecommendationAcceptCheckbox"
+          >W tym roku szkolnym rekomenduję podejście do egzaminu
+        </mat-checkbox>
       </div>
       <div class="col-12" *ngIf="isChecked">
         <mat-form-field>
@@ -968,10 +977,9 @@
       </div>
 
       <div class="col-12">
-        <mat-checkbox
-          >W tym roku nie rekomenduję podchodzenia do egzaminu
-          Cambridge.</mat-checkbox
-        >
+        <mat-checkbox formControlName="examRecommendationNonCheckbox"
+          >W tym roku nie rekomenduję podchodzenia do egzaminu Cambridge.
+        </mat-checkbox>
       </div>
     </div>
 
@@ -1001,17 +1009,7 @@
                     </p>
                   </li>
                   <li>
-                    <p>
-                      Egzaminy organizowane są w czerwcu. W tym roku data
-                      egzaminów przypada na 16 czerwca.
-                    </p>
-                  </li>
-                  <li>
-                    <p>
-                      Do egzaminu Movers dzieci podchodzą zazwyczaj w 5 klasie,
-                      ale dzieci osiągające wysokie wyniki mogą podejść do tego
-                      egzaminu już w klasie 4.
-                    </p>
+                    <p>Egzaminy organizowane są w czerwcu.</p>
                   </li>
                   <li>
                     <p>
@@ -1022,33 +1020,22 @@
                       dużo motywacji do nauki, a po otrzymaniu certyfikatu z
                       Anglii na naszej doniosłej uroczystości także wielką dozę
                       satysfakcji i chęci do dalszego podnoszenia swoich
-                      umiejętności. Dzieci czują się naprawdę wyróżnione
+                      umiejętności. Dzieci czują się naprawdę wyróżnione.
                     </p>
                   </li>
                   <li>
                     <p>
                       Przede wszystkim jest to także najbardziej wiarygodne
                       potwierdzenie uzyskanych umiejętności językowych. Wyniki i
-                      certyfikaty przysyłane są z Anglii. Co ważne, testy dla
-                      dzieci nie są oceniane jako: zdany/niezdany. Na
-                      certyfikacie widnieje liczba tarcz z każdej części testu.
-                      Można otrzymać maksymalnie 5 tarcz z każdej części, w
-                      sumie maksymalnie 15 tarcz za cały egzamin.
+                      certyfikaty przysyłane są z Anglii. Podejście do egzaminu
+                      ma być dla dziecka nagrodą i motywacją. Uczestnictwo nie
+                      jest obowiązkowe.
                     </p>
                   </li>
                   <li>
                     <p>
-                      Rekomendujemy zdawanie egzaminu po otrzymaniu co najmniej
-                      80% z testów próbnych. Podejście do egzaminu ma być dla
-                      dziecka nagrodą i motywacją. Uczestnictwo nie jest
-                      obowiązkowe.
-                    </p>
-                  </li>
-                  <li>
-                    <p>
-                      Informacyjnie dodam, że koszt egzaminu w tym roku to 310zł
-                      - płatność jest na konto ośrodka egzaminacyjnego, nie do
-                      nas. My jesteśmy przewodnikami w drodze do sukcesu Państwa
+                      Płatność jest dla ośrodka egzaminacyjnego, nie dla nas. My
+                      jesteśmy przewodnikami w drodze do sukcesu Państwa
                       dziecka.
                     </p>
                   </li>

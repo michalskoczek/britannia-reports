@@ -192,7 +192,8 @@ export class AppComponent implements OnInit {
             `Imię i Nazwisko ucznia: `,
             { text: `${form.value.studentName}`, style: 'header' },
           ],
-          margin: 10,
+          margin: [0, 5, 0, 10],
+          alignment: 'center',
         },
         {
           style: 'tableExample',
@@ -223,32 +224,48 @@ export class AppComponent implements OnInit {
           style: 'tableExample',
           table: {
             widths: ['auto', 'auto', 'auto', 'auto', '*'],
+            headerRows: 1,
             body: [
               [
                 {
-                  rowSpan: 12,
                   text: 'Nasza skala ocen',
                   style: 'tableHeader',
+                  colSpan: 2,
+                  alignment: 'center',
+                },
+                {},
+                {
+                  text: '',
+                  rowSpan: 1,
                 },
                 {
-                  text: '100%+*',
-                },
-                {
-                  text: '6',
-                },
-                {
-                  rowSpan: 10,
-                  text: 'Uzyskane oceny**',
+                  text: 'Uzyskane oceny',
                   style: 'tableHeader',
+                  colSpan: 2,
+                  alignment: 'center',
+                },
+                {},
+              ],
+              [
+                {
+                  text: '100%+',
                 },
                 {
-                  rowSpan: 10,
+                  text: '6*',
+                },
+                {
+                  text: '',
+                  rowSpan: 12,
+                },
+                {
+                  colSpan: 2,
+                  rowSpan: 9,
                   text: `${form.value.marks}`,
                   style: 'tableHeader',
                 },
+                {},
               ],
               [
-                '',
                 {
                   text: '96-100%',
                 },
@@ -257,9 +274,9 @@ export class AppComponent implements OnInit {
                 },
                 '',
                 '',
+                '',
               ],
               [
-                '',
                 {
                   text: '90-95%',
                 },
@@ -268,9 +285,9 @@ export class AppComponent implements OnInit {
                 },
                 '',
                 '',
+                '',
               ],
               [
-                '',
                 {
                   text: '85-89%',
                 },
@@ -279,9 +296,9 @@ export class AppComponent implements OnInit {
                 },
                 '',
                 '',
+                '',
               ],
               [
-                '',
                 {
                   text: '80-84%',
                 },
@@ -290,9 +307,9 @@ export class AppComponent implements OnInit {
                 },
                 '',
                 '',
+                '',
               ],
               [
-                '',
                 {
                   text: '75-79%',
                 },
@@ -301,9 +318,9 @@ export class AppComponent implements OnInit {
                 },
                 '',
                 '',
+                '',
               ],
               [
-                '',
                 {
                   text: '70-74%',
                 },
@@ -312,9 +329,9 @@ export class AppComponent implements OnInit {
                 },
                 '',
                 '',
+                '',
               ],
               [
-                '',
                 {
                   text: '64-69%',
                 },
@@ -323,9 +340,9 @@ export class AppComponent implements OnInit {
                 },
                 '',
                 '',
+                '',
               ],
               [
-                '',
                 {
                   text: '60-63%',
                 },
@@ -334,9 +351,9 @@ export class AppComponent implements OnInit {
                 },
                 '',
                 '',
+                '',
               ],
               [
-                '',
                 {
                   text: '55-59%',
                 },
@@ -344,18 +361,23 @@ export class AppComponent implements OnInit {
                   text: '2+',
                 },
                 '',
+                {
+                  text: 'Opis oceny można znaleźć w dzienniku EduSky',
+                  colSpan: 2,
+                  fontSize: 10,
+                },
                 '',
               ],
               [
-                '',
                 {
                   text: '45-54%',
                 },
                 {
                   text: '2',
                 },
+                '',
                 {
-                  text: 'Bieżące postępy',
+                  text: 'Bieżące postępy (średnia ocen)',
                   style: 'tableHeader',
                 },
                 {
@@ -363,19 +385,19 @@ export class AppComponent implements OnInit {
                 },
               ],
               [
-                '',
                 {
                   text: '0-44%',
                 },
                 {
                   text: '1',
                 },
+                '',
                 {
                   text: 'Frekwencja',
                   style: 'tableHeader',
                 },
                 {
-                  text: `${form.value.frequency}`,
+                  text: `${form.value.frequency}%`,
                 },
               ],
             ],
@@ -389,18 +411,10 @@ export class AppComponent implements OnInit {
           fontSize: '10',
         },
         {
-          text: '** Opis oceny można znaleźć w dzienniku EduSky',
-          fontSize: '10',
-        },
-        {
           style: 'tableExample',
           table: {
             widths: ['*', 'auto'],
             body: [
-              [
-                { text: 'Zaangażowanie i udział w lekcjach' },
-                { text: `${form.value.involvementInLessons}` },
-              ],
               [
                 { text: 'Prowadzenie zeszytu, notatek' },
                 { text: `${form.value.lead}` },
@@ -426,7 +440,7 @@ export class AppComponent implements OnInit {
                 {
                   text: `${changeXToStudentName(
                     form.value.pronunciation,
-                    form.value.studentName
+                    form.value.name
                   )}`,
                 },
                 {
@@ -441,7 +455,7 @@ export class AppComponent implements OnInit {
                 {
                   text: `${changeXToStudentName(
                     form.value.vocabulary,
-                    form.value.studentName
+                    form.value.name
                   )}`,
                 },
                 {
@@ -456,7 +470,7 @@ export class AppComponent implements OnInit {
                 {
                   text: `${changeXToStudentName(
                     form.value.prepareToLecture,
-                    form.value.studentName
+                    form.value.name
                   )}`,
                 },
                 {
@@ -471,7 +485,7 @@ export class AppComponent implements OnInit {
                 {
                   text: `${changeXToStudentName(
                     form.value.homeworks,
-                    form.value.studentName
+                    form.value.name
                   )}`,
                 },
                 {
@@ -483,7 +497,7 @@ export class AppComponent implements OnInit {
                 {
                   text: `${changeXToStudentName(
                     form.value.involvement,
-                    form.value.studentName
+                    form.value.name
                   )}`,
                 },
                 {
@@ -498,7 +512,7 @@ export class AppComponent implements OnInit {
                 {
                   text: `${changeXToStudentName(
                     form.value.behaviour,
-                    form.value.studentName
+                    form.value.name
                   )}`,
                 },
                 {
@@ -511,6 +525,7 @@ export class AppComponent implements OnInit {
         {
           text: 'Poziom biegłości',
           style: 'header',
+          margin: [0, 0, 0, 5],
         },
         {
           text:
@@ -519,7 +534,7 @@ export class AppComponent implements OnInit {
             'Testy Cambridge dla dzieci to testy przekrojowe, diagnostyczne - nie można ich nie zdać, mają wskazać poziom biegłości językowej. Ważne są procenty. Uznajemy, że uczeń wskoczył na dany poziom biegłości uzyskując minimum 60%. Jednak by stwierdzić, że uczeń faktycznie osiągnęł dany poziom językowy i może przystąpić do oficjalnego egzaminu Cambridge powinien osiągnąć ok. 80% z testów próbnych. Na testach próbnych diagnozujemy umiejętności Słuchania oraz Czytania i Pisania. Na egzaminie jest też Mówienie, co ćwiczymy i sprawdzamy na bieżąco.',
         },
         {
-          style: 'tableExample',
+          style: 'tableExams',
           table: {
             headerRows: 1,
             body: [
@@ -580,21 +595,52 @@ export class AppComponent implements OnInit {
             ],
           },
         },
-        { text: 'Komentarz', style: 'header' },
+        { text: 'Komentarz', style: 'header', margin: [0, 0, 0, 10] },
         {
           ul: commentsArray,
+          style: 'margins',
         },
-        { text: 'Rekomendacja egzaminacyjna', style: 'header' },
-        { text: `${form.value.examRecommendation}` },
-        { text: 'Dodatkowe informacje egzaminacyjne', style: 'header' },
-        { ul: this.additionalExamInformations },
-        { text: 'Organizacja kolejnego roku nauki', style: 'header' },
-        'Całoroczna praca ucznia, jego zaangażowanie i stopień opanowania materiału, wyniki testów bieżących oraz próbnych egzaminów diagnozujących są dla nas ważne i stanowią podstawę do kwalifikacji do grup o zbliżonych kompetencjach językowych w kolejnym roku szkolnym. Bierzemy też pod uwagę indywidualne zdolności oraz stopień motywacji ucznia w trakcie całego roku szkolnego.',
-        'Staramy się maksymalnie wspierać potencjał językowy uczniów i łączyć dzieci według umiejętności. Gdy tylko jest to możliwe, tworzymy trzy rodzaje kursów',
-        { ol: this.kindOfCourses },
-        { text: 'Rekomendacje', style: 'header' },
-        { ul: recommendationsArray },
-        { text: form.value.signature },
+        {
+          text: 'Rekomendacja egzaminacyjna',
+          style: 'header',
+          margin: [0, 10, 0, 5],
+        },
+        {
+          text: `${
+            form.value.examRecommendationAcceptCheckbox
+              ? `W tym roku szkolnym rekomenduję podejście do egzaminu: ${form.value.examRecommendationResult}`
+              : `W tym roku nie rekomenduję podchodzenia do egzaminu Cambridge.`
+          }`,
+        },
+        { text: `${form.value.examRecommendation}`, style: 'margins' },
+        {
+          text: 'Dodatkowe informacje egzaminacyjne',
+          style: 'header',
+          margin: [0, 10, 0, 5],
+        },
+        { ul: this.additionalExamInformations, style: 'margins' },
+        {
+          text: 'Organizacja kolejnego roku nauki',
+          style: 'header',
+          margin: [0, 10, 0, 5],
+        },
+        {
+          text: 'Całoroczna praca ucznia, jego zaangażowanie i stopień opanowania materiału, wyniki testów bieżących oraz próbnych egzaminów diagnozujących są dla nas ważne i stanowią podstawę do kwalifikacji do grup o zbliżonych kompetencjach językowych w kolejnym roku szkolnym. Bierzemy też pod uwagę indywidualne zdolności oraz stopień motywacji ucznia w trakcie całego roku szkolnego.',
+          style: 'margins',
+        },
+        {
+          text: 'Staramy się maksymalnie wspierać potencjał językowy uczniów i łączyć dzieci według umiejętności. Gdy tylko jest to możliwe, tworzymy trzy rodzaje kursów',
+          style: 'margins',
+        },
+        { ol: this.kindOfCourses, style: 'margins' },
+        {
+          text: `W przyszłym roku szkolnym rekomenduję naukę w trybie: ${form.value.learningRecommendations}`,
+          margin: [0, 30],
+          bold: true,
+        },
+        { text: 'Rekomendacje', style: 'header', margin: [0, 10, 0, 5] },
+        { ul: recommendationsArray, style: 'margins' },
+        { text: form.value.signature, margin: [0, 20, 0, 10] },
       ],
       styles: {
         tableHeader: {
@@ -604,9 +650,13 @@ export class AppComponent implements OnInit {
         tableExample: {
           margin: [0, 15, 0, 5],
         },
+        tableExams: {
+          margin: [0, 15, 0, 15],
+        },
         marksTable: {
           margin: [0, 15, 0, 15],
         },
+        margins: [0, 10, 0, 10],
         header: {
           bold: true,
           fontSize: 15,
@@ -729,6 +779,7 @@ export class AppComponent implements OnInit {
   private createForm(): FormGroup {
     return new FormGroup({
       studentName: new FormControl(null, Validators.required),
+      name: new FormControl(null, Validators.required),
       date: new FormControl(null, Validators.required),
       class: new FormControl(null, Validators.required),
       teacher: new FormControl(null, Validators.required),
@@ -739,7 +790,7 @@ export class AppComponent implements OnInit {
       marks: new FormControl(null, Validators.required),
       avgMark: new FormControl(null, Validators.required),
       frequency: new FormControl(null, Validators.required),
-      involvementInLessons: new FormControl(null, Validators.required),
+      // involvementInLessons: new FormControl(null, Validators.required),
       lead: new FormControl(null, Validators.required),
       respect: new FormControl(null, Validators.required),
       focus: new FormControl(null, Validators.required),
@@ -769,9 +820,10 @@ export class AppComponent implements OnInit {
 
       comments: new FormArray([]),
 
-      examRecommendationCheckbox: new FormControl(false),
+      examRecommendationAcceptCheckbox: new FormControl(false),
+      examRecommendationNonCheckbox: new FormControl(false),
       examRecommendationResult: new FormControl(null),
-      examRecommendation: new FormControl(null, Validators.required),
+      examRecommendation: new FormControl('', Validators.required),
 
       learningRecommendations: new FormControl(null),
       recommendations: new FormArray([]),
