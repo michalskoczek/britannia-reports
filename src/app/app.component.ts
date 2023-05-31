@@ -629,8 +629,8 @@ export class AppComponent implements OnInit {
             },
             {
               image: this.imageLogo,
-              width: 200,
-              height: 150,
+              width: 125,
+              height: 100,
               alignment: 'right',
               margin: [0, 20, 0, 10],
             },
