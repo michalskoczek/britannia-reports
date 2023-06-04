@@ -107,7 +107,7 @@ export class BasicQuestionsComponent implements OnInit {
       ],
       styles: {
         tableHeader: {
-          fontSize: 14,
+          fontSize: 13,
           bold: true,
         },
       },

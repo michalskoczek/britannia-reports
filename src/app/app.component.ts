@@ -39,6 +39,7 @@ export class AppComponent implements OnInit {
 
   public form!: FormGroup;
 
+  public readonly sexes: string[] = ['Uczeń', 'Uczennica'];
   public readonly classes: string[] = classes;
   public readonly teachers: string[] = teachers;
   public readonly books: string[] = books;
@@ -69,7 +70,6 @@ export class AppComponent implements OnInit {
 
   private readonly additionalExamInformations: string[] =
     additionalExamInformations;
-  // private readonly kindOfCourses: string[] = kindOfCourses;
   private readonly imageLogo: string = image;
 
   ngOnInit(): void {
@@ -150,9 +150,15 @@ export class AppComponent implements OnInit {
     this.isChecked = !this.isChecked;
   }
 
-  public generatePDF(form: FormGroup): any {
-    console.log(form.value);
+  public onRemoveComment(index: number): void {
+    this.comments.removeAt(index);
+  }
 
+  public onRemoveRecommendation(index: number): void {
+    this.recommendations.removeAt(index);
+  }
+
+  public generatePDF(form: FormGroup): any {
     let date: string = new Date(form.value.date).toLocaleDateString();
 
     let commentsArray: string[] = [];
@@ -170,6 +176,14 @@ export class AppComponent implements OnInit {
       studentName: string
     ): string => {
       return textValue.replace(textValue[0], studentName);
+    };
+
+    const changeXToYValue = (textValue: string, yValue: string): string => {
+      return textValue.replace(textValue[0], yValue);
+    };
+
+    const changeXToEmptyValue = (textValue: string): string => {
+      return textValue.replace(textValue[0], '');
     };
 
     const getMarkValue = (
@@ -212,14 +226,15 @@ export class AppComponent implements OnInit {
         {
           text: [
             `Imię i Nazwisko ucznia: `,
-            { text: `${form.value.studentName}`, style: 'header' },
+            { text: `${form.value.studentName}`, style: 'subtitle' },
           ],
-          margin: [0, 5, 0, 10],
+          margin: [0, 5, 0, 5],
           alignment: 'center',
         },
         {
           style: 'tableExample',
           table: {
+            widths: ['auto', '*', 'auto', '*'],
             body: [
               [
                 { text: 'Data', style: 'tableHeader' },
@@ -430,33 +445,60 @@ export class AppComponent implements OnInit {
         },
         {
           text: '* Ocena celująca przyznawana jest za osiągnięcia specjalne, w szczególności za wyróżniające się odpowiedzi ustne lub pisemne.',
-          fontSize: '10',
+          fontSize: 7,
         },
+        // {
+        //   style: 'tableExample',
+        //   table: {
+        //     widths: ['*', 'auto'],
+        //     headerRows: 1,
+        //     body: [
+        //       [
+        //         {
+        //           text: 'Kategoria',
+        //           style: 'tableHeader',
+        //           alignment: 'center',
+        //         },
+        //         { text: 'Ocena', style: 'tableHeader', alignment: 'center' },
+        //       ],
+        //       [
+        //         { text: 'Prowadzenie zeszytu, notatek' },
+        //         { text: `${form.value.lead}`, alignment: 'center' },
+        //       ],
+        //       [
+        //         { text: 'Szacunek do nauczyciela i innych kursantów z grupy' },
+        //         { text: `${form.value.respect}`, alignment: 'center' },
+        //       ],
+        //       [
+        //         { text: 'Skupienie uwagi na lekcjach' },
+        //         { text: `${form.value.focus}`, alignment: 'center' },
+        //       ],
+        //     ],
+        //   },
+        // },
         {
-          style: 'tableExample',
-          table: {
-            widths: ['*', 'auto'],
-            body: [
-              [
-                { text: 'Prowadzenie zeszytu, notatek' },
-                { text: `${form.value.lead}` },
-              ],
-              [
-                { text: 'Szacunek do nauczyciela i innych kursantów z grupy' },
-                { text: `${form.value.respect}` },
-              ],
-              [
-                { text: 'Skupienie uwagi na lekcjach' },
-                { text: `${form.value.focus}` },
-              ],
-            ],
-          },
-        },
-        {
-          style: 'marksTable',
+          style: 'tableExams',
           table: {
             widths: ['auto', '*', 'auto'],
+            headerRows: 1,
             body: [
+              [
+                {
+                  text: 'Kategoria',
+                  style: 'tableHeader',
+                  alignment: 'center',
+                },
+                {
+                  text: 'Opis',
+                  style: 'tableHeader',
+                  alignment: 'center',
+                },
+                {
+                  text: 'Ocena',
+                  style: 'tableHeader',
+                  alignment: 'center',
+                },
+              ],
               [
                 { text: 'Wymowa' },
                 {
@@ -470,14 +512,15 @@ export class AppComponent implements OnInit {
                     form.value.pronunciation,
                     pronunciationMarks
                   )}`,
+                  alignment: 'center',
                 },
               ],
               [
                 { text: 'Słownictwo' },
                 {
-                  text: `${changeXToStudentName(
+                  text: `${changeXToYValue(
                     form.value.vocabulary,
-                    form.value.name
+                    form.value.sex
                   )}`,
                 },
                 {
@@ -485,33 +528,33 @@ export class AppComponent implements OnInit {
                     form.value.vocabulary,
                     vocabularyMarks
                   )}`,
+                  alignment: 'center',
                 },
               ],
               [
                 { text: 'Przygotowanie do zajęć' },
                 {
-                  text: `${changeXToStudentName(
-                    form.value.prepareToLecture,
-                    form.value.name
-                  )}`,
+                  text: `${changeXToEmptyValue(form.value.prepareToLecture)}`,
                 },
                 {
                   text: `${getMarkValue(
                     form.value.prepareToLecture,
                     prepareToLectureMarks
                   )}`,
+                  alignment: 'center',
                 },
               ],
               [
                 { text: 'Prace domowe' },
                 {
-                  text: `${changeXToStudentName(
+                  text: `${changeXToYValue(
                     form.value.homeworks,
-                    form.value.name
+                    form.value.sex
                   )}`,
                 },
                 {
                   text: `${getMarkValue(form.value.homeworks, homeworksMarks)}`,
+                  alignment: 'center',
                 },
               ],
               [
@@ -527,18 +570,17 @@ export class AppComponent implements OnInit {
                     form.value.involvement,
                     involvementMarks
                   )}`,
+                  alignment: 'center',
                 },
               ],
               [
                 { text: 'Zachowanie' },
                 {
-                  text: `${changeXToStudentName(
-                    form.value.behaviour,
-                    form.value.name
-                  )}`,
+                  text: `${changeXToEmptyValue(form.value.behaviour)}`,
                 },
                 {
                   text: `${getMarkValue(form.value.behaviour, behaviourMarks)}`,
+                  alignment: 'center',
                 },
               ],
             ],
@@ -553,19 +595,23 @@ export class AppComponent implements OnInit {
           text:
             'Zależy nam na tym, by jak najwcześniej diagnozować poziom umiejętności dzieci, by jak najszybciej łączyć je w grupy według poziomu ich umiejętności, by mogły rozwijać się językowo w swoim tempie i jak najpełniej korzystać z lekcji. Jak co roku została przeprowadzona diagnoza poziomu języka naszych uczniów według Europejskiego Systemu Kształcenia Językowego z wykorzystaniem próbnych egzaminów Cambridge. \n' +
             '\n' +
-            'Testy Cambridge dla dzieci to testy przekrojowe, diagnostyczne - nie można ich nie zdać, mają wskazać poziom biegłości językowej. Ważne są procenty. Uznajemy, że uczeń wskoczył na dany poziom biegłości uzyskując minimum 60%. Jednak by stwierdzić, że uczeń faktycznie osiągnął dany poziom językowy i może przystąpić do oficjalnego egzaminu Cambridge powinien osiągnąć ok. 80% z testów próbnych. Na testach próbnych diagnozujemy umiejętności Słuchania oraz Czytania i Pisania. Na egzaminie jest też Mówienie, co ćwiczymy i sprawdzamy na bieżąco.',
+            'Testy Cambridge dla dzieci to testy przekrojowe, diagnostyczne - nie można ich nie zdać, mają wskazać poziom biegłości językowej. Ważne są procenty. Uznajemy, że uczeń wskoczył na dany poziom biegłości, jeśli uzyskał minimum 60%. Jednak, by stwierdzić, że uczeń faktycznie osiągnął dany poziom językowy i może przystąpić do oficjalnego egzaminu Cambridge, powinien osiągnąć on ok. 80% z testów próbnych. Na testach próbnych diagnozujemy umiejętności Słuchania oraz Czytania i Pisania. Na egzaminie jest też Mówienie, co ćwiczymy i sprawdzamy na bieżąco.',
+          fontSize: 9,
         },
         {
           text: ['Rodzaj egzaminu: ', form.value.typeOfExam],
           bold: true,
-          margin: [0, 15],
+          margin: [0, 10, 0, 0],
+          fontSize: 10,
         },
         chooseTableOfExam(),
-        { text: '\n' },
-        { text: 'Komentarz', style: 'header', margin: [0, 0, 0, 10] },
+        {
+          text: `${commentsArray.length > 0 ? 'Komentarz' : ''}`,
+          style: 'subheader',
+        },
         {
           ul: commentsArray,
-          style: 'margins',
+          fontSize: 10,
         },
         {
           text: 'Rekomendacja egzaminacyjna',
@@ -579,91 +625,116 @@ export class AppComponent implements OnInit {
               : `W tym roku nie rekomenduję podchodzenia do egzaminu Cambridge.`
           }`,
           bold: true,
-          margin: [0, 0, 0, 15],
+          margin: [0, 0, 0, 5],
+          fontSize: 10,
         },
-        { text: `${form.value.examRecommendation}`, style: 'margins' },
+        { text: `${form.value.examRecommendation}`, fontSize: 10 },
         {
           text: 'Dodatkowe informacje egzaminacyjne',
-          style: 'header',
+          style: 'subheader',
           margin: [0, 10, 0, 5],
         },
-        { ul: this.additionalExamInformations, style: 'margins' },
+        {
+          ul: this.additionalExamInformations,
+          fontSize: 9,
+        },
         {
           text: 'Organizacja kolejnego roku nauki',
-          style: 'header',
+          style: 'subheader',
           margin: [0, 10, 0, 5],
         },
         {
           text: 'Całoroczna praca ucznia, jego zaangażowanie i stopień opanowania materiału, wyniki testów bieżących oraz próbnych egzaminów diagnozujących są dla nas ważne i stanowią podstawę do kwalifikacji do grup o zbliżonych kompetencjach językowych w kolejnym roku szkolnym. Bierzemy też pod uwagę indywidualne zdolności oraz stopień motywacji ucznia w trakcie całego roku szkolnego.',
           style: 'margins',
+          fontSize: 9,
         },
-        { text: '\n' },
+        { text: '\n', fontSize: 5 },
         {
           text: 'Staramy się maksymalnie wspierać potencjał językowy uczniów i łączyć dzieci według umiejętności. Gdy tylko jest to możliwe, tworzymy trzy rodzaje kursów:',
           style: 'margins',
+          fontSize: 9,
         },
-        { text: '\n' },
+        { text: '\n', fontSize: 4 },
         {
           text: '1) BFT czyli BRITANNIA Fast Track – dla uczniów celujących i wzorowych, którzy mają wyniki od 90% wzwyż, wyróżniają się swobodą w komunikacji i aktywnie wykorzystują poznane treści, są otwarci i maksymalnie zaangażowani w naukę, regularnie i w szybszym tempie podchodzą do kolejnych egzaminów Cambridge. Często w tej grupie znajdują się dzieci, które w kolejnych latach startują w konkursach językowych lub wybierają dwujęzyczne profile w liceum. Grupy BFT zazwyczaj nie są grupami dowożonymi, są złożone z dzieci z różnych klas i szkół.',
+          fontSize: 9,
         },
-        { text: '\n' },
+        { text: '\n', fontSize: 4 },
         {
           text: '2) BRT czyli BRITANNIA Regular Track – dla uczniów, którzy opanowali materiał bardzo dobrze i dobrze, są zawsze przygotowani, oraz chętni i zmotywowani, by posługiwać się angielskim i osiągać jak najlepsze rezultaty; zależy im, by jak najlepiej poznać angielski. Uczniowie z tej grupy zazwyczaj regularnie podchodzą do kolejnych egzaminów Cambridge.',
+          fontSize: 9,
         },
-        { text: '\n' },
+        { text: '\n', fontSize: 4 },
         {
           text: '3) BST czyli BRITANNIA Support Track – dla uczniów osiągających wyniki poniżej 65% oraz tych, którzy potrzebują więcej wsparcia w opanowaniu materiału i z nieśmiałością podchodzą do aktywizacji mówienia i muszą bardziej otworzyć się na naukę.',
+          fontSize: 9,
         },
         {
           text: `W przyszłym roku szkolnym rekomenduję naukę w trybie: ${form.value.learningRecommendations}`,
-          margin: [0, 30],
+          margin: [0, 10],
           bold: true,
+          fontSize: 10,
         },
-        { text: 'Rekomendacje', style: 'header', margin: [0, 10, 0, 5] },
-        { ul: recommendationsArray, style: 'margins' },
+        {
+          text: `${recommendationsArray.length > 0 ? 'Rekomendacje' : ''}`,
+          style: 'header',
+        },
+        { ul: recommendationsArray, fontSize: 10 },
         {
           columns: [
             {
               text: form.value.signature,
               margin: [0, 20, 0, 10],
+              fontSize: 10,
             },
             {
               image: this.imageLogo,
               width: 125,
-              height: 100,
+              height: 110,
               alignment: 'right',
-              margin: [0, 20, 0, 10],
+              margin: [0, 20, 0, 0],
             },
           ],
         },
       ],
       styles: {
         tableHeader: {
-          fontSize: 12,
+          fontSize: 10,
           bold: true,
         },
         tableExample: {
-          margin: [0, 15, 0, 5],
+          margin: [0, 10, 0, 2],
+          fontSize: 10,
         },
         tableExams: {
-          margin: [0, 15, 0, 15],
+          margin: [0, 10, 0, 10],
+          fontSize: 10,
         },
         marksTable: {
-          margin: [0, 15, 0, 15],
+          margin: [0, 10, 0, 5],
+          fontSize: 10,
         },
-        margins: [0, 10, 0, 10],
         header: {
           bold: true,
-          fontSize: 15,
+          fontSize: 11,
+        },
+        subheader: {
+          fontSize: 10,
+          bold: true,
         },
         title: {
-          fontSize: 16,
+          fontSize: 13,
           bold: true,
           alignment: 'justify',
           decoration: 'underline',
         },
+        subtitle: {
+          fontSize: 11,
+          alignment: 'justify',
+          bold: true,
+        },
         defaultStyle: {
-          fontSize: 12,
+          fontSize: 10,
         },
       },
     };
@@ -673,9 +744,9 @@ export class AppComponent implements OnInit {
 
   private generateTableOfA1Exams(form: FormGroup) {
     return {
+      style: 'marksTable',
       table: {
-        widths: ['*', 'auto', 'auto', 'auto', '*'],
-        style: 'marksTable',
+        widths: ['*', 'auto', '*', 'auto', '*'],
         headerRows: 1,
         body: [
           [
@@ -685,7 +756,7 @@ export class AppComponent implements OnInit {
               alignment: 'center',
             },
             {
-              text: `Test nr`,
+              text: `Nr testu`,
               style: 'tableHeader',
               alignment: 'center',
             },
@@ -814,7 +885,7 @@ export class AppComponent implements OnInit {
             },
           ],
           [
-            { text: 'Słuchanie', alignment: 'center', rowSpan: 3 },
+            { text: 'Mówienie', alignment: 'center', rowSpan: 3 },
             { text: '1', alignment: 'center' },
             {
               text: `${new Date(
@@ -874,9 +945,9 @@ export class AppComponent implements OnInit {
 
   private generateTableOfA2B1Exams(form: FormGroup) {
     return {
+      style: 'marksTable',
       table: {
         widths: ['*', 'auto', 'auto', 'auto', '*'],
-        style: 'marksTable',
         headerRows: 1,
         body: [
           [
@@ -1129,9 +1200,9 @@ export class AppComponent implements OnInit {
 
   private generateTableOfB2C1Exams(form: FormGroup) {
     return {
+      style: 'marksTable',
       table: {
         widths: ['*', 'auto', 'auto', 'auto', '*'],
-        style: 'marksTable',
         headerRows: 1,
         body: [
           [
@@ -1440,25 +1511,25 @@ export class AppComponent implements OnInit {
     this.resultOfExam.forEach((exam) => {
       this.listeningA1Array.push(
         new FormGroup({
-          date: new FormControl(null),
-          score: new FormControl(null),
-          result: new FormControl(null),
+          date: new FormControl(new Date('12.6.2023')),
+          score: new FormControl(87),
+          result: new FormControl('Tak'),
         })
       );
 
       this.writingAndReadingA1Array.push(
         new FormGroup({
-          date: new FormControl(null),
-          score: new FormControl(null),
-          result: new FormControl(null),
+          date: new FormControl(new Date('12.6.2023')),
+          score: new FormControl(87),
+          result: new FormControl('Tak'),
         })
       );
 
       this.speakingA1Array.push(
         new FormGroup({
-          date: new FormControl(null),
-          score: new FormControl(null),
-          result: new FormControl(null),
+          date: new FormControl(new Date('12.6.2023')),
+          score: new FormControl(87),
+          result: new FormControl('Tak'),
         })
       );
 
@@ -1538,22 +1609,31 @@ export class AppComponent implements OnInit {
 
   private createForm(): FormGroup {
     return new FormGroup({
-      studentName: new FormControl(null, Validators.required),
-      name: new FormControl(null, Validators.required),
-      date: new FormControl(null, Validators.required),
-      class: new FormControl(null, Validators.required),
-      teacher: new FormControl(null, Validators.required),
-      studentBookTitle: new FormControl(null, Validators.required),
-      course: new FormControl(null, Validators.required),
-      realizedMaterial: new FormControl(null, Validators.required),
+      studentName: new FormControl('Jan Nowak', Validators.required),
+      name: new FormControl('Jaś', Validators.required),
+      sex: new FormControl('Uczeń', Validators.required),
+      date: new FormControl(new Date('10.6.2023'), Validators.required),
+      class: new FormControl('Klasa 2 szkoły podstawowej', Validators.required),
+      teacher: new FormControl('Regina Raczyńska', Validators.required),
+      studentBookTitle: new FormControl(
+        'Kid’s Box 1, wydawnictwo Cambridge',
+        Validators.required
+      ),
+      course: new FormControl(
+        'Kid’s Box 1, wydawnictwo Cambridge',
+        Validators.required
+      ),
+      realizedMaterial: new FormControl('Unit 1-5', Validators.required),
 
-      marks: new FormControl(null, Validators.required),
-      avgMark: new FormControl(null, Validators.required),
-      frequency: new FormControl(null, Validators.required),
-      // involvementInLessons: new FormControl(null, Validators.required),
-      lead: new FormControl(null, Validators.required),
-      respect: new FormControl(null, Validators.required),
-      focus: new FormControl(null, Validators.required),
+      marks: new FormControl(
+        '5 4 5 6 3 5 4 3 4 5 6 5 3 3',
+        Validators.required
+      ),
+      avgMark: new FormControl('4,5', Validators.required),
+      frequency: new FormControl(88, Validators.required),
+      lead: new FormControl('6', Validators.required),
+      respect: new FormControl('5', Validators.required),
+      focus: new FormControl('3', Validators.required),
       pronunciation: new FormControl(null, Validators.required),
       vocabulary: new FormControl(null, Validators.required),
       prepareToLecture: new FormControl(null, Validators.required),
@@ -1588,7 +1668,14 @@ export class AppComponent implements OnInit {
       learningRecommendations: new FormControl(null),
       recommendations: new FormArray([]),
 
-      signature: new FormControl(null, Validators.required),
+      signature: new FormControl(
+        'Trzymam kciuki za dalsze postępy! \n' +
+          'W przypadku pytań proszę o kontakt.\n' +
+          '\n' +
+          'Pozdrawiam, \n' +
+          'Regina Raczyńska\n',
+        Validators.required
+      ),
     });
   }
 }

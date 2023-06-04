@@ -16,7 +16,7 @@
     </div>
 
     <div class="row">
-      <mat-form-field class="col-12 my-1">
+      <mat-form-field class="col-6 my-1">
         <mat-label>Imię i nazwisko ucznia</mat-label>
         <input matInput type="text" formControlName="studentName" />
         <mat-error
@@ -24,10 +24,8 @@
           >Pole jest wymagane
         </mat-error>
       </mat-form-field>
-    </div>
 
-    <div class="row">
-      <mat-form-field class="col-12 my-1">
+      <mat-form-field class="col-6 my-1">
         <mat-label>Imię ucznia do wyświetlenia w tekście (np. Jaś)</mat-label>
         <input matInput type="text" formControlName="name" />
         <mat-error *ngIf="this.form.controls['name'].hasError('required')"
@@ -36,7 +34,19 @@
       </mat-form-field>
     </div>
 
-    <div class="row form-field">
+    <div class="row">
+      <mat-form-field class="col-6 my-1">
+        <mat-label>Uczeń/Uczennica</mat-label>
+        <mat-select name="teacher" formControlName="sex">
+          <mat-option *ngFor="let sex of sexes" [value]="sex">
+            {{ sex }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="this.form.controls['sex'].hasError('required')"
+          >Pole jest wymagane
+        </mat-error>
+      </mat-form-field>
+
       <mat-form-field class="col-6 my-1">
         <mat-label>Wybierz datę</mat-label>
         <input matInput [matDatepicker]="picker" formControlName="date" />
@@ -50,7 +60,9 @@
         ></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
+    </div>
 
+    <div class="row form-field">
       <mat-form-field class="col-6 my-1">
         <mat-label>Klasa</mat-label>
         <mat-select name="class" formControlName="class">
@@ -62,9 +74,7 @@
           >Pole jest wymagane
         </mat-error>
       </mat-form-field>
-    </div>
 
-    <div class="row form-field">
       <mat-form-field class="col-6 my-1">
         <mat-label>Lektor</mat-label>
         <mat-select name="teacher" formControlName="teacher">
@@ -76,7 +86,9 @@
           >Pole jest wymagane
         </mat-error>
       </mat-form-field>
+    </div>
 
+    <div class="row form-field">
       <mat-form-field class="col-6 my-1">
         <mat-label>Tytuł podręcznika</mat-label>
         <mat-select name="class" formControlName="studentBookTitle">
@@ -89,9 +101,7 @@
           >Pole jest wymagane
         </mat-error>
       </mat-form-field>
-    </div>
 
-    <div class="row form-field">
       <mat-form-field class="col-6 my-1">
         <mat-label>Kurs</mat-label>
         <mat-select name="course" formControlName="course">
@@ -103,7 +113,9 @@
           >Pole jest wymagane
         </mat-error>
       </mat-form-field>
+    </div>
 
+    <div class="row form-field">
       <mat-form-field class="col-12 my-1">
         <mat-label>Zrealizowany materiał</mat-label>
         <textarea
@@ -146,16 +158,14 @@
         <mat-form-field class="w-100 px-2">
           <mat-label>Uzyskane oceny</mat-label>
           <textarea matInput formControlName="marks"></textarea>
-          <mat-hint>Opis oceny można znaleźć w dzienniku EduSky:</mat-hint>
           <mat-error *ngIf="this.form.controls['marks'].hasError('required')"
             >Pole jest wymagane
           </mat-error>
         </mat-form-field>
 
         <mat-form-field class="w-100 px-2">
-          <mat-label>Bieżące postępy</mat-label>
+          <mat-label>Bieżące postępy (średnia ocen)</mat-label>
           <input matInput formControlName="avgMark" />
-          <mat-hint>Średnia ocen</mat-hint>
           <mat-error *ngIf="this.form.controls['avgMark'].hasError('required')"
             >Pole jest wymagane
           </mat-error>
@@ -185,43 +195,43 @@
         <!--          </mat-error>-->
         <!--        </mat-form-field>-->
 
-        <mat-form-field class="w-50 px-2">
-          <mat-label>Prowadzenie zeszytu, notatek</mat-label>
-          <mat-select formControlName="lead">
-            <mat-option *ngFor="let mark of marks" [value]="mark.value">
-              {{ mark.viewValue }}
-            </mat-option>
-          </mat-select>
-          <mat-error *ngIf="this.form.controls['lead'].hasError('required')"
-            >Pole jest wymagane
-          </mat-error>
-        </mat-form-field>
+        <!--        <mat-form-field class="w-50 px-2">-->
+        <!--          <mat-label>Prowadzenie zeszytu, notatek</mat-label>-->
+        <!--          <mat-select formControlName="lead">-->
+        <!--            <mat-option *ngFor="let mark of marks" [value]="mark.value">-->
+        <!--              {{ mark.viewValue }}-->
+        <!--            </mat-option>-->
+        <!--          </mat-select>-->
+        <!--          <mat-error *ngIf="this.form.controls['lead'].hasError('required')"-->
+        <!--            >Pole jest wymagane-->
+        <!--          </mat-error>-->
+        <!--        </mat-form-field>-->
 
-        <mat-form-field class="w-50 px-2">
-          <mat-label
-            >Szacunek do nauczyciela i innych kursantów z grupy
-          </mat-label>
-          <mat-select formControlName="respect">
-            <mat-option *ngFor="let mark of marks" [value]="mark.value">
-              {{ mark.viewValue }}
-            </mat-option>
-          </mat-select>
-          <mat-error *ngIf="this.form.controls['respect'].hasError('required')"
-            >Pole jest wymagane
-          </mat-error>
-        </mat-form-field>
+        <!--        <mat-form-field class="w-50 px-2">-->
+        <!--          <mat-label-->
+        <!--            >Szacunek do nauczyciela i innych kursantów z grupy-->
+        <!--          </mat-label>-->
+        <!--          <mat-select formControlName="respect">-->
+        <!--            <mat-option *ngFor="let mark of marks" [value]="mark.value">-->
+        <!--              {{ mark.viewValue }}-->
+        <!--            </mat-option>-->
+        <!--          </mat-select>-->
+        <!--          <mat-error *ngIf="this.form.controls['respect'].hasError('required')"-->
+        <!--            >Pole jest wymagane-->
+        <!--          </mat-error>-->
+        <!--        </mat-form-field>-->
 
-        <mat-form-field class="w-50 px-2">
-          <mat-label>Skupienie uwagi na lekcjach</mat-label>
-          <mat-select formControlName="focus">
-            <mat-option *ngFor="let mark of marks" [value]="mark.value">
-              {{ mark.viewValue }}
-            </mat-option>
-          </mat-select>
-          <mat-error *ngIf="this.form.controls['focus'].hasError('required')"
-            >Pole jest wymagane
-          </mat-error>
-        </mat-form-field>
+        <!--        <mat-form-field class="w-50 px-2">-->
+        <!--          <mat-label>Skupienie uwagi na lekcjach</mat-label>-->
+        <!--          <mat-select formControlName="focus">-->
+        <!--            <mat-option *ngFor="let mark of marks" [value]="mark.value">-->
+        <!--              {{ mark.viewValue }}-->
+        <!--            </mat-option>-->
+        <!--          </mat-select>-->
+        <!--          <mat-error *ngIf="this.form.controls['focus'].hasError('required')"-->
+        <!--            >Pole jest wymagane-->
+        <!--          </mat-error>-->
+        <!--        </mat-form-field>-->
 
         <p class="w-100">Ocena opisowa</p>
 
@@ -356,12 +366,12 @@
               Testy Cambridge dla dzieci to testy przekrojowe, diagnostyczne -
               nie można ich nie zdać, mają wskazać poziom biegłości językowej.
               Ważne są procenty. Uznajemy, że uczeń wskoczył na dany poziom
-              biegłości uzyskując minimum 60%. Jednak by stwierdzić, że uczeń
-              faktycznie osiągnął dany poziom językowy i może przystąpić do
-              oficjalnego egzaminu Cambridge powinien osiągnąć ok. 80% z testów
-              próbnych. Na testach próbnych diagnozujemy umiejętności Słuchania
-              oraz Czytania i Pisania. Na egzaminie jest też Mówienie, co
-              ćwiczymy i sprawdzamy na bieżąco.
+              biegłości, jeśli uzyskał minimum 60%. Jednak, by stwierdzić, że
+              uczeń faktycznie osiągnął dany poziom językowy i może przystąpić
+              do oficjalnego egzaminu Cambridge, powinien osiągnąć on ok. 80% z
+              testów próbnych. Na testach próbnych diagnozujemy umiejętności
+              Słuchania oraz Czytania i Pisania. Na egzaminie jest też Mówienie,
+              co ćwiczymy i sprawdzamy na bieżąco.
             </p>
           </mat-expansion-panel>
         </mat-accordion>
@@ -943,6 +953,17 @@
               <mat-label>Komentarz {{ i + 1 }}</mat-label>
               <input matInput type="text" [formControlName]="i" />
             </mat-form-field>
+            <div class="col-4">
+              <button
+                style="height: 54px"
+                type="button"
+                mat-raised-button
+                color="warn"
+                (click)="onRemoveComment(i)"
+              >
+                Usuń
+              </button>
+            </div>
           </ng-container>
         </div>
       </div>
@@ -963,7 +984,7 @@
         </mat-checkbox>
       </div>
       <div class="col-12" *ngIf="isChecked">
-        <mat-form-field>
+        <mat-form-field class="w-50">
           <mat-label>Egzamin</mat-label>
           <mat-select formControlName="examRecommendationResult">
             <mat-option
@@ -1146,6 +1167,17 @@
               <mat-label>Rekomendacja {{ i + 1 }}</mat-label>
               <input matInput type="text" [formControlName]="i" />
             </mat-form-field>
+            <div class="col-4">
+              <button
+                style="height: 54px"
+                type="button"
+                mat-raised-button
+                color="warn"
+                (click)="onRemoveRecommendation(i)"
+              >
+                Usuń
+              </button>
+            </div>
           </ng-container>
         </div>
       </div>
