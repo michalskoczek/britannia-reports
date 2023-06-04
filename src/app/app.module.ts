@@ -22,6 +22,7 @@ import { MatTableModule } from '@angular/material/table';
 import { SpecialMarksModule } from './rating-scale/special-marks/special-marks.module';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [AppComponent],
@@ -45,11 +46,11 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatMomentDateModule,
     MatInputModule,
     MatSelectModule,
-    MatButtonModule,
     MatTableModule,
     SpecialMarksModule,
     MatExpansionModule,
     MatCheckboxModule,
+    MatIconModule,
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'pl-PL' },

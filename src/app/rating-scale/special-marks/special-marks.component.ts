@@ -234,7 +234,7 @@ export class SpecialMarksComponent implements OnInit {
       ],
       styles: {
         tableHeader: {
-          fontSize: 14,
+          fontSize: 13,
           bold: true,
         },
         tableExample: {

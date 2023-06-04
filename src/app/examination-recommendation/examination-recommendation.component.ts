@@ -66,11 +66,11 @@ export class ExaminationRecommendationComponent implements OnInit {
       styles: {
         header: {
           bold: true,
-          fontSize: 15,
+          fontSize: 14,
         },
       },
       defaultStyle: {
-        fontSize: 12,
+        fontSize: 11,
       },
     };
 
