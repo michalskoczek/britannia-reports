@@ -1511,25 +1511,25 @@ export class AppComponent implements OnInit {
     this.resultOfExam.forEach((exam) => {
       this.listeningA1Array.push(
         new FormGroup({
-          date: new FormControl(new Date('12.6.2023')),
-          score: new FormControl(87),
-          result: new FormControl('Tak'),
+          date: new FormControl(null),
+          score: new FormControl(null),
+          result: new FormControl(null),
         })
       );
 
       this.writingAndReadingA1Array.push(
         new FormGroup({
-          date: new FormControl(new Date('12.6.2023')),
-          score: new FormControl(87),
-          result: new FormControl('Tak'),
+          date: new FormControl(null),
+          score: new FormControl(null),
+          result: new FormControl(null),
         })
       );
 
       this.speakingA1Array.push(
         new FormGroup({
-          date: new FormControl(new Date('12.6.2023')),
-          score: new FormControl(87),
-          result: new FormControl('Tak'),
+          date: new FormControl(null),
+          score: new FormControl(null),
+          result: new FormControl(null),
         })
       );
 
@@ -1609,31 +1609,22 @@ export class AppComponent implements OnInit {
 
   private createForm(): FormGroup {
     return new FormGroup({
-      studentName: new FormControl('Jan Nowak', Validators.required),
-      name: new FormControl('Jaś', Validators.required),
-      sex: new FormControl('Uczeń', Validators.required),
-      date: new FormControl(new Date('10.6.2023'), Validators.required),
-      class: new FormControl('Klasa 2 szkoły podstawowej', Validators.required),
-      teacher: new FormControl('Regina Raczyńska', Validators.required),
-      studentBookTitle: new FormControl(
-        'Kid’s Box 1, wydawnictwo Cambridge',
-        Validators.required
-      ),
-      course: new FormControl(
-        'Kid’s Box 1, wydawnictwo Cambridge',
-        Validators.required
-      ),
-      realizedMaterial: new FormControl('Unit 1-5', Validators.required),
+      studentName: new FormControl(null, Validators.required),
+      name: new FormControl(null, Validators.required),
+      sex: new FormControl(null, Validators.required),
+      date: new FormControl(null, Validators.required),
+      class: new FormControl(null, Validators.required),
+      teacher: new FormControl(null, Validators.required),
+      studentBookTitle: new FormControl(null, Validators.required),
+      course: new FormControl(null, Validators.required),
+      realizedMaterial: new FormControl(null, Validators.required),
 
-      marks: new FormControl(
-        '5 4 5 6 3 5 4 3 4 5 6 5 3 3',
-        Validators.required
-      ),
-      avgMark: new FormControl('4,5', Validators.required),
-      frequency: new FormControl(88, Validators.required),
-      lead: new FormControl('6', Validators.required),
-      respect: new FormControl('5', Validators.required),
-      focus: new FormControl('3', Validators.required),
+      marks: new FormControl(null, Validators.required),
+      avgMark: new FormControl(null, Validators.required),
+      frequency: new FormControl(null, Validators.required),
+      lead: new FormControl(null, Validators.required),
+      respect: new FormControl(null, Validators.required),
+      focus: new FormControl(null, Validators.required),
       pronunciation: new FormControl(null, Validators.required),
       vocabulary: new FormControl(null, Validators.required),
       prepareToLecture: new FormControl(null, Validators.required),
@@ -1668,14 +1659,7 @@ export class AppComponent implements OnInit {
       learningRecommendations: new FormControl(null),
       recommendations: new FormArray([]),
 
-      signature: new FormControl(
-        'Trzymam kciuki za dalsze postępy! \n' +
-          'W przypadku pytań proszę o kontakt.\n' +
-          '\n' +
-          'Pozdrawiam, \n' +
-          'Regina Raczyńska\n',
-        Validators.required
-      ),
+      signature: new FormControl(null, Validators.required),
     });
   }
 }
