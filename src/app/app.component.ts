@@ -25,6 +25,7 @@ import {
   learningRecommendations,
   resultOfExam,
 } from './shared/exams';
+import { image } from './shared/images-base64';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -38,6 +39,7 @@ export class AppComponent implements OnInit {
 
   public form!: FormGroup;
 
+  public readonly sexes: string[] = ['Uczeń', 'Uczennica'];
   public readonly classes: string[] = classes;
   public readonly teachers: string[] = teachers;
   public readonly books: string[] = books;
@@ -68,7 +70,7 @@ export class AppComponent implements OnInit {
 
   private readonly additionalExamInformations: string[] =
     additionalExamInformations;
-  private readonly kindOfCourses: string[] = kindOfCourses;
+  private readonly imageLogo: string = image;
 
   ngOnInit(): void {
     this.form = this.createForm();
@@ -148,9 +150,15 @@ export class AppComponent implements OnInit {
     this.isChecked = !this.isChecked;
   }
 
-  public generatePDF(form: FormGroup): any {
-    console.log(form.value);
+  public onRemoveComment(index: number): void {
+    this.comments.removeAt(index);
+  }
 
+  public onRemoveRecommendation(index: number): void {
+    this.recommendations.removeAt(index);
+  }
+
+  public generatePDF(form: FormGroup): any {
     let date: string = new Date(form.value.date).toLocaleDateString();
 
     let commentsArray: string[] = [];
@@ -159,7 +167,7 @@ export class AppComponent implements OnInit {
     );
 
     let recommendationsArray: string[] = [];
-    form.value.comments.forEach((comment: string) =>
+    form.value.recommendations.forEach((comment: string) =>
       recommendationsArray.push(comment)
     );
 
@@ -168,6 +176,14 @@ export class AppComponent implements OnInit {
       studentName: string
     ): string => {
       return textValue.replace(textValue[0], studentName);
+    };
+
+    const changeXToYValue = (textValue: string, yValue: string): string => {
+      return textValue.replace(textValue[0], yValue);
+    };
+
+    const changeXToEmptyValue = (textValue: string): string => {
+      return textValue.replace(textValue[0], '');
     };
 
     const getMarkValue = (
@@ -180,6 +196,26 @@ export class AppComponent implements OnInit {
       return markObj?.viewValue[0];
     };
 
+    const chooseTableOfExam = () => {
+      if (
+        form.value.typeOfExam === 'Cambridge STARTERS' ||
+        form.value.typeOfExam === 'Cambridge MOVERS' ||
+        form.value.typeOfExam === 'Cambridge FLYERS'
+      ) {
+        return this.generateTableOfA1Exams(form);
+      } else if (
+        form.value.typeOfExam === 'Cambridge A2 Key for Schools' ||
+        form.value.typeOfExam === 'Cambridge B1 Preliminary for Schools'
+      ) {
+        return this.generateTableOfA2B1Exams(form);
+      } else if (
+        form.value.typeOfExam === 'Cambridge B2 First for Schools' ||
+        form.value.typeOfExam === 'Cambridge C1 Advanced'
+      ) {
+        return this.generateTableOfB2C1Exams(form);
+      } else return null;
+    };
+
     let docDefinition = {
       content: [
         {
@@ -190,13 +226,15 @@ export class AppComponent implements OnInit {
         {
           text: [
             `Imię i Nazwisko ucznia: `,
-            { text: `${form.value.studentName}`, style: 'header' },
+            { text: `${form.value.studentName}`, style: 'subtitle' },
           ],
-          margin: 10,
+          margin: [0, 5, 0, 5],
+          alignment: 'center',
         },
         {
           style: 'tableExample',
           table: {
+            widths: ['auto', '*', 'auto', '*'],
             body: [
               [
                 { text: 'Data', style: 'tableHeader' },
@@ -223,32 +261,48 @@ export class AppComponent implements OnInit {
           style: 'tableExample',
           table: {
             widths: ['auto', 'auto', 'auto', 'auto', '*'],
+            headerRows: 1,
             body: [
               [
                 {
-                  rowSpan: 12,
                   text: 'Nasza skala ocen',
                   style: 'tableHeader',
+                  colSpan: 2,
+                  alignment: 'center',
+                },
+                {},
+                {
+                  text: '',
+                  rowSpan: 1,
                 },
                 {
-                  text: '100%+*',
-                },
-                {
-                  text: '6',
-                },
-                {
-                  rowSpan: 10,
-                  text: 'Uzyskane oceny**',
+                  text: 'Uzyskane oceny',
                   style: 'tableHeader',
+                  colSpan: 2,
+                  alignment: 'center',
+                },
+                {},
+              ],
+              [
+                {
+                  text: '100%+',
                 },
                 {
-                  rowSpan: 10,
+                  text: '6*',
+                },
+                {
+                  text: '',
+                  rowSpan: 12,
+                },
+                {
+                  colSpan: 2,
+                  rowSpan: 9,
                   text: `${form.value.marks}`,
                   style: 'tableHeader',
                 },
+                {},
               ],
               [
-                '',
                 {
                   text: '96-100%',
                 },
@@ -257,9 +311,9 @@ export class AppComponent implements OnInit {
                 },
                 '',
                 '',
+                '',
               ],
               [
-                '',
                 {
                   text: '90-95%',
                 },
@@ -268,9 +322,9 @@ export class AppComponent implements OnInit {
                 },
                 '',
                 '',
+                '',
               ],
               [
-                '',
                 {
                   text: '85-89%',
                 },
@@ -279,9 +333,9 @@ export class AppComponent implements OnInit {
                 },
                 '',
                 '',
+                '',
               ],
               [
-                '',
                 {
                   text: '80-84%',
                 },
@@ -290,9 +344,9 @@ export class AppComponent implements OnInit {
                 },
                 '',
                 '',
+                '',
               ],
               [
-                '',
                 {
                   text: '75-79%',
                 },
@@ -301,9 +355,9 @@ export class AppComponent implements OnInit {
                 },
                 '',
                 '',
+                '',
               ],
               [
-                '',
                 {
                   text: '70-74%',
                 },
@@ -312,9 +366,9 @@ export class AppComponent implements OnInit {
                 },
                 '',
                 '',
+                '',
               ],
               [
-                '',
                 {
                   text: '64-69%',
                 },
@@ -323,9 +377,9 @@ export class AppComponent implements OnInit {
                 },
                 '',
                 '',
+                '',
               ],
               [
-                '',
                 {
                   text: '60-63%',
                 },
@@ -334,9 +388,9 @@ export class AppComponent implements OnInit {
                 },
                 '',
                 '',
+                '',
               ],
               [
-                '',
                 {
                   text: '55-59%',
                 },
@@ -344,18 +398,23 @@ export class AppComponent implements OnInit {
                   text: '2+',
                 },
                 '',
+                {
+                  text: 'Opis oceny można znaleźć w dzienniku EduSky',
+                  colSpan: 2,
+                  fontSize: 10,
+                },
                 '',
               ],
               [
-                '',
                 {
                   text: '45-54%',
                 },
                 {
                   text: '2',
                 },
+                '',
                 {
-                  text: 'Bieżące postępy',
+                  text: 'Bieżące postępy (średnia ocen)',
                   style: 'tableHeader',
                 },
                 {
@@ -363,19 +422,19 @@ export class AppComponent implements OnInit {
                 },
               ],
               [
-                '',
                 {
                   text: '0-44%',
                 },
                 {
                   text: '1',
                 },
+                '',
                 {
                   text: 'Frekwencja',
                   style: 'tableHeader',
                 },
                 {
-                  text: `${form.value.frequency}`,
+                  text: `${form.value.frequency}%`,
                 },
               ],
             ],
@@ -386,47 +445,66 @@ export class AppComponent implements OnInit {
         },
         {
           text: '* Ocena celująca przyznawana jest za osiągnięcia specjalne, w szczególności za wyróżniające się odpowiedzi ustne lub pisemne.',
-          fontSize: '10',
+          fontSize: 7,
         },
+        // {
+        //   style: 'tableExample',
+        //   table: {
+        //     widths: ['*', 'auto'],
+        //     headerRows: 1,
+        //     body: [
+        //       [
+        //         {
+        //           text: 'Kategoria',
+        //           style: 'tableHeader',
+        //           alignment: 'center',
+        //         },
+        //         { text: 'Ocena', style: 'tableHeader', alignment: 'center' },
+        //       ],
+        //       [
+        //         { text: 'Prowadzenie zeszytu, notatek' },
+        //         { text: `${form.value.lead}`, alignment: 'center' },
+        //       ],
+        //       [
+        //         { text: 'Szacunek do nauczyciela i innych kursantów z grupy' },
+        //         { text: `${form.value.respect}`, alignment: 'center' },
+        //       ],
+        //       [
+        //         { text: 'Skupienie uwagi na lekcjach' },
+        //         { text: `${form.value.focus}`, alignment: 'center' },
+        //       ],
+        //     ],
+        //   },
+        // },
         {
-          text: '** Opis oceny można znaleźć w dzienniku EduSky',
-          fontSize: '10',
-        },
-        {
-          style: 'tableExample',
-          table: {
-            widths: ['*', 'auto'],
-            body: [
-              [
-                { text: 'Zaangażowanie i udział w lekcjach' },
-                { text: `${form.value.involvementInLessons}` },
-              ],
-              [
-                { text: 'Prowadzenie zeszytu, notatek' },
-                { text: `${form.value.lead}` },
-              ],
-              [
-                { text: 'Szacunek do nauczyciela i innych kursantów z grupy' },
-                { text: `${form.value.respect}` },
-              ],
-              [
-                { text: 'Skupienie uwagi na lekcjach' },
-                { text: `${form.value.focus}` },
-              ],
-            ],
-          },
-        },
-        {
-          style: 'marksTable',
+          style: 'tableExams',
           table: {
             widths: ['auto', '*', 'auto'],
+            headerRows: 1,
             body: [
+              [
+                {
+                  text: 'Kategoria',
+                  style: 'tableHeader',
+                  alignment: 'center',
+                },
+                {
+                  text: 'Opis',
+                  style: 'tableHeader',
+                  alignment: 'center',
+                },
+                {
+                  text: 'Ocena',
+                  style: 'tableHeader',
+                  alignment: 'center',
+                },
+              ],
               [
                 { text: 'Wymowa' },
                 {
                   text: `${changeXToStudentName(
                     form.value.pronunciation,
-                    form.value.studentName
+                    form.value.name
                   )}`,
                 },
                 {
@@ -434,14 +512,15 @@ export class AppComponent implements OnInit {
                     form.value.pronunciation,
                     pronunciationMarks
                   )}`,
+                  alignment: 'center',
                 },
               ],
               [
                 { text: 'Słownictwo' },
                 {
-                  text: `${changeXToStudentName(
+                  text: `${changeXToYValue(
                     form.value.vocabulary,
-                    form.value.studentName
+                    form.value.sex
                   )}`,
                 },
                 {
@@ -449,33 +528,33 @@ export class AppComponent implements OnInit {
                     form.value.vocabulary,
                     vocabularyMarks
                   )}`,
+                  alignment: 'center',
                 },
               ],
               [
                 { text: 'Przygotowanie do zajęć' },
                 {
-                  text: `${changeXToStudentName(
-                    form.value.prepareToLecture,
-                    form.value.studentName
-                  )}`,
+                  text: `${changeXToEmptyValue(form.value.prepareToLecture)}`,
                 },
                 {
                   text: `${getMarkValue(
                     form.value.prepareToLecture,
                     prepareToLectureMarks
                   )}`,
+                  alignment: 'center',
                 },
               ],
               [
                 { text: 'Prace domowe' },
                 {
-                  text: `${changeXToStudentName(
+                  text: `${changeXToYValue(
                     form.value.homeworks,
-                    form.value.studentName
+                    form.value.sex
                   )}`,
                 },
                 {
                   text: `${getMarkValue(form.value.homeworks, homeworksMarks)}`,
+                  alignment: 'center',
                 },
               ],
               [
@@ -483,7 +562,7 @@ export class AppComponent implements OnInit {
                 {
                   text: `${changeXToStudentName(
                     form.value.involvement,
-                    form.value.studentName
+                    form.value.name
                   )}`,
                 },
                 {
@@ -491,18 +570,17 @@ export class AppComponent implements OnInit {
                     form.value.involvement,
                     involvementMarks
                   )}`,
+                  alignment: 'center',
                 },
               ],
               [
                 { text: 'Zachowanie' },
                 {
-                  text: `${changeXToStudentName(
-                    form.value.behaviour,
-                    form.value.studentName
-                  )}`,
+                  text: `${changeXToEmptyValue(form.value.behaviour)}`,
                 },
                 {
                   text: `${getMarkValue(form.value.behaviour, behaviourMarks)}`,
+                  alignment: 'center',
                 },
               ],
             ],
@@ -511,114 +589,152 @@ export class AppComponent implements OnInit {
         {
           text: 'Poziom biegłości',
           style: 'header',
+          margin: [0, 0, 0, 5],
         },
         {
           text:
             'Zależy nam na tym, by jak najwcześniej diagnozować poziom umiejętności dzieci, by jak najszybciej łączyć je w grupy według poziomu ich umiejętności, by mogły rozwijać się językowo w swoim tempie i jak najpełniej korzystać z lekcji. Jak co roku została przeprowadzona diagnoza poziomu języka naszych uczniów według Europejskiego Systemu Kształcenia Językowego z wykorzystaniem próbnych egzaminów Cambridge. \n' +
             '\n' +
-            'Testy Cambridge dla dzieci to testy przekrojowe, diagnostyczne - nie można ich nie zdać, mają wskazać poziom biegłości językowej. Ważne są procenty. Uznajemy, że uczeń wskoczył na dany poziom biegłości uzyskując minimum 60%. Jednak by stwierdzić, że uczeń faktycznie osiągnęł dany poziom językowy i może przystąpić do oficjalnego egzaminu Cambridge powinien osiągnąć ok. 80% z testów próbnych. Na testach próbnych diagnozujemy umiejętności Słuchania oraz Czytania i Pisania. Na egzaminie jest też Mówienie, co ćwiczymy i sprawdzamy na bieżąco.',
+            'Testy Cambridge dla dzieci to testy przekrojowe, diagnostyczne - nie można ich nie zdać, mają wskazać poziom biegłości językowej. Ważne są procenty. Uznajemy, że uczeń wskoczył na dany poziom biegłości, jeśli uzyskał minimum 60%. Jednak, by stwierdzić, że uczeń faktycznie osiągnął dany poziom językowy i może przystąpić do oficjalnego egzaminu Cambridge, powinien osiągnąć on ok. 80% z testów próbnych. Na testach próbnych diagnozujemy umiejętności Słuchania oraz Czytania i Pisania. Na egzaminie jest też Mówienie, co ćwiczymy i sprawdzamy na bieżąco.',
+          fontSize: 9,
         },
         {
-          style: 'tableExample',
-          table: {
-            headerRows: 1,
-            body: [
-              [
-                {
-                  text: `Rodzaj egzaminu`,
-                  style: 'tableHeader',
-                  alignment: 'center',
-                },
-                {
-                  text: `Test nr`,
-                  style: 'tableHeader',
-                  alignment: 'center',
-                },
-                {
-                  text: 'Data',
-                  style: 'tableHeader',
-                  alignment: 'center',
-                },
-                {
-                  text: 'Umiejętność',
-                  style: 'tableHeader',
-                  alignment: 'center',
-                },
-                {
-                  text: 'Uzyskany wynik w %',
-                  style: 'tableHeader',
-                  alignment: 'center',
-                },
-                {
-                  text: 'Zdajemy?',
-                  style: 'tableHeader',
-                  alignment: 'center',
-                },
-              ],
-              [
-                { text: `${form.value.typeOfExam}`, alignment: 'center' },
-                { text: `1`, alignment: 'center' },
-                {
-                  text: `${new Date(
-                    form.value.listeningA1Array[0].date
-                  ).toLocaleDateString()}`,
-                  alignment: 'center',
-                },
-                {
-                  text: 'Słuchanie',
-                  alignment: 'center',
-                },
-                {
-                  text: `${form.value.listeningA1Array[0].score}%`,
-                  alignment: 'center',
-                },
-                {
-                  text: `${form.value.listeningA1Array[0].result}`,
-                  alignment: 'center',
-                },
-              ],
-            ],
-          },
+          text: ['Rodzaj egzaminu: ', form.value.typeOfExam],
+          bold: true,
+          margin: [0, 10, 0, 0],
+          fontSize: 10,
         },
-        { text: 'Komentarz', style: 'header' },
+        chooseTableOfExam(),
+        {
+          text: `${commentsArray.length > 0 ? 'Komentarz' : ''}`,
+          style: 'subheader',
+        },
         {
           ul: commentsArray,
+          fontSize: 10,
         },
-        { text: 'Rekomendacja egzaminacyjna', style: 'header' },
-        { text: `${form.value.examRecommendation}` },
-        { text: 'Dodatkowe informacje egzaminacyjne', style: 'header' },
-        { ul: this.additionalExamInformations },
-        { text: 'Organizacja kolejnego roku nauki', style: 'header' },
-        'Całoroczna praca ucznia, jego zaangażowanie i stopień opanowania materiału, wyniki testów bieżących oraz próbnych egzaminów diagnozujących są dla nas ważne i stanowią podstawę do kwalifikacji do grup o zbliżonych kompetencjach językowych w kolejnym roku szkolnym. Bierzemy też pod uwagę indywidualne zdolności oraz stopień motywacji ucznia w trakcie całego roku szkolnego.',
-        'Staramy się maksymalnie wspierać potencjał językowy uczniów i łączyć dzieci według umiejętności. Gdy tylko jest to możliwe, tworzymy trzy rodzaje kursów',
-        { ol: this.kindOfCourses },
-        { text: 'Rekomendacje', style: 'header' },
-        { ul: recommendationsArray },
-        { text: form.value.signature },
+        {
+          text: 'Rekomendacja egzaminacyjna',
+          style: 'header',
+          margin: [0, 10, 0, 5],
+        },
+        {
+          text: `${
+            form.value.examRecommendationAcceptCheckbox
+              ? `W tym roku szkolnym rekomenduję podejście do egzaminu: ${form.value.examRecommendationResult}`
+              : `W tym roku nie rekomenduję podchodzenia do egzaminu Cambridge.`
+          }`,
+          bold: true,
+          margin: [0, 0, 0, 5],
+          fontSize: 10,
+        },
+        { text: `${form.value.examRecommendation}`, fontSize: 10 },
+        {
+          text: 'Dodatkowe informacje egzaminacyjne',
+          style: 'subheader',
+          margin: [0, 10, 0, 5],
+        },
+        {
+          ul: this.additionalExamInformations,
+          fontSize: 9,
+        },
+        {
+          text: 'Organizacja kolejnego roku nauki',
+          style: 'subheader',
+          margin: [0, 10, 0, 5],
+        },
+        {
+          text: 'Całoroczna praca ucznia, jego zaangażowanie i stopień opanowania materiału, wyniki testów bieżących oraz próbnych egzaminów diagnozujących są dla nas ważne i stanowią podstawę do kwalifikacji do grup o zbliżonych kompetencjach językowych w kolejnym roku szkolnym. Bierzemy też pod uwagę indywidualne zdolności oraz stopień motywacji ucznia w trakcie całego roku szkolnego.',
+          style: 'margins',
+          fontSize: 9,
+        },
+        { text: '\n', fontSize: 5 },
+        {
+          text: 'Staramy się maksymalnie wspierać potencjał językowy uczniów i łączyć dzieci według umiejętności. Gdy tylko jest to możliwe, tworzymy trzy rodzaje kursów:',
+          style: 'margins',
+          fontSize: 9,
+        },
+        { text: '\n', fontSize: 4 },
+        {
+          text: '1) BFT czyli BRITANNIA Fast Track – dla uczniów celujących i wzorowych, którzy mają wyniki od 90% wzwyż, wyróżniają się swobodą w komunikacji i aktywnie wykorzystują poznane treści, są otwarci i maksymalnie zaangażowani w naukę, regularnie i w szybszym tempie podchodzą do kolejnych egzaminów Cambridge. Często w tej grupie znajdują się dzieci, które w kolejnych latach startują w konkursach językowych lub wybierają dwujęzyczne profile w liceum. Grupy BFT zazwyczaj nie są grupami dowożonymi, są złożone z dzieci z różnych klas i szkół.',
+          fontSize: 9,
+        },
+        { text: '\n', fontSize: 4 },
+        {
+          text: '2) BRT czyli BRITANNIA Regular Track – dla uczniów, którzy opanowali materiał bardzo dobrze i dobrze, są zawsze przygotowani, oraz chętni i zmotywowani, by posługiwać się angielskim i osiągać jak najlepsze rezultaty; zależy im, by jak najlepiej poznać angielski. Uczniowie z tej grupy zazwyczaj regularnie podchodzą do kolejnych egzaminów Cambridge.',
+          fontSize: 9,
+        },
+        { text: '\n', fontSize: 4 },
+        {
+          text: '3) BST czyli BRITANNIA Support Track – dla uczniów osiągających wyniki poniżej 65% oraz tych, którzy potrzebują więcej wsparcia w opanowaniu materiału i z nieśmiałością podchodzą do aktywizacji mówienia i muszą bardziej otworzyć się na naukę.',
+          fontSize: 9,
+        },
+        {
+          text: `W przyszłym roku szkolnym rekomenduję naukę w trybie: ${form.value.learningRecommendations}`,
+          margin: [0, 10],
+          bold: true,
+          fontSize: 10,
+        },
+        {
+          text: `${recommendationsArray.length > 0 ? 'Rekomendacje' : ''}`,
+          style: 'header',
+        },
+        { ul: recommendationsArray, fontSize: 10 },
+        {
+          columns: [
+            {
+              text: form.value.signature,
+              margin: [0, 20, 0, 10],
+              fontSize: 10,
+            },
+            {
+              image: this.imageLogo,
+              width: 125,
+              height: 110,
+              alignment: 'right',
+              margin: [0, 20, 0, 0],
+            },
+          ],
+        },
       ],
       styles: {
         tableHeader: {
-          fontSize: 12,
+          fontSize: 10,
           bold: true,
         },
         tableExample: {
-          margin: [0, 15, 0, 5],
+          margin: [0, 10, 0, 2],
+          fontSize: 10,
+        },
+        tableExams: {
+          margin: [0, 10, 0, 10],
+          fontSize: 10,
         },
         marksTable: {
-          margin: [0, 15, 0, 15],
+          margin: [0, 10, 0, 5],
+          fontSize: 10,
         },
         header: {
           bold: true,
-          fontSize: 15,
+          fontSize: 11,
+        },
+        subheader: {
+          fontSize: 10,
+          bold: true,
         },
         title: {
-          fontSize: 16,
+          fontSize: 13,
           bold: true,
           alignment: 'justify',
           decoration: 'underline',
         },
+        subtitle: {
+          fontSize: 11,
+          alignment: 'justify',
+          bold: true,
+        },
         defaultStyle: {
-          fontSize: 12,
+          fontSize: 10,
         },
       },
     };
@@ -626,29 +742,794 @@ export class AppComponent implements OnInit {
     pdfMake.createPdf(docDefinition).open();
   }
 
+  private generateTableOfA1Exams(form: FormGroup) {
+    return {
+      style: 'marksTable',
+      table: {
+        widths: ['*', 'auto', '*', 'auto', '*'],
+        headerRows: 1,
+        body: [
+          [
+            {
+              text: 'Umiejętność',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: `Nr testu`,
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Data',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Uzyskany wynik',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Zdajemy?',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Słuchanie', alignment: 'center', rowSpan: 3 },
+            { text: '1', alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.listeningA1Array[0].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.listeningA1Array[0].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.listeningA1Array[0].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            {},
+            { text: `2`, alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.listeningA1Array[1].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.listeningA1Array[1].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.listeningA1Array[1].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: `3`, alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.listeningA1Array[2].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.listeningA1Array[2].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.listeningA1Array[2].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Czytanie i Pisanie', alignment: 'center', rowSpan: 3 },
+            { text: `1`, alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.writingAndReadingA1Array[0].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.writingAndReadingA1Array[0].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.writingAndReadingA1Array[0].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: `2`, alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.writingAndReadingA1Array[1].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.writingAndReadingA1Array[1].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.writingAndReadingA1Array[1].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: `3`, alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.writingAndReadingA1Array[2].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.writingAndReadingA1Array[2].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.writingAndReadingA1Array[2].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Mówienie', alignment: 'center', rowSpan: 3 },
+            { text: '1', alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.speakingA1Array[0].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.speakingA1Array[0].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.speakingA1Array[0].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: '2', alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.speakingA1Array[1].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.speakingA1Array[1].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.speakingA1Array[1].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: '3', alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.speakingA1Array[2].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.speakingA1Array[2].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.speakingA1Array[2].result}`,
+              alignment: 'center',
+            },
+          ],
+        ],
+      },
+    };
+  }
+
+  private generateTableOfA2B1Exams(form: FormGroup) {
+    return {
+      style: 'marksTable',
+      table: {
+        widths: ['*', 'auto', 'auto', 'auto', '*'],
+        headerRows: 1,
+        body: [
+          [
+            {
+              text: 'Umiejętność',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: `Test nr`,
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Data',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Uzyskany wynik',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Zdajemy?',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Słuchanie', alignment: 'center', rowSpan: 3 },
+            { text: '1', alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.listeningA2B1Array[0].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.listeningA2B1Array[0].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.listeningA2B1Array[0].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            {},
+            { text: `2`, alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.listeningA2B1Array[1].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.listeningA2B1Array[1].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.listeningA2B1Array[1].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: `3`, alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.listeningA2B1Array[2].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.listeningA2B1Array[2].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.listeningA2B1Array[2].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Czytanie', alignment: 'center', rowSpan: 3 },
+            { text: `1`, alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.readingA2B1Array[0].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.readingA2B1Array[0].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.readingA2B1Array[0].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: `2`, alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.readingA2B1Array[1].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.readingA2B1Array[1].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.readingA2B1Array[1].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: `3`, alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.readingA2B1Array[2].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.readingA2B1Array[2].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.readingA2B1Array[2].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Pisanie', alignment: 'center', rowSpan: 3 },
+            { text: `1`, alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.writingA2B1Array[0].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.writingA2B1Array[0].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.writingA2B1Array[0].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: `2`, alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.writingA2B1Array[1].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.writingA2B1Array[1].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.writingA2B1Array[1].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: `3`, alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.writingA2B1Array[2].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.writingA2B1Array[2].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.writingA2B1Array[2].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Mówienie', alignment: 'center', rowSpan: 3 },
+            { text: '1', alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.speakingA2B1Array[0].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.speakingA2B1Array[0].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.speakingA2B1Array[0].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: '2', alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.speakingA2B1Array[1].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.speakingA2B1Array[1].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.speakingA2B1Array[1].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: '3', alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.speakingA2B1Array[2].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.speakingA2B1Array[2].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.speakingA2B1Array[2].result}`,
+              alignment: 'center',
+            },
+          ],
+        ],
+      },
+    };
+  }
+
+  private generateTableOfB2C1Exams(form: FormGroup) {
+    return {
+      style: 'marksTable',
+      table: {
+        widths: ['*', 'auto', 'auto', 'auto', '*'],
+        headerRows: 1,
+        body: [
+          [
+            {
+              text: 'Umiejętność',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: `Test nr`,
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Data',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Uzyskany wynik',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Zdajemy?',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Listening', alignment: 'center', rowSpan: 3 },
+            { text: '1', alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.listeningB2C1Array[0].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.listeningB2C1Array[0].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.listeningB2C1Array[0].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            {},
+            { text: `2`, alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.listeningB2C1Array[1].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.listeningB2C1Array[1].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.listeningB2C1Array[1].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: `3`, alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.listeningB2C1Array[2].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.listeningB2C1Array[2].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.listeningB2C1Array[2].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Reading', alignment: 'center', rowSpan: 3 },
+            { text: `1`, alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.readingB2C1Array[0].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.readingB2C1Array[0].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.readingB2C1Array[0].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: `2`, alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.readingB2C1Array[1].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.readingB2C1Array[1].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.readingB2C1Array[1].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: `3`, alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.readingB2C1Array[2].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.readingB2C1Array[2].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.readingB2C1Array[2].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Use of English', alignment: 'center', rowSpan: 3 },
+            { text: `1`, alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.useOfEnglishB2C1Array[0].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.useOfEnglishB2C1Array[0].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.useOfEnglishB2C1Array[0].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: `2`, alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.useOfEnglishB2C1Array[1].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.useOfEnglishB2C1Array[1].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.useOfEnglishB2C1Array[1].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: `3`, alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.useOfEnglishB2C1Array[2].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.useOfEnglishB2C1Array[2].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.useOfEnglishB2C1Array[2].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Writing', alignment: 'center', rowSpan: 3 },
+            { text: '1', alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.writingB2C1Array[0].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.writingB2C1Array[0].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.writingB2C1Array[0].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: '2', alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.writingB2C1Array[1].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.writingB2C1Array[1].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.writingB2C1Array[1].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: '3', alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.writingB2C1Array[2].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.writingB2C1Array[2].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.writingB2C1Array[2].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Speaking', alignment: 'center', rowSpan: 3 },
+            { text: '1', alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.speakingB2C1Array[0].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.speakingB2C1Array[0].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.speakingB2C1Array[0].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: '2', alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.speakingB2C1Array[1].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.speakingB2C1Array[1].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.speakingB2C1Array[1].result}`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: '3', alignment: 'center' },
+            {
+              text: `${new Date(
+                form.value.speakingB2C1Array[2].date
+              ).toLocaleDateString()}`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.speakingB2C1Array[2].score}%`,
+              alignment: 'center',
+            },
+            {
+              text: `${form.value.speakingB2C1Array[2].result}`,
+              alignment: 'center',
+            },
+          ],
+        ],
+      },
+    };
+  }
+
   private createExamsFormArray(): void {
     this.resultOfExam.forEach((exam) => {
       this.listeningA1Array.push(
         new FormGroup({
-          date: new FormControl(null),
-          score: new FormControl(null),
-          result: new FormControl(null),
+          date: new FormControl(new Date('12.6.2023')),
+          score: new FormControl(87),
+          result: new FormControl('Tak'),
         })
       );
 
       this.writingAndReadingA1Array.push(
         new FormGroup({
-          date: new FormControl(null),
-          score: new FormControl(null),
-          result: new FormControl(null),
+          date: new FormControl(new Date('12.6.2023')),
+          score: new FormControl(87),
+          result: new FormControl('Tak'),
         })
       );
 
       this.speakingA1Array.push(
         new FormGroup({
-          date: new FormControl(null),
-          score: new FormControl(null),
-          result: new FormControl(null),
+          date: new FormControl(new Date('12.6.2023')),
+          score: new FormControl(87),
+          result: new FormControl('Tak'),
         })
       );
 
@@ -728,21 +1609,31 @@ export class AppComponent implements OnInit {
 
   private createForm(): FormGroup {
     return new FormGroup({
-      studentName: new FormControl(null, Validators.required),
-      date: new FormControl(null, Validators.required),
-      class: new FormControl(null, Validators.required),
-      teacher: new FormControl(null, Validators.required),
-      studentBookTitle: new FormControl(null, Validators.required),
-      course: new FormControl(null, Validators.required),
-      realizedMaterial: new FormControl(null, Validators.required),
+      studentName: new FormControl('Jan Nowak', Validators.required),
+      name: new FormControl('Jaś', Validators.required),
+      sex: new FormControl('Uczeń', Validators.required),
+      date: new FormControl(new Date('10.6.2023'), Validators.required),
+      class: new FormControl('Klasa 2 szkoły podstawowej', Validators.required),
+      teacher: new FormControl('Regina Raczyńska', Validators.required),
+      studentBookTitle: new FormControl(
+        'Kid’s Box 1, wydawnictwo Cambridge',
+        Validators.required
+      ),
+      course: new FormControl(
+        'Kid’s Box 1, wydawnictwo Cambridge',
+        Validators.required
+      ),
+      realizedMaterial: new FormControl('Unit 1-5', Validators.required),
 
-      marks: new FormControl(null, Validators.required),
-      avgMark: new FormControl(null, Validators.required),
-      frequency: new FormControl(null, Validators.required),
-      involvementInLessons: new FormControl(null, Validators.required),
-      lead: new FormControl(null, Validators.required),
-      respect: new FormControl(null, Validators.required),
-      focus: new FormControl(null, Validators.required),
+      marks: new FormControl(
+        '5 4 5 6 3 5 4 3 4 5 6 5 3 3',
+        Validators.required
+      ),
+      avgMark: new FormControl('4,5', Validators.required),
+      frequency: new FormControl(88, Validators.required),
+      lead: new FormControl('6', Validators.required),
+      respect: new FormControl('5', Validators.required),
+      focus: new FormControl('3', Validators.required),
       pronunciation: new FormControl(null, Validators.required),
       vocabulary: new FormControl(null, Validators.required),
       prepareToLecture: new FormControl(null, Validators.required),
@@ -769,14 +1660,22 @@ export class AppComponent implements OnInit {
 
       comments: new FormArray([]),
 
-      examRecommendationCheckbox: new FormControl(false),
+      examRecommendationAcceptCheckbox: new FormControl(false),
+      examRecommendationNonCheckbox: new FormControl(false),
       examRecommendationResult: new FormControl(null),
-      examRecommendation: new FormControl(null, Validators.required),
+      examRecommendation: new FormControl('', Validators.required),
 
       learningRecommendations: new FormControl(null),
       recommendations: new FormArray([]),
 
-      signature: new FormControl(null, Validators.required),
+      signature: new FormControl(
+        'Trzymam kciuki za dalsze postępy! \n' +
+          'W przypadku pytań proszę o kontakt.\n' +
+          '\n' +
+          'Pozdrawiam, \n' +
+          'Regina Raczyńska\n',
+        Validators.required
+      ),
     });
   }
 }

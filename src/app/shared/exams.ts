@@ -22,13 +22,13 @@ export const resultOfExam: string[] = [
 ];
 
 export const examsRecommendations: string[] = [
-  'Starters.',
-  'Movers.',
-  'Flyers.',
-  'KET.',
-  'PET.',
-  'FCE.',
-  'CAE.',
+  'Cambridge STARTERS.',
+  'Cambridge MOVERS.',
+  'Cambridge FLYERS.',
+  'Cambridge A2 Key for Schools (KET).',
+  'Cambridge B1 Preliminary for Schools (PET).',
+  'Cambridge B2 First for Schools (FCE).',
+  'Cambridge C1 Advanced (CAE).',
 ];
 
 export const examsSelect: string[] = [...A1Exams, ...A2B1Exams, ...B2C1Exams];

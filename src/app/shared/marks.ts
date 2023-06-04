@@ -20,8 +20,8 @@ export const marks: Marks[] = [
 
 export const pronunciationMarks: Marks[] = [
   {
-    viewValue: '5 - X ma nienaganną wymowę',
-    value: 'X ma nienaganną wymowę',
+    viewValue: '5 - X ma nienaganną wymowę.',
+    value: 'X ma nienaganną wymowę.',
   },
   {
     viewValue:
@@ -72,19 +72,19 @@ export const vocabularyMarks: Marks[] = [
 export const prepareToLectureMarks: Marks[] = [
   {
     viewValue: '5 - X zawsze w pełni przygotowuje się do zajęć.',
-    value: 'X zawsze w pełni przygotowuje się do zajęć.',
+    value: 'X Zawsze w pełni przygotowuje się do zajęć.',
   },
   {
     viewValue: '4 - X zwykle dobrze przygotowuje się do zajęć.',
-    value: 'X zwykle dobrze przygotowuje się do zajęć.',
+    value: 'X Zwykle dobrze przygotowuje się do zajęć.',
   },
   {
     viewValue: '3 - X dość często nie przygotowuje się w pełni do zajęć.',
-    value: 'X dość często nie przygotowuje się w pełni do zajęć.',
+    value: 'X Dość często nie przygotowuje się w pełni do zajęć.',
   },
   {
     viewValue: '2 - X rzadko przygotowuje się do zajęć.',
-    value: 'X rzadko przygotowuje się do zajęć.',
+    value: 'X Rzadko przygotowuje się do zajęć.',
   },
 ];
 
@@ -110,15 +110,15 @@ export const homeworksMarks: Marks[] = [
 export const involvementMarks: Marks[] = [
   {
     viewValue:
-      '5 - X z dużym zaangażowaniem bierze udział w zajęciach. Chętnie odpowiada na zadawane pytania i samodzielnie zgłasza się do odpowiedzi. Z motywację bierze udział we wszystkich proponowanych aktywnościach.',
+      '5 - X z dużym zaangażowaniem bierze udział w zajęciach. Chętnie odpowiada na zadawane pytania i samodzielnie zgłasza się do odpowiedzi. Z motywacją bierze udział we wszystkich proponowanych aktywnościach.',
     value:
-      'X z dużym zaangażowaniem bierze udział w zajęciach. Chętnie odpowiada na zadawane pytania i samodzielnie zgłasza się do odpowiedzi. Z motywację bierze udział we wszystkich proponowanych aktywnościach.',
+      'X z dużym zaangażowaniem bierze udział w zajęciach. Chętnie odpowiada na zadawane pytania i samodzielnie zgłasza się do odpowiedzi. Z motywacją bierze udział we wszystkich proponowanych aktywnościach.',
   },
   {
     viewValue:
-      '4 - X chętnie bierze udział w zajęciach, ale samodzielne odpowiedzi wymagają zachęty ze strony lektora.  Z motywację bierze udział w większości proponowanych aktywności.',
+      '4 - X chętnie bierze udział w zajęciach, ale samodzielne odpowiedzi wymagają zachęty ze strony lektora.  Z motywacją bierze udział w większości proponowanych aktywności.',
     value:
-      'X chętnie bierze udział w zajęciach, ale samodzielne odpowiedzi wymagają zachęty ze strony lektora.  Z motywację bierze udział w większości proponowanych aktywności.',
+      'X chętnie bierze udział w zajęciach, ale samodzielne odpowiedzi wymagają zachęty ze strony lektora.  Z motywacją bierze udział w większości proponowanych aktywności.',
   },
   {
     viewValue:
@@ -139,24 +139,24 @@ export const behaviourMarks: Marks[] = [
     viewValue:
       '5 - X na zajęciach zachowuje się wzorowo i nie sprawia żadnych problemów, które mogłyby zaburzać ich przebieg.',
     value:
-      'X na zajęciach zachowuje się wzorowo i nie sprawia żadnych problemów, które mogłyby zaburzać ich przebieg.',
+      'X Na zajęciach zachowuje się wzorowo i nie sprawia żadnych problemów, które mogłyby zaburzać ich przebieg.',
   },
   {
     viewValue:
       '4 - X na zajęciach zachowuje się bardzo dobrze. Odnosi się z szacunkiem do innych uczniów i uważnie słucha lektora.',
     value:
-      'X na zajęciach zachowuje się bardzo dobrze. Odnosi się z szacunkiem do innych uczniów i uważnie słucha lektora.',
+      'X Na zajęciach zachowuje się bardzo dobrze. Odnosi się z szacunkiem do innych uczniów i uważnie słucha lektora.',
   },
   {
     viewValue:
       '3 - X na zajęciach zachowuje się w większości dobrze. Okazjonalnie zdarza mu się zachowywać głośno lub nie słuchać poleceń nauczyciela, jednak nie są to zachowania, które budziłyby większy niepokój.',
     value:
-      'X na zajęciach zachowuje się w większości dobrze. Okazjonalnie zdarza mu się zachowywać głośno lub nie słuchać poleceń nauczyciela, jednak nie są to zachowania, które budziłyby większy niepokój.',
+      'X Na zajęciach zachowuje się w większości dobrze. Okazjonalnie zdarza mu się zachowywać głośno lub nie słuchać poleceń nauczyciela, jednak nie są to zachowania, które budziłyby większy niepokój.',
   },
   {
     viewValue:
       '2 - X na zajęciach zachowuje się zwykle nieodpowiednio. Nie reaguje na uwagi nauczyciela i rozprasza innych uczniów.',
     value:
-      'X na zajęciach zachowuje się zwykle nieodpowiednio. Nie reaguje na uwagi nauczyciela i rozprasza innych uczniów.',
+      'X Na zajęciach zachowuje się zwykle nieodpowiednio. Nie reaguje na uwagi nauczyciela i rozprasza innych uczniów.',
   },
 ];
