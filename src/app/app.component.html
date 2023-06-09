@@ -411,11 +411,22 @@
     >
       <div class="row">
         <p style="font-weight: 600" class="col-12 mt-3">Słuchanie</p>
-
         <div formArrayName="listeningA1Array" class="col-12">
-          <ng-container *ngFor="let exam of examsCount; let i = index">
-            <div [formGroupName]="i">
-              <mat-form-field>
+          <button
+            type="button"
+            mat-raised-button
+            color="primary"
+            aria-label="Add"
+            class="mb-3"
+            (click)="addNextExamTerm('listeningA1Array')"
+          >
+            Dodaj test
+          </button>
+          <ng-container
+            *ngFor="let exam of listeningA1Array.controls; let i = index"
+          >
+            <div [formGroupName]="i" class="row">
+              <mat-form-field class="col-2">
                 <mat-label>Data</mat-label>
                 <input
                   matInput
@@ -430,12 +441,12 @@
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
 
-              <mat-form-field class="mx-4">
-                <mat-label>Test {{ i + 1 }}</mat-label>
+              <mat-form-field class="col-2">
+                <mat-label>Wynik testu nr {{ i + 1 }} w %</mat-label>
                 <input matInput type="number" formControlName="score" />
               </mat-form-field>
 
-              <mat-form-field>
+              <mat-form-field class="col-2">
                 <mat-label>Zdajemy?</mat-label>
                 <mat-select formControlName="result">
                   <mat-option
@@ -446,6 +457,17 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
+
+              <button
+                style="height: 54px"
+                type="button"
+                mat-button
+                color="warn"
+                class="col-1"
+                (click)="onRemoveExamTerm(i, 'listeningA1Array')"
+              >
+                Usuń
+              </button>
             </div>
           </ng-container>
         </div>
@@ -453,11 +475,25 @@
 
       <div class="row">
         <p style="font-weight: 600" class="col-12 mt-3">Czytanie i Pisanie</p>
-
         <div formArrayName="writingAndReadingA1Array" class="col-12">
-          <ng-container *ngFor="let exam of examsCount; let i = index">
-            <div [formGroupName]="i">
-              <mat-form-field>
+          <button
+            type="button"
+            mat-raised-button
+            color="primary"
+            aria-label="Add"
+            class="mb-3"
+            (click)="addNextExamTerm('writingAndReadingA1Array')"
+          >
+            Dodaj test
+          </button>
+          <ng-container
+            *ngFor="
+              let exam of writingAndReadingA1Array.controls;
+              let i = index
+            "
+          >
+            <div [formGroupName]="i" class="row">
+              <mat-form-field class="col-2">
                 <mat-label>Data</mat-label>
                 <input
                   matInput
@@ -472,12 +508,12 @@
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
 
-              <mat-form-field class="mx-4">
-                <mat-label>Test {{ i + 1 }}</mat-label>
+              <mat-form-field class="col-2">
+                <mat-label>Wynik testu nr {{ i + 1 }} w %</mat-label>
                 <input matInput type="number" formControlName="score" />
               </mat-form-field>
 
-              <mat-form-field>
+              <mat-form-field class="col-2">
                 <mat-label>Zdajemy?</mat-label>
                 <mat-select formControlName="result">
                   <mat-option
@@ -488,6 +524,17 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
+
+              <button
+                style="height: 54px"
+                type="button"
+                mat-button
+                color="warn"
+                class="col-1"
+                (click)="onRemoveExamTerm(i, 'writingAndReadingA1Array')"
+              >
+                Usuń
+              </button>
             </div>
           </ng-container>
         </div>
@@ -495,11 +542,22 @@
 
       <div class="row">
         <p style="font-weight: 600" class="col-12 mt-3">Mówienie</p>
-
         <div formArrayName="speakingA1Array" class="col-12">
-          <ng-container *ngFor="let exam of examsCount; let i = index">
-            <div [formGroupName]="i">
-              <mat-form-field>
+          <button
+            type="button"
+            mat-raised-button
+            color="primary"
+            aria-label="Add"
+            class="mb-3"
+            (click)="addNextExamTerm('speakingA1Array')"
+          >
+            Dodaj test
+          </button>
+          <ng-container
+            *ngFor="let exam of speakingA1Array.controls; let i = index"
+          >
+            <div [formGroupName]="i" class="row">
+              <mat-form-field class="col-2">
                 <mat-label>Data</mat-label>
                 <input
                   matInput
@@ -514,12 +572,12 @@
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
 
-              <mat-form-field class="mx-4">
-                <mat-label>Test {{ i + 1 }}</mat-label>
+              <mat-form-field class="col-2">
+                <mat-label>Wynik testu nr {{ i + 1 }} w %</mat-label>
                 <input matInput type="number" formControlName="score" />
               </mat-form-field>
 
-              <mat-form-field>
+              <mat-form-field class="col-2">
                 <mat-label>Zdajemy?</mat-label>
                 <mat-select formControlName="result">
                   <mat-option
@@ -530,6 +588,17 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
+
+              <button
+                style="height: 54px"
+                type="button"
+                mat-button
+                color="warn"
+                class="col-1"
+                (click)="onRemoveExamTerm(i, 'speakingA1Array')"
+              >
+                Usuń
+              </button>
             </div>
           </ng-container>
         </div>
@@ -544,11 +613,22 @@
     >
       <div class="row">
         <p style="font-weight: 600" class="col-12 mt-3">Słuchanie</p>
-
         <div formArrayName="listeningA2B1Array" class="col-12">
-          <ng-container *ngFor="let exam of examsCount; let i = index">
-            <div [formGroupName]="i">
-              <mat-form-field>
+          <button
+            type="button"
+            mat-raised-button
+            color="primary"
+            aria-label="Add"
+            class="mb-3"
+            (click)="addNextExamTerm('listeningA2B1Array')"
+          >
+            Dodaj test
+          </button>
+          <ng-container
+            *ngFor="let exam of listeningA2B1Array.controls; let i = index"
+          >
+            <div [formGroupName]="i" class="row">
+              <mat-form-field class="col-2">
                 <mat-label>Data</mat-label>
                 <input
                   matInput
@@ -563,12 +643,12 @@
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
 
-              <mat-form-field class="mx-4">
-                <mat-label>Test {{ i + 1 }}</mat-label>
+              <mat-form-field class="col-2">
+                <mat-label>Wynik testu nr {{ i + 1 }} w %</mat-label>
                 <input matInput type="number" formControlName="score" />
               </mat-form-field>
 
-              <mat-form-field>
+              <mat-form-field class="col-2">
                 <mat-label>Zdajemy?</mat-label>
                 <mat-select formControlName="result">
                   <mat-option
@@ -579,6 +659,17 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
+
+              <button
+                style="height: 54px"
+                type="button"
+                mat-button
+                color="warn"
+                class="col-1"
+                (click)="onRemoveExamTerm(i, 'listeningA2B1Array')"
+              >
+                Usuń
+              </button>
             </div>
           </ng-container>
         </div>
@@ -586,11 +677,22 @@
 
       <div class="row">
         <p style="font-weight: 600" class="col-12 mt-3">Czytanie</p>
-
         <div formArrayName="readingA2B1Array" class="col-12">
-          <ng-container *ngFor="let exam of examsCount; let i = index">
-            <div [formGroupName]="i">
-              <mat-form-field>
+          <button
+            type="button"
+            mat-raised-button
+            color="primary"
+            aria-label="Add"
+            class="mb-3"
+            (click)="addNextExamTerm('readingA2B1Array')"
+          >
+            Dodaj test
+          </button>
+          <ng-container
+            *ngFor="let exam of readingA2B1Array.controls; let i = index"
+          >
+            <div [formGroupName]="i" class="row">
+              <mat-form-field class="col-2">
                 <mat-label>Data</mat-label>
                 <input
                   matInput
@@ -605,12 +707,12 @@
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
 
-              <mat-form-field class="mx-4">
-                <mat-label>Test {{ i + 1 }}</mat-label>
+              <mat-form-field class="col-2">
+                <mat-label>Wynik testu nr {{ i + 1 }} w %</mat-label>
                 <input matInput type="number" formControlName="score" />
               </mat-form-field>
 
-              <mat-form-field>
+              <mat-form-field class="col-2">
                 <mat-label>Zdajemy?</mat-label>
                 <mat-select formControlName="result">
                   <mat-option
@@ -621,6 +723,17 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
+
+              <button
+                style="height: 54px"
+                type="button"
+                mat-button
+                color="warn"
+                class="col-1"
+                (click)="onRemoveExamTerm(i, 'readingA2B1Array')"
+              >
+                Usuń
+              </button>
             </div>
           </ng-container>
         </div>
@@ -628,11 +741,22 @@
 
       <div class="row">
         <p style="font-weight: 600" class="col-12 mt-3">Pisanie</p>
-
         <div formArrayName="writingA2B1Array" class="col-12">
-          <ng-container *ngFor="let exam of examsCount; let i = index">
-            <div [formGroupName]="i">
-              <mat-form-field>
+          <button
+            type="button"
+            mat-raised-button
+            color="primary"
+            aria-label="Add"
+            class="mb-3"
+            (click)="addNextExamTerm('writingA2B1Array')"
+          >
+            Dodaj test
+          </button>
+          <ng-container
+            *ngFor="let exam of writingA2B1Array.controls; let i = index"
+          >
+            <div [formGroupName]="i" class="row">
+              <mat-form-field class="col-2">
                 <mat-label>Data</mat-label>
                 <input
                   matInput
@@ -647,12 +771,12 @@
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
 
-              <mat-form-field class="mx-4">
-                <mat-label>Test {{ i + 1 }}</mat-label>
+              <mat-form-field class="col-2">
+                <mat-label>Wynik testu nr {{ i + 1 }} w %</mat-label>
                 <input matInput type="number" formControlName="score" />
               </mat-form-field>
 
-              <mat-form-field>
+              <mat-form-field class="col-2">
                 <mat-label>Zdajemy?</mat-label>
                 <mat-select formControlName="result">
                   <mat-option
@@ -663,6 +787,17 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
+
+              <button
+                style="height: 54px"
+                type="button"
+                mat-button
+                color="warn"
+                class="col-1"
+                (click)="onRemoveExamTerm(i, 'writingA2B1Array')"
+              >
+                Usuń
+              </button>
             </div>
           </ng-container>
         </div>
@@ -670,11 +805,22 @@
 
       <div class="row">
         <p style="font-weight: 600" class="col-12 mt-3">Mówienie</p>
-
         <div formArrayName="speakingA2B1Array" class="col-12">
-          <ng-container *ngFor="let exam of examsCount; let i = index">
-            <div [formGroupName]="i">
-              <mat-form-field>
+          <button
+            type="button"
+            mat-raised-button
+            color="primary"
+            aria-label="Add"
+            class="mb-3"
+            (click)="addNextExamTerm('speakingA2B1Array')"
+          >
+            Dodaj test
+          </button>
+          <ng-container
+            *ngFor="let exam of speakingA2B1Array.controls; let i = index"
+          >
+            <div [formGroupName]="i" class="row">
+              <mat-form-field class="col-2">
                 <mat-label>Data</mat-label>
                 <input
                   matInput
@@ -689,12 +835,12 @@
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
 
-              <mat-form-field class="mx-4">
-                <mat-label>Test {{ i + 1 }}</mat-label>
+              <mat-form-field class="col-2">
+                <mat-label>Wynik testu nr {{ i + 1 }} w %</mat-label>
                 <input matInput type="number" formControlName="score" />
               </mat-form-field>
 
-              <mat-form-field>
+              <mat-form-field class="col-2">
                 <mat-label>Zdajemy?</mat-label>
                 <mat-select formControlName="result">
                   <mat-option
@@ -705,6 +851,17 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
+
+              <button
+                style="height: 54px"
+                type="button"
+                mat-button
+                color="warn"
+                class="col-1"
+                (click)="onRemoveExamTerm(i, 'speakingA2B1Array')"
+              >
+                Usuń
+              </button>
             </div>
           </ng-container>
         </div>
@@ -719,11 +876,22 @@
     >
       <div class="row">
         <p style="font-weight: 600" class="col-12 mt-3">Listening</p>
-
         <div formArrayName="listeningB2C1Array" class="col-12">
-          <ng-container *ngFor="let exam of examsCount; let i = index">
-            <div [formGroupName]="i">
-              <mat-form-field>
+          <button
+            type="button"
+            mat-raised-button
+            color="primary"
+            aria-label="Add"
+            class="mb-3"
+            (click)="addNextExamTerm('listeningB2C1Array')"
+          >
+            Dodaj test
+          </button>
+          <ng-container
+            *ngFor="let exam of listeningB2C1Array.controls; let i = index"
+          >
+            <div [formGroupName]="i" class="row">
+              <mat-form-field class="col-2">
                 <mat-label>Data</mat-label>
                 <input
                   matInput
@@ -738,12 +906,12 @@
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
 
-              <mat-form-field class="mx-4">
-                <mat-label>Test {{ i + 1 }}</mat-label>
+              <mat-form-field class="col-2">
+                <mat-label>Wynik testu nr {{ i + 1 }} w %</mat-label>
                 <input matInput type="number" formControlName="score" />
               </mat-form-field>
 
-              <mat-form-field>
+              <mat-form-field class="col-2">
                 <mat-label>Zdajemy?</mat-label>
                 <mat-select formControlName="result">
                   <mat-option
@@ -754,6 +922,17 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
+
+              <button
+                style="height: 54px"
+                type="button"
+                mat-button
+                color="warn"
+                class="col-1"
+                (click)="onRemoveExamTerm(i, 'listeningB2C1Array')"
+              >
+                Usuń
+              </button>
             </div>
           </ng-container>
         </div>
@@ -761,11 +940,22 @@
 
       <div class="row">
         <p style="font-weight: 600" class="col-12 mt-3">Reading</p>
-
         <div formArrayName="readingB2C1Array" class="col-12">
-          <ng-container *ngFor="let exam of examsCount; let i = index">
-            <div [formGroupName]="i">
-              <mat-form-field>
+          <button
+            type="button"
+            mat-raised-button
+            color="primary"
+            aria-label="Add"
+            class="mb-3"
+            (click)="addNextExamTerm('readingB2C1Array')"
+          >
+            Dodaj test
+          </button>
+          <ng-container
+            *ngFor="let exam of readingB2C1Array.controls; let i = index"
+          >
+            <div [formGroupName]="i" class="row">
+              <mat-form-field class="col-2">
                 <mat-label>Data</mat-label>
                 <input
                   matInput
@@ -780,12 +970,12 @@
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
 
-              <mat-form-field class="mx-4">
-                <mat-label>Test {{ i + 1 }}</mat-label>
+              <mat-form-field class="col-2">
+                <mat-label>Wynik testu nr {{ i + 1 }} w %</mat-label>
                 <input matInput type="number" formControlName="score" />
               </mat-form-field>
 
-              <mat-form-field>
+              <mat-form-field class="col-2">
                 <mat-label>Zdajemy?</mat-label>
                 <mat-select formControlName="result">
                   <mat-option
@@ -796,6 +986,17 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
+
+              <button
+                style="height: 54px"
+                type="button"
+                mat-button
+                color="warn"
+                class="col-1"
+                (click)="onRemoveExamTerm(i, 'readingB2C1Array')"
+              >
+                Usuń
+              </button>
             </div>
           </ng-container>
         </div>
@@ -803,11 +1004,22 @@
 
       <div class="row">
         <p style="font-weight: 600" class="col-12 mt-3">Use of English</p>
-
         <div formArrayName="useOfEnglishB2C1Array" class="col-12">
-          <ng-container *ngFor="let exam of examsCount; let i = index">
-            <div [formGroupName]="i">
-              <mat-form-field>
+          <button
+            type="button"
+            mat-raised-button
+            color="primary"
+            aria-label="Add"
+            class="mb-3"
+            (click)="addNextExamTerm('useOfEnglishB2C1Array')"
+          >
+            Dodaj test
+          </button>
+          <ng-container
+            *ngFor="let exam of useOfEnglishB2C1Array.controls; let i = index"
+          >
+            <div [formGroupName]="i" class="row">
+              <mat-form-field class="col-2">
                 <mat-label>Data</mat-label>
                 <input
                   matInput
@@ -822,12 +1034,12 @@
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
 
-              <mat-form-field class="mx-4">
-                <mat-label>Test {{ i + 1 }}</mat-label>
+              <mat-form-field class="col-2">
+                <mat-label>Wynik testu nr {{ i + 1 }} w %</mat-label>
                 <input matInput type="number" formControlName="score" />
               </mat-form-field>
 
-              <mat-form-field>
+              <mat-form-field class="col-2">
                 <mat-label>Zdajemy?</mat-label>
                 <mat-select formControlName="result">
                   <mat-option
@@ -838,6 +1050,17 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
+
+              <button
+                style="height: 54px"
+                type="button"
+                mat-button
+                color="warn"
+                class="col-1"
+                (click)="onRemoveExamTerm(i, 'useOfEnglishB2C1Array')"
+              >
+                Usuń
+              </button>
             </div>
           </ng-container>
         </div>
@@ -845,11 +1068,22 @@
 
       <div class="row">
         <p style="font-weight: 600" class="col-12 mt-3">Writing</p>
-
         <div formArrayName="writingB2C1Array" class="col-12">
-          <ng-container *ngFor="let exam of examsCount; let i = index">
-            <div [formGroupName]="i">
-              <mat-form-field>
+          <button
+            type="button"
+            mat-raised-button
+            color="primary"
+            aria-label="Add"
+            class="mb-3"
+            (click)="addNextExamTerm('writingB2C1Array')"
+          >
+            Dodaj test
+          </button>
+          <ng-container
+            *ngFor="let exam of writingB2C1Array.controls; let i = index"
+          >
+            <div [formGroupName]="i" class="row">
+              <mat-form-field class="col-2">
                 <mat-label>Data</mat-label>
                 <input
                   matInput
@@ -864,12 +1098,12 @@
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
 
-              <mat-form-field class="mx-4">
-                <mat-label>Test {{ i + 1 }}</mat-label>
+              <mat-form-field class="col-2">
+                <mat-label>Wynik testu nr {{ i + 1 }} w %</mat-label>
                 <input matInput type="number" formControlName="score" />
               </mat-form-field>
 
-              <mat-form-field>
+              <mat-form-field class="col-2">
                 <mat-label>Zdajemy?</mat-label>
                 <mat-select formControlName="result">
                   <mat-option
@@ -880,6 +1114,17 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
+
+              <button
+                style="height: 54px"
+                type="button"
+                mat-button
+                color="warn"
+                class="col-1"
+                (click)="onRemoveExamTerm(i, 'writingB2C1Array')"
+              >
+                Usuń
+              </button>
             </div>
           </ng-container>
         </div>
@@ -887,11 +1132,22 @@
 
       <div class="row">
         <p style="font-weight: 600" class="col-12 mt-3">Speaking</p>
-
         <div formArrayName="speakingB2C1Array" class="col-12">
-          <ng-container *ngFor="let exam of examsCount; let i = index">
-            <div [formGroupName]="i">
-              <mat-form-field>
+          <button
+            type="button"
+            mat-raised-button
+            color="primary"
+            aria-label="Add"
+            class="mb-3"
+            (click)="addNextExamTerm('speakingB2C1Array')"
+          >
+            Dodaj test
+          </button>
+          <ng-container
+            *ngFor="let exam of speakingB2C1Array.controls; let i = index"
+          >
+            <div [formGroupName]="i" class="row">
+              <mat-form-field class="col-2">
                 <mat-label>Data</mat-label>
                 <input
                   matInput
@@ -906,12 +1162,12 @@
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
 
-              <mat-form-field class="mx-4">
-                <mat-label>Test {{ i + 1 }}</mat-label>
+              <mat-form-field class="col-2">
+                <mat-label>Wynik testu nr {{ i + 1 }} w %</mat-label>
                 <input matInput type="number" formControlName="score" />
               </mat-form-field>
 
-              <mat-form-field>
+              <mat-form-field class="col-2">
                 <mat-label>Zdajemy?</mat-label>
                 <mat-select formControlName="result">
                   <mat-option
@@ -922,17 +1178,27 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
+
+              <button
+                style="height: 54px"
+                type="button"
+                mat-button
+                color="warn"
+                class="col-1"
+                (click)="onRemoveExamTerm(i, 'speakingB2C1Array')"
+              >
+                Usuń
+              </button>
             </div>
           </ng-container>
         </div>
       </div>
     </ng-container>
 
-    <ng-container *ngIf="selectedTypeOfExam === ''">
-      Wybierz rodzaj egzaminu
-    </ng-container>
-
     <div class="row mt-3">
+      <div class="col-12">
+        <p>Komentarz do wyników testów</p>
+      </div>
       <div class="col-12">
         <div formArrayName="comments" class="row">
           <div class="col-12 mb-3">
@@ -957,7 +1223,7 @@
               <button
                 style="height: 54px"
                 type="button"
-                mat-raised-button
+                mat-button
                 color="warn"
                 (click)="onRemoveComment(i)"
               >
@@ -1171,7 +1437,7 @@
               <button
                 style="height: 54px"
                 type="button"
-                mat-raised-button
+                mat-button
                 color="warn"
                 (click)="onRemoveRecommendation(i)"
               >
@@ -1198,7 +1464,7 @@
       </div>
     </div>
 
-    <div class="row">
+    <div class="row generate-btn">
       <div class="col-12 d-flex justify-content-end">
         <button mat-raised-button color="primary" type="submit">
           Generuj PDF
