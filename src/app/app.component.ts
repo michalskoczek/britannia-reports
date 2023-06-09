@@ -18,10 +18,8 @@ import {
 } from './shared/marks';
 import {
   additionalExamInformations,
-  examsCount,
   examsRecommendations,
   examsSelect,
-  kindOfCourses,
   learningRecommendations,
   resultOfExam,
 } from './shared/exams';
@@ -58,7 +56,6 @@ export class AppComponent implements OnInit {
   public readonly behaviourMarks: Marks[] = behaviourMarks;
 
   public readonly resultOfExam: string[] = resultOfExam;
-  public readonly examsCount: string[] = examsCount;
   public readonly examsSelect: string[] = examsSelect;
   public selectedTypeOfExam: string = '';
 
@@ -75,7 +72,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.form = this.createForm();
 
-    this.createExamsFormArray();
+    // this.createExamsFormArray();
   }
 
   get comments(): FormArray {
@@ -158,7 +155,24 @@ export class AppComponent implements OnInit {
     this.recommendations.removeAt(index);
   }
 
+  public addNextExamTerm(nameOfArray: string): void {
+    const arr = this.form.get(nameOfArray) as FormArray;
+    arr.push(
+      new FormGroup({
+        date: new FormControl(null),
+        score: new FormControl(null),
+        result: new FormControl(null),
+      })
+    );
+  }
+
+  public onRemoveExamTerm(index: number, nameOfArray: string): void {
+    const control = <FormArray>this.form.controls[nameOfArray];
+    control.removeAt(index);
+  }
+
   public generatePDF(form: FormGroup): any {
+    console.log(form.value);
     let date: string = new Date(form.value.date).toLocaleDateString();
 
     let commentsArray: string[] = [];
@@ -202,17 +216,29 @@ export class AppComponent implements OnInit {
         form.value.typeOfExam === 'Cambridge MOVERS' ||
         form.value.typeOfExam === 'Cambridge FLYERS'
       ) {
-        return this.generateTableOfA1Exams(form);
+        if (form.value.listeningA1Array.length === 2) {
+          return this.generateTableOfA1ExamsTwoTerm(form);
+        } else if (form.value.listeningA1Array.length === 1) {
+          return this.generateTableOfA1ExamsOneTerm(form);
+        } else return this.generateTableOfA1Exams(form);
       } else if (
         form.value.typeOfExam === 'Cambridge A2 Key for Schools' ||
         form.value.typeOfExam === 'Cambridge B1 Preliminary for Schools'
       ) {
-        return this.generateTableOfA2B1Exams(form);
+        if (form.value.listeningA2B1Array.length === 2) {
+          return this.generateTableOfA2B1ExamsTwoTerm(form);
+        } else if (form.value.listeningA2B1Array.length === 1) {
+          return this.generateTableOfA2B1ExamsOneTerm(form);
+        } else return this.generateTableOfA2B1Exams(form);
       } else if (
         form.value.typeOfExam === 'Cambridge B2 First for Schools' ||
         form.value.typeOfExam === 'Cambridge C1 Advanced'
       ) {
-        return this.generateTableOfB2C1Exams(form);
+        if (form.value.listeningB2C1Array.length === 2) {
+          return this.generateTableOfB2C1ExamsTwoTerm(form);
+        } else if (form.value.listeningB2C1Array.length === 1) {
+          return this.generateTableOfB2C1ExamsOneTerm(form);
+        } else return this.generateTableOfB2C1Exams(form);
       } else return null;
     };
 
@@ -780,17 +806,29 @@ export class AppComponent implements OnInit {
             { text: 'Słuchanie', alignment: 'center', rowSpan: 3 },
             { text: '1', alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.listeningA1Array[0].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.listeningA1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.listeningA1Array[0].score}%`,
+              text: `${
+                form.value.listeningA1Array[0].score
+                  ? `${form.value.listeningA1Array[0].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.listeningA1Array[0].result}`,
+              text: `${
+                form.value.listeningA1Array[0].result
+                  ? form.value.listeningA1Array[0].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -798,17 +836,29 @@ export class AppComponent implements OnInit {
             {},
             { text: `2`, alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.listeningA1Array[1].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.listeningA1Array[1].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.listeningA1Array[1].score}%`,
+              text: `${
+                form.value.listeningA1Array[1].score
+                  ? `${form.value.listeningA1Array[1].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.listeningA1Array[1].result}`,
+              text: `${
+                form.value.listeningA1Array[1].result
+                  ? form.value.listeningA1Array[1].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -816,17 +866,29 @@ export class AppComponent implements OnInit {
             '',
             { text: `3`, alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.listeningA1Array[2].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.listeningA1Array[2].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.listeningA1Array[2].score}%`,
+              text: `${
+                form.value.listeningA1Array[2].score
+                  ? `${form.value.listeningA1Array[2].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.listeningA1Array[2].result}`,
+              text: `${
+                form.value.listeningA1Array[2].result
+                  ? form.value.listeningA1Array[2].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -834,17 +896,29 @@ export class AppComponent implements OnInit {
             { text: 'Czytanie i Pisanie', alignment: 'center', rowSpan: 3 },
             { text: `1`, alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.writingAndReadingA1Array[0].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.writingAndReadingA1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.writingAndReadingA1Array[0].score}%`,
+              text: `${
+                form.value.writingAndReadingA1Array[0].score
+                  ? `${form.value.writingAndReadingA1Array[0].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.writingAndReadingA1Array[0].result}`,
+              text: `${
+                form.value.writingAndReadingA1Array[0].result
+                  ? form.value.writingAndReadingA1Array[0].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -852,17 +926,29 @@ export class AppComponent implements OnInit {
             '',
             { text: `2`, alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.writingAndReadingA1Array[1].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.writingAndReadingA1Array[1].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.writingAndReadingA1Array[1].score}%`,
+              text: `${
+                form.value.writingAndReadingA1Array[1].score
+                  ? `${form.value.writingAndReadingA1Array[1].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.writingAndReadingA1Array[1].result}`,
+              text: `${
+                form.value.writingAndReadingA1Array[1].result
+                  ? form.value.writingAndReadingA1Array[1].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -870,17 +956,29 @@ export class AppComponent implements OnInit {
             '',
             { text: `3`, alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.writingAndReadingA1Array[2].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.writingAndReadingA1Array[2].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.writingAndReadingA1Array[2].score}%`,
+              text: `${
+                form.value.writingAndReadingA1Array[2].score
+                  ? `${form.value.writingAndReadingA1Array[2].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.writingAndReadingA1Array[2].result}`,
+              text: `${
+                form.value.writingAndReadingA1Array[2].result
+                  ? form.value.writingAndReadingA1Array[2].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -888,17 +986,29 @@ export class AppComponent implements OnInit {
             { text: 'Mówienie', alignment: 'center', rowSpan: 3 },
             { text: '1', alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.speakingA1Array[0].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.speakingA1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.speakingA1Array[0].score}%`,
+              text: `${
+                form.value.speakingA1Array[0].score
+                  ? `${form.value.speakingA1Array[0].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.speakingA1Array[0].result}`,
+              text: `${
+                form.value.speakingA1Array[0].result
+                  ? form.value.speakingA1Array[0].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -906,17 +1016,29 @@ export class AppComponent implements OnInit {
             '',
             { text: '2', alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.speakingA1Array[1].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.speakingA1Array[1].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.speakingA1Array[1].score}%`,
+              text: `${
+                form.value.speakingA1Array[1].score
+                  ? `${form.value.speakingA1Array[1].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.speakingA1Array[1].result}`,
+              text: `${
+                form.value.speakingA1Array[1].result
+                  ? form.value.speakingA1Array[1].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -924,17 +1046,377 @@ export class AppComponent implements OnInit {
             '',
             { text: '3', alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.speakingA1Array[2].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.speakingA1Array[2].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.speakingA1Array[2].score}%`,
+              text: `${
+                form.value.speakingA1Array[2].score
+                  ? `${form.value.speakingA1Array[2].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.speakingA1Array[2].result}`,
+              text: `${
+                form.value.speakingA1Array[2].result
+                  ? form.value.speakingA1Array[2].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+        ],
+      },
+    };
+  }
+
+  private generateTableOfA1ExamsTwoTerm(form: FormGroup) {
+    return {
+      style: 'marksTable',
+      table: {
+        widths: ['*', 'auto', '*', 'auto', '*'],
+        headerRows: 1,
+        body: [
+          [
+            {
+              text: 'Umiejętność',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: `Nr testu`,
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Data',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Uzyskany wynik',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Zdajemy?',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Słuchanie', alignment: 'center', rowSpan: 2 },
+            { text: '1', alignment: 'center' },
+            {
+              text: `${
+                form.value.listeningA1Array[0].date
+                  ? new Date(
+                      form.value.listeningA1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.listeningA1Array[0].score
+                  ? `${form.value.listeningA1Array[0].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.listeningA1Array[0].result
+                  ? form.value.listeningA1Array[0].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            {},
+            { text: `2`, alignment: 'center' },
+            {
+              text: `${
+                form.value.listeningA1Array[1].date
+                  ? new Date(
+                      form.value.listeningA1Array[1].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.listeningA1Array[1].score
+                  ? `${form.value.listeningA1Array[1].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.listeningA1Array[1].result
+                  ? form.value.listeningA1Array[1].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Czytanie i Pisanie', alignment: 'center', rowSpan: 2 },
+            { text: `1`, alignment: 'center' },
+            {
+              text: `${
+                form.value.writingAndReadingA1Array[0].date
+                  ? new Date(
+                      form.value.writingAndReadingA1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.writingAndReadingA1Array[0].score
+                  ? `${form.value.writingAndReadingA1Array[0].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.writingAndReadingA1Array[0].result
+                  ? form.value.writingAndReadingA1Array[0].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: `2`, alignment: 'center' },
+            {
+              text: `${
+                form.value.writingAndReadingA1Array[1].date
+                  ? new Date(
+                      form.value.writingAndReadingA1Array[1].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.writingAndReadingA1Array[1].score
+                  ? `${form.value.writingAndReadingA1Array[1].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.writingAndReadingA1Array[1].result
+                  ? form.value.writingAndReadingA1Array[1].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Mówienie', alignment: 'center', rowSpan: 2 },
+            { text: '1', alignment: 'center' },
+            {
+              text: `${
+                form.value.speakingA1Array[0].date
+                  ? new Date(
+                      form.value.speakingA1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.speakingA1Array[0].score
+                  ? `${form.value.speakingA1Array[0].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.speakingA1Array[0].result
+                  ? form.value.speakingA1Array[0].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: '2', alignment: 'center' },
+            {
+              text: `${
+                form.value.speakingA1Array[1].date
+                  ? new Date(
+                      form.value.speakingA1Array[1].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.speakingA1Array[1].score
+                  ? `${form.value.speakingA1Array[1].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.speakingA1Array[1].result
+                  ? form.value.speakingA1Array[1].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+        ],
+      },
+    };
+  }
+
+  private generateTableOfA1ExamsOneTerm(form: FormGroup) {
+    return {
+      style: 'marksTable',
+      table: {
+        widths: ['*', 'auto', '*', 'auto', '*'],
+        headerRows: 1,
+        body: [
+          [
+            {
+              text: 'Umiejętność',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: `Nr testu`,
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Data',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Uzyskany wynik',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Zdajemy?',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Słuchanie', alignment: 'center' },
+            { text: '1', alignment: 'center' },
+            {
+              text: `${
+                form.value.listeningA1Array[0].date
+                  ? new Date(
+                      form.value.listeningA1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.listeningA1Array[0].score
+                  ? `${form.value.listeningA1Array[0].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.listeningA1Array[0].result
+                  ? form.value.listeningA1Array[0].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Czytanie i Pisanie', alignment: 'center' },
+            { text: `1`, alignment: 'center' },
+            {
+              text: `${
+                form.value.writingAndReadingA1Array[0].date
+                  ? new Date(
+                      form.value.writingAndReadingA1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.writingAndReadingA1Array[0].score
+                  ? `${form.value.writingAndReadingA1Array[0].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.writingAndReadingA1Array[0].result
+                  ? form.value.writingAndReadingA1Array[0].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Mówienie', alignment: 'center' },
+            { text: '1', alignment: 'center' },
+            {
+              text: `${
+                form.value.speakingA1Array[0].date
+                  ? new Date(
+                      form.value.speakingA1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.speakingA1Array[0].score
+                  ? `${form.value.speakingA1Array[0].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.speakingA1Array[0].result
+                  ? form.value.speakingA1Array[0].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -981,17 +1463,29 @@ export class AppComponent implements OnInit {
             { text: 'Słuchanie', alignment: 'center', rowSpan: 3 },
             { text: '1', alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.listeningA2B1Array[0].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.listeningA2B1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.listeningA2B1Array[0].score}%`,
+              text: `${
+                form.value.listeningA2B1Array[0].score
+                  ? `${form.value.listeningA2B1Array[0].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.listeningA2B1Array[0].result}`,
+              text: `${
+                form.value.listeningA2B1Array[0].result
+                  ? form.value.listeningA2B1Array[0].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -999,17 +1493,29 @@ export class AppComponent implements OnInit {
             {},
             { text: `2`, alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.listeningA2B1Array[1].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.listeningA2B1Array[1].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.listeningA2B1Array[1].score}%`,
+              text: `${
+                form.value.listeningA2B1Array[1].score
+                  ? `${form.value.listeningA2B1Array[1].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.listeningA2B1Array[1].result}`,
+              text: `${
+                form.value.listeningA2B1Array[1].result
+                  ? form.value.listeningA2B1Array[1].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -1017,17 +1523,29 @@ export class AppComponent implements OnInit {
             '',
             { text: `3`, alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.listeningA2B1Array[2].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.listeningA2B1Array[2].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.listeningA2B1Array[2].score}%`,
+              text: `${
+                form.value.listeningA2B1Array[2].score
+                  ? `${form.value.listeningA2B1Array[2].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.listeningA2B1Array[2].result}`,
+              text: `${
+                form.value.listeningA2B1Array[2].result
+                  ? form.value.listeningA2B1Array[2].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -1035,17 +1553,29 @@ export class AppComponent implements OnInit {
             { text: 'Czytanie', alignment: 'center', rowSpan: 3 },
             { text: `1`, alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.readingA2B1Array[0].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.readingA2B1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.readingA2B1Array[0].score}%`,
+              text: `${
+                form.value.readingA2B1Array[0].score
+                  ? `${form.value.readingA2B1Array[0].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.readingA2B1Array[0].result}`,
+              text: `${
+                form.value.readingA2B1Array[0].result
+                  ? form.value.readingA2B1Array[0].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -1053,17 +1583,29 @@ export class AppComponent implements OnInit {
             '',
             { text: `2`, alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.readingA2B1Array[1].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.readingA2B1Array[1].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.readingA2B1Array[1].score}%`,
+              text: `${
+                form.value.readingA2B1Array[1].score
+                  ? `${form.value.readingA2B1Array[1].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.readingA2B1Array[1].result}`,
+              text: `${
+                form.value.readingA2B1Array[1].result
+                  ? form.value.readingA2B1Array[1].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -1071,17 +1613,29 @@ export class AppComponent implements OnInit {
             '',
             { text: `3`, alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.readingA2B1Array[2].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.readingA2B1Array[2].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.readingA2B1Array[2].score}%`,
+              text: `${
+                form.value.readingA2B1Array[2].score
+                  ? `${form.value.readingA2B1Array[2].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.readingA2B1Array[2].result}`,
+              text: `${
+                form.value.readingA2B1Array[2].result
+                  ? form.value.readingA2B1Array[2].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -1089,17 +1643,29 @@ export class AppComponent implements OnInit {
             { text: 'Pisanie', alignment: 'center', rowSpan: 3 },
             { text: `1`, alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.writingA2B1Array[0].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.writingA2B1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.writingA2B1Array[0].score}%`,
+              text: `${
+                form.value.writingA2B1Array[0].score
+                  ? `${form.value.writingA2B1Array[0].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.writingA2B1Array[0].result}`,
+              text: `${
+                form.value.writingA2B1Array[0].result
+                  ? form.value.writingA2B1Array[0].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -1107,17 +1673,29 @@ export class AppComponent implements OnInit {
             '',
             { text: `2`, alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.writingA2B1Array[1].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.writingA2B1Array[1].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.writingA2B1Array[1].score}%`,
+              text: `${
+                form.value.writingA2B1Array[1].score
+                  ? `${form.value.writingA2B1Array[1].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.writingA2B1Array[1].result}`,
+              text: `${
+                form.value.writingA2B1Array[1].result
+                  ? form.value.writingA2B1Array[1].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -1125,17 +1703,29 @@ export class AppComponent implements OnInit {
             '',
             { text: `3`, alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.writingA2B1Array[2].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.writingA2B1Array[2].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.writingA2B1Array[2].score}%`,
+              text: `${
+                form.value.writingA2B1Array[2].score
+                  ? `${form.value.writingA2B1Array[2].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.writingA2B1Array[2].result}`,
+              text: `${
+                form.value.writingA2B1Array[2].result
+                  ? form.value.writingA2B1Array[2].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -1143,17 +1733,29 @@ export class AppComponent implements OnInit {
             { text: 'Mówienie', alignment: 'center', rowSpan: 3 },
             { text: '1', alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.speakingA2B1Array[0].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.speakingA2B1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.speakingA2B1Array[0].score}%`,
+              text: `${
+                form.value.speakingA2B1Array[0].score
+                  ? `${form.value.speakingA2B1Array[0].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.speakingA2B1Array[0].result}`,
+              text: `${
+                form.value.speakingA2B1Array[0].result
+                  ? form.value.speakingA2B1Array[0].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -1161,17 +1763,29 @@ export class AppComponent implements OnInit {
             '',
             { text: '2', alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.speakingA2B1Array[1].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.speakingA2B1Array[1].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.speakingA2B1Array[1].score}%`,
+              text: `${
+                form.value.speakingA2B1Array[1].score
+                  ? `${form.value.speakingA2B1Array[1].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.speakingA2B1Array[1].result}`,
+              text: `${
+                form.value.speakingA2B1Array[1].result
+                  ? form.value.speakingA2B1Array[1].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -1179,17 +1793,467 @@ export class AppComponent implements OnInit {
             '',
             { text: '3', alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.speakingA2B1Array[2].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.speakingA2B1Array[2].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.speakingA2B1Array[2].score}%`,
+              text: `${
+                form.value.speakingA2B1Array[2].score
+                  ? `${form.value.speakingA2B1Array[2].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.speakingA2B1Array[2].result}`,
+              text: `${
+                form.value.speakingA2B1Array[2].result
+                  ? form.value.speakingA2B1Array[2].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+        ],
+      },
+    };
+  }
+
+  private generateTableOfA2B1ExamsTwoTerm(form: FormGroup) {
+    return {
+      style: 'marksTable',
+      table: {
+        widths: ['*', 'auto', 'auto', 'auto', '*'],
+        headerRows: 1,
+        body: [
+          [
+            {
+              text: 'Umiejętność',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: `Test nr`,
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Data',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Uzyskany wynik',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Zdajemy?',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Słuchanie', alignment: 'center', rowSpan: 2 },
+            { text: '1', alignment: 'center' },
+            {
+              text: `${
+                form.value.listeningA2B1Array[0].date
+                  ? new Date(
+                      form.value.listeningA2B1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.listeningA2B1Array[0].score
+                  ? `${form.value.listeningA2B1Array[0].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.listeningA2B1Array[0].result
+                  ? form.value.listeningA2B1Array[0].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            {},
+            { text: `2`, alignment: 'center' },
+            {
+              text: `${
+                form.value.listeningA2B1Array[1].date
+                  ? new Date(
+                      form.value.listeningA2B1Array[1].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.listeningA2B1Array[1].score
+                  ? `${form.value.listeningA2B1Array[1].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.listeningA2B1Array[1].result
+                  ? form.value.listeningA2B1Array[1].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Czytanie', alignment: 'center', rowSpan: 2 },
+            { text: `1`, alignment: 'center' },
+            {
+              text: `${
+                form.value.readingA2B1Array[0].date
+                  ? new Date(
+                      form.value.readingA2B1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.readingA2B1Array[0].score
+                  ? `${form.value.readingA2B1Array[0].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.readingA2B1Array[0].result
+                  ? form.value.readingA2B1Array[0].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: `2`, alignment: 'center' },
+            {
+              text: `${
+                form.value.readingA2B1Array[1].date
+                  ? new Date(
+                      form.value.readingA2B1Array[1].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.readingA2B1Array[1].score
+                  ? `${form.value.readingA2B1Array[1].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.readingA2B1Array[1].result
+                  ? form.value.readingA2B1Array[1].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Pisanie', alignment: 'center', rowSpan: 2 },
+            { text: `1`, alignment: 'center' },
+            {
+              text: `${
+                form.value.writingA2B1Array[0].date
+                  ? new Date(
+                      form.value.writingA2B1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.writingA2B1Array[0].score
+                  ? `${form.value.writingA2B1Array[0].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.writingA2B1Array[0].result
+                  ? form.value.writingA2B1Array[0].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: `2`, alignment: 'center' },
+            {
+              text: `${
+                form.value.writingA2B1Array[1].date
+                  ? new Date(
+                      form.value.writingA2B1Array[1].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.writingA2B1Array[1].score
+                  ? `${form.value.writingA2B1Array[1].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.writingA2B1Array[1].result
+                  ? form.value.writingA2B1Array[1].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Mówienie', alignment: 'center', rowSpan: 2 },
+            { text: '1', alignment: 'center' },
+            {
+              text: `${
+                form.value.speakingA2B1Array[0].date
+                  ? new Date(
+                      form.value.speakingA2B1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.speakingA2B1Array[0].score
+                  ? `${form.value.speakingA2B1Array[0].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.speakingA2B1Array[0].result
+                  ? form.value.speakingA2B1Array[0].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: '2', alignment: 'center' },
+            {
+              text: `${
+                form.value.speakingA2B1Array[1].date
+                  ? new Date(
+                      form.value.speakingA2B1Array[1].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.speakingA2B1Array[1].score
+                  ? `${form.value.speakingA2B1Array[1].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.speakingA2B1Array[1].result
+                  ? form.value.speakingA2B1Array[1].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+        ],
+      },
+    };
+  }
+
+  private generateTableOfA2B1ExamsOneTerm(form: FormGroup) {
+    return {
+      style: 'marksTable',
+      table: {
+        widths: ['*', 'auto', 'auto', 'auto', '*'],
+        headerRows: 1,
+        body: [
+          [
+            {
+              text: 'Umiejętność',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: `Test nr`,
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Data',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Uzyskany wynik',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Zdajemy?',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Słuchanie', alignment: 'center' },
+            { text: '1', alignment: 'center' },
+            {
+              text: `${
+                form.value.listeningA2B1Array[0].date
+                  ? new Date(
+                      form.value.listeningA2B1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.listeningA2B1Array[0].score
+                  ? `${form.value.listeningA2B1Array[0].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.listeningA2B1Array[0].result
+                  ? form.value.listeningA2B1Array[0].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Czytanie', alignment: 'center' },
+            { text: `1`, alignment: 'center' },
+            {
+              text: `${
+                form.value.readingA2B1Array[0].date
+                  ? new Date(
+                      form.value.readingA2B1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.readingA2B1Array[0].score
+                  ? `${form.value.readingA2B1Array[0].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.readingA2B1Array[0].result
+                  ? form.value.readingA2B1Array[0].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Pisanie', alignment: 'center' },
+            { text: `1`, alignment: 'center' },
+            {
+              text: `${
+                form.value.writingA2B1Array[0].date
+                  ? new Date(
+                      form.value.writingA2B1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.writingA2B1Array[0].score
+                  ? `${form.value.writingA2B1Array[0].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.writingA2B1Array[0].result
+                  ? form.value.writingA2B1Array[0].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Mówienie', alignment: 'center' },
+            { text: '1', alignment: 'center' },
+            {
+              text: `${
+                form.value.speakingA2B1Array[0].date
+                  ? new Date(
+                      form.value.speakingA2B1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.speakingA2B1Array[0].score
+                  ? `${form.value.speakingA2B1Array[0].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.speakingA2B1Array[0].result
+                  ? form.value.speakingA2B1Array[0].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -1236,17 +2300,29 @@ export class AppComponent implements OnInit {
             { text: 'Listening', alignment: 'center', rowSpan: 3 },
             { text: '1', alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.listeningB2C1Array[0].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.listeningB2C1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.listeningB2C1Array[0].score}%`,
+              text: `${
+                form.value.listeningB2C1Array[0].score
+                  ? `${form.value.listeningB2C1Array[0].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.listeningB2C1Array[0].result}`,
+              text: `${
+                form.value.listeningB2C1Array[0].result
+                  ? form.value.listeningB2C1Array[0].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -1254,17 +2330,29 @@ export class AppComponent implements OnInit {
             {},
             { text: `2`, alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.listeningB2C1Array[1].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.listeningB2C1Array[1].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.listeningB2C1Array[1].score}%`,
+              text: `${
+                form.value.listeningB2C1Array[1].score
+                  ? `${form.value.listeningB2C1Array[1].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.listeningB2C1Array[1].result}`,
+              text: `${
+                form.value.listeningB2C1Array[1].result
+                  ? form.value.listeningB2C1Array[1].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -1272,17 +2360,29 @@ export class AppComponent implements OnInit {
             '',
             { text: `3`, alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.listeningB2C1Array[2].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.listeningB2C1Array[2].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.listeningB2C1Array[2].score}%`,
+              text: `${
+                form.value.listeningB2C1Array[2].score
+                  ? `${form.value.listeningB2C1Array[2].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.listeningB2C1Array[2].result}`,
+              text: `${
+                form.value.listeningB2C1Array[2].result
+                  ? form.value.listeningB2C1Array[2].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -1290,17 +2390,29 @@ export class AppComponent implements OnInit {
             { text: 'Reading', alignment: 'center', rowSpan: 3 },
             { text: `1`, alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.readingB2C1Array[0].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.readingB2C1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.readingB2C1Array[0].score}%`,
+              text: `${
+                form.value.readingB2C1Array[0].score
+                  ? `${form.value.readingB2C1Array[0].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.readingB2C1Array[0].result}`,
+              text: `${
+                form.value.readingB2C1Array[0].result
+                  ? form.value.readingB2C1Array[0].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -1308,17 +2420,29 @@ export class AppComponent implements OnInit {
             '',
             { text: `2`, alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.readingB2C1Array[1].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.readingB2C1Array[1].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.readingB2C1Array[1].score}%`,
+              text: `${
+                form.value.readingB2C1Array[1].score
+                  ? `${form.value.readingB2C1Array[1].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.readingB2C1Array[1].result}`,
+              text: `${
+                form.value.readingB2C1Array[1].result
+                  ? form.value.readingB2C1Array[1].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -1326,17 +2450,29 @@ export class AppComponent implements OnInit {
             '',
             { text: `3`, alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.readingB2C1Array[2].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.readingB2C1Array[2].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.readingB2C1Array[2].score}%`,
+              text: `${
+                form.value.readingB2C1Array[2].score
+                  ? `${form.value.readingB2C1Array[2].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.readingB2C1Array[2].result}`,
+              text: `${
+                form.value.readingB2C1Array[2].result
+                  ? form.value.readingB2C1Array[2].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -1344,17 +2480,29 @@ export class AppComponent implements OnInit {
             { text: 'Use of English', alignment: 'center', rowSpan: 3 },
             { text: `1`, alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.useOfEnglishB2C1Array[0].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.useOfEnglishB2C1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.useOfEnglishB2C1Array[0].score}%`,
+              text: `${
+                form.value.useOfEnglishB2C1Array[0].score
+                  ? `${form.value.useOfEnglishB2C1Array[0].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.useOfEnglishB2C1Array[0].result}`,
+              text: `${
+                form.value.useOfEnglishB2C1Array[0].result
+                  ? form.value.useOfEnglishB2C1Array[0].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -1362,17 +2510,29 @@ export class AppComponent implements OnInit {
             '',
             { text: `2`, alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.useOfEnglishB2C1Array[1].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.useOfEnglishB2C1Array[1].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.useOfEnglishB2C1Array[1].score}%`,
+              text: `${
+                form.value.useOfEnglishB2C1Array[1].score
+                  ? `${form.value.useOfEnglishB2C1Array[1].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.useOfEnglishB2C1Array[1].result}`,
+              text: `${
+                form.value.useOfEnglishB2C1Array[1].result
+                  ? form.value.useOfEnglishB2C1Array[1].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -1380,17 +2540,29 @@ export class AppComponent implements OnInit {
             '',
             { text: `3`, alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.useOfEnglishB2C1Array[2].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.useOfEnglishB2C1Array[2].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.useOfEnglishB2C1Array[2].score}%`,
+              text: `${
+                form.value.useOfEnglishB2C1Array[2].score
+                  ? `${form.value.useOfEnglishB2C1Array[2].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.useOfEnglishB2C1Array[2].result}`,
+              text: `${
+                form.value.useOfEnglishB2C1Array[2].result
+                  ? form.value.useOfEnglishB2C1Array[2].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -1398,17 +2570,29 @@ export class AppComponent implements OnInit {
             { text: 'Writing', alignment: 'center', rowSpan: 3 },
             { text: '1', alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.writingB2C1Array[0].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.writingB2C1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.writingB2C1Array[0].score}%`,
+              text: `${
+                form.value.writingB2C1Array[0].score
+                  ? `${form.value.writingB2C1Array[0].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.writingB2C1Array[0].result}`,
+              text: `${
+                form.value.writingB2C1Array[0].result
+                  ? form.value.writingB2C1Array[0].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -1416,17 +2600,29 @@ export class AppComponent implements OnInit {
             '',
             { text: '2', alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.writingB2C1Array[1].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.writingB2C1Array[1].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.writingB2C1Array[1].score}%`,
+              text: `${
+                form.value.writingB2C1Array[1].score
+                  ? `${form.value.writingB2C1Array[1].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.writingB2C1Array[1].result}`,
+              text: `${
+                form.value.writingB2C1Array[1].result
+                  ? form.value.writingB2C1Array[1].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -1434,17 +2630,29 @@ export class AppComponent implements OnInit {
             '',
             { text: '3', alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.writingB2C1Array[2].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.writingB2C1Array[2].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.writingB2C1Array[2].score}%`,
+              text: `${
+                form.value.writingB2C1Array[2].score
+                  ? `${form.value.writingB2C1Array[2].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.writingB2C1Array[2].result}`,
+              text: `${
+                form.value.writingB2C1Array[2].result
+                  ? form.value.writingB2C1Array[2].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -1452,17 +2660,29 @@ export class AppComponent implements OnInit {
             { text: 'Speaking', alignment: 'center', rowSpan: 3 },
             { text: '1', alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.speakingB2C1Array[0].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.speakingB2C1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.speakingB2C1Array[0].score}%`,
+              text: `${
+                form.value.speakingB2C1Array[0].score
+                  ? `${form.value.speakingB2C1Array[0].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.speakingB2C1Array[0].result}`,
+              text: `${
+                form.value.speakingB2C1Array[0].result
+                  ? form.value.speakingB2C1Array[0].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -1470,17 +2690,29 @@ export class AppComponent implements OnInit {
             '',
             { text: '2', alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.speakingB2C1Array[1].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.speakingB2C1Array[1].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.speakingB2C1Array[1].score}%`,
+              text: `${
+                form.value.speakingB2C1Array[1].score
+                  ? `${form.value.speakingB2C1Array[1].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.speakingB2C1Array[1].result}`,
+              text: `${
+                form.value.speakingB2C1Array[1].result
+                  ? form.value.speakingB2C1Array[1].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -1488,17 +2720,29 @@ export class AppComponent implements OnInit {
             '',
             { text: '3', alignment: 'center' },
             {
-              text: `${new Date(
+              text: `${
                 form.value.speakingB2C1Array[2].date
-              ).toLocaleDateString()}`,
+                  ? new Date(
+                      form.value.speakingB2C1Array[2].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.speakingB2C1Array[2].score}%`,
+              text: `${
+                form.value.speakingB2C1Array[2].score
+                  ? `${form.value.speakingB2C1Array[2].score}%`
+                  : '-'
+              }`,
               alignment: 'center',
             },
             {
-              text: `${form.value.speakingB2C1Array[2].result}`,
+              text: `${
+                form.value.speakingB2C1Array[2].result
+                  ? form.value.speakingB2C1Array[2].result
+                  : '-'
+              }`,
               alignment: 'center',
             },
           ],
@@ -1507,104 +2751,532 @@ export class AppComponent implements OnInit {
     };
   }
 
-  private createExamsFormArray(): void {
-    this.resultOfExam.forEach((exam) => {
-      this.listeningA1Array.push(
-        new FormGroup({
-          date: new FormControl(null),
-          score: new FormControl(null),
-          result: new FormControl(null),
-        })
-      );
+  private generateTableOfB2C1ExamsTwoTerm(form: FormGroup) {
+    return {
+      style: 'marksTable',
+      table: {
+        widths: ['*', 'auto', 'auto', 'auto', '*'],
+        headerRows: 1,
+        body: [
+          [
+            {
+              text: 'Umiejętność',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: `Test nr`,
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Data',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Uzyskany wynik',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Zdajemy?',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Listening', alignment: 'center', rowSpan: 2 },
+            { text: '1', alignment: 'center' },
+            {
+              text: `${
+                form.value.listeningB2C1Array[0].date
+                  ? new Date(
+                      form.value.listeningB2C1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.listeningB2C1Array[0].score
+                  ? `${form.value.listeningB2C1Array[0].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.listeningB2C1Array[0].result
+                  ? form.value.listeningB2C1Array[0].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            {},
+            { text: `2`, alignment: 'center' },
+            {
+              text: `${
+                form.value.listeningB2C1Array[1].date
+                  ? new Date(
+                      form.value.listeningB2C1Array[1].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.listeningB2C1Array[1].score
+                  ? `${form.value.listeningB2C1Array[1].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.listeningB2C1Array[1].result
+                  ? form.value.listeningB2C1Array[1].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Reading', alignment: 'center', rowSpan: 2 },
+            { text: `1`, alignment: 'center' },
+            {
+              text: `${
+                form.value.readingB2C1Array[0].date
+                  ? new Date(
+                      form.value.readingB2C1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.readingB2C1Array[0].score
+                  ? `${form.value.readingB2C1Array[0].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.readingB2C1Array[0].result
+                  ? form.value.readingB2C1Array[0].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: `2`, alignment: 'center' },
+            {
+              text: `${
+                form.value.readingB2C1Array[1].date
+                  ? new Date(
+                      form.value.readingB2C1Array[1].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.readingB2C1Array[1].score
+                  ? `${form.value.readingB2C1Array[1].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.readingB2C1Array[1].result
+                  ? form.value.readingB2C1Array[1].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Use of English', alignment: 'center', rowSpan: 2 },
+            { text: `1`, alignment: 'center' },
+            {
+              text: `${
+                form.value.useOfEnglishB2C1Array[0].date
+                  ? new Date(
+                      form.value.useOfEnglishB2C1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.useOfEnglishB2C1Array[0].score
+                  ? `${form.value.useOfEnglishB2C1Array[0].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.useOfEnglishB2C1Array[0].result
+                  ? form.value.useOfEnglishB2C1Array[0].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: `2`, alignment: 'center' },
+            {
+              text: `${
+                form.value.useOfEnglishB2C1Array[1].date
+                  ? new Date(
+                      form.value.useOfEnglishB2C1Array[1].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.useOfEnglishB2C1Array[1].score
+                  ? `${form.value.useOfEnglishB2C1Array[1].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.useOfEnglishB2C1Array[1].result
+                  ? form.value.useOfEnglishB2C1Array[1].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Writing', alignment: 'center', rowSpan: 2 },
+            { text: '1', alignment: 'center' },
+            {
+              text: `${
+                form.value.writingB2C1Array[0].date
+                  ? new Date(
+                      form.value.writingB2C1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.writingB2C1Array[0].score
+                  ? `${form.value.writingB2C1Array[0].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.writingB2C1Array[0].result
+                  ? form.value.writingB2C1Array[0].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: '2', alignment: 'center' },
+            {
+              text: `${
+                form.value.writingB2C1Array[1].date
+                  ? new Date(
+                      form.value.writingB2C1Array[1].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.writingB2C1Array[1].score
+                  ? `${form.value.writingB2C1Array[1].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.writingB2C1Array[1].result
+                  ? form.value.writingB2C1Array[1].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Speaking', alignment: 'center', rowSpan: 2 },
+            { text: '1', alignment: 'center' },
+            {
+              text: `${
+                form.value.speakingB2C1Array[0].date
+                  ? new Date(
+                      form.value.speakingB2C1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.speakingB2C1Array[0].score
+                  ? `${form.value.speakingB2C1Array[0].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.speakingB2C1Array[0].result
+                  ? form.value.speakingB2C1Array[0].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            '',
+            { text: '2', alignment: 'center' },
+            {
+              text: `${
+                form.value.speakingB2C1Array[1].date
+                  ? new Date(
+                      form.value.speakingB2C1Array[1].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.speakingB2C1Array[1].score
+                  ? `${form.value.speakingB2C1Array[1].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.speakingB2C1Array[1].result
+                  ? form.value.speakingB2C1Array[1].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+        ],
+      },
+    };
+  }
 
-      this.writingAndReadingA1Array.push(
-        new FormGroup({
-          date: new FormControl(null),
-          score: new FormControl(null),
-          result: new FormControl(null),
-        })
-      );
-
-      this.speakingA1Array.push(
-        new FormGroup({
-          date: new FormControl(null),
-          score: new FormControl(null),
-          result: new FormControl(null),
-        })
-      );
-
-      this.listeningA2B1Array.push(
-        new FormGroup({
-          date: new FormControl(null),
-          score: new FormControl(null),
-          result: new FormControl(null),
-        })
-      );
-
-      this.readingA2B1Array.push(
-        new FormGroup({
-          date: new FormControl(null),
-          score: new FormControl(null),
-          result: new FormControl(null),
-        })
-      );
-
-      this.writingA2B1Array.push(
-        new FormGroup({
-          date: new FormControl(null),
-          score: new FormControl(null),
-          result: new FormControl(null),
-        })
-      );
-
-      this.speakingA2B1Array.push(
-        new FormGroup({
-          date: new FormControl(null),
-          score: new FormControl(null),
-          result: new FormControl(null),
-        })
-      );
-
-      this.listeningB2C1Array.push(
-        new FormGroup({
-          date: new FormControl(null),
-          score: new FormControl(null),
-          result: new FormControl(null),
-        })
-      );
-
-      this.readingB2C1Array.push(
-        new FormGroup({
-          date: new FormControl(null),
-          score: new FormControl(null),
-          result: new FormControl(null),
-        })
-      );
-
-      this.useOfEnglishB2C1Array.push(
-        new FormGroup({
-          date: new FormControl(null),
-          score: new FormControl(null),
-          result: new FormControl(null),
-        })
-      );
-
-      this.writingB2C1Array.push(
-        new FormGroup({
-          date: new FormControl(null),
-          score: new FormControl(null),
-          result: new FormControl(null),
-        })
-      );
-
-      this.speakingB2C1Array.push(
-        new FormGroup({
-          date: new FormControl(null),
-          score: new FormControl(null),
-          result: new FormControl(null),
-        })
-      );
-    });
+  private generateTableOfB2C1ExamsOneTerm(form: FormGroup) {
+    return {
+      style: 'marksTable',
+      table: {
+        widths: ['*', 'auto', 'auto', 'auto', '*'],
+        headerRows: 1,
+        body: [
+          [
+            {
+              text: 'Umiejętność',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: `Test nr`,
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Data',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Uzyskany wynik',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Zdajemy?',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Listening', alignment: 'center' },
+            { text: '1', alignment: 'center' },
+            {
+              text: `${
+                form.value.listeningB2C1Array[0].date
+                  ? new Date(
+                      form.value.listeningB2C1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.listeningB2C1Array[0].score
+                  ? `${form.value.listeningB2C1Array[0].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.listeningB2C1Array[0].result
+                  ? form.value.listeningB2C1Array[0].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Reading', alignment: 'center' },
+            { text: `1`, alignment: 'center' },
+            {
+              text: `${
+                form.value.readingB2C1Array[0].date
+                  ? new Date(
+                      form.value.readingB2C1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.readingB2C1Array[0].score
+                  ? `${form.value.readingB2C1Array[0].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.readingB2C1Array[0].result
+                  ? form.value.readingB2C1Array[0].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Use of English', alignment: 'center' },
+            { text: `1`, alignment: 'center' },
+            {
+              text: `${
+                form.value.useOfEnglishB2C1Array[0].date
+                  ? new Date(
+                      form.value.useOfEnglishB2C1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.useOfEnglishB2C1Array[0].score
+                  ? `${form.value.useOfEnglishB2C1Array[0].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.useOfEnglishB2C1Array[0].result
+                  ? form.value.useOfEnglishB2C1Array[0].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Writing', alignment: 'center' },
+            { text: '1', alignment: 'center' },
+            {
+              text: `${
+                form.value.writingB2C1Array[0].date
+                  ? new Date(
+                      form.value.writingB2C1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.writingB2C1Array[0].score
+                  ? `${form.value.writingB2C1Array[0].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.writingB2C1Array[0].result
+                  ? form.value.writingB2C1Array[0].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+          [
+            { text: 'Speaking', alignment: 'center' },
+            { text: '1', alignment: 'center' },
+            {
+              text: `${
+                form.value.speakingB2C1Array[0].date
+                  ? new Date(
+                      form.value.speakingB2C1Array[0].date
+                    ).toLocaleDateString()
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.speakingB2C1Array[0].score
+                  ? `${form.value.speakingB2C1Array[0].score}%`
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+            {
+              text: `${
+                form.value.speakingB2C1Array[0].result
+                  ? form.value.speakingB2C1Array[0].result
+                  : '-'
+              }`,
+              alignment: 'center',
+            },
+          ],
+        ],
+      },
+    };
   }
 
   private createForm(): FormGroup {
