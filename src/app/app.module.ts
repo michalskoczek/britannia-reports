@@ -23,9 +23,14 @@ import { SpecialMarksModule } from './rating-scale/special-marks/special-marks.m
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
+import { YearReportComponent } from './year-report/year-report.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatRadioModule } from '@angular/material/radio';
+import { SemestrReportComponent } from './semestr-report/semestr-report.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, YearReportComponent, SemestrReportComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -51,6 +56,9 @@ import { MatIconModule } from '@angular/material/icon';
     MatExpansionModule,
     MatCheckboxModule,
     MatIconModule,
+    MatTabsModule,
+    MatRadioModule,
+    MatProgressSpinnerModule,
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'pl-PL' },

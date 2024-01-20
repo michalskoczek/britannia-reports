@@ -19,6 +19,8 @@ export const teachers: string[] = [
   'Dorota Kot',
   'Aleksandra Mierzejewska',
   'Jolanta Rybak',
+  'Ala Sandurska',
+  'Fatima Talaat',
 ];
 
 export const books: string[] = [
@@ -30,6 +32,9 @@ export const books: string[] = [
   'Kid’s Box 6, wydawnictwo Cambridge',
   'Team Together 5, wydawnictwo Pearson',
   'Team Together 6, wydawnictwo Pearson',
+  'Power Up 4, wydawnictwo Cambridge',
+  'Power Up 5, wydawnictwo Cambridge',
+  'Power Up 6, wydawnictwo Cambridge',
 ];
 
 export const courses: string[] = [
