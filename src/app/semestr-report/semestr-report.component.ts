@@ -269,7 +269,7 @@ export class SemestrReportComponent implements OnInit {
     let docDefinition = {
       content: [
         {
-          text: 'PODSUMOWANIE NAUKI i DALSZE REKOMENDACJE',
+          text: 'PODSUMOWANIE NAUKI i REKOMENDACJE',
           style: 'title',
           alignment: 'center',
         },
@@ -359,8 +359,8 @@ export class SemestrReportComponent implements OnInit {
                 },
                 {
                   colSpan: 2,
-                  rowSpan: 9,
-                  text: `${form.value.marks ? form.value.marks : '-'}`,
+                  rowSpan: 10,
+                  text: 'Szczegółowe zestawienie ocen oraz ich opis znajdują się w dzienniku elektronicznym EduSky.',
                   style: 'tableHeader',
                 },
                 {},
@@ -461,11 +461,7 @@ export class SemestrReportComponent implements OnInit {
                   text: '2+',
                 },
                 '',
-                {
-                  text: 'Opis oceny można znaleźć w dzienniku EduSky',
-                  colSpan: 2,
-                  fontSize: 10,
-                },
+                '',
                 '',
               ],
               [
@@ -477,7 +473,7 @@ export class SemestrReportComponent implements OnInit {
                 },
                 '',
                 {
-                  text: 'Bieżące postępy (średnia ocen)',
+                  text: 'Ocena okresowa',
                   style: 'tableHeader',
                 },
                 {
