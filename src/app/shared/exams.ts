@@ -15,10 +15,10 @@ export const B2C1Exams: string[] = [
 ];
 
 export const resultOfExam: string[] = [
-  'Tak! Zdecydowanie!',
-  'Tak',
-  'Mało brakuje!',
-  'Jeszcze nie',
+  'Brawo! Możesz śmiało zdawać!',
+  'Kciuk w górę! Powinno Ci dobrze pójść!',
+  'Już niewiele Ci brakuje!',
+  'Jeszcze warto trochę popracować.',
 ];
 
 export const examsRecommendations: string[] = [
