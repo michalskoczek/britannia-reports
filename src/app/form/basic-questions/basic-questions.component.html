@@ -1,6 +1,6 @@
 <div class="row mt-5">
   <div class="col-12 mb-4">
-    <h2 class="subtitle">Podstawowe informacje</h2>
+    <h2 class="subtitle">{{ "Podstawowe informacje" | translate }}</h2>
   </div>
 </div>
 
@@ -12,21 +12,22 @@
   >
     <div class="row">
       <mat-form-field class="col-12 my-1">
-        <mat-label>Imię i nazwisko ucznia</mat-label>
+        <mat-label>{{ "Imię i nazwisko ucznia" | translate }}</mat-label>
         <input matInput type="text" formControlName="studentName" />
         <mat-error
           *ngIf="this.basicForm.controls['studentName'].hasError('required')"
-          >Pole jest wymagane</mat-error
+          >{{ "Pole jest wymagane" | translate }}</mat-error
         >
       </mat-form-field>
     </div>
 
     <div class="row form-field">
       <mat-form-field class="col-6 my-1">
-        <mat-label>Wybierz datę</mat-label>
+        <mat-label>{{ "Wybierz datę" | translate }}</mat-label>
         <input matInput [matDatepicker]="picker" formControlName="date" />
-        <mat-error *ngIf="this.basicForm.controls['date'].hasError('required')"
-          >Pole jest wymagane</mat-error
+        <mat-error
+          *ngIf="this.basicForm.controls['date'].hasError('required')"
+          >{{ "Pole jest wymagane" | translate }}</mat-error
         >
         <mat-hint>DD.M.RRRR</mat-hint>
         <mat-datepicker-toggle
@@ -37,21 +38,22 @@
       </mat-form-field>
 
       <mat-form-field class="col-6 my-1">
-        <mat-label>Klasa</mat-label>
+        <mat-label>{{ "Klasa" | translate }}</mat-label>
         <mat-select name="class" formControlName="class">
           <mat-option *ngFor="let class of classes" [value]="class">
             {{ class }}
           </mat-option>
         </mat-select>
-        <mat-error *ngIf="this.basicForm.controls['class'].hasError('required')"
-          >Pole jest wymagane</mat-error
+        <mat-error
+          *ngIf="this.basicForm.controls['class'].hasError('required')"
+          >{{ "Pole jest wymagane" | translate }}</mat-error
         >
       </mat-form-field>
     </div>
 
     <div class="row form-field">
       <mat-form-field class="col-6 my-1">
-        <mat-label>Lektor</mat-label>
+        <mat-label>{{ "Lektor" | translate }}</mat-label>
         <mat-select name="teacher" formControlName="teacher">
           <mat-option *ngFor="let teacher of teachers" [value]="teacher">
             {{ teacher }}
@@ -59,12 +61,12 @@
         </mat-select>
         <mat-error
           *ngIf="this.basicForm.controls['teacher'].hasError('required')"
-          >Pole jest wymagane</mat-error
+          >{{ "Pole jest wymagane" | translate }}</mat-error
         >
       </mat-form-field>
 
       <mat-form-field class="col-6 my-1">
-        <mat-label>Tytuł podręcznika</mat-label>
+        <mat-label>{{ "Tytuł podręcznika" | translate }}</mat-label>
         <mat-select name="class" formControlName="studentBookTitle">
           <mat-option *ngFor="let book of books" [value]="book">
             {{ book }}
@@ -74,14 +76,14 @@
           *ngIf="
             this.basicForm.controls['studentBookTitle'].hasError('required')
           "
-          >Pole jest wymagane</mat-error
+          >{{ "Pole jest wymagane" | translate }}</mat-error
         >
       </mat-form-field>
     </div>
 
     <div class="row form-field">
       <mat-form-field class="col-6 my-1">
-        <mat-label>Kurs</mat-label>
+        <mat-label>{{ "Kurs" | translate }}</mat-label>
         <mat-select name="course" formControlName="course">
           <mat-option *ngFor="let course of courses" [value]="course">
             {{ course }}
@@ -89,12 +91,12 @@
         </mat-select>
         <mat-error
           *ngIf="this.basicForm.controls['course'].hasError('required')"
-          >Pole jest wymagane</mat-error
+          >{{ "Pole jest wymagane" | translate }}</mat-error
         >
       </mat-form-field>
 
       <mat-form-field class="col-12 my-1">
-        <mat-label>Zrealizowany materiał</mat-label>
+        <mat-label>{{ "Zrealizowany materiał" | translate }}</mat-label>
         <textarea
           matInput
           type="text"
@@ -104,7 +106,7 @@
           *ngIf="
             this.basicForm.controls['realizedMaterial'].hasError('required')
           "
-          >Pole jest wymagane</mat-error
+          >{{ "Pole jest wymagane" | translate }}</mat-error
         >
       </mat-form-field>
     </div>

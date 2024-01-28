@@ -1,6 +1,6 @@
 <div class="row mt-5">
   <div class="col-12 mb-4">
-    <h2 class="subtitle">Oceny</h2>
+    <h2 class="subtitle">{{ "Oceny" | translate }}</h2>
   </div>
 </div>
 
@@ -8,12 +8,14 @@
   <div class="col-2">
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
       <ng-container matColumnDef="percent">
-        <th mat-header-cell *matHeaderCellDef>Procent</th>
+        <th mat-header-cell *matHeaderCellDef>
+          {{ "Procent" | translate }}
+        </th>
         <td mat-cell *matCellDef="let element">{{ element.percent }}</td>
       </ng-container>
 
       <ng-container matColumnDef="mark">
-        <th mat-header-cell *matHeaderCellDef>Ocena</th>
+        <th mat-header-cell *matHeaderCellDef>{{ "Ocena" | translate }}</th>
         <td mat-cell *matCellDef="let element">{{ element.mark }}</td>
       </ng-container>
 

@@ -10,7 +10,7 @@ import { RatingScaleModule } from './rating-scale/rating-scale.module';
 import { ProficiencyLevelModule } from './proficiency-level/proficiency-level.module';
 import { ExaminationRecommendationModule } from './examination-recommendation/examination-recommendation.module';
 import { SignatureModule } from './signature/signature.module';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -28,6 +28,12 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatRadioModule } from '@angular/material/radio';
 import { SemestrReportComponent } from './semestr-report/semestr-report.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http);
+}
 
 @NgModule({
   declarations: [AppComponent, YearReportComponent, SemestrReportComponent],
@@ -35,6 +41,13 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     BrowserModule,
     BrowserAnimationsModule,
     HeaderModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient],
+      },
+    }),
     ReactiveFormsModule,
     BasicQuestionsModule,
     RatingScaleModule,

@@ -1,11 +1,11 @@
 <form [formGroup]="specialMarksForm" (ngSubmit)="generatePDF(specialMarksForm)">
   <mat-form-field class="w-100 px-2">
-    <mat-label>Uzyskane oceny</mat-label>
+    <mat-label>{{ "Uzyskane oceny" | translate }}</mat-label>
     <textarea matInput formControlName="marks"></textarea>
     <mat-hint>Opis oceny można znaleźć w dzienniku EduSky: </mat-hint>
     <mat-error
       *ngIf="this.specialMarksForm.controls['marks'].hasError('required')"
-      >Pole jest wymagane</mat-error
+      >{{ "Pole jest wymagane" | translate }}</mat-error
     >
   </mat-form-field>
 
@@ -15,16 +15,16 @@
     <mat-hint>Średnia ocen</mat-hint>
     <mat-error
       *ngIf="this.specialMarksForm.controls['avgMark'].hasError('required')"
-      >Pole jest wymagane</mat-error
+      >{{ "Pole jest wymagane" | translate }}</mat-error
     >
   </mat-form-field>
 
   <mat-form-field class="w-100 px-2">
-    <mat-label>Frekwencja w %</mat-label>
+    <mat-label>{{ "Frekwencja w %" | translate }}</mat-label>
     <input matInput type="number" formControlName="frequency" />
     <mat-error
       *ngIf="this.specialMarksForm.controls['frequency'].hasError('required')"
-      >Pole jest wymagane</mat-error
+      >{{ "Pole jest wymagane" | translate }}</mat-error
     >
   </mat-form-field>
 
@@ -41,7 +41,7 @@
           'required'
         )
       "
-      >Pole jest wymagane</mat-error
+      >{{ "Pole jest wymagane" | translate }}</mat-error
     >
   </mat-form-field>
 
@@ -54,7 +54,7 @@
     </mat-select>
     <mat-error
       *ngIf="this.specialMarksForm.controls['lead'].hasError('required')"
-      >Pole jest wymagane</mat-error
+      >{{ "Pole jest wymagane" | translate }}</mat-error
     >
   </mat-form-field>
 
@@ -67,7 +67,7 @@
     </mat-select>
     <mat-error
       *ngIf="this.specialMarksForm.controls['respect'].hasError('required')"
-      >Pole jest wymagane</mat-error
+      >{{ "Pole jest wymagane" | translate }}</mat-error
     >
   </mat-form-field>
 
@@ -80,12 +80,12 @@
     </mat-select>
     <mat-error
       *ngIf="this.specialMarksForm.controls['focus'].hasError('required')"
-      >Pole jest wymagane</mat-error
+      >{{ "Pole jest wymagane" | translate }}</mat-error
     >
   </mat-form-field>
 
   <mat-form-field class="w-50 px-2">
-    <mat-label>Zachowanie</mat-label>
+    <mat-label>{{ "Zachowanie" | translate }}</mat-label>
     <mat-select formControlName="behaviour">
       <mat-option *ngFor="let mark of marks" [value]="mark.value">
         {{ mark.viewValue }}
@@ -93,7 +93,7 @@
     </mat-select>
     <mat-error
       *ngIf="this.specialMarksForm.controls['behaviour'].hasError('required')"
-      >Pole jest wymagane</mat-error
+      >{{ "Pole jest wymagane" | translate }}</mat-error
     >
   </mat-form-field>
 
