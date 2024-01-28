@@ -25,13 +25,14 @@ import { SemestrReportComponent } from './semestr-report/semestr-report.componen
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { CambridgeReportComponent } from './cambridge-report/cambridge-report.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
 }
 
 @NgModule({
-  declarations: [AppComponent, YearReportComponent, SemestrReportComponent],
+  declarations: [AppComponent, YearReportComponent, SemestrReportComponent, CambridgeReportComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
