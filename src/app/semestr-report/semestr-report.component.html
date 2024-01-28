@@ -2,47 +2,49 @@
   <form [formGroup]="form" (ngSubmit)="generatePDF(form)" class="col-12">
     <div class="row mt-5">
       <div class="col-12 mb-4">
-        <h2 class="subtitle">Podstawowe informacje</h2>
+        <h2 class="subtitle">{{ "Podstawowe informacje" | translate }}</h2>
       </div>
     </div>
 
     <div class="row">
       <mat-form-field class="col-6 my-1">
-        <mat-label>Imię i nazwisko ucznia</mat-label>
+        <mat-label>{{ "Imię i nazwisko ucznia" | translate }}</mat-label>
         <input matInput type="text" formControlName="studentName" />
         <mat-error
           *ngIf="this.form.controls['studentName'].hasError('required')"
-          >Pole jest wymagane
+          >{{ "Pole jest wymagane" | translate }}
         </mat-error>
       </mat-form-field>
 
       <mat-form-field class="col-6 my-1">
-        <mat-label>Imię ucznia do wyświetlenia w tekście (np. Jaś)</mat-label>
+        <mat-label>{{
+          "Imię ucznia do wyświetlenia w tekście (np. Jaś)" | translate
+        }}</mat-label>
         <input matInput type="text" formControlName="name" />
         <mat-error *ngIf="this.form.controls['name'].hasError('required')"
-          >Pole jest wymagane
+          >{{ "Pole jest wymagane" | translate }}
         </mat-error>
       </mat-form-field>
     </div>
 
     <div class="row">
       <mat-form-field class="col-6 my-1">
-        <mat-label>Uczeń/Uczennica</mat-label>
+        <mat-label>{{ "Uczeń/Uczennica" | translate }}</mat-label>
         <mat-select name="teacher" formControlName="sex">
           <mat-option *ngFor="let sex of sexes" [value]="sex">
-            {{ sex }}
+            {{ sex | translate }}
           </mat-option>
         </mat-select>
         <mat-error *ngIf="this.form.controls['sex'].hasError('required')"
-          >Pole jest wymagane
+          >{{ "Pole jest wymagane" | translate }}
         </mat-error>
       </mat-form-field>
 
       <mat-form-field class="col-6 my-1">
-        <mat-label>Wybierz datę</mat-label>
+        <mat-label>{{ "Wybierz datę" | translate }}</mat-label>
         <input matInput [matDatepicker]="picker" formControlName="date" />
         <mat-error *ngIf="this.form.controls['date'].hasError('required')"
-          >Pole jest wymagane
+          >{{ "Pole jest wymagane" | translate }}
         </mat-error>
         <mat-hint>DD.M.RRRR</mat-hint>
         <mat-datepicker-toggle
@@ -55,84 +57,86 @@
 
     <div class="row form-field">
       <mat-form-field class="col-6 my-1">
-        <mat-label>Klasa</mat-label>
+        <mat-label>{{ "Klasa" | translate }}</mat-label>
         <mat-select name="class" formControlName="class">
           <mat-option *ngFor="let class of classes" [value]="class">
-            {{ class }}
+            {{ class | translate }}
           </mat-option>
         </mat-select>
         <mat-error *ngIf="this.form.controls['class'].hasError('required')"
-          >Pole jest wymagane
+          >{{ "Pole jest wymagane" | translate }}
         </mat-error>
       </mat-form-field>
 
       <mat-form-field class="col-6 my-1">
-        <mat-label>Lektor</mat-label>
+        <mat-label>{{ "Lektor" | translate }}</mat-label>
         <mat-select name="teacher" formControlName="teacher">
           <mat-option *ngFor="let teacher of teachers" [value]="teacher">
             {{ teacher }}
           </mat-option>
         </mat-select>
         <mat-error *ngIf="this.form.controls['teacher'].hasError('required')"
-          >Pole jest wymagane
+          >{{ "Pole jest wymagane" | translate }}
         </mat-error>
       </mat-form-field>
     </div>
 
     <div class="row form-field">
-      <label id="example-radio-group-label">Podręcznik:</label>
+      <label id="example-radio-group-label">{{
+        "Podręcznik:" | translate
+      }}</label>
       <mat-radio-group aria-label="Select an option">
         <mat-radio-button value="1" (change)="onCheckboxChangeBook()"
-          >Podręcznik z listy
+          >{{ "Podręcznik z listy" | translate }}
         </mat-radio-button>
         <mat-radio-button value="2" (change)="onCheckboxChangeOwnTitle()"
-          >Wpisz tytuł i wydawnictwo
+          >{{ "Wpisz tytuł i wydawnictwo" | translate }}
         </mat-radio-button>
         <mat-radio-button
           (change)="onCheckboxChangeOwnMaterialEducation()"
           formControlName="ownEducationMaterial"
-          >Własne materiały szkoleniowe
+          >{{ "Własne materiały szkoleniowe" | translate }}
         </mat-radio-button>
       </mat-radio-group>
 
       <mat-form-field class="col-6 my-1" *ngIf="isCheckedBook">
-        <mat-label>Tytuł podręcznika</mat-label>
+        <mat-label>{{ "Tytuł podręcznika" | translate }}</mat-label>
         <mat-select name="class" formControlName="studentBookTitle">
           <mat-option *ngFor="let book of books" [value]="book">
-            {{ book }}
+            {{ book | translate }}
           </mat-option>
         </mat-select>
         <mat-error
           *ngIf="this.form.controls['studentBookTitle'].hasError('required')"
-          >Pole jest wymagane
+          >{{ "Pole jest wymagane" | translate }}
         </mat-error>
       </mat-form-field>
 
       <mat-form-field class="col-6 my-1" *ngIf="isCheckedOwnTitle">
-        <mat-label>Tytuł i wydawnictwo</mat-label>
+        <mat-label>{{ "Tytuł i wydawnictwo" | translate }}</mat-label>
         <input matInput type="text" formControlName="ownTitleStudentBook" />
         <mat-error
           *ngIf="this.form.controls['ownTitleStudentBook'].hasError('required')"
-          >Pole jest wymagane
+          >{{ "Pole jest wymagane" | translate }}
         </mat-error>
       </mat-form-field>
 
       <mat-form-field class="col-6 my-1">
-        <mat-label>Kurs</mat-label>
+        <mat-label>{{ "Kurs" | translate }}</mat-label>
         <mat-select name="course" formControlName="course">
           <mat-option *ngFor="let course of courses" [value]="course">
             {{ course }}
           </mat-option>
         </mat-select>
         <mat-error *ngIf="this.form.controls['course'].hasError('required')"
-          >Pole jest wymagane
+          >{{ "Pole jest wymagane" | translate }}
         </mat-error>
       </mat-form-field>
     </div>
 
     <div class="row form-field">
       <mat-form-field class="col-12 my-1">
-        <mat-label>Zrealizowany materiał</mat-label>
+        <mat-label>{{ "Zrealizowany materiał" | translate }}</mat-label>
         <textarea
           matInput
           type="text"
@@ -140,14 +144,14 @@
         ></textarea>
         <mat-error
           *ngIf="this.form.controls['realizedMaterial'].hasError('required')"
-          >Pole jest wymagane
+          >{{ "Pole jest wymagane" | translate }}
         </mat-error>
       </mat-form-field>
     </div>
 
     <div class="row mt-5">
       <div class="col-12 mb-4">
-        <h2 class="subtitle">Oceny</h2>
+        <h2 class="subtitle">{{ "Oceny" | translate }}</h2>
       </div>
     </div>
 
@@ -155,12 +159,14 @@
       <div class="col-2">
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
           <ng-container matColumnDef="percent">
-            <th mat-header-cell *matHeaderCellDef>Procent</th>
+            <th mat-header-cell *matHeaderCellDef>
+              {{ "Procent" | translate }}
+            </th>
             <td mat-cell *matCellDef="let element">{{ element.percent }}</td>
           </ng-container>
 
           <ng-container matColumnDef="mark">
-            <th mat-header-cell *matHeaderCellDef>Ocena</th>
+            <th mat-header-cell *matHeaderCellDef>{{ "Ocena" | translate }}</th>
             <td mat-cell *matCellDef="let element">{{ element.mark }}</td>
           </ng-container>
 
@@ -171,137 +177,134 @@
 
       <div class="col-10">
         <mat-form-field class="w-100 px-2">
-          <mat-label>Uzyskane oceny</mat-label>
+          <mat-label>{{ "Uzyskane oceny" | translate }}</mat-label>
           <textarea matInput formControlName="marks"></textarea>
         </mat-form-field>
 
         <mat-form-field class="w-100 px-2">
-          <mat-label>Bieżące postępy (średnia ocen)</mat-label>
+          <mat-label>{{ "Ocena semestralna" | translate }}</mat-label>
           <input matInput formControlName="avgMark" />
         </mat-form-field>
 
         <mat-form-field class="w-100 px-2">
-          <mat-label>Frekwencja w %</mat-label>
+          <mat-label>{{ "Frekwencja w %" | translate }}</mat-label>
           <input matInput type="number" formControlName="frequency" />
         </mat-form-field>
 
-        <p class="w-100">Ocena opisowa</p>
+        <p class="w-100">{{ "Ocena opisowa" | translate }}</p>
 
         <mat-form-field class="w-50 px-2">
-          <mat-label>Wymowa</mat-label>
+          <mat-label>{{ "Wymowa" | translate }}</mat-label>
           <mat-select formControlName="pronunciation">
             <mat-option
               *ngFor="let mark of pronunciationMarks"
               [value]="mark.value"
             >
-              {{ mark.viewValue }}
+              {{ mark.viewValue | translate }}
             </mat-option>
           </mat-select>
           <mat-error
             *ngIf="this.form.controls['pronunciation'].hasError('required')"
-            >Pole jest wymagane
+            >{{ "Pole jest wymagane" | translate }}
           </mat-error>
         </mat-form-field>
 
         <mat-form-field class="w-50 px-2">
-          <mat-label>Słownictwo</mat-label>
+          <mat-label>{{ "Słownictwo" | translate }}</mat-label>
           <mat-select formControlName="vocabulary">
             <mat-option
               *ngFor="let mark of vocabularyMarks"
               [value]="mark.value"
             >
-              {{ mark.viewValue }}
+              {{ mark.viewValue | translate }}
             </mat-option>
           </mat-select>
           <mat-error
             *ngIf="this.form.controls['vocabulary'].hasError('required')"
-            >Pole jest wymagane
+            >{{ "Pole jest wymagane" | translate }}
           </mat-error>
         </mat-form-field>
 
         <mat-form-field class="w-50 px-2">
-          <mat-label>Przygotowanie do zajęć</mat-label>
+          <mat-label>{{ "Przygotowanie do zajęć" | translate }}</mat-label>
           <mat-select formControlName="prepareToLecture">
             <mat-option
               *ngFor="let mark of prepareToLectureMarks"
               [value]="mark.value"
             >
-              {{ mark.viewValue }}
+              {{ mark.viewValue | translate }}
             </mat-option>
           </mat-select>
           <mat-error
             *ngIf="this.form.controls['prepareToLecture'].hasError('required')"
-            >Pole jest wymagane
+            >{{ "Pole jest wymagane" | translate }}
           </mat-error>
         </mat-form-field>
 
         <mat-form-field class="w-50 px-2">
-          <mat-label>Prace domowe</mat-label>
+          <mat-label>{{ "Prace domowe" | translate }}</mat-label>
           <mat-select formControlName="homeworks">
             <mat-option
               *ngFor="let mark of homeworksMarks"
               [value]="mark.value"
             >
-              {{ mark.viewValue }}
+              {{ mark.viewValue | translate }}
             </mat-option>
           </mat-select>
           <mat-error
             *ngIf="this.form.controls['homeworks'].hasError('required')"
-            >Pole jest wymagane
+            >{{ "Pole jest wymagane" | translate }}
           </mat-error>
         </mat-form-field>
 
         <mat-form-field class="w-50 px-2">
-          <mat-label>Zaangażowanie</mat-label>
+          <mat-label>{{ "Zaangażowanie" | translate }}</mat-label>
           <mat-select formControlName="involvement">
             <mat-option
               *ngFor="let mark of involvementMarks"
               [value]="mark.value"
             >
-              {{ mark.viewValue }}
+              {{ mark.viewValue | translate }}
             </mat-option>
           </mat-select>
           <mat-error
             *ngIf="this.form.controls['involvement'].hasError('required')"
-            >Pole jest wymagane
+            >{{ "Pole jest wymagane" | translate }}
           </mat-error>
         </mat-form-field>
 
         <mat-form-field class="w-50 px-2">
-          <mat-label>Zachowanie</mat-label>
+          <mat-label>{{ "Zachowanie" | translate }}</mat-label>
           <mat-select formControlName="behaviour">
             <mat-option
               *ngFor="let mark of behaviourMarks"
               [value]="mark.value"
             >
-              {{ mark.viewValue }}
+              {{ mark.viewValue | translate }}
             </mat-option>
           </mat-select>
           <mat-error
             *ngIf="this.form.controls['behaviour'].hasError('required')"
-            >Pole jest wymagane
+            >{{ "Pole jest wymagane" | translate }}
           </mat-error>
         </mat-form-field>
       </div>
 
       <div class="col-12">
-        <small
-          >* Ocena celująca przyznawana jest za osiągnięcia specjalne, w
-          szczególności za wyróżniające się odpowiedzi ustne lub pisemne.</small
-        >
+        <small>{{ "* Ocena celująca" | translate }}</small>
       </div>
     </div>
 
     <div class="row mt-5">
       <div class="col-12 mb-4">
-        <h2 class="subtitle">Podpis</h2>
+        <h2 class="subtitle">{{ "Podpis" | translate }}</h2>
       </div>
     </div>
 
     <div class="row">
       <div class="col-12">
         <mat-form-field class="w-100 px-2">
-          <mat-label>Podpis</mat-label>
+          <mat-label>{{ "Podpis" | translate }}</mat-label>
           <textarea matInput formControlName="signature"></textarea>
         </mat-form-field>
       </div>
@@ -310,7 +313,7 @@
     <div class="row generate-btn">
       <div class="col-12 d-flex justify-content-end">
         <button mat-raised-button color="primary" type="submit">
-          Generuj PDF
+          {{ "Generuj PDF" | translate }}
         </button>
       </div>
     </div>

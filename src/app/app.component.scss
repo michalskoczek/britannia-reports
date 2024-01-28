@@ -3,7 +3,6 @@
 
 .header {
   @include flex-center;
-
   margin: 15px;
 
   .img {
@@ -14,6 +13,7 @@
   .title {
     font: 600 32px/40px $font;
     color: $main-color;
+    margin-left: 20px;
   }
 }
 

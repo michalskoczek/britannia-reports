@@ -5,6 +5,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { SpecialMarksModule } from './special-marks/special-marks.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [RatingScaleComponent],
@@ -14,6 +15,7 @@ import { SpecialMarksModule } from './special-marks/special-marks.module';
     MatFormFieldModule,
     MatInputModule,
     SpecialMarksModule,
+    TranslateModule,
   ],
   exports: [RatingScaleComponent],
 })

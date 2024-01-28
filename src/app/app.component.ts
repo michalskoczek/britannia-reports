@@ -24,6 +24,7 @@ import {
   resultOfExam,
 } from './shared/exams';
 import { image } from './shared/images-base64';
+import { TranslateService } from '@ngx-translate/core';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -33,6 +34,10 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
+  constructor(private translate: TranslateService) {
+    this.translate.setDefaultLang('pl');
+  }
+
   title: string = 'britannia-reports';
 
   public form!: FormGroup;
@@ -129,6 +134,10 @@ export class AppComponent implements OnInit {
 
   get speakingB2C1Array(): FormArray {
     return this.form.get('speakingB2C1Array') as FormArray;
+  }
+
+  public switchLanguage(language: string) {
+    this.translate.use(language);
   }
 
   public addNextComment(): void {

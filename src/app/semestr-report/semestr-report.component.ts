@@ -18,6 +18,7 @@ import {
 } from '../shared/marks';
 import { learningRecommendations } from '../shared/exams';
 import { image } from '../shared/images-base64';
+import { TranslateService } from '@ngx-translate/core';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -27,6 +28,9 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
   styleUrls: ['./semestr-report.component.scss'],
 })
 export class SemestrReportComponent implements OnInit {
+  constructor(private translate: TranslateService) {
+    this.translate.setDefaultLang('pl');
+  }
   title: string = 'britannia-reports';
 
   public form!: FormGroup;
@@ -384,7 +388,7 @@ export class SemestrReportComponent implements OnInit {
                 },
                 '',
                 {
-                  text: 'Ocena okresowa',
+                  text: 'Ocena semestralna',
                   style: 'tableHeader',
                 },
                 {

@@ -1,23 +1,41 @@
 <div class="container">
-  <header class="row header">
+  <header class="header">
     <img
       class="col-3 img"
       src="../../assets/images/britannia_logo.svg"
       alt="britannia-logo"
     />
-    <h1 class="col-9 title">Britannia Reports - generator raportów</h1>
+    <h1 class="w-auto title">Britannia Reports - generator raportów</h1>
   </header>
+
+  <div class="d-flex w-auto justify-content-end mb-4">
+    <button
+      mat-raised-button
+      color="primary"
+      class="mx-2"
+      (click)="switchLanguage('en')"
+    >
+      English
+    </button>
+    <button mat-raised-button color="primary" (click)="switchLanguage('pl')">
+      Polish
+    </button>
+  </div>
 
   <mat-tab-group>
     <mat-tab>
-      <ng-template mat-tab-label>Semester Report</ng-template>
+      <ng-template mat-tab-label>{{
+        "Raport semestralny" | translate
+      }}</ng-template>
       <ng-template matTabContent>
         <app-semestr-report></app-semestr-report>
       </ng-template>
     </mat-tab>
 
     <mat-tab>
-      <ng-template mat-tab-label>End-of-year Report</ng-template>
+      <ng-template mat-tab-label>{{
+        "Raport całoroczny" | translate
+      }}</ng-template>
       <ng-template matTabContent>
         <app-year-report></app-year-report>
       </ng-template>
