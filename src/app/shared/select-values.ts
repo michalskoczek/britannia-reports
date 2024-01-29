@@ -10,6 +10,7 @@ export const classes: string[] = [
   'Klasa 2 szkoły średniej',
   'Klasa 3 szkoły średniej',
   'Klasa 4 szkoły średniej',
+  'Klasa 5 szkoły średniej',
   'osoba dorosła',
 ];
 
