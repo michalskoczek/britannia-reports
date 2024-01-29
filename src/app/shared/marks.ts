@@ -149,9 +149,9 @@ export const behaviourMarks: Marks[] = [
   },
   {
     viewValue:
-      '3 - X na zajęciach zachowuje się w większości dobrze. Okazjonalnie zdarza mu się zachowywać głośno lub nie słuchać poleceń nauczyciela, jednak nie są to zachowania, które budziłyby większy niepokój.',
+      '3 - X na zajęciach zachowuje się w większości dobrze. Okazjonalnie zdarza się, że zachowuje się głośno lub nie słucha poleceń nauczyciela, jednak nie są to zachowania, które budziłyby większy niepokój.',
     value:
-      'X Na zajęciach zachowuje się w większości dobrze. Okazjonalnie zdarza mu się zachowywać głośno lub nie słuchać poleceń nauczyciela, jednak nie są to zachowania, które budziłyby większy niepokój.',
+      'X Na zajęciach zachowuje się w większości dobrze. Okazjonalnie zdarza się, że zachowuje się głośno lub nie słucha poleceń nauczyciela, jednak nie są to zachowania, które budziłyby większy niepokój.',
   },
   {
     viewValue:
