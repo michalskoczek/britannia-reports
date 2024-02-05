@@ -423,39 +423,10 @@ export class SemestrReportComponent implements OnInit {
           text: '* Ocena celująca przyznawana jest za osiągnięcia specjalne, w szczególności za wyróżniające się odpowiedzi ustne lub pisemne.',
           fontSize: 7,
         },
-        // {
-        //   style: 'tableExample',
-        //   table: {
-        //     widths: ['*', 'auto'],
-        //     headerRows: 1,
-        //     body: [
-        //       [
-        //         {
-        //           text: 'Kategoria',
-        //           style: 'tableHeader',
-        //           alignment: 'center',
-        //         },
-        //         { text: 'Ocena', style: 'tableHeader', alignment: 'center' },
-        //       ],
-        //       [
-        //         { text: 'Prowadzenie zeszytu, notatek' },
-        //         { text: `${form.value.lead}`, alignment: 'center' },
-        //       ],
-        //       [
-        //         { text: 'Szacunek do nauczyciela i innych kursantów z grupy' },
-        //         { text: `${form.value.respect}`, alignment: 'center' },
-        //       ],
-        //       [
-        //         { text: 'Skupienie uwagi na lekcjach' },
-        //         { text: `${form.value.focus}`, alignment: 'center' },
-        //       ],
-        //     ],
-        //   },
-        // },
         {
           style: 'tableExams',
           table: {
-            widths: ['auto', '*', 'auto'],
+            widths: ['auto', '*'],
             headerRows: 1,
             body: [
               [
@@ -469,11 +440,6 @@ export class SemestrReportComponent implements OnInit {
                   style: 'tableHeader',
                   alignment: 'center',
                 },
-                {
-                  text: 'Ocena',
-                  style: 'tableHeader',
-                  alignment: 'center',
-                },
               ],
               [
                 { text: 'Wymowa' },
@@ -482,13 +448,6 @@ export class SemestrReportComponent implements OnInit {
                     form.value.pronunciation,
                     form.value.name
                   )}`,
-                },
-                {
-                  text: `${getMarkValue(
-                    form.value.pronunciation,
-                    pronunciationMarks
-                  )}`,
-                  alignment: 'center',
                 },
               ],
               [
@@ -499,25 +458,11 @@ export class SemestrReportComponent implements OnInit {
                     form.value.sex
                   )}`,
                 },
-                {
-                  text: `${getMarkValue(
-                    form.value.vocabulary,
-                    vocabularyMarks
-                  )}`,
-                  alignment: 'center',
-                },
               ],
               [
                 { text: 'Przygotowanie do zajęć' },
                 {
                   text: `${changeXToEmptyValue(form.value.prepareToLecture)}`,
-                },
-                {
-                  text: `${getMarkValue(
-                    form.value.prepareToLecture,
-                    prepareToLectureMarks
-                  )}`,
-                  alignment: 'center',
                 },
               ],
               [
@@ -528,10 +473,6 @@ export class SemestrReportComponent implements OnInit {
                     form.value.sex
                   )}`,
                 },
-                {
-                  text: `${getMarkValue(form.value.homeworks, homeworksMarks)}`,
-                  alignment: 'center',
-                },
               ],
               [
                 { text: 'Zaangażowanie' },
@@ -541,121 +482,16 @@ export class SemestrReportComponent implements OnInit {
                     form.value.name
                   )}`,
                 },
-                {
-                  text: `${getMarkValue(
-                    form.value.involvement,
-                    involvementMarks
-                  )}`,
-                  alignment: 'center',
-                },
               ],
               [
                 { text: 'Zachowanie' },
                 {
                   text: `${changeXToEmptyValue(form.value.behaviour)}`,
                 },
-                {
-                  text: `${getMarkValue(form.value.behaviour, behaviourMarks)}`,
-                  alignment: 'center',
-                },
               ],
             ],
           },
         },
-        // {
-        //   text: 'Poziom biegłości',
-        //   style: 'header',
-        //   margin: [0, 0, 0, 5],
-        // },
-        // {
-        //   text:
-        //     'Zależy nam na tym, by jak najwcześniej diagnozować poziom umiejętności dzieci, by jak najszybciej łączyć je w grupy według poziomu ich umiejętności, by mogły rozwijać się językowo w swoim tempie i jak najpełniej korzystać z lekcji. Jak co roku została przeprowadzona diagnoza poziomu języka naszych uczniów według Europejskiego Systemu Kształcenia Językowego z wykorzystaniem próbnych egzaminów Cambridge. \n' +
-        //     '\n' +
-        //     'Testy Cambridge dla dzieci to testy przekrojowe, diagnostyczne - nie można ich nie zdać, mają wskazać poziom biegłości językowej. Ważne są procenty. Uznajemy, że uczeń wskoczył na dany poziom biegłości, jeśli uzyskał minimum 60%. Jednak, by stwierdzić, że uczeń faktycznie osiągnął dany poziom językowy i może przystąpić do oficjalnego egzaminu Cambridge, powinien osiągnąć on ok. 80% z testów próbnych. Na testach próbnych diagnozujemy umiejętności Słuchania oraz Czytania i Pisania. Na egzaminie jest też Mówienie, co ćwiczymy i sprawdzamy na bieżąco.',
-        //   fontSize: 9,
-        // },
-        // {
-        //   text: ['Rodzaj egzaminu: ', form.value.typeOfExam],
-        //   bold: true,
-        //   margin: [0, 10, 0, 0],
-        //   fontSize: 10,
-        // },
-        // chooseTableOfExam(),
-        // {
-        //   text: `${commentsArray.length > 0 ? 'Komentarz' : ''}`,
-        //   style: 'subheader',
-        // },
-        // {
-        //   ul: commentsArray,
-        //   fontSize: 10,
-        // },
-        // {
-        //   text: 'Rekomendacja egzaminacyjna',
-        //   style: 'header',
-        //   margin: [0, 10, 0, 5],
-        // },
-        // {
-        //   text: `${
-        //     form.value.examRecommendationAcceptCheckbox
-        //       ? `W tym roku szkolnym rekomenduję podejście do egzaminu: ${form.value.examRecommendationResult}`
-        //       : `W tym roku nie rekomenduję podchodzenia do egzaminu Cambridge.`
-        //   }`,
-        //   bold: true,
-        //   margin: [0, 0, 0, 5],
-        //   fontSize: 10,
-        // },
-        // { text: `${form.value.examRecommendation}`, fontSize: 10 },
-        // {
-        //   text: 'Dodatkowe informacje egzaminacyjne',
-        //   style: 'subheader',
-        //   margin: [0, 10, 0, 5],
-        // },
-        // {
-        //   ul: this.additionalExamInformations,
-        //   fontSize: 9,
-        // },
-        // {
-        //   text: 'Organizacja kolejnego roku nauki',
-        //   style: 'subheader',
-        //   margin: [0, 10, 0, 5],
-        // },
-        // {
-        //   text: 'Całoroczna praca ucznia, jego zaangażowanie i stopień opanowania materiału, wyniki testów bieżących oraz próbnych egzaminów diagnozujących są dla nas ważne i stanowią podstawę do kwalifikacji do grup o zbliżonych kompetencjach językowych w kolejnym roku szkolnym. Bierzemy też pod uwagę indywidualne zdolności oraz stopień motywacji ucznia w trakcie całego roku szkolnego.',
-        //   style: 'margins',
-        //   fontSize: 9,
-        // },
-        // { text: '\n', fontSize: 5 },
-        // {
-        //   text: 'Staramy się maksymalnie wspierać potencjał językowy uczniów i łączyć dzieci według umiejętności. Gdy tylko jest to możliwe, tworzymy trzy rodzaje kursów:',
-        //   style: 'margins',
-        //   fontSize: 9,
-        // },
-        // { text: '\n', fontSize: 4 },
-        // {
-        //   text: '1) BFT czyli BRITANNIA Fast Track – dla uczniów celujących i wzorowych, którzy mają wyniki od 90% wzwyż, wyróżniają się swobodą w komunikacji i aktywnie wykorzystują poznane treści, są otwarci i maksymalnie zaangażowani w naukę, regularnie i w szybszym tempie podchodzą do kolejnych egzaminów Cambridge. Często w tej grupie znajdują się dzieci, które w kolejnych latach startują w konkursach językowych lub wybierają dwujęzyczne profile w liceum. Grupy BFT zazwyczaj nie są grupami dowożonymi, są złożone z dzieci z różnych klas i szkół.',
-        //   fontSize: 9,
-        // },
-        // { text: '\n', fontSize: 4 },
-        // {
-        //   text: '2) BRT czyli BRITANNIA Regular Track – dla uczniów, którzy opanowali materiał bardzo dobrze i dobrze, są zawsze przygotowani, oraz chętni i zmotywowani, by posługiwać się angielskim i osiągać jak najlepsze rezultaty; zależy im, by jak najlepiej poznać angielski. Uczniowie z tej grupy zazwyczaj regularnie podchodzą do kolejnych egzaminów Cambridge.',
-        //   fontSize: 9,
-        // },
-        // { text: '\n', fontSize: 4 },
-        // {
-        //   text: '3) BST czyli BRITANNIA Support Track – dla uczniów osiągających wyniki poniżej 65% oraz tych, którzy potrzebują więcej wsparcia w opanowaniu materiału i z nieśmiałością podchodzą do aktywizacji mówienia i muszą bardziej otworzyć się na naukę.',
-        //   fontSize: 9,
-        // },
-        // {
-        //   text: `W przyszłym roku szkolnym rekomenduję naukę w trybie: ${form.value.learningRecommendations}`,
-        //   margin: [0, 10],
-        //   bold: true,
-        //   fontSize: 10,
-        // },
-        // {
-        //   text: `${recommendationsArray.length > 0 ? 'Rekomendacje' : ''}`,
-        //   style: 'header',
-        // },
-        // { ul: recommendationsArray, fontSize: 10 },
         {
           columns: [
             {
@@ -715,7 +551,9 @@ export class SemestrReportComponent implements OnInit {
       },
     };
 
-    pdfMake.createPdf(docDefinition).open();
+    const fileName: string =
+      form.value.studentName.split(' ').join('-') + '_semester_report';
+    pdfMake.createPdf(docDefinition).download(fileName);
   }
 
   private createForm(): FormGroup {
