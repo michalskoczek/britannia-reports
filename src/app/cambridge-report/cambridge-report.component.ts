@@ -392,7 +392,9 @@ export class CambridgeReportComponent implements OnInit {
       },
     };
 
-    pdfMake.createPdf(docDefinition).open();
+    const fileName: string =
+      form.value.studentName.split(' ').join('-') + '_cambridge_report';
+    pdfMake.createPdf(docDefinition).download(fileName);
   }
 
   private generateTableOfA1Exams(form: FormGroup) {
