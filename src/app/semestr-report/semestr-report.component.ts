@@ -5,7 +5,12 @@ import pdfMake from 'pdfmake/build/pdfmake';
 // @ts-ignore
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { ELEMENT_DATA, TableElement } from '../rating-scale/table-elements';
-import { classes, teachers, books, courses } from '../shared/select-values';
+import {
+  classes,
+  teachers,
+  books,
+  courses,
+} from '../shared/data/select-values';
 import {
   behaviourMarks,
   homeworksMarks,
@@ -15,10 +20,15 @@ import {
   prepareToLectureMarks,
   pronunciationMarks,
   vocabularyMarks,
-} from '../shared/marks';
-import { learningRecommendations } from '../shared/exams';
-import { image } from '../shared/images-base64';
+} from '../shared/data/marks';
+import { learningRecommendations } from '../shared/data/exams';
+import { image } from '../shared/data/images-base64';
 import { TranslateService } from '@ngx-translate/core';
+import {
+  changeXToEmptyValue,
+  changeXToStudentName,
+  changeXToYValue,
+} from '../utils/static-function/change-X-to-specify-value';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -143,7 +153,6 @@ export class SemestrReportComponent implements OnInit {
   }
 
   public generatePDF(form: FormGroup): any {
-    console.log(form.value);
     let date: string = new Date(form.value.date).toLocaleDateString();
 
     let commentsArray: string[] = [];
@@ -155,31 +164,6 @@ export class SemestrReportComponent implements OnInit {
     form.value.recommendations.forEach((comment: string) =>
       recommendationsArray.push(comment)
     );
-
-    const changeXToStudentName = (
-      textValue: string,
-      studentName: string
-    ): string => {
-      return textValue.replace(textValue[0], studentName);
-    };
-
-    const changeXToYValue = (textValue: string, yValue: string): string => {
-      return textValue.replace(textValue[0], yValue);
-    };
-
-    const changeXToEmptyValue = (textValue: string): string => {
-      return textValue.replace(textValue[0], '');
-    };
-
-    const getMarkValue = (
-      selectedValue: string,
-      marks: Marks[]
-    ): string | undefined => {
-      let markObj: Marks | undefined = marks.find(
-        (mark: Marks): boolean => mark.value === selectedValue
-      );
-      return markObj?.viewValue[0];
-    };
 
     let docDefinition = {
       content: [

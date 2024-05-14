@@ -4,16 +4,16 @@ import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import pdfMake from 'pdfmake/build/pdfmake';
 // @ts-ignore
 import pdfFonts from 'pdfmake/build/vfs_fonts';
-import { classes, teachers, courses } from '../shared/select-values';
-import { Marks, marks } from '../shared/marks';
+import { classes, teachers, courses } from '../shared/data/select-values';
+import { Marks, marks } from '../shared/data/marks';
 import {
   additionalExamInformations,
   examsRecommendations,
   examsSelect,
   learningRecommendations,
   resultOfExam,
-} from '../shared/exams';
-import { image } from '../shared/images-base64';
+} from '../shared/data/exams';
+import { image } from '../shared/data/images-base64';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
