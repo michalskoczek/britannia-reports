@@ -799,7 +799,9 @@ export class YearReportComponent implements OnInit {
       },
     };
 
-    pdfMake.createPdf(docDefinition).open();
+    const fileName: string =
+      'Raport końcowy 2023-24 - ' + form.value.studentName;
+    pdfMake.createPdf(docDefinition).download(fileName);
   }
 
   private generateTableOfA1Exams(form: FormGroup) {
