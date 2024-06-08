@@ -1,5 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, forwardRef, OnInit } from '@angular/core';
+import {
+  FormArray,
+  FormControl,
+  FormGroup,
+  NG_VALUE_ACCESSOR,
+  Validators,
+} from '@angular/forms';
 // @ts-ignore
 import pdfMake from 'pdfmake/build/pdfmake';
 // @ts-ignore
@@ -24,6 +30,12 @@ import {
   resultOfExam,
 } from '../shared/exams';
 import { image } from '../shared/images-base64';
+import { baner } from '../shared/baner-base64';
+import {
+  classesInSchool,
+  languageLevels,
+  schoolYears,
+} from '../shared/development-path';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -38,7 +50,7 @@ export class YearReportComponent implements OnInit {
   public form!: FormGroup;
 
   public readonly sexes: string[] = ['Uczeń', 'Uczennica'];
-  public readonly classes: string[] = classes;
+  public classes: string[] = classes;
   public readonly teachers: string[] = teachers;
   public readonly books: string[] = books;
   public readonly courses: string[] = courses;
@@ -55,9 +67,15 @@ export class YearReportComponent implements OnInit {
   public readonly involvementMarks: Marks[] = involvementMarks;
   public readonly behaviourMarks: Marks[] = behaviourMarks;
 
+  public schoolYears: string[] = schoolYears;
+  public languageLevels: string[] = languageLevels;
+  public classesInSchool: string[] = classesInSchool;
+
   public readonly resultOfExam: string[] = resultOfExam;
   public readonly examsSelect: string[] = examsSelect;
   public selectedTypeOfExam: string = '';
+  public selectedSchoolYear: string = '';
+  public selectedLanguageLevels: string = '';
 
   public readonly examsRecommendations: string[] = examsRecommendations;
 
@@ -70,11 +88,42 @@ export class YearReportComponent implements OnInit {
   private readonly additionalExamInformations: string[] =
     additionalExamInformations;
   private readonly imageLogo: string = image;
+  private readonly banerLogo: string = baner;
 
   ngOnInit(): void {
     this.form = this.createForm();
-
     // this.createExamsFormArray();
+  }
+  indexClass: number = 0;
+  classesFromFirstSelectedClass: string[] = this.classesInSchool;
+
+  getFirstClass(): string {
+    let newClasses: string[] = this.classes.slice(0, -2);
+
+    this.indexClass = newClasses.findIndex((r: string) => {
+      return r === this.form.getRawValue()['class'];
+    });
+
+    return this.classesInSchool[this.indexClass];
+  }
+
+  setClasses(classValue: string): void {
+    let newClasses: string[] = this.classes.slice(0, -2);
+
+    this.indexClass = newClasses.findIndex((r: string) => {
+      return r === this.form.getRawValue()['class'];
+    });
+  }
+
+  // schoolYear
+  // firstLevel
+
+  getFirstYear(): string {
+    return '2023-2024';
+  }
+
+  getFirstLevel(): string {
+    return this.form.getRawValue()['firstLevel'];
   }
 
   get comments(): FormArray {
@@ -145,6 +194,14 @@ export class YearReportComponent implements OnInit {
     this.selectedTypeOfExam = exam;
   }
 
+  public onSelectSchoolYear(year: string): void {
+    this.selectedSchoolYear = year;
+  }
+
+  public onSelectLanguageLevels(level: string): void {
+    this.selectedSchoolYear = level;
+  }
+
   public onCheckboxChange(): void {
     this.isChecked = !this.isChecked;
   }
@@ -209,31 +266,6 @@ export class YearReportComponent implements OnInit {
       recommendationsArray.push(comment)
     );
 
-    const changeXToStudentName = (
-      textValue: string,
-      studentName: string
-    ): string => {
-      return textValue.replace(textValue[0], studentName);
-    };
-
-    const changeXToYValue = (textValue: string, yValue: string): string => {
-      return textValue.replace(textValue[0], yValue);
-    };
-
-    const changeXToEmptyValue = (textValue: string): string => {
-      return textValue.replace(textValue[0], '');
-    };
-
-    const getMarkValue = (
-      selectedValue: string,
-      marks: Marks[]
-    ): string | undefined => {
-      let markObj: Marks | undefined = marks.find(
-        (mark: Marks): boolean => mark.value === selectedValue
-      );
-      return markObj?.viewValue[0];
-    };
-
     const chooseTableOfExam = () => {
       if (
         form.value.typeOfExam === 'Cambridge STARTERS' ||
@@ -269,7 +301,19 @@ export class YearReportComponent implements OnInit {
     let docDefinition = {
       content: [
         {
-          text: 'PODSUMOWANIE NAUKI i DALSZE REKOMENDACJE',
+          image: this.banerLogo,
+          width: 250,
+          height: 75,
+          alignment: 'center',
+          margin: [0, 0, 0, 10],
+        },
+        {
+          text: 'RAPORT KOŃCOWOROCZNY',
+          style: 'title',
+          alignment: 'center',
+        },
+        {
+          text: 'PODSUMOWANIE NAUKI I DALSZE REKOMENDACJE',
           style: 'title',
           alignment: 'center',
         },
@@ -316,31 +360,15 @@ export class YearReportComponent implements OnInit {
           },
         },
         {
+          text: 'Nasza skala ocen',
+          bold: true,
+          margin: [0, 15, 0, 0],
+        },
+        {
           style: 'tableExample',
           table: {
-            widths: ['auto', 'auto', 'auto', 'auto', '*'],
-            headerRows: 1,
+            widths: ['*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*'],
             body: [
-              [
-                {
-                  text: 'Nasza skala ocen',
-                  style: 'tableHeader',
-                  colSpan: 2,
-                  alignment: 'center',
-                },
-                {},
-                {
-                  text: '',
-                  rowSpan: 1,
-                },
-                {
-                  text: 'Uzyskane oceny',
-                  style: 'tableHeader',
-                  colSpan: 2,
-                  alignment: 'center',
-                },
-                {},
-              ],
               [
                 {
                   text: '100%+',
@@ -350,15 +378,37 @@ export class YearReportComponent implements OnInit {
                 },
                 {
                   text: '',
-                  rowSpan: 12,
+                  rowSpan: 3,
+                  border: [false, false, false, false],
                 },
                 {
-                  colSpan: 2,
-                  rowSpan: 9,
-                  text: `${form.value.marks ? form.value.marks : '-'}`,
-                  style: 'tableHeader',
+                  text: '85-89%',
                 },
-                {},
+                {
+                  text: '4+',
+                },
+                {
+                  text: '',
+                  rowSpan: 3,
+                  border: [false, false, false, false],
+                },
+                {
+                  text: '70-74%',
+                },
+                {
+                  text: '3+',
+                },
+                {
+                  text: '',
+                  rowSpan: 3,
+                  border: [false, false, false, false],
+                },
+                {
+                  text: '55-59%',
+                },
+                {
+                  text: '2+',
+                },
               ],
               [
                 {
@@ -368,8 +418,26 @@ export class YearReportComponent implements OnInit {
                   text: '5',
                 },
                 '',
+                {
+                  text: '80-84%',
+                },
+                {
+                  text: '4',
+                },
                 '',
+                {
+                  text: '64-69%',
+                },
+                {
+                  text: '3',
+                },
                 '',
+                {
+                  text: '45-54%',
+                },
+                {
+                  text: '2',
+                },
               ],
               [
                 {
@@ -379,32 +447,6 @@ export class YearReportComponent implements OnInit {
                   text: '5-',
                 },
                 '',
-                '',
-                '',
-              ],
-              [
-                {
-                  text: '85-89%',
-                },
-                {
-                  text: '4+',
-                },
-                '',
-                '',
-                '',
-              ],
-              [
-                {
-                  text: '80-84%',
-                },
-                {
-                  text: '4',
-                },
-                '',
-                '',
-                '',
-              ],
-              [
                 {
                   text: '75-79%',
                 },
@@ -412,32 +454,6 @@ export class YearReportComponent implements OnInit {
                   text: '4-',
                 },
                 '',
-                '',
-                '',
-              ],
-              [
-                {
-                  text: '70-74%',
-                },
-                {
-                  text: '3+',
-                },
-                '',
-                '',
-                '',
-              ],
-              [
-                {
-                  text: '64-69%',
-                },
-                {
-                  text: '3',
-                },
-                '',
-                '',
-                '',
-              ],
-              [
                 {
                   text: '60-63%',
                 },
@@ -445,56 +461,11 @@ export class YearReportComponent implements OnInit {
                   text: '3-',
                 },
                 '',
-                '',
-                '',
-              ],
-              [
-                {
-                  text: '55-59%',
-                },
-                {
-                  text: '2+',
-                },
-                '',
-                {
-                  text: 'Opis oceny można znaleźć w dzienniku EduSky',
-                  colSpan: 2,
-                  fontSize: 10,
-                },
-                '',
-              ],
-              [
-                {
-                  text: '45-54%',
-                },
-                {
-                  text: '2',
-                },
-                '',
-                {
-                  text: 'Bieżące postępy (średnia ocen)',
-                  style: 'tableHeader',
-                },
-                {
-                  text: `${form.value.avgMark ? form.value.avgMark : '-'}`,
-                },
-              ],
-              [
                 {
                   text: '0-44%',
                 },
                 {
                   text: '1',
-                },
-                '',
-                {
-                  text: 'Frekwencja',
-                  style: 'tableHeader',
-                },
-                {
-                  text: `${
-                    form.value.frequency ? form.value.frequency + '%' : '-'
-                  }`,
                 },
               ],
             ],
@@ -507,144 +478,48 @@ export class YearReportComponent implements OnInit {
           text: '* Ocena celująca przyznawana jest za osiągnięcia specjalne, w szczególności za wyróżniające się odpowiedzi ustne lub pisemne.',
           fontSize: 7,
         },
-        // {
-        //   style: 'tableExample',
-        //   table: {
-        //     widths: ['*', 'auto'],
-        //     headerRows: 1,
-        //     body: [
-        //       [
-        //         {
-        //           text: 'Kategoria',
-        //           style: 'tableHeader',
-        //           alignment: 'center',
-        //         },
-        //         { text: 'Ocena', style: 'tableHeader', alignment: 'center' },
-        //       ],
-        //       [
-        //         { text: 'Prowadzenie zeszytu, notatek' },
-        //         { text: `${form.value.lead}`, alignment: 'center' },
-        //       ],
-        //       [
-        //         { text: 'Szacunek do nauczyciela i innych kursantów z grupy' },
-        //         { text: `${form.value.respect}`, alignment: 'center' },
-        //       ],
-        //       [
-        //         { text: 'Skupienie uwagi na lekcjach' },
-        //         { text: `${form.value.focus}`, alignment: 'center' },
-        //       ],
-        //     ],
-        //   },
-        // },
         {
           style: 'tableExams',
           table: {
-            widths: ['auto', '*', 'auto'],
-            headerRows: 1,
+            widths: ['*', '*'],
             body: [
               [
                 {
-                  text: 'Kategoria',
+                  text: 'Ocena końcoworoczna',
                   style: 'tableHeader',
-                  alignment: 'center',
                 },
                 {
-                  text: 'Opis',
+                  text: `${form.value.avgMark ? form.value.avgMark : '-'}`,
+                },
+              ],
+              [
+                {
+                  text: 'Frekwencja',
                   style: 'tableHeader',
-                  alignment: 'center',
                 },
                 {
-                  text: 'Ocena',
-                  style: 'tableHeader',
-                  alignment: 'center',
-                },
-              ],
-              [
-                { text: 'Wymowa' },
-                {
-                  text: `${changeXToStudentName(
-                    form.value.pronunciation,
-                    form.value.name
-                  )}`,
-                },
-                {
-                  text: `${getMarkValue(
-                    form.value.pronunciation,
-                    pronunciationMarks
-                  )}`,
-                  alignment: 'center',
-                },
-              ],
-              [
-                { text: 'Słownictwo' },
-                {
-                  text: `${changeXToYValue(
-                    form.value.vocabulary,
-                    form.value.sex
-                  )}`,
-                },
-                {
-                  text: `${getMarkValue(
-                    form.value.vocabulary,
-                    vocabularyMarks
-                  )}`,
-                  alignment: 'center',
-                },
-              ],
-              [
-                { text: 'Przygotowanie do zajęć' },
-                {
-                  text: `${changeXToEmptyValue(form.value.prepareToLecture)}`,
-                },
-                {
-                  text: `${getMarkValue(
-                    form.value.prepareToLecture,
-                    prepareToLectureMarks
-                  )}`,
-                  alignment: 'center',
-                },
-              ],
-              [
-                { text: 'Prace domowe' },
-                {
-                  text: `${changeXToYValue(
-                    form.value.homeworks,
-                    form.value.sex
-                  )}`,
-                },
-                {
-                  text: `${getMarkValue(form.value.homeworks, homeworksMarks)}`,
-                  alignment: 'center',
-                },
-              ],
-              [
-                { text: 'Zaangażowanie' },
-                {
-                  text: `${changeXToStudentName(
-                    form.value.involvement,
-                    form.value.name
-                  )}`,
-                },
-                {
-                  text: `${getMarkValue(
-                    form.value.involvement,
-                    involvementMarks
-                  )}`,
-                  alignment: 'center',
-                },
-              ],
-              [
-                { text: 'Zachowanie' },
-                {
-                  text: `${changeXToEmptyValue(form.value.behaviour)}`,
-                },
-                {
-                  text: `${getMarkValue(form.value.behaviour, behaviourMarks)}`,
-                  alignment: 'center',
+                  text: `${
+                    form.value.frequency ? form.value.frequency + '%' : '-'
+                  }`,
                 },
               ],
             ],
           },
+        },
+        {
+          text: 'Prognozowana ścieżka rozwoju językowego',
+          style: 'header',
+          margin: [0, 0, 0, 5],
+        },
+        {
+          text: 'Oto prognozowana ścieżka rozwoju językowego po bieżącym roku szkolnym.',
+          margin: [0, 0, 0, 5],
+          fontSize: 9,
+        },
+        {
+          text: 'W zależności od przyszłorocznego wkładu pracy, czyli poziomu zaangażowania na lekcjach i systematyczności utrwalania wiedzy w domu, prognozowana ścieżka rozwoju językowego może ulec zmianie na koniec kolejnego roku szkolnego. ',
+          margin: [0, 0, 0, 5],
+          fontSize: 9,
         },
         {
           text: 'Poziom biegłości',
@@ -740,21 +615,18 @@ export class YearReportComponent implements OnInit {
           style: 'header',
         },
         { ul: recommendationsArray, fontSize: 10 },
+
         {
-          columns: [
-            {
-              text: form.value.signature,
-              margin: [0, 20, 0, 10],
-              fontSize: 10,
-            },
-            {
-              image: this.imageLogo,
-              width: 125,
-              height: 110,
-              alignment: 'right',
-              margin: [0, 20, 0, 0],
-            },
-          ],
+          text: form.value.signature,
+          margin: [0, 20, 0, 10],
+          fontSize: 10,
+        },
+        {
+          image: this.imageLogo,
+          width: 125,
+          height: 110,
+          alignment: 'center',
+          margin: [0, 20, 0, 0],
         },
       ],
       styles: {
@@ -3329,18 +3201,10 @@ export class YearReportComponent implements OnInit {
       course: new FormControl(null, Validators.required),
       realizedMaterial: new FormControl(null, Validators.required),
 
-      marks: new FormControl(null),
       avgMark: new FormControl(null),
       frequency: new FormControl(null),
-      lead: new FormControl(null, Validators.required),
-      respect: new FormControl(null, Validators.required),
-      focus: new FormControl(null, Validators.required),
-      pronunciation: new FormControl(null, Validators.required),
-      vocabulary: new FormControl(null, Validators.required),
-      prepareToLecture: new FormControl(null, Validators.required),
-      homeworks: new FormControl(null, Validators.required),
-      involvement: new FormControl(null, Validators.required),
-      behaviour: new FormControl(null, Validators.required),
+      schoolYear: new FormControl(null),
+      firstLevel: new FormControl(null),
 
       typeOfExam: new FormControl(null, Validators.required),
 

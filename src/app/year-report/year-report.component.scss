@@ -6,3 +6,17 @@
   bottom: 30px;
   right: 30px;
 }
+
+.row-wrapper {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  border-bottom: 1px solid black;
+
+  p {
+    width: 20%;
+    border: 1px solid black;
+    margin: 0;
+  }
+}
