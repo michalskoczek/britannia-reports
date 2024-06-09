@@ -12,11 +12,32 @@
   justify-content: flex-start;
   align-items: center;
   width: 100%;
-  border-bottom: 1px solid black;
+
+  div {
+    width: 100%;
+  }
 
   p {
-    width: 20%;
+    width: calc(100% / 6);
     border: 1px solid black;
     margin: 0;
+  }
+
+  .row-group {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+
+    div {
+      width: calc(100% / 6);
+      border: 1px solid black;
+      margin: 0;
+
+      input {
+        width: 100%;
+      }
+    }
   }
 }

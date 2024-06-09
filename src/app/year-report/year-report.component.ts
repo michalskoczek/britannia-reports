@@ -1,27 +1,12 @@
-import { Component, forwardRef, OnInit } from '@angular/core';
-import {
-  FormArray,
-  FormControl,
-  FormGroup,
-  NG_VALUE_ACCESSOR,
-  Validators,
-} from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 // @ts-ignore
 import pdfMake from 'pdfmake/build/pdfmake';
 // @ts-ignore
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { ELEMENT_DATA, TableElement } from '../rating-scale/table-elements';
 import { classes, teachers, books, courses } from '../shared/select-values';
-import {
-  behaviourMarks,
-  homeworksMarks,
-  involvementMarks,
-  Marks,
-  marks,
-  prepareToLectureMarks,
-  pronunciationMarks,
-  vocabularyMarks,
-} from '../shared/marks';
+import { Marks, marks } from '../shared/marks';
 import {
   additionalExamInformations,
   examsRecommendations,
@@ -32,10 +17,13 @@ import {
 import { image } from '../shared/images-base64';
 import { baner } from '../shared/baner-base64';
 import {
+  certificationPurpose,
   classesInSchool,
   languageLevels,
+  schoolExam,
   schoolYears,
 } from '../shared/development-path';
+import { DevelopmentPathInSchool } from '../model/development-path-in-school';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -54,28 +42,21 @@ export class YearReportComponent implements OnInit {
   public readonly teachers: string[] = teachers;
   public readonly books: string[] = books;
   public readonly courses: string[] = courses;
-
   public readonly displayedColumns: string[] = ['percent', 'mark'];
   public readonly dataSource: TableElement[] = ELEMENT_DATA;
-
   public readonly marks: Marks[] = marks;
-
-  public readonly pronunciationMarks: Marks[] = pronunciationMarks;
-  public readonly vocabularyMarks: Marks[] = vocabularyMarks;
-  public readonly prepareToLectureMarks: Marks[] = prepareToLectureMarks;
-  public readonly homeworksMarks: Marks[] = homeworksMarks;
-  public readonly involvementMarks: Marks[] = involvementMarks;
-  public readonly behaviourMarks: Marks[] = behaviourMarks;
 
   public schoolYears: string[] = schoolYears;
   public languageLevels: string[] = languageLevels;
   public classesInSchool: string[] = classesInSchool;
+  public certificationPurpose: string[] = certificationPurpose;
+  public schoolExam: string[] = schoolExam;
 
   public readonly resultOfExam: string[] = resultOfExam;
   public readonly examsSelect: string[] = examsSelect;
   public selectedTypeOfExam: string = '';
   public selectedSchoolYear: string = '';
-  public selectedLanguageLevels: string = '';
+  public selectedCertificationPurpose: string = '';
 
   public readonly examsRecommendations: string[] = examsRecommendations;
 
@@ -84,6 +65,8 @@ export class YearReportComponent implements OnInit {
   public isCheckedOwnTitle: boolean = false;
 
   public learningRecommendations: string[] = learningRecommendations;
+
+  public indexClass: number = 0;
 
   private readonly additionalExamInformations: string[] =
     additionalExamInformations;
@@ -94,36 +77,77 @@ export class YearReportComponent implements OnInit {
     this.form = this.createForm();
     // this.createExamsFormArray();
   }
-  indexClass: number = 0;
-  classesFromFirstSelectedClass: string[] = this.classesInSchool;
 
-  getFirstClass(): string {
-    let newClasses: string[] = this.classes.slice(0, -2);
+  public initClassesFromFirstSelectedClass(classValue: string): void {
+    let newClasses: string[] = this.classes.slice(0, -1);
+
+    this.indexClass = newClasses.findIndex((r: string) => {
+      return r === classValue;
+    });
+
+    let shortClassesInSchool: string[] = this.classesInSchool.slice(
+      this.indexClass,
+      this.classesInSchool.length
+    );
+
+    const clearFormArray = (formArray: FormArray) => {
+      while (formArray.length !== 0) {
+        formArray.removeAt(0);
+      }
+    };
+
+    clearFormArray(
+      this.form.get('developmentLanguageSkillsArray') as FormArray
+    );
+
+    for (let i: number = 0; i < shortClassesInSchool.length; i++) {
+      (this.form.get('developmentLanguageSkillsArray') as FormArray).push(
+        new FormGroup({
+          schoolYear: new FormControl({
+            value: this.schoolYears[i],
+            disabled: true,
+          }),
+          classInSchool: new FormControl({
+            value: shortClassesInSchool[i],
+            disabled: true,
+          }),
+          courseLevel: new FormControl(null),
+          schoolExam: new FormControl({
+            value: this.addSchoolExam(shortClassesInSchool[i]),
+            disabled: this.setDisabledInSchoolExam(shortClassesInSchool[i]),
+          }),
+          certificationPurpose: new FormControl(null),
+          shouldDeleteRow: new FormControl(false),
+        })
+      );
+    }
+  }
+
+  private addSchoolExam(shortClassesInSchool: string): string | null {
+    switch (shortClassesInSchool) {
+      case 'Klasa 8 SP':
+        return 'egzamin 8-klasisty';
+        break;
+      default:
+        return null;
+    }
+  }
+
+  private setDisabledInSchoolExam(shortClassesInSchool: string): boolean {
+    return !(
+      shortClassesInSchool === 'Klasa IV LIC/TECH' ||
+      shortClassesInSchool === 'Klasa V TECH'
+    );
+  }
+
+  public setClasses(classValue: string): void {
+    let newClasses: string[] = this.classes.slice(0, -1);
 
     this.indexClass = newClasses.findIndex((r: string) => {
       return r === this.form.getRawValue()['class'];
     });
 
-    return this.classesInSchool[this.indexClass];
-  }
-
-  setClasses(classValue: string): void {
-    let newClasses: string[] = this.classes.slice(0, -2);
-
-    this.indexClass = newClasses.findIndex((r: string) => {
-      return r === this.form.getRawValue()['class'];
-    });
-  }
-
-  // schoolYear
-  // firstLevel
-
-  getFirstYear(): string {
-    return '2023-2024';
-  }
-
-  getFirstLevel(): string {
-    return this.form.getRawValue()['firstLevel'];
+    this.initClassesFromFirstSelectedClass(classValue);
   }
 
   get comments(): FormArray {
@@ -182,6 +206,10 @@ export class YearReportComponent implements OnInit {
     return this.form.get('speakingB2C1Array') as FormArray;
   }
 
+  get developmentLanguageSkillsArray(): FormArray {
+    return this.form.get('developmentLanguageSkillsArray') as FormArray;
+  }
+
   public addNextComment(): void {
     this.comments.push(new FormControl(null));
   }
@@ -200,6 +228,10 @@ export class YearReportComponent implements OnInit {
 
   public onSelectLanguageLevels(level: string): void {
     this.selectedSchoolYear = level;
+  }
+
+  public onSelectCertificationPurpose(certification: string): void {
+    this.selectedCertificationPurpose = certification;
   }
 
   public onCheckboxChange(): void {
@@ -252,8 +284,31 @@ export class YearReportComponent implements OnInit {
     control.removeAt(index);
   }
 
+  isAdditionalComment(): any {
+    if (this.form.getRawValue().additionalComment !== null) {
+      return {
+        text: 'Dodatkowy komentarz',
+        style: 'header',
+        margin: [0, 0, 0, 5],
+      };
+    } else {
+      return {};
+    }
+  }
+
+  additionalComment(form: FormGroup): any {
+    if (this.form.getRawValue().additionalComment !== null) {
+      return {
+        text: form.value.additionalComment,
+        fontSize: 9,
+      };
+    } else {
+      return {};
+    }
+  }
+
   public generatePDF(form: FormGroup): any {
-    console.log(form.value);
+    console.log(form.getRawValue());
     let date: string = new Date(form.value.date).toLocaleDateString();
 
     let commentsArray: string[] = [];
@@ -521,6 +576,7 @@ export class YearReportComponent implements OnInit {
           margin: [0, 0, 0, 5],
           fontSize: 9,
         },
+        this.generateDevelopmentLanguageSkillsTable(form),
         {
           text: 'Poziom biegłości',
           style: 'header',
@@ -615,7 +671,8 @@ export class YearReportComponent implements OnInit {
           style: 'header',
         },
         { ul: recommendationsArray, fontSize: 10 },
-
+        this.isAdditionalComment(),
+        this.additionalComment(form),
         {
           text: form.value.signature,
           margin: [0, 20, 0, 10],
@@ -674,6 +731,90 @@ export class YearReportComponent implements OnInit {
     const fileName: string =
       'Raport końcowy 2023-24 - ' + form.value.studentName;
     pdfMake.createPdf(docDefinition).download(fileName);
+  }
+
+  private generateRowsInDevelopmentLanguageSkillsTable(form: FormGroup): any {
+    let formValue = form.getRawValue();
+
+    let arraySkills: DevelopmentPathInSchool[] = [];
+
+    formValue.developmentLanguageSkillsArray.forEach(
+      (row: DevelopmentPathInSchool) => {
+        if (!row.shouldDeleteRow) {
+          arraySkills.push(row);
+        }
+      }
+    );
+
+    let arrayWithObjects: any[] = [];
+
+    arrayWithObjects.push([
+      {
+        text: 'Rok szkolny',
+        style: 'tableHeader',
+        alignment: 'center',
+      },
+      {
+        text: `Klasa ucznia w szkole`,
+        style: 'tableHeader',
+        alignment: 'center',
+      },
+      {
+        text: 'W kierunku poziomu',
+        style: 'tableHeader',
+        alignment: 'center',
+      },
+      {
+        text: 'Cel certyfikacyjny',
+        style: 'tableHeader',
+        alignment: 'center',
+      },
+      {
+        text: 'egzamin szkolny',
+        style: 'tableHeader',
+        alignment: 'center',
+      },
+    ]);
+
+    for (let i: number = 0; i < arraySkills.length; i++) {
+      arrayWithObjects.push([
+        {
+          text: arraySkills[i].schoolYear,
+          alignment: 'center',
+        },
+        {
+          text: arraySkills[i].classInSchool,
+          alignment: 'center',
+        },
+        {
+          text: arraySkills[i].courseLevel ? arraySkills[i].courseLevel : '',
+          alignment: 'center',
+        },
+        {
+          text: arraySkills[i].certificationPurpose
+            ? arraySkills[i].certificationPurpose
+            : '',
+          alignment: 'center',
+        },
+        {
+          text: arraySkills[i].schoolExam ? arraySkills[i].schoolExam : '',
+          alignment: 'center',
+        },
+      ]);
+    }
+
+    return arrayWithObjects;
+  }
+
+  private generateDevelopmentLanguageSkillsTable(form: FormGroup) {
+    return {
+      style: 'tableExample',
+      table: {
+        widths: ['*', '*', '*', '*', '*'],
+        headerRows: 1,
+        body: this.generateRowsInDevelopmentLanguageSkillsTable(form),
+      },
+    };
   }
 
   private generateTableOfA1Exams(form: FormGroup) {
@@ -3203,8 +3344,8 @@ export class YearReportComponent implements OnInit {
 
       avgMark: new FormControl(null),
       frequency: new FormControl(null),
-      schoolYear: new FormControl(null),
-      firstLevel: new FormControl(null),
+
+      developmentLanguageSkillsArray: new FormArray([]),
 
       typeOfExam: new FormControl(null, Validators.required),
 
@@ -3233,6 +3374,7 @@ export class YearReportComponent implements OnInit {
       learningRecommendations: new FormControl(null),
       recommendations: new FormArray([]),
 
+      additionalComment: new FormControl(null),
       signature: new FormControl(null, Validators.required),
     });
   }
