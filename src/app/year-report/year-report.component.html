@@ -60,11 +60,11 @@
         <mat-label>{{ "Klasa" | translate }}</mat-label>
         <mat-select name="class" formControlName="class">
           <mat-option
-            *ngFor="let class of classes"
-            [value]="class"
-            (click)="setClasses(class)"
+            *ngFor="let classValue of classes"
+            [value]="classValue"
+            (click)="setClasses(classValue)"
           >
-            {{ class }}
+            {{ classValue }}
           </mat-option>
         </mat-select>
         <mat-error *ngIf="this.form.controls['class'].hasError('required')"
@@ -207,57 +207,71 @@
 
         <p class="w-100 px-2">Prognozowana ścieżka rozwoju językowego</p>
 
-        <p class="w-100 px-2">Klasa: {{ this.form.getRawValue()["class"] }}</p>
-
-        <!--        <mat-form-field class="w-100 px-2">-->
-        <!--          <mat-label>Rok szkolny</mat-label>-->
-        <!--          <mat-select formControlName="schoolYear">-->
-        <!--            <mat-option-->
-        <!--              *ngFor="let year of schoolYears"-->
-        <!--              [value]="year"-->
-        <!--              (click)="onSelectSchoolYear(year)"-->
-        <!--            >-->
-        <!--              {{ year }}-->
-        <!--            </mat-option>-->
-        <!--          </mat-select>-->
-        <!--        </mat-form-field>-->
-
-        <mat-form-field class="w-100 px-2">
-          <mat-label>W kierunku poziomu</mat-label>
-          <mat-select formControlName="firstLevel">
-            <mat-option
-              *ngFor="let level of languageLevels"
-              [value]="level"
-              (click)="onSelectLanguageLevels(level)"
-            >
-              {{ level }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
         <ng-container *ngIf="this.form.getRawValue()['class'] !== null">
           <div class="row-wrapper">
+            <p>Rok szkolny</p>
             <p>Klasa ucznia w szkole</p>
-            <p>rok szkolny</p>
-            <p>w kierunku poziomu</p>
-            <p>cel certyfikacyjny</p>
-            <p>cel szkolny</p>
+            <p>W kierunku poziomu</p>
+            <p>Cel certyfikacyjny</p>
+            <p>Egzamin szkolny</p>
+            <p>Czy NIE zapisywać?</p>
           </div>
-          <!--          <ng-container *ngFor="let data of classesFromFirstSelectedClass">-->
-          <!--            <div class="row-wrapper">-->
-          <!--              <p>{{ getFirstClass() }}</p>-->
-          <!--              <p>{{ getFirstYear() }}</p>-->
-          <!--              <p>-->
-          <!--                {{-->
-          <!--                  this.form.getRawValue()["firstLevel"]-->
-          <!--                    ? this.form.getRawValue()["firstLevel"]-->
-          <!--                    : "-"-->
-          <!--                }}-->
-          <!--              </p>-->
-          <!--              <p>Cambridge KET</p>-->
-          <!--              <p>matura podstawowa</p>-->
-          <!--            </div>-->
-          <!--          </ng-container>-->
+
+          <div
+            *ngFor="
+              let skill of developmentLanguageSkillsArray.controls;
+              let i = index
+            "
+            class="row-wrapper"
+          >
+            <div formArrayName="developmentLanguageSkillsArray">
+              <div class="row-group" [formGroupName]="i">
+                <div>
+                  <input type="text" formControlName="schoolYear" />
+                </div>
+
+                <div>
+                  <input type="text" formControlName="classInSchool" />
+                </div>
+
+                <div>
+                  <mat-select formControlName="courseLevel">
+                    <ng-container *ngFor="let level of languageLevels">
+                      <mat-option [value]="level">
+                        {{ level }}
+                      </mat-option>
+                    </ng-container>
+                  </mat-select>
+                </div>
+
+                <div>
+                  <mat-select formControlName="certificationPurpose">
+                    <ng-container
+                      *ngFor="let certification of certificationPurpose"
+                    >
+                      <mat-option [value]="certification">
+                        {{ certification }}
+                      </mat-option>
+                    </ng-container>
+                  </mat-select>
+                </div>
+
+                <div>
+                  <mat-select formControlName="schoolExam">
+                    <ng-container *ngFor="let exam of schoolExam">
+                      <mat-option [value]="exam">
+                        {{ exam }}
+                      </mat-option>
+                    </ng-container>
+                  </mat-select>
+                </div>
+
+                <div>
+                  <input type="checkbox" formControlName="shouldDeleteRow" />
+                </div>
+              </div>
+            </div>
+          </div>
         </ng-container>
       </div>
 
@@ -282,25 +296,24 @@
             <p>
               {{
                 "Zależy nam na tym, by jak najwcześniej diagnozować poziom
-              umiejętności dzieci, by jak najszybciej łączyć je w grupy według
-              poziomu ich umiejętności, by mogły rozwijać się językowo w swoim
-              tempie i jak najpełniej korzystać z lekcji. Jak co roku została
-              przeprowadzona diagnoza poziomu języka naszych uczniów według
-              Europejskiego Systemu Kształcenia Językowego z wykorzystaniem
-              próbnych egzaminów Cambridge." | translate
+                umiejętności dzieci, by jak najszybciej łączyć je w grupy według
+                poziomu ich umiejętności, by mogły rozwijać się językowo w swoim
+                tempie i jak najpełniej korzystać z lekcji.Jak co roku została
+                przeprowadzona diagnoza poziomu języka naszych uczniów według
+                Europejskiego Systemu Kształcenia Językowego z wykorzystaniem
+                próbnych egzaminów Cambridge." | translate
               }}
             </p>
             <p>
               {{
                 "Testy Cambridge dla dzieci to testy przekrojowe, diagnostyczne -
-              nie można ich nie zdać, mają wskazać poziom biegłości językowej.
-              Ważne są procenty. Uznajemy, że uczeń wskoczył na dany poziom
-              biegłości, jeśli uzyskał minimum 60%. Jednak, by stwierdzić, że
-              uczeń faktycznie osiągnął dany poziom językowy i może przystąpić
-              do oficjalnego egzaminu Cambridge, powinien osiągnąć on ok. 80% z
-              testów próbnych. Na testach próbnych diagnozujemy umiejętności
-              Słuchania oraz Czytania i Pisania. Na egzaminie jest też Mówienie,
-              co ćwiczymy i sprawdzamy na bieżąco." | translate
+                nie można ich nie zdać, mają wskazać poziom biegłości językowej.Ważne są procenty.Uznajemy, że uczeń wskoczył na dany poziom
+                biegłości, jeśli uzyskał minimum 60 %. Jednak, by stwierdzić, że
+                uczeń faktycznie osiągnął dany poziom językowy i może przystąpić
+                do oficjalnego egzaminu Cambridge, powinien osiągnąć on ok. 80 % z
+                testów próbnych.Na testach próbnych diagnozujemy umiejętności
+                Słuchania oraz Czytania i Pisania.Na egzaminie jest też Mówienie,
+                co ćwiczymy i sprawdzamy na bieżąco." | translate
               }}
             </p>
           </mat-expansion-panel>
@@ -1273,9 +1286,9 @@
                     <p>
                       {{
                         "BRITANNIA jest autoryzowanym Cambridge Preparation Centre,
-                      więc nasi uczniowie co roku zdają egzaminy na miejscu w
-                      szkole. Uczniowie mogą zdawać u nas egzaminy na wszystkich
-                      poziomach zaawansowania." | translate
+                        więc nasi uczniowie co roku zdają egzaminy na miejscu w
+                        szkole.Uczniowie mogą zdawać u nas egzaminy na wszystkich
+                        poziomach zaawansowania." | translate
                       }}
                     </p>
                   </li>
@@ -1288,13 +1301,13 @@
                     <p>
                       {{
                         "Samo doświadczenie przystąpienia do prawdziwego egzaminu i
-                      jego atmosfery jest ogromnie cenne. Przygotowuje dzieci
-                      mentalnie do zdawania kolejnych ważnych egzaminów,
-                      uodparnia je na stres i podnosi samoocenę. Daje dzieciom
-                      dużo motywacji do nauki, a po otrzymaniu certyfikatu z
-                      Anglii na naszej doniosłej uroczystości także wielką dozę
-                      satysfakcji i chęci do dalszego podnoszenia swoich
-                      umiejętności. Dzieci czują się naprawdę wyróżnione."
+                        jego atmosfery jest ogromnie cenne.Przygotowuje dzieci
+                        mentalnie do zdawania kolejnych ważnych egzaminów,
+                        uodparnia je na stres i podnosi samoocenę. Daje dzieciom
+                        dużo motywacji do nauki, a po otrzymaniu certyfikatu z
+                        Anglii na naszej doniosłej uroczystości także wielką dozę
+                        satysfakcji i chęci do dalszego podnoszenia swoich
+                        umiejętności.Dzieci czują się naprawdę wyróżnione."
                           | translate
                       }}
                     </p>
@@ -1303,10 +1316,10 @@
                     <p>
                       {{
                         "Przede wszystkim jest to także najbardziej wiarygodne
-                      potwierdzenie uzyskanych umiejętności językowych. Wyniki i
-                      certyfikaty przysyłane są z Anglii. Podejście do egzaminu
-                      ma być dla dziecka nagrodą i motywacją. Uczestnictwo nie
-                      jest obowiązkowe." | translate
+                        potwierdzenie uzyskanych umiejętności językowych.Wyniki i
+                        certyfikaty przysyłane są z Anglii.Podejście do egzaminu
+                        ma być dla dziecka nagrodą i motywacją. Uczestnictwo nie
+                        jest obowiązkowe." | translate
                       }}
                     </p>
                   </li>
@@ -1314,8 +1327,8 @@
                     <p>
                       {{
                         "Płatność jest dla ośrodka egzaminacyjnego, nie dla nas. My
-                      jesteśmy przewodnikami w drodze do sukcesu Państwa
-                      dziecka." | translate
+                        jesteśmy przewodnikami w drodze do sukcesu Państwa
+                        dziecka." | translate
                       }}
                     </p>
                   </li>
@@ -1439,6 +1452,21 @@
             </div>
           </ng-container>
         </div>
+      </div>
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-12 mb-4">
+        <h2 class="subtitle">Dodatkowy komentarz</h2>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <mat-form-field class="w-100 px-2">
+          <mat-label>Dodatkowy komentarz</mat-label>
+          <textarea matInput formControlName="additionalComment"></textarea>
+        </mat-form-field>
       </div>
     </div>
 

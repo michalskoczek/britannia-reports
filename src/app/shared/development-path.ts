@@ -1,15 +1,16 @@
 export const classesInSchool: string[] = [
-  '2 SP',
-  '3 SP',
-  '4 SP',
-  '5 SP',
-  '6 SP',
-  '7 SP',
-  '8 SP',
-  'I LIC',
-  'II LIC',
-  'III LIC',
-  'IV LIC',
+  'Klasa 2 SP',
+  'Klasa 3 SP',
+  'Klasa 4 SP',
+  'Klasa 5 SP',
+  'Klasa 6 SP',
+  'Klasa 7 SP',
+  'Klasa 8 SP',
+  'Klasa I LIC/TECH',
+  'Klasa II LIC/TECH',
+  'Klasa III LIC/TECH',
+  'Klasa IV LIC/TECH',
+  'Klasa V TECH',
 ];
 
 export const schoolYears: string[] = [
@@ -28,6 +29,7 @@ export const schoolYears: string[] = [
 ];
 
 export const languageLevels: string[] = [
+  '',
   'Pre-A1',
   'A1.1',
   'A1.2',
@@ -44,6 +46,7 @@ export const languageLevels: string[] = [
 ];
 
 export const certificationPurpose: string[] = [
+  '',
   'Cambridge Starters',
   'Cambridge Movers',
   'Cambridge Flyers',
@@ -54,7 +57,8 @@ export const certificationPurpose: string[] = [
   'Cambridge CPE',
 ];
 
-export const schoolPurpose: string[] = [
+export const schoolExam: string[] = [
+  '',
   'egzamin 8-klasisty',
   'matura podstawowa',
   'matura rozszerzona',
