@@ -809,6 +809,7 @@ export class YearReportComponent implements OnInit {
   private generateDevelopmentLanguageSkillsTable(form: FormGroup) {
     return {
       style: 'tableExample',
+      margin: [0, 0, 0, 10],
       table: {
         widths: ['*', '*', '*', '*', '*'],
         headerRows: 1,
