@@ -90,27 +90,19 @@
         "Podręcznik:" | translate
       }}</label>
       <mat-radio-group aria-label="Select an option">
-        <mat-radio-button value="1" (change)="onCheckboxChangeBook()">{{
-          "Podręcznik z listy" | translate
-        }}</mat-radio-button>
-        <mat-radio-button value="2" (change)="onCheckboxChangeOwnTitle()">{{
-          "Wpisz tytuł i wydawnictwo" | translate
-        }}</mat-radio-button>
-        <input
-          type="radio"
+        <mat-radio-button value="1" (change)="onCheckboxChangeBook()"
+          >{{ "Podręcznik z listy" | translate }}
+        </mat-radio-button>
+        <mat-radio-button value="2" (change)="onCheckboxChangeOwnTitle()"
+          >{{ "Wpisz tytuł i wydawnictwo" | translate }}
+        </mat-radio-button>
+        <mat-radio-button
           (change)="onCheckboxChangeOwnMaterialEducation()"
           formControlName="ownEducationMaterial"
-        />{{ "Własne materiały szkoleniowe" | translate }}
+          >{{ "Własne materiały szkoleniowe" | translate }}
+        </mat-radio-button>
       </mat-radio-group>
-      <mat-checkbox (change)="onCheckboxChangeBook()"
-        >Podręcznik z listy
-      </mat-checkbox>
-      <mat-checkbox (change)="onCheckboxChangeOwnTitle()"
-        >Wpisz tytuł i wydawnictwo
-      </mat-checkbox>
-      <mat-checkbox formControlName="ownEducationMaterial"
-        >Własne materiały szkoleniowe
-      </mat-checkbox>
+
       <mat-form-field class="col-6 my-1" *ngIf="isCheckedBook">
         <mat-label>{{ "Tytuł podręcznika" | translate }}</mat-label>
         <mat-select name="class" formControlName="studentBookTitle">
@@ -133,7 +125,7 @@
         </mat-error>
       </mat-form-field>
 
-      <mat-form-field class="col-6 my-1">
+      <mat-form-field class="col-12 my-1">
         <mat-label>{{ "Kurs" | translate }}</mat-label>
         <mat-select name="course" formControlName="course">
           <mat-option *ngFor="let course of courses" [value]="course">
