@@ -68,7 +68,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatTabsModule,
     MatRadioModule,
     MatProgressSpinnerModule,
-    FormsModule,
+    MatFormFieldModule,
+    MatCheckboxModule,
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'pl-PL' },

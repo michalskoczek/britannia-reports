@@ -308,7 +308,6 @@ export class YearReportComponent implements OnInit {
   }
 
   public generatePDF(form: FormGroup): any {
-    console.log(form.getRawValue());
     let date: string = new Date(form.value.date).toLocaleDateString();
 
     let commentsArray: string[] = [];
@@ -358,7 +357,7 @@ export class YearReportComponent implements OnInit {
         {
           image: this.banerLogo,
           width: 250,
-          height: 75,
+          height: 65,
           alignment: 'center',
           margin: [0, 0, 0, 10],
         },
@@ -534,7 +533,7 @@ export class YearReportComponent implements OnInit {
           fontSize: 7,
         },
         {
-          style: 'tableExams',
+          style: 'tableExample',
           table: {
             widths: ['*', '*'],
             body: [
@@ -564,7 +563,7 @@ export class YearReportComponent implements OnInit {
         {
           text: 'Prognozowana ścieżka rozwoju językowego',
           style: 'header',
-          margin: [0, 0, 0, 5],
+          margin: [0, 15, 0, 5],
         },
         {
           text: 'Oto prognozowana ścieżka rozwoju językowego po bieżącym roku szkolnym.',
@@ -580,7 +579,7 @@ export class YearReportComponent implements OnInit {
         {
           text: 'Poziom biegłości',
           style: 'header',
-          margin: [0, 0, 0, 5],
+          margin: [0, 15, 0, 5],
         },
         {
           text:
@@ -606,7 +605,7 @@ export class YearReportComponent implements OnInit {
         },
         {
           text: 'Rekomendacja egzaminacyjna',
-          style: 'header',
+          bold: true,
           margin: [0, 10, 0, 5],
         },
         {
@@ -630,8 +629,19 @@ export class YearReportComponent implements OnInit {
           fontSize: 9,
         },
         {
+          text: `Decyzja Rodzica o podchodzeniu przez ucznia do oficjalnego egzaminu: ${
+            form.value.parentDecisionYES
+              ? 'Tak'
+              : form.value.parentDecisionNO
+              ? 'Nie'
+              : 'Brak'
+          }`,
+          style: 'header',
+          margin: [0, 10, 0, 5],
+        },
+        {
           text: 'Organizacja kolejnego roku nauki',
-          style: 'subheader',
+          bold: true,
           margin: [0, 10, 0, 5],
         },
         {
@@ -809,7 +819,7 @@ export class YearReportComponent implements OnInit {
   private generateDevelopmentLanguageSkillsTable(form: FormGroup) {
     return {
       style: 'tableExample',
-      margin: [0, 0, 0, 10],
+      margin: [0, 5, 0, 2],
       table: {
         widths: ['*', '*', '*', '*', '*'],
         headerRows: 1,
@@ -3371,6 +3381,9 @@ export class YearReportComponent implements OnInit {
       examRecommendationNonCheckbox: new FormControl(false),
       examRecommendationResult: new FormControl(null),
       examRecommendation: new FormControl('', Validators.required),
+
+      parentDecisionYES: new FormControl(false),
+      parentDecisionNO: new FormControl(false),
 
       learningRecommendations: new FormControl(null),
       recommendations: new FormArray([]),
