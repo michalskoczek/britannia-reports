@@ -331,6 +331,41 @@ export class YearReportComponent implements OnInit {
     }
   }
 
+  realizedMaterial(form: FormGroup): any {
+    if (form.value.allMaterialCompleted) {
+      return { text: 'Pierwsza połowa materiału' };
+    } else if (form.value.halfMaterialCompleted) {
+      return { text: 'Cały materiał' };
+    } else if (
+      !form.value.allMaterialCompleted &&
+      !form.value.halfMaterialCompleted
+    ) {
+      return { text: `${form.value.realizedMaterial}` };
+    }
+  }
+
+  certificationPurposeText(form: FormGroup): any {
+    if (
+      form.value.certificationPurposeYES ||
+      form.value.certificationPurposeNO
+    ) {
+      return {
+        text: `Cel certyfikacyjny na bieżący rok szkolny: ${
+          form.value.certificationPurposeYES
+            ? 'zrealizowany'
+            : form.value.certificationPurposeNO
+            ? 'niezrealizowany'
+            : ''
+        }`,
+        bold: true,
+        fontSize: 10,
+        margin: [0, 10, 0, 0],
+      };
+    } else {
+      return {};
+    }
+  }
+
   public generatePDF(form: FormGroup): any {
     let date: string = new Date(form.value.date).toLocaleDateString();
 
@@ -432,7 +467,7 @@ export class YearReportComponent implements OnInit {
                 { text: 'Kurs', style: 'tableHeader' },
                 { text: `${form.value.course}` },
                 { text: 'Zrealizowany materiał', style: 'tableHeader' },
-                { text: `${form.value.realizedMaterial}` },
+                this.realizedMaterial(form),
               ],
             ],
           },
@@ -600,18 +635,7 @@ export class YearReportComponent implements OnInit {
           fontSize: 9,
         },
         this.generateDevelopmentLanguageSkillsTable(form),
-        {
-          text: `Cel certyfikacyjny na bieżący rok szkolny: ${
-            form.value.certificationPurposeYES
-              ? 'zrealizowany'
-              : form.value.certificationPurposeNO
-              ? 'niezrealizowany'
-              : ''
-          }`,
-          bold: true,
-          fontSize: 10,
-          margin: [0, 10, 0, 0],
-        },
+        this.certificationPurposeText(form),
         {
           text: 'Poziom biegłości',
           style: 'header',
@@ -813,7 +837,7 @@ export class YearReportComponent implements OnInit {
         alignment: 'center',
       },
       {
-        text: 'egzamin szkolny',
+        text: 'Egzamin szkolny',
         style: 'tableHeader',
         alignment: 'center',
       },
@@ -854,7 +878,7 @@ export class YearReportComponent implements OnInit {
       style: 'tableExample',
       margin: [0, 5, 0, 2],
       table: {
-        widths: ['*', '*', '*', '*', '*'],
+        widths: ['auto', '*', '*', '*', '*'],
         headerRows: 1,
         body: this.generateRowsInDevelopmentLanguageSkillsTable(form),
       },
@@ -3385,6 +3409,8 @@ export class YearReportComponent implements OnInit {
       ownEducationMaterial: new FormControl(false),
       course: new FormControl(null, Validators.required),
       realizedMaterial: new FormControl(null, Validators.required),
+      allMaterialCompleted: new FormControl(false),
+      halfMaterialCompleted: new FormControl(false),
 
       avgMark: new FormControl(null),
       frequency: new FormControl(null),

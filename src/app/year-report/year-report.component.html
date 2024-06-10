@@ -138,9 +138,25 @@
       </mat-form-field>
     </div>
 
+    <div class="row">
+      <div class="col-12">
+        <div class="w-100">
+          <p>Zrealizowany materiał</p>
+        </div>
+        <div class="w-100">
+          <mat-checkbox formControlName="allMaterialCompleted"
+            >Pierwsza połowa materiału</mat-checkbox
+          >
+          <mat-checkbox formControlName="halfMaterialCompleted"
+            >Cały materiał</mat-checkbox
+          >
+        </div>
+      </div>
+    </div>
+
     <div class="row form-field">
       <mat-form-field class="col-12 my-1">
-        <mat-label>{{ "Zrealizowany materiał" | translate }}</mat-label>
+        <mat-label>Zrealizowany materiał - własny tekst</mat-label>
         <textarea
           matInput
           type="text"
