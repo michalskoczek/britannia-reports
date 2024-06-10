@@ -206,7 +206,7 @@
             <p>W kierunku poziomu</p>
             <p>Cel certyfikacyjny</p>
             <p>Egzamin szkolny</p>
-            <p>Czy NIE zapisywać?</p>
+            <p>Bez tej linijki?</p>
           </div>
 
           <div
@@ -269,6 +269,20 @@
 
       <div class="col-12">
         <small>{{ "* Ocena celująca" | translate }}</small>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <div class="w-100">
+          <p class="m-0 mt-5">Cel certyfikacyjny na bieżący rok szkolny:</p>
+        </div>
+        <mat-checkbox formControlName="certificationPurposeYES"
+          >zrealizowany</mat-checkbox
+        >
+        <mat-checkbox formControlName="certificationPurposeNO"
+          >niezrealizowany</mat-checkbox
+        >
       </div>
     </div>
 
@@ -1264,6 +1278,7 @@
         </div>
         <mat-checkbox formControlName="parentDecisionYES">Tak</mat-checkbox>
         <mat-checkbox formControlName="parentDecisionNO">Nie</mat-checkbox>
+        <mat-checkbox formControlName="parentDecisionNONE">Brak</mat-checkbox>
       </div>
     </div>
 

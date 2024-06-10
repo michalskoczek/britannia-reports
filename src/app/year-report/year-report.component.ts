@@ -307,6 +307,30 @@ export class YearReportComponent implements OnInit {
     }
   }
 
+  parentDecision(form: FormGroup): any {
+    if (
+      form.value.parentDecisionYES === false &&
+      form.value.parentDecisionNO === false &&
+      form.value.parentDecisionNONE === false
+    ) {
+      return {};
+    } else {
+      return {
+        text: `Decyzja Rodzica o podchodzeniu przez ucznia do oficjalnego egzaminu: ${
+          form.value.parentDecisionYES
+            ? 'Tak'
+            : form.value.parentDecisionNO
+            ? 'Nie'
+            : form.value.parentDecisionNONE
+            ? 'Brak'
+            : ''
+        }`,
+        style: 'header',
+        margin: [0, 10, 0, 5],
+      };
+    }
+  }
+
   public generatePDF(form: FormGroup): any {
     let date: string = new Date(form.value.date).toLocaleDateString();
 
@@ -419,7 +443,7 @@ export class YearReportComponent implements OnInit {
           margin: [0, 15, 0, 0],
         },
         {
-          style: 'tableExample',
+          style: 'gradingScale',
           table: {
             widths: ['*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*'],
             body: [
@@ -577,6 +601,18 @@ export class YearReportComponent implements OnInit {
         },
         this.generateDevelopmentLanguageSkillsTable(form),
         {
+          text: `Cel certyfikacyjny na bieżący rok szkolny: ${
+            form.value.certificationPurposeYES
+              ? 'zrealizowany'
+              : form.value.certificationPurposeNO
+              ? 'niezrealizowany'
+              : ''
+          }`,
+          bold: true,
+          fontSize: 10,
+          margin: [0, 10, 0, 0],
+        },
+        {
           text: 'Poziom biegłości',
           style: 'header',
           margin: [0, 15, 0, 5],
@@ -589,7 +625,10 @@ export class YearReportComponent implements OnInit {
           fontSize: 9,
         },
         {
-          text: ['Rodzaj egzaminu: ', form.value.typeOfExam],
+          text: [
+            `${form.value.typeOfExam ? 'Rodzaj egzaminu:' : ''}`,
+            form.value.typeOfExam,
+          ],
           bold: true,
           margin: [0, 10, 0, 0],
           fontSize: 10,
@@ -606,7 +645,7 @@ export class YearReportComponent implements OnInit {
         {
           text: 'Rekomendacja egzaminacyjna',
           bold: true,
-          margin: [0, 10, 0, 5],
+          margin: [0, 5, 0, 5],
         },
         {
           text: `${
@@ -628,17 +667,7 @@ export class YearReportComponent implements OnInit {
           ul: this.additionalExamInformations,
           fontSize: 9,
         },
-        {
-          text: `Decyzja Rodzica o podchodzeniu przez ucznia do oficjalnego egzaminu: ${
-            form.value.parentDecisionYES
-              ? 'Tak'
-              : form.value.parentDecisionNO
-              ? 'Nie'
-              : 'Brak'
-          }`,
-          style: 'header',
-          margin: [0, 10, 0, 5],
-        },
+        this.parentDecision(form),
         {
           text: 'Organizacja kolejnego roku nauki',
           bold: true,
@@ -704,6 +733,10 @@ export class YearReportComponent implements OnInit {
         tableExample: {
           margin: [0, 10, 0, 2],
           fontSize: 10,
+        },
+        gradingScale: {
+          margin: [0, 10, 0, 2],
+          fontSize: 9,
         },
         tableExams: {
           margin: [0, 10, 0, 10],
@@ -3384,6 +3417,9 @@ export class YearReportComponent implements OnInit {
 
       parentDecisionYES: new FormControl(false),
       parentDecisionNO: new FormControl(false),
+      parentDecisionNONE: new FormControl(false),
+      certificationPurposeYES: new FormControl(false),
+      certificationPurposeNO: new FormControl(false),
 
       learningRecommendations: new FormControl(null),
       recommendations: new FormArray([]),
