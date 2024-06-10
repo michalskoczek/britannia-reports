@@ -26,6 +26,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { CambridgeReportComponent } from './cambridge-report/cambridge-report.component';
+import { TeddyEddieReportComponent } from './teddy-eddie-report/teddy-eddie-report.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -37,6 +38,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     YearReportComponent,
     SemestrReportComponent,
     CambridgeReportComponent,
+    TeddyEddieReportComponent,
   ],
   imports: [
     BrowserModule,
