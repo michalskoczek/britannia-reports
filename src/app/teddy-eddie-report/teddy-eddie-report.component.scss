@@ -1,0 +1,78 @@
+@import "../../assets/styles/variables";
+@import "../../assets/styles/mixins";
+
+.generate-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+}
+
+.row-wrapper {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+
+  div {
+    width: 100%;
+  }
+
+  p {
+    width: calc(100% / 7);
+    border: 1px solid black;
+    margin: 0;
+  }
+
+  .row-group {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+
+    div {
+      width: calc(100% / 7);
+      border: 1px solid black;
+      margin: 0;
+
+      input {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.row-wrapper-te {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+
+  div {
+    width: 100%;
+  }
+
+  p {
+    width: calc(100% / 6);
+    border: 1px solid black;
+    margin: 0;
+  }
+
+  .row-group-te {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+
+    div {
+      width: calc(100% / 6);
+      border: 1px solid black;
+      margin: 0;
+
+      input {
+        width: 100%;
+      }
+    }
+  }
+}

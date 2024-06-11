@@ -26,6 +26,10 @@ export const schoolYears: string[] = [
   '2032-2033',
   '2033-2034',
   '2034-2035',
+  '2035-2036',
+  '2036-2037',
+  '2037-2038',
+  '2038-2039',
 ];
 
 export const languageLevels: string[] = [
@@ -63,3 +67,38 @@ export const schoolExam: string[] = [
   'matura podstawowa',
   'matura rozszerzona',
 ];
+
+export const booksToChoosingTE: string[] = [
+  'The Emerald Book',
+  'The Yellow Book',
+  'The Red Book',
+  'The Blue Book',
+];
+
+export const studentsAgeTE: string[] = ['Klasa 2 SP', 'Klasa 3 SP'];
+
+export const schoolExamsTE: string[] = [
+  '',
+  'trzecioteścik',
+  'egzamin 8-klasisty',
+  'matura podstawowa',
+  'matura rozszerzona',
+];
+
+export const coursesTE: string[] = [
+  'Teddy Eddie',
+  'English Pearls',
+  'English Pearls 2',
+  'English Pearls 3',
+  'English Amethysts 4',
+  'English Amethysts 5',
+  'English Emeralds 6',
+  'English Emeralds 7',
+  'English Rubies',
+  'English Saphires',
+  'English Diamonds',
+];
+
+export const ageTE: string[] = ['4 lata', '5 lat', '6 lat', 'Klasa 1 SP'];
+
+export const courseLevelTE: string[] = ['Standard', 'Abc', 'Superhero'];
