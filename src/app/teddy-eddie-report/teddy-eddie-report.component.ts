@@ -63,8 +63,6 @@ export class TeddyEddieReportComponent implements OnInit {
       this.classes.length
     );
 
-    console.log(shortClassesInSchool);
-
     const clearFormArray = (formArray: FormArray) => {
       while (formArray.length !== 0) {
         formArray.removeAt(0);
@@ -98,8 +96,6 @@ export class TeddyEddieReportComponent implements OnInit {
           shouldDeleteRow: new FormControl(false),
         })
       );
-
-      console.log(this.addSchoolExam(shortClassesInSchool[i]));
     }
   }
 
