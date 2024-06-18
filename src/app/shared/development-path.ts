@@ -79,10 +79,10 @@ export const studentsAgeTE: string[] = ['Klasa 2 SP', 'Klasa 3 SP'];
 
 export const schoolExamsTE: string[] = [
   '',
-  'trzecioteścik',
-  'egzamin 8-klasisty',
-  'matura podstawowa',
-  'matura rozszerzona',
+  'Trzecioteścik',
+  'Egzamin 8-klasisty',
+  'Matura podstawowa',
+  'Matura rozszerzona',
 ];
 
 export const coursesTE: string[] = [

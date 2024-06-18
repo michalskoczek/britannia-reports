@@ -63,6 +63,8 @@ export class TeddyEddieReportComponent implements OnInit {
       this.classes.length
     );
 
+    console.log(shortClassesInSchool);
+
     const clearFormArray = (formArray: FormArray) => {
       while (formArray.length !== 0) {
         formArray.removeAt(0);
@@ -96,6 +98,8 @@ export class TeddyEddieReportComponent implements OnInit {
           shouldDeleteRow: new FormControl(false),
         })
       );
+
+      console.log(this.addSchoolExam(shortClassesInSchool[i]));
     }
   }
 
@@ -140,10 +144,10 @@ export class TeddyEddieReportComponent implements OnInit {
   private addSchoolExam(shortClassesInSchool: string): string | null {
     switch (shortClassesInSchool) {
       case 'Klasa 3 SP':
-        return 'trzecioteścik';
+        return 'Trzecioteścik';
         break;
       case 'Klasa 8 SP':
-        return 'egzamin 8-klasisty';
+        return 'Egzamin 8-klasisty';
         break;
       default:
         return null;
@@ -166,10 +170,6 @@ export class TeddyEddieReportComponent implements OnInit {
   }
 
   public setTableTE(age: string): void {
-    // this.indexClassTE = this.ageTE.findIndex((r: string) => {
-    //   return r === this.form.getRawValue()['age'];
-    // });
-
     this.initTableTE(age);
 
     this.setClasses('Klasa 2 SP');
@@ -236,7 +236,7 @@ export class TeddyEddieReportComponent implements OnInit {
         },
         {
           text: [`Data: `, { text: `${date}`, style: 'subtitle' }],
-          margin: [0, 5, 0, 20],
+          margin: [0, 5, 0, 40],
           alignment: 'center',
         },
         {
@@ -247,7 +247,7 @@ export class TeddyEddieReportComponent implements OnInit {
         },
         {
           text: 'Poniżej przedstawiamy prognozowaną ścieżkę rozwoju językowego ucznia na kolejne lata.',
-          margin: [0, 0, 0, 15],
+          margin: [0, 0, 0, 40],
           fontSize: 11,
           alignment: 'center',
         },
@@ -256,6 +256,7 @@ export class TeddyEddieReportComponent implements OnInit {
           margin: [0, 0, 0, 0],
           fontSize: 11,
           alignment: 'center',
+          bold: true,
         },
         this.generateTETable(form),
         {
@@ -263,6 +264,7 @@ export class TeddyEddieReportComponent implements OnInit {
           margin: [0, 5, 0, 0],
           fontSize: 11,
           alignment: 'center',
+          bold: true,
         },
         this.generateDevelopmentLanguageSkillsTable(form),
         {
@@ -484,7 +486,7 @@ export class TeddyEddieReportComponent implements OnInit {
   private generateDevelopmentLanguageSkillsTable(form: FormGroup) {
     return {
       style: 'tableExample',
-      margin: [0, 5, 0, 2],
+      margin: [0, 5, 0, 10],
       table: {
         widths: ['auto', '*', '*', '*', '*'],
         headerRows: 1,
@@ -496,7 +498,7 @@ export class TeddyEddieReportComponent implements OnInit {
   private generateTETable(form: FormGroup) {
     return {
       style: 'tableExample',
-      margin: [0, 5, 0, 2],
+      margin: [0, 5, 0, 25],
       table: {
         widths: ['auto', '*', '*', '*', '*'],
         headerRows: 1,
