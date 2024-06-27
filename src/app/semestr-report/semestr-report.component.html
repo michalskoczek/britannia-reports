@@ -85,16 +85,17 @@
       <label id="example-radio-group-label">{{
         "Podręcznik:" | translate
       }}</label>
-      <mat-radio-group aria-label="Select an option">
+      <mat-radio-group
+        aria-label="Select an option"
+        formControlName="ownEducationMaterial"
+      >
         <mat-radio-button value="1" (change)="onCheckboxChangeBook()"
           >{{ "Podręcznik z listy" | translate }}
         </mat-radio-button>
         <mat-radio-button value="2" (change)="onCheckboxChangeOwnTitle()"
           >{{ "Wpisz tytuł i wydawnictwo" | translate }}
         </mat-radio-button>
-        <mat-radio-button
-          (change)="onCheckboxChangeOwnMaterialEducation()"
-          formControlName="ownEducationMaterial"
+        <mat-radio-button (change)="onCheckboxChangeOwnMaterialEducation()"
           >{{ "Własne materiały szkoleniowe" | translate }}
         </mat-radio-button>
       </mat-radio-group>
