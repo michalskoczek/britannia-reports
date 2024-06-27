@@ -41,3 +41,48 @@
     }
   }
 }
+
+.table-wrapper {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  flex-wrap: wrap;
+
+  .table-row {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    border: 1px solid black;
+    margin: 0;
+
+    .title {
+      width: 60%;
+      border-right: 1px solid black;
+      padding: 5px 0;
+
+      p {
+        margin: 0;
+      }
+    }
+
+    .select-wrapper {
+      width: 30%;
+      border-right: 1px solid black;
+      padding: 5px 0;
+
+      input {
+        width: 100%;
+      }
+    }
+
+    .checkbox-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 5px 0;
+      width: 10%;
+    }
+  }
+}
