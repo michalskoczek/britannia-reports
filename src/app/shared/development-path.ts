@@ -34,6 +34,8 @@ export const schoolYears: string[] = [
 
 export const languageLevels: string[] = [
   '',
+  'Pre-A1.1',
+  'Pre-A1.2',
   'Pre-A1',
   'A1.1',
   'A1.2',

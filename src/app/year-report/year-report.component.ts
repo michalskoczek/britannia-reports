@@ -7,7 +7,6 @@ import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { ELEMENT_DATA, TableElement } from '../rating-scale/table-elements';
 import { classes, teachers, books, courses } from '../shared/select-values';
 import { Marks, marks } from '../shared/marks';
-import { image } from '../shared/images-base64';
 import { baner } from '../shared/baner-base64';
 import {
   certificationPurpose,
@@ -64,7 +63,6 @@ export class YearReportComponent implements OnInit {
 
   public indexClass: number = 0;
 
-  private readonly imageLogo: string = image;
   private readonly banerLogo: string = baner;
 
   ngOnInit(): void {
@@ -353,8 +351,7 @@ export class YearReportComponent implements OnInit {
         {
           text: form.value.signature,
           margin: [0, 5, 0, 0],
-          fontSize: 10,
-          bold: true,
+          fontSize: 9,
         },
       ],
       styles: {
