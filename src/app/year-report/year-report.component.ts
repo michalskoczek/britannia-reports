@@ -174,7 +174,7 @@ export class YearReportComponent implements OnInit {
       return {
         text: 'Dodatkowy komentarz',
         style: 'header',
-        margin: [0, 10, 0, 5],
+        margin: [0, 10, 0, 0],
       };
     } else {
       return {};
@@ -228,7 +228,6 @@ export class YearReportComponent implements OnInit {
   }
 
   public generatePDF(form: FormGroup): any {
-    console.log(form.getRawValue());
     let date: string = new Date(form.value.date).toLocaleDateString();
 
     let docDefinition = {
@@ -304,23 +303,23 @@ export class YearReportComponent implements OnInit {
         {
           text: 'Prognozowana ścieżka rozwoju językowego',
           style: 'header',
-          margin: [0, 15, 0, 5],
+          margin: [0, 10, 0, 5],
         },
         {
           text: 'Oto prognozowana ścieżka rozwoju językowego po bieżącym roku szkolnym.',
-          margin: [0, 0, 0, 5],
+          margin: [0, 0, 0, 0],
           fontSize: 9,
         },
         this.generateDevelopmentLanguageSkillsTable(form),
         this.certificationPurposeText(form),
         {
           text: 'W zależności od przyszłorocznego wkładu pracy, czyli poziomu zaangażowania na lekcjach i systematyczności utrwalania wiedzy w domu, prognozowana ścieżka rozwoju językowego może ulec zmianie na koniec kolejnego roku szkolnego. ',
-          margin: [0, 5, 0, 5],
+          margin: [0, 5, 0, 0],
           fontSize: 9,
         },
         {
           text: '*Tryb nauki',
-          bold: true,
+          style: 'header',
           margin: [0, 10, 0, 5],
         },
         {
@@ -353,16 +352,9 @@ export class YearReportComponent implements OnInit {
         this.additionalComment(form),
         {
           text: form.value.signature,
-          margin: [0, 20, 0, 10],
+          margin: [0, 5, 0, 0],
           fontSize: 10,
           bold: true,
-        },
-        {
-          image: this.imageLogo,
-          width: 125,
-          height: 110,
-          alignment: 'center',
-          margin: [0, 20, 0, 0],
         },
       ],
       styles: {
@@ -371,7 +363,7 @@ export class YearReportComponent implements OnInit {
           bold: true,
         },
         tableExample: {
-          margin: [0, 10, 0, 2],
+          margin: [0, 10, 0, 0],
           fontSize: 10,
         },
         gradingScale: {
@@ -395,7 +387,7 @@ export class YearReportComponent implements OnInit {
           bold: true,
         },
         title: {
-          fontSize: 13,
+          fontSize: 12,
           bold: true,
           alignment: 'justify',
           decoration: 'underline',
