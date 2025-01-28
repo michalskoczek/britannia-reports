@@ -187,11 +187,6 @@
           <input matInput formControlName="avgMark" />
         </mat-form-field>
 
-        <mat-form-field class="w-100 px-2">
-          <mat-label>{{ "Frekwencja w %" | translate }}</mat-label>
-          <input matInput type="number" formControlName="frequency" />
-        </mat-form-field>
-
         <p class="w-100">{{ "Ocena opisowa" | translate }}</p>
 
         <mat-form-field class="w-50 px-2">
@@ -288,6 +283,18 @@
             *ngIf="this.form.controls['behaviour'].hasError('required')"
             >{{ "Pole jest wymagane" | translate }}
           </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="w-100 px-2">
+          <mat-label>{{ "Frekwencja" | translate }}</mat-label>
+          <mat-select formControlName="frequency">
+            <mat-option
+              *ngFor="let mark of frequencyMarks"
+              [value]="mark.value"
+            >
+              {{ mark.viewValue | translate }}
+            </mat-option>
+          </mat-select>
         </mat-form-field>
       </div>
 
