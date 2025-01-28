@@ -39,6 +39,15 @@ export const books: string[] = [
   'Power Up 4, wydawnictwo Cambridge',
   'Power Up 5, wydawnictwo Cambridge',
   'Power Up 6, wydawnictwo Cambridge',
+  'Prepare, level 1, wydawnictwo Cambridge',
+  'Prepare, level 2, wydawnictwo Cambridge',
+  'Prepare, level 3, wydawnictwo Cambridge',
+  'Prepare, level 4, wydawnictwo Cambridge',
+  'Prepare, level 5, wydawnictwo Cambridge',
+  'Prepare, level 6, wydawnictwo Cambridge',
+  'Prepare, level 7, wydawnictwo Cambridge',
+  'Prepare, level 8, wydawnictwo Cambridge',
+  'Prepare, level 9, wydawnictwo Cambridge',
 ];
 
 export const courses: string[] = [

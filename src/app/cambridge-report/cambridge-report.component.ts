@@ -168,9 +168,17 @@ export class CambridgeReportComponent implements OnInit {
         form.value.typeOfExam === 'Cambridge MOVERS' ||
         form.value.typeOfExam === 'Cambridge FLYERS'
       ) {
-        if (form.value.listeningA1Array.length === 2) {
+        if (
+          form.value.listeningA1Array.length === 2 ||
+          form.value.writingAndReadingA1Array.length === 2 ||
+          form.value.speakingA1Array.length === 2
+        ) {
           return this.generateTableOfA1ExamsTwoTerm(form);
-        } else if (form.value.listeningA1Array.length === 1) {
+        } else if (
+          form.value.listeningA1Array.length === 1 ||
+          form.value.writingAndReadingA1Array.length === 1 ||
+          form.value.speakingA1Array.length === 1
+        ) {
           return this.generateTableOfA1ExamsOneTerm(form);
         } else return this.generateTableOfA1Exams(form);
       } else if (
@@ -320,11 +328,6 @@ export class CambridgeReportComponent implements OnInit {
           },
         },
         {
-          text: `${form.value.examRecommendation}`,
-          fontSize: 10,
-          margin: [0, 10, 0, 0],
-        },
-        {
           text: 'Dodatkowe informacje egzaminacyjne',
           style: 'header',
           margin: [0, 10, 0, 5],
@@ -431,96 +434,7 @@ export class CambridgeReportComponent implements OnInit {
               alignment: 'center',
             },
           ],
-          [
-            { text: 'Słuchanie', alignment: 'center', rowSpan: 3 },
-            { text: '1', alignment: 'center' },
-            {
-              text: `${
-                form.value.listeningA1Array[0].date
-                  ? new Date(
-                      form.value.listeningA1Array[0].date
-                    ).toLocaleDateString()
-                  : '-'
-              }`,
-              alignment: 'center',
-            },
-            {
-              text: `${
-                form.value.listeningA1Array[0].score
-                  ? `${form.value.listeningA1Array[0].score}%`
-                  : '-'
-              }`,
-              alignment: 'center',
-            },
-            {
-              text: `${
-                form.value.listeningA1Array[0].result
-                  ? form.value.listeningA1Array[0].result
-                  : '-'
-              }`,
-              alignment: 'center',
-            },
-          ],
-          [
-            {},
-            { text: `2`, alignment: 'center' },
-            {
-              text: `${
-                form.value.listeningA1Array[1].date
-                  ? new Date(
-                      form.value.listeningA1Array[1].date
-                    ).toLocaleDateString()
-                  : '-'
-              }`,
-              alignment: 'center',
-            },
-            {
-              text: `${
-                form.value.listeningA1Array[1].score
-                  ? `${form.value.listeningA1Array[1].score}%`
-                  : '-'
-              }`,
-              alignment: 'center',
-            },
-            {
-              text: `${
-                form.value.listeningA1Array[1].result
-                  ? form.value.listeningA1Array[1].result
-                  : '-'
-              }`,
-              alignment: 'center',
-            },
-          ],
-          [
-            '',
-            { text: `3`, alignment: 'center' },
-            {
-              text: `${
-                form.value.listeningA1Array[2].date
-                  ? new Date(
-                      form.value.listeningA1Array[2].date
-                    ).toLocaleDateString()
-                  : '-'
-              }`,
-              alignment: 'center',
-            },
-            {
-              text: `${
-                form.value.listeningA1Array[2].score
-                  ? `${form.value.listeningA1Array[2].score}%`
-                  : '-'
-              }`,
-              alignment: 'center',
-            },
-            {
-              text: `${
-                form.value.listeningA1Array[2].result
-                  ? form.value.listeningA1Array[2].result
-                  : '-'
-              }`,
-              alignment: 'center',
-            },
-          ],
+          this.isArrayListeningA1Exist(form.value.listeningA1Array),
           [
             { text: 'Czytanie i Pisanie', alignment: 'center', rowSpan: 3 },
             { text: `1`, alignment: 'center' },
@@ -959,99 +873,132 @@ export class CambridgeReportComponent implements OnInit {
               alignment: 'center',
             },
           ],
-          [
-            { text: 'Słuchanie', alignment: 'center' },
-            { text: '1', alignment: 'center' },
-            {
-              text: `${
-                form.value.listeningA1Array[0].date
-                  ? new Date(
-                      form.value.listeningA1Array[0].date
-                    ).toLocaleDateString()
-                  : '-'
-              }`,
-              alignment: 'center',
-            },
-            {
-              text: `${
-                form.value.listeningA1Array[0].score
-                  ? `${form.value.listeningA1Array[0].score}%`
-                  : '-'
-              }`,
-              alignment: 'center',
-            },
-            {
-              text: `${
-                form.value.listeningA1Array[0].result
-                  ? form.value.listeningA1Array[0].result
-                  : '-'
-              }`,
-              alignment: 'center',
-            },
-          ],
-          [
-            { text: 'Czytanie i Pisanie', alignment: 'center' },
-            { text: `1`, alignment: 'center' },
-            {
-              text: `${
-                form.value.writingAndReadingA1Array[0].date
-                  ? new Date(
-                      form.value.writingAndReadingA1Array[0].date
-                    ).toLocaleDateString()
-                  : '-'
-              }`,
-              alignment: 'center',
-            },
-            {
-              text: `${
-                form.value.writingAndReadingA1Array[0].score
-                  ? `${form.value.writingAndReadingA1Array[0].score}%`
-                  : '-'
-              }`,
-              alignment: 'center',
-            },
-            {
-              text: `${
-                form.value.writingAndReadingA1Array[0].result
-                  ? form.value.writingAndReadingA1Array[0].result
-                  : '-'
-              }`,
-              alignment: 'center',
-            },
-          ],
-          [
-            { text: 'Mówienie', alignment: 'center' },
-            { text: '1', alignment: 'center' },
-            {
-              text: `${
-                form.value.speakingA1Array[0].date
-                  ? new Date(
-                      form.value.speakingA1Array[0].date
-                    ).toLocaleDateString()
-                  : '-'
-              }`,
-              alignment: 'center',
-            },
-            {
-              text: `${
-                form.value.speakingA1Array[0].score
-                  ? `${form.value.speakingA1Array[0].score}%`
-                  : '-'
-              }`,
-              alignment: 'center',
-            },
-            {
-              text: `${
-                form.value.speakingA1Array[0].result
-                  ? form.value.speakingA1Array[0].result
-                  : '-'
-              }`,
-              alignment: 'center',
-            },
-          ],
+
+          this.isArrayListeningA1Exist(form.value.listeningA1Array),
+          this.isArrayReadingWritingA1Exist(
+            form.value.writingAndReadingA1Array
+          ),
+          this.isArraySpeakingA1Exist(form.value.speakingA1Array),
         ],
       },
     };
+  }
+
+  private isArrayListeningA1Exist(array: any): any {
+    if (array.length > 0) {
+      return [
+        { text: 'Słuchanie', alignment: 'center' },
+        { text: '1', alignment: 'center' },
+        {
+          text: `${
+            array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
+          }`,
+          alignment: 'center',
+        },
+        {
+          text: `${array[0].score ? `${array[0].score}%` : '-'}`,
+          alignment: 'center',
+        },
+        {
+          text: `${array[0].result ? array[0].result : '-'}`,
+          alignment: 'center',
+        },
+      ];
+    } else
+      return [
+        { text: 'Słuchanie', alignment: 'center' },
+        { text: '-', alignment: 'center' },
+        {
+          text: `-`,
+          alignment: 'center',
+        },
+        {
+          text: `-`,
+          alignment: 'center',
+        },
+        {
+          text: `-`,
+          alignment: 'center',
+        },
+      ];
+  }
+
+  private isArrayReadingWritingA1Exist(array: any) {
+    if (array.length > 0) {
+      return [
+        { text: 'Czytanie i Pisanie', alignment: 'center' },
+        { text: `1`, alignment: 'center' },
+        {
+          text: `${
+            array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
+          }`,
+          alignment: 'center',
+        },
+        {
+          text: `${array[0].score ? `${array[0].score}%` : '-'}`,
+          alignment: 'center',
+        },
+        {
+          text: `${array[0].result ? array[0].result : '-'}`,
+          alignment: 'center',
+        },
+      ];
+    } else
+      return [
+        { text: 'Czytanie i Pisanie', alignment: 'center' },
+        { text: `-`, alignment: 'center' },
+        {
+          text: `-`,
+          alignment: 'center',
+        },
+        {
+          text: `-`,
+          alignment: 'center',
+        },
+        {
+          text: `-`,
+          alignment: 'center',
+        },
+      ];
+  }
+
+  private isArraySpeakingA1Exist(array: any) {
+    if (array.length > 0) {
+      return [
+        { text: 'Mówienie', alignment: 'center' },
+        { text: '1', alignment: 'center' },
+        {
+          text: `${
+            array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
+          }`,
+          alignment: 'center',
+        },
+        {
+          text: `${array[0].score ? `${array[0].score}%` : '-'}`,
+          alignment: 'center',
+        },
+        {
+          text: `${array[0].result ? array[0].result : '-'}`,
+          alignment: 'center',
+        },
+      ];
+    } else
+      return [
+        { text: 'Mówienie', alignment: 'center' },
+        { text: '-', alignment: 'center' },
+        {
+          text: `-`,
+          alignment: 'center',
+        },
+        {
+          text: `-`,
+          alignment: 'center',
+        },
+        {
+          text: `-`,
+          alignment: 'center',
+        },
+      ];
   }
 
   private generateTableOfA2B1Exams(form: FormGroup) {
@@ -2911,31 +2858,31 @@ export class CambridgeReportComponent implements OnInit {
   private createForm(): FormGroup {
     return new FormGroup({
       studentName: new FormControl(null, Validators.required),
-      name: new FormControl(null, Validators.required),
-      sex: new FormControl(null, Validators.required),
-      date: new FormControl(null, Validators.required),
-      class: new FormControl(null, Validators.required),
-      teacher: new FormControl(null, Validators.required),
-      studentBookTitle: new FormControl(null, Validators.required),
-      ownTitleStudentBook: new FormControl(null, Validators.required),
+      name: new FormControl(null),
+      sex: new FormControl(null),
+      date: new FormControl(null),
+      class: new FormControl(null),
+      teacher: new FormControl(null),
+      studentBookTitle: new FormControl(null),
+      ownTitleStudentBook: new FormControl(null),
       ownEducationMaterial: new FormControl(false),
-      course: new FormControl(null, Validators.required),
-      realizedMaterial: new FormControl(null, Validators.required),
+      course: new FormControl(null),
+      realizedMaterial: new FormControl(null),
 
       marks: new FormControl(null),
       avgMark: new FormControl(null),
       frequency: new FormControl(null),
-      lead: new FormControl(null, Validators.required),
-      respect: new FormControl(null, Validators.required),
-      focus: new FormControl(null, Validators.required),
-      pronunciation: new FormControl(null, Validators.required),
-      vocabulary: new FormControl(null, Validators.required),
-      prepareToLecture: new FormControl(null, Validators.required),
-      homeworks: new FormControl(null, Validators.required),
-      involvement: new FormControl(null, Validators.required),
-      behaviour: new FormControl(null, Validators.required),
+      lead: new FormControl(null),
+      respect: new FormControl(null),
+      focus: new FormControl(null),
+      pronunciation: new FormControl(null),
+      vocabulary: new FormControl(null),
+      prepareToLecture: new FormControl(null),
+      homeworks: new FormControl(null),
+      involvement: new FormControl(null),
+      behaviour: new FormControl(null),
 
-      typeOfExam: new FormControl(null, Validators.required),
+      typeOfExam: new FormControl(null),
 
       listeningA1Array: new FormArray([]),
       writingAndReadingA1Array: new FormArray([]),
@@ -2959,13 +2906,13 @@ export class CambridgeReportComponent implements OnInit {
       examRecommendationNonCheckbox: new FormControl(false),
       examRecommendationCheckbox: new FormControl(false),
       examRecommendationResult: new FormControl(null),
-      examRecommendation: new FormControl('', Validators.required),
+      examRecommendation: new FormControl(''),
       examRecommendationOptions: new FormControl(null),
 
       learningRecommendations: new FormControl(null),
       recommendations: new FormArray([]),
 
-      signature: new FormControl(null, Validators.required),
+      signature: new FormControl(null),
     });
   }
 }

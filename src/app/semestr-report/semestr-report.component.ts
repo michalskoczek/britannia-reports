@@ -8,6 +8,7 @@ import { ELEMENT_DATA, TableElement } from '../rating-scale/table-elements';
 import { classes, teachers, books, courses } from '../shared/select-values';
 import {
   behaviourMarks,
+  frequencyMarks,
   homeworksMarks,
   involvementMarks,
   Marks,
@@ -52,6 +53,7 @@ export class SemestrReportComponent implements OnInit {
   public readonly homeworksMarks: Marks[] = homeworksMarks;
   public readonly involvementMarks: Marks[] = involvementMarks;
   public readonly behaviourMarks: Marks[] = behaviourMarks;
+  public readonly frequencyMarks: Marks[] = frequencyMarks;
 
   public isCheckedBook: boolean = false;
   public isCheckedOwnTitle: boolean = false;
@@ -184,7 +186,7 @@ export class SemestrReportComponent implements OnInit {
     let docDefinition = {
       content: [
         {
-          text: 'PODSUMOWANIE NAUKI i REKOMENDACJE',
+          text: 'PODSUMOWANIE NAUKI I REKOMENDACJE',
           style: 'title',
           alignment: 'center',
         },
@@ -244,7 +246,7 @@ export class SemestrReportComponent implements OnInit {
               [
                 {
                   text: 'Nasza skala ocen',
-                  style: 'tableHeader',
+                  fontSize: 7,
                   colSpan: 2,
                   alignment: 'center',
                 },
@@ -264,9 +266,11 @@ export class SemestrReportComponent implements OnInit {
               [
                 {
                   text: '100%+',
+                  fontSize: 7,
                 },
                 {
                   text: '6*',
+                  fontSize: 7,
                 },
                 {
                   text: '',
@@ -274,7 +278,7 @@ export class SemestrReportComponent implements OnInit {
                 },
                 {
                   colSpan: 2,
-                  rowSpan: 10,
+                  rowSpan: 11,
                   text: 'Szczegółowe zestawienie ocen oraz ich opis znajdują się w dzienniku elektronicznym EduSky.',
                   style: 'tableHeader',
                 },
@@ -283,9 +287,11 @@ export class SemestrReportComponent implements OnInit {
               [
                 {
                   text: '96-100%',
+                  fontSize: 7,
                 },
                 {
                   text: '5',
+                  fontSize: 7,
                 },
                 '',
                 '',
@@ -294,9 +300,11 @@ export class SemestrReportComponent implements OnInit {
               [
                 {
                   text: '90-95%',
+                  fontSize: 7,
                 },
                 {
                   text: '5-',
+                  fontSize: 7,
                 },
                 '',
                 '',
@@ -305,9 +313,11 @@ export class SemestrReportComponent implements OnInit {
               [
                 {
                   text: '85-89%',
+                  fontSize: 7,
                 },
                 {
                   text: '4+',
+                  fontSize: 7,
                 },
                 '',
                 '',
@@ -316,9 +326,11 @@ export class SemestrReportComponent implements OnInit {
               [
                 {
                   text: '80-84%',
+                  fontSize: 7,
                 },
                 {
                   text: '4',
+                  fontSize: 7,
                 },
                 '',
                 '',
@@ -327,9 +339,11 @@ export class SemestrReportComponent implements OnInit {
               [
                 {
                   text: '75-79%',
+                  fontSize: 7,
                 },
                 {
                   text: '4-',
+                  fontSize: 7,
                 },
                 '',
                 '',
@@ -338,9 +352,11 @@ export class SemestrReportComponent implements OnInit {
               [
                 {
                   text: '70-74%',
+                  fontSize: 7,
                 },
                 {
                   text: '3+',
+                  fontSize: 7,
                 },
                 '',
                 '',
@@ -349,9 +365,11 @@ export class SemestrReportComponent implements OnInit {
               [
                 {
                   text: '64-69%',
+                  fontSize: 7,
                 },
                 {
                   text: '3',
+                  fontSize: 7,
                 },
                 '',
                 '',
@@ -360,9 +378,11 @@ export class SemestrReportComponent implements OnInit {
               [
                 {
                   text: '60-63%',
+                  fontSize: 7,
                 },
                 {
                   text: '3-',
+                  fontSize: 7,
                 },
                 '',
                 '',
@@ -371,9 +391,11 @@ export class SemestrReportComponent implements OnInit {
               [
                 {
                   text: '55-59%',
+                  fontSize: 7,
                 },
                 {
                   text: '2+',
+                  fontSize: 7,
                 },
                 '',
                 '',
@@ -382,9 +404,24 @@ export class SemestrReportComponent implements OnInit {
               [
                 {
                   text: '45-54%',
+                  fontSize: 7,
                 },
                 {
                   text: '2',
+                  fontSize: 7,
+                },
+                '',
+                '',
+                '',
+              ],
+              [
+                {
+                  text: '0-44%',
+                  fontSize: 7,
+                },
+                {
+                  text: '1',
+                  fontSize: 7,
                 },
                 '',
                 {
@@ -393,24 +430,6 @@ export class SemestrReportComponent implements OnInit {
                 },
                 {
                   text: `${form.value.avgMark ? form.value.avgMark : '-'}`,
-                },
-              ],
-              [
-                {
-                  text: '0-44%',
-                },
-                {
-                  text: '1',
-                },
-                '',
-                {
-                  text: 'Frekwencja',
-                  style: 'tableHeader',
-                },
-                {
-                  text: `${
-                    form.value.frequency ? form.value.frequency + '%' : '-'
-                  }`,
                 },
               ],
             ],
@@ -489,6 +508,12 @@ export class SemestrReportComponent implements OnInit {
                   text: `${changeXToEmptyValue(form.value.behaviour)}`,
                 },
               ],
+              [
+                { text: 'Frekwencja' },
+                {
+                  text: `${form.value.frequency}`,
+                },
+              ],
             ],
           },
         },
@@ -559,23 +584,23 @@ export class SemestrReportComponent implements OnInit {
   private createForm(): FormGroup {
     return new FormGroup({
       studentName: new FormControl(null, Validators.required),
-      name: new FormControl(null, Validators.required),
-      sex: new FormControl(null, Validators.required),
-      date: new FormControl(null, Validators.required),
-      class: new FormControl(null, Validators.required),
-      teacher: new FormControl(null, Validators.required),
-      studentBookTitle: new FormControl(null, Validators.required),
-      ownTitleStudentBook: new FormControl(null, Validators.required),
+      name: new FormControl(null),
+      sex: new FormControl(null),
+      date: new FormControl(null),
+      class: new FormControl(null),
+      teacher: new FormControl(null),
+      studentBookTitle: new FormControl(null),
+      ownTitleStudentBook: new FormControl(null),
       ownEducationMaterial: new FormControl(false),
-      course: new FormControl(null, Validators.required),
-      realizedMaterial: new FormControl(null, Validators.required),
+      course: new FormControl(null),
+      realizedMaterial: new FormControl(null),
 
       marks: new FormControl(null),
       avgMark: new FormControl(null),
       frequency: new FormControl(null),
-      lead: new FormControl(null, Validators.required),
-      respect: new FormControl(null, Validators.required),
-      focus: new FormControl(null, Validators.required),
+      lead: new FormControl(null),
+      respect: new FormControl(null),
+      focus: new FormControl(null),
       pronunciation: new FormControl(null, Validators.required),
       vocabulary: new FormControl(null, Validators.required),
       prepareToLecture: new FormControl(null, Validators.required),
@@ -583,7 +608,7 @@ export class SemestrReportComponent implements OnInit {
       involvement: new FormControl(null, Validators.required),
       behaviour: new FormControl(null, Validators.required),
 
-      typeOfExam: new FormControl(null, Validators.required),
+      typeOfExam: new FormControl(null),
 
       listeningA1Array: new FormArray([]),
       writingAndReadingA1Array: new FormArray([]),
@@ -605,12 +630,12 @@ export class SemestrReportComponent implements OnInit {
       examRecommendationAcceptCheckbox: new FormControl(false),
       examRecommendationNonCheckbox: new FormControl(false),
       examRecommendationResult: new FormControl(null),
-      examRecommendation: new FormControl('', Validators.required),
+      examRecommendation: new FormControl(''),
 
       learningRecommendations: new FormControl(null),
       recommendations: new FormArray([]),
 
-      signature: new FormControl(null, Validators.required),
+      signature: new FormControl(null),
     });
   }
 }

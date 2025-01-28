@@ -160,3 +160,22 @@ export const behaviourMarks: Marks[] = [
       'X Na zajęciach zachowuje się zwykle nieodpowiednio. Nie reaguje na uwagi nauczyciela i rozprasza innych uczniów.',
   },
 ];
+
+export const frequencyMarks: Marks[] = [
+  {
+    viewValue: '5 - bardzo dobra',
+    value: 'Bardzo dobra',
+  },
+  {
+    viewValue: '4 - dobra',
+    value: 'Dobra',
+  },
+  {
+    viewValue: '3 - dostateczna',
+    value: 'Dostateczna',
+  },
+  {
+    viewValue: '2 - dopuszczająca',
+    value: 'Dopuszczająca',
+  },
+];
