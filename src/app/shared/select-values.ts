@@ -22,6 +22,9 @@ export const teachers: string[] = [
   'Jolanta Rybak',
   'Ala Sandurska',
   'Fatima Talaat',
+  'Ewa Gronowska',
+  'Serhiy Huk',
+  'Klaudia Hołubecka-Archacka',
 ];
 
 export const books: string[] = [
