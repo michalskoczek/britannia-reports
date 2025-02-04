@@ -153,7 +153,6 @@ export class CambridgeReportComponent implements OnInit {
   }
 
   public generatePDF(form: FormGroup): any {
-    console.log(form.value);
     let date: string = new Date(form.value.date).toLocaleDateString();
 
     let commentsArray: string[] = [];
@@ -221,15 +220,35 @@ export class CambridgeReportComponent implements OnInit {
         form.value.typeOfExam === ExamTypes.B2_FIRST ||
         form.value.typeOfExam === ExamTypes.C1_ADVANCED
       ) {
-        if (form.value.listeningB2C1Array.length === 2) {
-          return GenerateTableB2C1.generateTableOfB2C1ExamsTwoTerm(form);
-        } else if (form.value.listeningB2C1Array.length === 1) {
+        if (
+          form.value.listeningB2C1Array.length === 3 ||
+          form.value.readingB2C1Array.length === 3 ||
+          form.value.useOfEnglishB2C1Array.length === 3 ||
+          form.value.writingB2C1Array.length === 3 ||
+          form.value.speakingB2C1Array.length === 3
+        ) {
+          return GenerateTableB2C1.generateTableOfB2C1ExamsThreeTerms(form);
+        } else if (
+          form.value.listeningB2C1Array.length === 2 ||
+          form.value.readingB2C1Array.length === 2 ||
+          form.value.useOfEnglishB2C1Array.length === 2 ||
+          form.value.writingB2C1Array.length === 2 ||
+          form.value.speakingB2C1Array.length === 2
+        ) {
+          return GenerateTableB2C1.generateTableOfB2C1ExamsTwoTerms(form);
+        } else if (
+          form.value.listeningB2C1Array.length === 1 ||
+          form.value.readingB2C1Array.length === 1 ||
+          form.value.useOfEnglishB2C1Array.length === 1 ||
+          form.value.writingB2C1Array.length === 1 ||
+          form.value.speakingB2C1Array.length === 1
+        ) {
           return GenerateTableB2C1.generateTableOfB2C1ExamsOneTerm(form);
-        } else return GenerateTableB2C1.generateTableOfB2C1Exams(form);
-      } else return null;
+        } else return [];
+      }
     };
 
-    let docDefinition = {
+    let docDefinition: any = {
       content: [
         {
           text: 'RAPORT Z PRZEPROWADZENIA PRÓBNEGO EGZAMINU CAMBRIDGE',

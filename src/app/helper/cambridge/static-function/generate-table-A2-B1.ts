@@ -1,6 +1,7 @@
 import { FormGroup } from '@angular/forms';
+import { GenerateTable } from './generate-table';
 
-export class GenerateTableA2B1 {
+export class GenerateTableA2B1 extends GenerateTable {
   public static generateTableOfA2B1ExamsOneTerm(form: FormGroup): any {
     return {
       style: 'marksTable',
@@ -8,33 +9,7 @@ export class GenerateTableA2B1 {
         widths: ['*', 'auto', 'auto', 'auto', '*'],
         headerRows: 1,
         body: [
-          [
-            {
-              text: 'Umiejętność',
-              style: 'tableHeader',
-              alignment: 'center',
-            },
-            {
-              text: `Test nr`,
-              style: 'tableHeader',
-              alignment: 'center',
-            },
-            {
-              text: 'Data',
-              style: 'tableHeader',
-              alignment: 'center',
-            },
-            {
-              text: 'Uzyskany wynik',
-              style: 'tableHeader',
-              alignment: 'center',
-            },
-            {
-              text: 'Zdajemy?',
-              style: 'tableHeader',
-              alignment: 'center',
-            },
-          ],
+          this.initHeaderInTable(),
           this.isArrayListeningA2B1ExistOne(form.value.listeningA2B1Array),
           this.isArrayReadingA2B1ExistOne(form.value.readingA2B1Array),
           this.isArrayWritingA2B1ExistOne(form.value.writingA2B1Array),
@@ -209,33 +184,7 @@ export class GenerateTableA2B1 {
         widths: ['*', 'auto', 'auto', 'auto', '*'],
         headerRows: 1,
         body: [
-          [
-            {
-              text: 'Umiejętność',
-              style: 'tableHeader',
-              alignment: 'center',
-            },
-            {
-              text: `Test nr`,
-              style: 'tableHeader',
-              alignment: 'center',
-            },
-            {
-              text: 'Data',
-              style: 'tableHeader',
-              alignment: 'center',
-            },
-            {
-              text: 'Uzyskany wynik',
-              style: 'tableHeader',
-              alignment: 'center',
-            },
-            {
-              text: 'Zdajemy?',
-              style: 'tableHeader',
-              alignment: 'center',
-            },
-          ],
+          this.initHeaderInTable(),
           ...this.isArrayListeningA2B1ExistTwo(form.value.listeningA2B1Array),
           ...this.isArrayReadingA2B1ExistTwo(form.value.readingA2B1Array),
           ...this.isArrayWritingA2B1ExistTwo(form.value.writingA2B1Array),
@@ -586,33 +535,7 @@ export class GenerateTableA2B1 {
         widths: ['*', 'auto', 'auto', 'auto', '*'],
         headerRows: 1,
         body: [
-          [
-            {
-              text: 'Umiejętność',
-              style: 'tableHeader',
-              alignment: 'center',
-            },
-            {
-              text: `Test nr`,
-              style: 'tableHeader',
-              alignment: 'center',
-            },
-            {
-              text: 'Data',
-              style: 'tableHeader',
-              alignment: 'center',
-            },
-            {
-              text: 'Uzyskany wynik',
-              style: 'tableHeader',
-              alignment: 'center',
-            },
-            {
-              text: 'Zdajemy?',
-              style: 'tableHeader',
-              alignment: 'center',
-            },
-          ],
+          this.initHeaderInTable(),
           ...this.isArrayListeningA2B1ExistThree(form.value.listeningA2B1Array),
           ...this.isArrayReadingA2B1ExistThree(form.value.readingA2B1Array),
           ...this.isArrayWritingA2B1ExistThree(form.value.writingA2B1Array),

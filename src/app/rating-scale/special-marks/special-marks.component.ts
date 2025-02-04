@@ -243,8 +243,6 @@ export class SpecialMarksComponent implements OnInit {
       },
     };
 
-    console.log(docDefinition.content);
-
     pdfMake.createPdf(docDefinition).open();
   }
 
