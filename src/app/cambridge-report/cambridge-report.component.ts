@@ -196,15 +196,27 @@ export class CambridgeReportComponent implements OnInit {
         form.value.typeOfExam === ExamTypes.B1_PRELIMINARY
       ) {
         if (
+          form.value.listeningA2B1Array.length === 3 ||
+          form.value.readingA2B1Array.length === 3 ||
+          form.value.writingA2B1Array.length === 3 ||
+          form.value.speakingA2B1Array.length === 3
+        ) {
+          return GenerateTableA2B1.generateTableOfA2B1ExamsThreeTerms(form);
+        } else if (
           form.value.listeningA2B1Array.length === 2 ||
           form.value.readingA2B1Array.length === 2 ||
           form.value.writingA2B1Array.length === 2 ||
           form.value.speakingA2B1Array.length === 2
         ) {
-          return GenerateTableA2B1.generateTableOfA2B1ExamsTwoTerm(form);
-        } else if (form.value.listeningA2B1Array.length === 1) {
+          return GenerateTableA2B1.generateTableOfA2B1ExamsTwoTerms(form);
+        } else if (
+          form.value.listeningA2B1Array.length === 1 ||
+          form.value.readingA2B1Array.length === 1 ||
+          form.value.writingA2B1Array.length === 1 ||
+          form.value.speakingA2B1Array.length === 1
+        ) {
           return GenerateTableA2B1.generateTableOfA2B1ExamsOneTerm(form);
-        } else return GenerateTableA2B1.generateTableOfA2B1Exams(form);
+        } else return [];
       } else if (
         form.value.typeOfExam === ExamTypes.B2_FIRST ||
         form.value.typeOfExam === ExamTypes.C1_ADVANCED

@@ -46,94 +46,6 @@ export class GenerateTableA1 {
     };
   }
 
-  public static generateTableOfA1ExamsTwoTerm(form: FormGroup): any {
-    return {
-      style: 'marksTable',
-      table: {
-        widths: ['*', 'auto', '*', 'auto', '*'],
-        headerRows: 1,
-        body: [
-          [
-            {
-              text: 'Umiejętność',
-              style: 'tableHeader',
-              alignment: 'center',
-            },
-            {
-              text: `Nr testu`,
-              style: 'tableHeader',
-              alignment: 'center',
-            },
-            {
-              text: 'Data',
-              style: 'tableHeader',
-              alignment: 'center',
-            },
-            {
-              text: 'Uzyskany wynik',
-              style: 'tableHeader',
-              alignment: 'center',
-            },
-            {
-              text: 'Zdajemy?',
-              style: 'tableHeader',
-              alignment: 'center',
-            },
-          ],
-          ...this.isArrayListeningA1ExistTwo(form.value.listeningA1Array),
-          ...this.isArrayReadingWritingA1ExistTwo(
-            form.value.writingAndReadingA1Array
-          ),
-          ...this.isArraySpeakingA1ExistTwo(form.value.speakingA1Array),
-        ],
-      },
-    };
-  }
-
-  public static generateTableOfA1ExamsThreeTerms(form: FormGroup): any {
-    return {
-      style: 'marksTable',
-      table: {
-        widths: ['*', 'auto', '*', 'auto', '*'],
-        headerRows: 1,
-        body: [
-          [
-            {
-              text: 'Umiejętność',
-              style: 'tableHeader',
-              alignment: 'center',
-            },
-            {
-              text: `Nr testu`,
-              style: 'tableHeader',
-              alignment: 'center',
-            },
-            {
-              text: 'Data',
-              style: 'tableHeader',
-              alignment: 'center',
-            },
-            {
-              text: 'Uzyskany wynik',
-              style: 'tableHeader',
-              alignment: 'center',
-            },
-            {
-              text: 'Zdajemy?',
-              style: 'tableHeader',
-              alignment: 'center',
-            },
-          ],
-          ...this.isArrayListeningA1ExistThree(form.value.listeningA1Array),
-          ...this.isArrayReadingWritingA1ExistThree(
-            form.value.writingAndReadingA1Array
-          ),
-          ...this.isArraySpeakingA1ExistThree(form.value.speakingA1Array),
-        ],
-      },
-    };
-  }
-
   private static isArrayListeningA1ExistOne(array: any): any {
     if (array.length > 0) {
       return [
@@ -249,6 +161,52 @@ export class GenerateTableA1 {
           alignment: 'center',
         },
       ];
+  }
+
+  // TWO TERMS
+
+  public static generateTableOfA1ExamsTwoTerm(form: FormGroup): any {
+    return {
+      style: 'marksTable',
+      table: {
+        widths: ['*', 'auto', '*', 'auto', '*'],
+        headerRows: 1,
+        body: [
+          [
+            {
+              text: 'Umiejętność',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: `Nr testu`,
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Data',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Uzyskany wynik',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Zdajemy?',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+          ],
+          ...this.isArrayListeningA1ExistTwo(form.value.listeningA1Array),
+          ...this.isArrayReadingWritingA1ExistTwo(
+            form.value.writingAndReadingA1Array
+          ),
+          ...this.isArraySpeakingA1ExistTwo(form.value.speakingA1Array),
+        ],
+      },
+    };
   }
 
   private static isArrayListeningA1ExistTwo(array: any): any {
@@ -499,6 +457,52 @@ export class GenerateTableA1 {
           },
         ],
       ];
+  }
+
+  // THREE TERMS
+
+  public static generateTableOfA1ExamsThreeTerms(form: FormGroup): any {
+    return {
+      style: 'marksTable',
+      table: {
+        widths: ['*', 'auto', '*', 'auto', '*'],
+        headerRows: 1,
+        body: [
+          [
+            {
+              text: 'Umiejętność',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: `Nr testu`,
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Data',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Uzyskany wynik',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+            {
+              text: 'Zdajemy?',
+              style: 'tableHeader',
+              alignment: 'center',
+            },
+          ],
+          ...this.isArrayListeningA1ExistThree(form.value.listeningA1Array),
+          ...this.isArrayReadingWritingA1ExistThree(
+            form.value.writingAndReadingA1Array
+          ),
+          ...this.isArraySpeakingA1ExistThree(form.value.speakingA1Array),
+        ],
+      },
+    };
   }
 
   private static isArrayListeningA1ExistThree(array: any): any {
