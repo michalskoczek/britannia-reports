@@ -957,7 +957,7 @@ export class GenerateTableB2C1 extends GenerateTable {
     if (array.length > 2) {
       return [
         [
-          { text: 'UseOfEnglish', alignment: 'center', rowSpan: 3 },
+          { text: 'Use of English', alignment: 'center', rowSpan: 3 },
           { text: `1`, alignment: 'center' },
           {
             text: `${
@@ -1014,7 +1014,7 @@ export class GenerateTableB2C1 extends GenerateTable {
     } else if (array.length === 2) {
       return [
         [
-          { text: 'UseOfEnglish', alignment: 'center', rowSpan: 2 },
+          { text: 'Use of English', alignment: 'center', rowSpan: 2 },
           { text: `1`, alignment: 'center' },
           {
             text: `${
@@ -1053,7 +1053,7 @@ export class GenerateTableB2C1 extends GenerateTable {
     } else if (array.length === 1) {
       return [
         [
-          { text: 'UseOfEnglish', alignment: 'center' },
+          { text: 'Use of English', alignment: 'center' },
           { text: `1`, alignment: 'center' },
           {
             text: `${
@@ -1074,7 +1074,7 @@ export class GenerateTableB2C1 extends GenerateTable {
     } else
       return [
         [
-          { text: 'UseOfEnglish', alignment: 'center' },
+          { text: 'Use of English', alignment: 'center' },
           { text: `-`, alignment: 'center' },
           {
             text: `-`,
