@@ -566,8 +566,6 @@ export class YearReportComponent implements OnInit {
       },
     ]);
 
-    console.log(arrDetails);
-
     return arrDetails;
   }
 

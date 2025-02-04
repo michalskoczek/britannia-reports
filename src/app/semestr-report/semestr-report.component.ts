@@ -145,7 +145,6 @@ export class SemestrReportComponent implements OnInit {
   }
 
   public generatePDF(form: FormGroup): any {
-    console.log(form.value);
     let date: string = new Date(form.value.date).toLocaleDateString();
 
     let commentsArray: string[] = [];
