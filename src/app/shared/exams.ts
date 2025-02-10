@@ -17,6 +17,7 @@ export const B2C1Exams: string[] = [
 export const resultOfExam: string[] = [
   'Brawo! Możesz śmiało zdawać!',
   'Kciuk w górę! Powinno Ci dobrze pójść!',
+  'Jesteś na dobrej drodze!',
   'Już niewiele Ci brakuje!',
   'Jeszcze warto trochę popracować.',
 ];
