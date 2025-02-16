@@ -200,26 +200,22 @@ export class GenerateTableA1 extends GenerateTable {
     } else if (array.length === 1) {
       return [
         [
-          [
-            { text: 'Słuchanie', alignment: 'center' },
-            { text: '1', alignment: 'center' },
-            {
-              text: `${
-                array[0].date
-                  ? new Date(array[0].date).toLocaleDateString()
-                  : '-'
-              }`,
-              alignment: 'center',
-            },
-            {
-              text: `${array[0].score ? `${array[0].score}%` : '-'}`,
-              alignment: 'center',
-            },
-            {
-              text: `${array[0].result ? array[0].result : '-'}`,
-              alignment: 'center',
-            },
-          ],
+          { text: 'Słuchanie', alignment: 'center' },
+          { text: '1', alignment: 'center' },
+          {
+            text: `${
+              array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
+            }`,
+            alignment: 'center',
+          },
+          {
+            text: `${array[0].score ? `${array[0].score}%` : '-'}`,
+            alignment: 'center',
+          },
+          {
+            text: `${array[0].result ? array[0].result : '-'}`,
+            alignment: 'center',
+          },
         ],
       ];
     } else
