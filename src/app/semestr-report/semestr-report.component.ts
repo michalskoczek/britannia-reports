@@ -18,8 +18,8 @@ import {
   vocabularyMarks,
 } from '../shared/marks';
 import { learningRecommendations } from '../shared/exams';
-import { image } from '../shared/images-base64';
 import { TranslateService } from '@ngx-translate/core';
+import { FileBase64 } from '../shared/base64/file-base64';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -60,7 +60,7 @@ export class SemestrReportComponent implements OnInit {
 
   public learningRecommendations: string[] = learningRecommendations;
 
-  private readonly imageLogo: string = image;
+  private readonly imageLogo: string = FileBase64.image;
 
   ngOnInit(): void {
     this.form = this.createForm();

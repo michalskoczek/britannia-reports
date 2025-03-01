@@ -7,17 +7,12 @@ import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { classes, teachers, courses } from '../shared/select-values';
 import { Marks, marks } from '../shared/marks';
 import {
-  additionalExamInformations,
   examsRecommendations,
   examsSelect,
-  learningRecommendations,
   resultOfExam,
 } from '../shared/exams';
-import { image } from '../shared/images-base64';
-import { GenerateTableA1 } from '../helper/cambridge/static-function/generate-table-A1';
-import { GenerateTableA2B1 } from '../helper/cambridge/static-function/generate-table-A2-B1';
-import { GenerateTableB2C1 } from '../helper/cambridge/static-function/generate-table-B2-C1';
-import { ExamTypes } from '../shared/enum/exam-type.enum';
+import { GoogleAuthService } from '../service/google-auth.service';
+import { DocumentDefinitionBase } from '../helper/document-definition/cambridge/document-definition-base';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -27,36 +22,24 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
   styleUrls: ['./cambridge-report.component.scss'],
 })
 export class CambridgeReportComponent implements OnInit {
-  title: string = 'britannia-reports';
+  constructor(private googleAuthService: GoogleAuthService) {}
 
-  public form!: FormGroup;
+  public form: FormGroup;
 
   public readonly classes: string[] = classes;
   public readonly teachers: string[] = teachers;
   public readonly courses: string[] = courses;
   public readonly marks: Marks[] = marks;
-
   public readonly resultOfExam: string[] = resultOfExam;
   public readonly examsSelect: string[] = examsSelect;
   public selectedTypeOfExam: string = '';
-
   public readonly examsRecommendations: string[] = examsRecommendations;
-
   public isChecked: boolean = false;
-
-  public learningRecommendations: string[] = learningRecommendations;
-
-  private readonly additionalExamInformations: string[] =
-    additionalExamInformations;
-  private readonly imageLogo: string = image;
-  private readonly checkmarkLogo: string =
-    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAAv5JREFUaEPtmDmrFEEUhb8Hboio4C4q4gauKGaCkRsGgmjimoggLoFiZmAomIhooGIgZiIugQgKLmiouP0C/4Br7NrnUSXz+k1P3dvT7fTAVDYzp6rOuffUrVszRJ+PoT7nz0BArzM4yMAgA+kITAfuAeuAE8DN1ilNt9AM4EkmYE0g/Qc4BlyNIposQOSfAqtzSZKIo8A1fd9UAUXko5bfwCHZqYkCZobIr0ocj1/AwaYJEPlnwMr02R5GfGqSgFmB/AojecGeN0WA1Tat2j4Am5sgwGsbiRgm3wQLyTYqlVbPjyDf6zJaxvP/It/ri6wS8kUZWAScAz4CZ4Efjqpggc5V9QCWWcAB8z54/nN+Tv4QrwceAoqQxl1gD/DTsVkn6OzgeU+pHGWbomZuU+j6JucY3AH2ViBC5HVJLXcEQ5HfompTNCdmYD9wAxhbALwN7AN0fZcZ84JtljgmF9omn4HjwGVDYyeBh7NzoUbKM8qQfxc8/yW1kTLwHcjbpmjedeAIoJbWMuaHyC+2gAPGTF54CbgP7HRscAVQ1lIiFgTPe8i/DZ5PRj7ylYCJwKOsOmx0iLgEnOwgokzkTZ7Pc4yHeEoobyqj1nExs9+pNuAykS9FPlooctDj+QXgqdEXgNMtIkRel5QuQ+soTT4vQJ91S74EPL49D5wBlgYrLrQyB94Ez391zBkBbddOi4BEyMfW8Q2YBIyxTqiCfLsMxP0VTdlpjoOQB6pSqRt2VG/jWaSTAP2mvzPk52neRRN4V51P7Z16ka0NIqamFjL+Xin5VAYipw3A4+BxI8+2sMrJWwUIp/fnA2BCSQXuG9a6T8pCrevsANRaj7MuHnCvga3Zza1KVfnwCNDm20PvNN7IpLbIx/29AjRPjZ/eB0Vvh7j2K2BbXZHvRoDm7gJudRBRe+S7FdBJxH8j76lCRZbfHTIRWwj1Njqw5n7eeJYKYWXOQH4x2Umttf49OBBeeN3yMs+vQoB5szqAAwF1RNWz5iADnmjVge37DPwFRASGR52JQuMAAAAASUVORK5CYII=';
-
-  private readonly emptyImageLogo: string =
-    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABICAIAAAD51HXFAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACOSURBVHhe7dAxAQAwEAOh+jedrn8eQAJvHDpCR+gIHaEjdISO0BE6QkfoCB2hI3SEjtAROkJH6AgdoSN0hI7QETpCR+gIHaEjdISO0BE6QkfoCB2hI3SEjtAROkJH6AgdoSN0hI7QETpCR+gIHaEjdISO0BE6QkfoCB2hI3SEjtAROkJH6AgdoSN0hI5j+48/qHbII7vkAAAAAElFTkSuQmCC';
 
   ngOnInit(): void {
     this.form = this.createForm();
+    this.googleAuthService.gapiLoaded();
+    this.googleAuthService.gisLoaded();
   }
 
   get comments(): FormArray {
@@ -152,298 +135,23 @@ export class CambridgeReportComponent implements OnInit {
     control.removeAt(index);
   }
 
-  public generatePDF(form: FormGroup): any {
-    let date: string = new Date(form.value.date).toLocaleDateString();
+  public generatePDF(form: FormGroup): void {
+    const docDefinition: any =
+      DocumentDefinitionBase.initDocumentDefinition(form);
+    const fileName: string = DocumentDefinitionBase.initFileName(form);
 
-    let commentsArray: string[] = [];
-    form.value.comments.forEach((comment: string) =>
-      commentsArray.push(comment)
-    );
-
-    let recommendationsArray: string[] = [];
-    form.value.recommendations.forEach((comment: string) =>
-      recommendationsArray.push(comment)
-    );
-
-    const chooseTableOfExam = () => {
-      if (
-        form.value.typeOfExam === ExamTypes.STARTERS ||
-        form.value.typeOfExam === ExamTypes.MOVERS ||
-        form.value.typeOfExam === ExamTypes.FLYERS
-      ) {
-        if (
-          form.value.listeningA1Array.length === 3 ||
-          form.value.writingAndReadingA1Array.length === 3 ||
-          form.value.speakingA1Array.length === 3
-        ) {
-          return GenerateTableA1.generateTableOfA1ExamsThreeTerms(form);
-        } else if (
-          form.value.listeningA1Array.length === 2 ||
-          form.value.writingAndReadingA1Array.length === 2 ||
-          form.value.speakingA1Array.length === 2
-        ) {
-          return GenerateTableA1.generateTableOfA1ExamsTwoTerm(form);
-        } else if (
-          form.value.listeningA1Array.length === 1 ||
-          form.value.writingAndReadingA1Array.length === 1 ||
-          form.value.speakingA1Array.length === 1
-        ) {
-          return GenerateTableA1.generateTableOfA1ExamsOneTerm(form);
-        } else return [];
-      } else if (
-        form.value.typeOfExam === ExamTypes.A2_KEY ||
-        form.value.typeOfExam === ExamTypes.B1_PRELIMINARY
-      ) {
-        if (
-          form.value.listeningA2B1Array.length === 3 ||
-          form.value.readingA2B1Array.length === 3 ||
-          form.value.writingA2B1Array.length === 3 ||
-          form.value.speakingA2B1Array.length === 3
-        ) {
-          return GenerateTableA2B1.generateTableOfA2B1ExamsThreeTerms(form);
-        } else if (
-          form.value.listeningA2B1Array.length === 2 ||
-          form.value.readingA2B1Array.length === 2 ||
-          form.value.writingA2B1Array.length === 2 ||
-          form.value.speakingA2B1Array.length === 2
-        ) {
-          return GenerateTableA2B1.generateTableOfA2B1ExamsTwoTerms(form);
-        } else if (
-          form.value.listeningA2B1Array.length === 1 ||
-          form.value.readingA2B1Array.length === 1 ||
-          form.value.writingA2B1Array.length === 1 ||
-          form.value.speakingA2B1Array.length === 1
-        ) {
-          return GenerateTableA2B1.generateTableOfA2B1ExamsOneTerm(form);
-        } else return [];
-      } else if (
-        form.value.typeOfExam === ExamTypes.B2_FIRST ||
-        form.value.typeOfExam === ExamTypes.C1_ADVANCED
-      ) {
-        if (
-          form.value.listeningB2C1Array.length === 3 ||
-          form.value.readingB2C1Array.length === 3 ||
-          form.value.useOfEnglishB2C1Array.length === 3 ||
-          form.value.writingB2C1Array.length === 3 ||
-          form.value.speakingB2C1Array.length === 3
-        ) {
-          return GenerateTableB2C1.generateTableOfB2C1ExamsThreeTerms(form);
-        } else if (
-          form.value.listeningB2C1Array.length === 2 ||
-          form.value.readingB2C1Array.length === 2 ||
-          form.value.useOfEnglishB2C1Array.length === 2 ||
-          form.value.writingB2C1Array.length === 2 ||
-          form.value.speakingB2C1Array.length === 2
-        ) {
-          return GenerateTableB2C1.generateTableOfB2C1ExamsTwoTerms(form);
-        } else if (
-          form.value.listeningB2C1Array.length === 1 ||
-          form.value.readingB2C1Array.length === 1 ||
-          form.value.useOfEnglishB2C1Array.length === 1 ||
-          form.value.writingB2C1Array.length === 1 ||
-          form.value.speakingB2C1Array.length === 1
-        ) {
-          return GenerateTableB2C1.generateTableOfB2C1ExamsOneTerm(form);
-        } else return [];
-      }
-    };
-
-    let docDefinition: any = {
-      content: [
-        {
-          text: 'RAPORT Z PRZEPROWADZENIA PRÓBNEGO EGZAMINU CAMBRIDGE',
-          style: 'title',
-          alignment: 'center',
-        },
-        {
-          text: [
-            `Imię i Nazwisko ucznia: `,
-            { text: `${form.value.studentName}`, bold: true, fontSize: 13 },
-          ],
-          margin: [0, 5, 0, 5],
-          alignment: 'center',
-        },
-        {
-          style: 'tableExample',
-          table: {
-            widths: ['auto', '*', 'auto', '*'],
-            body: [
-              [
-                { text: 'Data', style: 'tableHeader' },
-                { text: `${date}` },
-                { text: 'Klasa', style: 'tableHeader' },
-                { text: `${form.value.class}` },
-              ],
-              [
-                { text: 'Lektor', style: 'tableHeader' },
-                { text: `${form.value.teacher}` },
-                { text: 'Kurs', style: 'tableHeader' },
-                { text: `${form.value.course}` },
-              ],
-            ],
-          },
-        },
-        {
-          text: 'Poziom biegłości',
-          style: 'header',
-          margin: [0, 10, 0, 5],
-        },
-        {
-          text:
-            'Zależy nam na tym, by jak najwcześniej diagnozować poziom umiejętności dzieci, by jak najszybciej łączyć je w grupy według poziomu ich umiejętności, by mogły rozwijać się językowo w swoim tempie i jak najpełniej korzystać z lekcji. Jak co roku została przeprowadzona diagnoza poziomu języka naszych uczniów według Europejskiego Systemu Kształcenia Językowego z wykorzystaniem próbnych egzaminów Cambridge. \n' +
-            '\n' +
-            'Testy Cambridge dla dzieci to testy przekrojowe, diagnostyczne - nie można ich nie zdać, mają wskazać poziom biegłości językowej. Ważne są procenty. Uznajemy, że uczeń wskoczył na dany poziom biegłości, jeśli uzyskał minimum 60%. Jednak, by stwierdzić, że uczeń faktycznie osiągnął dany poziom językowy i może przystąpić do oficjalnego egzaminu Cambridge, powinien osiągnąć on ok. 80% z testów próbnych. Na testach próbnych diagnozujemy umiejętności Słuchania oraz Czytania i Pisania. Na egzaminie jest też Mówienie, co ćwiczymy i sprawdzamy na bieżąco.',
-          fontSize: 9,
-        },
-        {
-          text: ['Rodzaj egzaminu: ', form.value.typeOfExam],
-          margin: [0, 10, 0, 0],
-          style: 'header',
-        },
-        chooseTableOfExam(),
-        {
-          text: `${commentsArray.length > 0 ? 'Komentarz' : ''}`,
-          style: 'subheader',
-        },
-        {
-          ul: commentsArray,
-          fontSize: 10,
-        },
-        {
-          text: 'REKOMENDACJA EGZAMINACYJNA',
-          style: 'header',
-          margin: [0, 25, 0, 5],
-        },
-        {
-          style: 'tableExample',
-          table: {
-            widths: ['auto', '*'],
-            body: [
-              [
-                {
-                  text: 'Rekomendacje egzaminacyjne zostaną przekazane po kolejnym próbnym teście Cambridge.',
-                },
-                {
-                  image: `${
-                    form.value.examRecommendationOptions === '1'
-                      ? this.checkmarkLogo
-                      : this.emptyImageLogo
-                  }`,
-                  width: 15,
-                  height: 15,
-                  alignment: 'center',
-                },
-              ],
-              [
-                {
-                  text: 'Nie rekomenduję wzięcia udziału w czerwcowej sesji egzaminacyjnej Cambridge w tym roku szkolnym.',
-                },
-                {
-                  image: `${
-                    form.value.examRecommendationOptions === '2'
-                      ? this.checkmarkLogo
-                      : this.emptyImageLogo
-                  }`,
-                  width: 15,
-                  height: 15,
-                  alignment: 'center',
-                },
-              ],
-              [
-                {
-                  text:
-                    'Rekomenduję wzięcie udziału w czerwcowej sesji egzaminacyjnej Cambridge w tym roku szkolnym. ' +
-                    `${
-                      form.value.examRecommendationResult
-                        ? `Rekomenduję podejście do egzaminu: ${form.value.examRecommendationResult}`
-                        : ''
-                    }`,
-                },
-                {
-                  image: `${
-                    form.value.examRecommendationOptions === '3'
-                      ? this.checkmarkLogo
-                      : this.emptyImageLogo
-                  }`,
-                  width: 15,
-                  height: 15,
-                  alignment: 'center',
-                },
-              ],
-            ],
-          },
-        },
-        {
-          text: 'Dodatkowe informacje egzaminacyjne',
-          style: 'header',
-          margin: [0, 10, 0, 5],
-        },
-        {
-          ul: this.additionalExamInformations,
-          fontSize: 9,
-        },
-        {
-          columns: [
-            {
-              text: form.value.signature,
-              margin: [0, 20, 0, 10],
-              fontSize: 10,
-            },
-            {
-              image: this.imageLogo,
-              width: 125,
-              height: 110,
-              alignment: 'right',
-              margin: [0, 20, 0, 0],
-            },
-          ],
-        },
-      ],
-      styles: {
-        tableHeader: {
-          fontSize: 10,
-          bold: true,
-        },
-        tableExample: {
-          margin: [0, 10, 0, 2],
-          fontSize: 10,
-        },
-        tableExams: {
-          margin: [0, 10, 0, 10],
-          fontSize: 10,
-        },
-        marksTable: {
-          margin: [0, 10, 0, 5],
-          fontSize: 10,
-        },
-        header: {
-          bold: true,
-          fontSize: 11,
-        },
-        subheader: {
-          fontSize: 10,
-          bold: true,
-        },
-        title: {
-          fontSize: 13,
-          bold: true,
-          alignment: 'justify',
-          decoration: 'underline',
-        },
-        subtitle: {
-          fontSize: 11,
-          alignment: 'justify',
-          bold: true,
-        },
-        defaultStyle: {
-          fontSize: 10,
-        },
-      },
-    };
-
-    const fileName: string =
-      form.value.studentName.split(' ').join('-') + '_cambridge_report';
     pdfMake.createPdf(docDefinition).download(fileName);
+  }
+
+  public sendPDF(form: FormGroup): void {
+    const docDefinition: any =
+      DocumentDefinitionBase.initDocumentDefinition(form);
+    const fileName: string = DocumentDefinitionBase.initFileName(form);
+
+    pdfMake.createPdf(docDefinition).getBlob((blob: Blob) => {
+      const file: File = new File([blob], fileName);
+      this.googleAuthService.handleAuthClick(file);
+    });
   }
 
   private createForm(): FormGroup {

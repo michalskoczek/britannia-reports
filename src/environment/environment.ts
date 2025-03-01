@@ -17,5 +17,7 @@ export const environment = {
   },
   API_KEY: 'AIzaSyATBmgGpE2CbIabJUJJd2T5-8RyJojWPh4',
   DISCOVERY_DOC: 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',
-  SCOPES: 'https://www.googleapis.com/auth/drive.metadata.readonly',
+  SCOPES: 'https://www.googleapis.com/auth/drive.file',
+  googleApiUrl: 'https://www.googleapis.com',
+  googleDriveFolderId: '1s_lfXWRAkmnZBkeSQwXHDwE_fmWAqCmn',
 };

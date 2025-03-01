@@ -7,7 +7,6 @@ import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { ELEMENT_DATA, TableElement } from '../rating-scale/table-elements';
 import { classes, teachers, books, courses } from '../shared/select-values';
 import { Marks, marks } from '../shared/marks';
-import { baner } from '../shared/baner-base64';
 import {
   certificationPurpose,
   classesInSchool,
@@ -23,6 +22,7 @@ import {
   parentDecisionValues,
   recommendationsInNextYear,
 } from '../shared/year-report/year-report-static-data';
+import { FileBase64 } from '../shared/base64/file-base64';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -63,7 +63,7 @@ export class YearReportComponent implements OnInit {
 
   public indexClass: number = 0;
 
-  private readonly banerLogo: string = baner;
+  private readonly banerLogo: string = FileBase64.baner;
 
   ngOnInit(): void {
     this.form = this.createForm();
@@ -118,7 +118,6 @@ export class YearReportComponent implements OnInit {
     switch (shortClassesInSchool) {
       case 'Klasa 8 SP':
         return 'egzamin 8-klasisty';
-        break;
       default:
         return null;
     }

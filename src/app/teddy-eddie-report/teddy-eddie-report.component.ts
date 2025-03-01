@@ -4,8 +4,6 @@ import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import pdfMake from 'pdfmake/build/pdfmake';
 // @ts-ignore
 import pdfFonts from 'pdfmake/build/vfs_fonts';
-import { image } from '../shared/images-base64';
-import { baner } from '../shared/baner-base64';
 import {
   ageTE,
   booksToChoosingTE,
@@ -19,6 +17,7 @@ import {
 } from '../shared/development-path';
 import { DevelopmentPathInSchool } from '../model/development-path-in-school';
 import { DevelopmentPathTeddyEddie } from '../model/development-path-teddy-eddie';
+import { FileBase64 } from '../shared/base64/file-base64';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -46,8 +45,8 @@ export class TeddyEddieReportComponent implements OnInit {
   public indexClass: number = 0;
   public indexClassTE: number = 0;
 
-  private readonly imageLogo: string = image;
-  private readonly banerLogo: string = baner;
+  private readonly imageLogo: string = FileBase64.image;
+  private readonly banerLogo: string = FileBase64.baner;
 
   ngOnInit(): void {
     this.form = this.createForm();
@@ -141,10 +140,10 @@ export class TeddyEddieReportComponent implements OnInit {
     switch (shortClassesInSchool) {
       case 'Klasa 3 SP':
         return 'Trzecioteścik';
-        break;
+
       case 'Klasa 8 SP':
         return 'Egzamin 8-klasisty';
-        break;
+
       default:
         return null;
     }
