@@ -2,25 +2,25 @@
   <form [formGroup]="form" (ngSubmit)="generatePDF(form)" class="col-12">
     <div class="row mt-5">
       <div class="col-12 mb-4">
-        <h2 class="subtitle">{{ "Podstawowe informacje" | translate }}</h2>
+        <h2 class="subtitle">{{ "basicInformation" | translate }}</h2>
       </div>
     </div>
 
     <div class="row">
       <mat-form-field class="col-6 my-1">
-        <mat-label>{{ "Imię i nazwisko ucznia" | translate }}</mat-label>
+        <mat-label>{{ "nameAndLastNameStudent" | translate }}</mat-label>
         <input matInput type="text" formControlName="studentName" />
         <mat-error
           *ngIf="this.form.controls['studentName'].hasError('required')"
-          >{{ "Pole jest wymagane" | translate }}
+          >{{ "fieldIsRequired" | translate }}
         </mat-error>
       </mat-form-field>
 
       <mat-form-field class="col-6 my-1">
-        <mat-label>{{ "Wybierz datę" | translate }}</mat-label>
+        <mat-label>{{ "chooseDate" | translate }}</mat-label>
         <input matInput [matDatepicker]="picker" formControlName="date" />
         <mat-error *ngIf="this.form.controls['date'].hasError('required')"
-          >{{ "Pole jest wymagane" | translate }}
+          >{{ "fieldIsRequired" | translate }}
         </mat-error>
         <mat-hint>DD.M.RRRR</mat-hint>
         <mat-datepicker-toggle
@@ -33,7 +33,7 @@
 
     <div class="row form-field">
       <mat-form-field class="col-6 my-1">
-        <mat-label>{{ "Wiek" | translate }}</mat-label>
+        <mat-label>{{ "age" | translate }}</mat-label>
         <mat-select name="class" formControlName="age">
           <mat-option
             *ngFor="let age of ageTE"
@@ -44,34 +44,14 @@
           </mat-option>
         </mat-select>
         <mat-error *ngIf="this.form.controls['class'].hasError('required')"
-          >{{ "Pole jest wymagane" | translate }}
+          >{{ "fieldIsRequired" | translate }}
         </mat-error>
       </mat-form-field>
-
-      <!--      <mat-form-field class="col-6 my-1">-->
-      <!--        <mat-label>{{ "Klasa" | translate }}</mat-label>-->
-      <!--        <mat-select-->
-      <!--          name="class"-->
-      <!--          formControlName="class"-->
-      <!--          [disabled]="!(this.form.getRawValue()['age'] !== null)"-->
-      <!--        >-->
-      <!--          <mat-option-->
-      <!--            *ngFor="let classValue of classes"-->
-      <!--            [value]="classValue"-->
-      <!--            (click)="setClasses(classValue)"-->
-      <!--          >-->
-      <!--            {{ classValue }}-->
-      <!--          </mat-option>-->
-      <!--        </mat-select>-->
-      <!--        <mat-error *ngIf="this.form.controls['class'].hasError('required')"-->
-      <!--          >{{ "Pole jest wymagane" | translate }}-->
-      <!--        </mat-error>-->
-      <!--      </mat-form-field>-->
     </div>
 
     <div class="row mt-5">
       <div class="col-12 mb-4">
-        <h2 class="subtitle">Tabelki</h2>
+        <h2 class="subtitle">{{ "tables" | translate }}</h2>
       </div>
     </div>
 
@@ -79,16 +59,18 @@
       <div class="col-12">
         <!--        Nowa tabelka-->
 
-        <p class="w-100 px-2">Metoda Teddy Eddie - zanurzenie w angielski</p>
+        <p class="w-100 px-2">
+          {{ "teddyEddie.englishImmersion" | translate }}
+        </p>
 
         <ng-container *ngIf="this.form.getRawValue()['age'] !== null">
           <div class="row-wrapper-te">
-            <p>Rok szkolny</p>
-            <p>Wiek ucznia</p>
-            <p>Kurs</p>
-            <p>Poziom kursu</p>
-            <p>Księga</p>
-            <p>Bez tej linijki?</p>
+            <p>{{ "schoolYear" | translate }}</p>
+            <p>{{ "studentAge" | translate }}</p>
+            <p>{{ "course" | translate }}</p>
+            <p>{{ "levelOfCourse" | translate }}</p>
+            <p>{{ "book" | translate }}</p>
+            <p>{{ "withoutThisLine" | translate }}</p>
           </div>
 
           <div
@@ -149,17 +131,19 @@
       <div class="col-12">
         <!--        Nowa tabelka-->
 
-        <p class="w-100 px-2 mt-4">ŚCIEŻKA CAMBRIDGE - cele certyfikacyjne</p>
+        <p class="w-100 px-2 mt-4">
+          {{ "teddyEddie.cambridgePath" | translate }}
+        </p>
 
         <ng-container *ngIf="this.form.getRawValue()['age'] !== null">
           <div class="row-wrapper">
-            <p>Rok szkolny</p>
-            <p>Wiek ucznia</p>
-            <p>Kurs</p>
-            <p>W kierunku poziomu</p>
-            <p>Cel certyfikacyjny</p>
-            <p>Cel szkolny</p>
-            <p>Bez tej linijki?</p>
+            <p>{{ "schoolYear" | translate }}</p>
+            <p>{{ "studentAge" | translate }}</p>
+            <p>{{ "course" | translate }}</p>
+            <p>{{ "wayInLevel" | translate }}</p>
+            <p>{{ "certificationPurpose" | translate }}</p>
+            <p>{{ "schoolPurpose" | translate }}</p>
+            <p>{{ "withoutThisLine" | translate }}</p>
           </div>
 
           <div
@@ -234,7 +218,7 @@
     <div class="row generate-btn">
       <div class="col-12 d-flex justify-content-end">
         <button mat-raised-button color="primary" type="submit">
-          {{ "Generuj PDF" | translate }}
+          {{ "downloadPDF" | translate }}
         </button>
       </div>
     </div>
