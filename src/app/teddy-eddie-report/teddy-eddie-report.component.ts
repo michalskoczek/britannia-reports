@@ -28,9 +28,7 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
   styleUrls: ['./teddy-eddie-report.component.scss'],
 })
 export class TeddyEddieReportComponent implements OnInit {
-  title: string = 'britannia-reports';
-
-  public form!: FormGroup;
+  public form: FormGroup;
 
   public classes: string[] = studentsAgeTE;
   public ageTE: string[] = ageTE;
@@ -141,10 +139,8 @@ export class TeddyEddieReportComponent implements OnInit {
     switch (shortClassesInSchool) {
       case 'Klasa 3 SP':
         return 'Trzecioteścik';
-        break;
       case 'Klasa 8 SP':
         return 'Egzamin 8-klasisty';
-        break;
       default:
         return null;
     }
