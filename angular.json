@@ -69,10 +69,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "britannia-reports:build:production"
+              "buildTarget": "britannia-reports:build:production"
             },
             "development": {
-              "browserTarget": "britannia-reports:build:development"
+              "buildTarget": "britannia-reports:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -80,7 +80,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "britannia-reports:build"
+            "buildTarget": "britannia-reports:build"
           }
         },
         "test": {
