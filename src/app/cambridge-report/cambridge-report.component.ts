@@ -22,9 +22,10 @@ import { ExamTypes } from '../shared/enum/exam-type.enum';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
-  selector: 'app-cambridge-report',
-  templateUrl: './cambridge-report.component.html',
-  styleUrls: ['./cambridge-report.component.scss'],
+    selector: 'app-cambridge-report',
+    templateUrl: './cambridge-report.component.html',
+    styleUrls: ['./cambridge-report.component.scss'],
+    standalone: false
 })
 export class CambridgeReportComponent implements OnInit {
   title: string = 'britannia-reports';

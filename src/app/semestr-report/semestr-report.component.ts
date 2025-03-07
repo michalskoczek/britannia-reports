@@ -24,9 +24,10 @@ import { TranslateService } from '@ngx-translate/core';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
-  selector: 'app-semestr-report',
-  templateUrl: './semestr-report.component.html',
-  styleUrls: ['./semestr-report.component.scss'],
+    selector: 'app-semestr-report',
+    templateUrl: './semestr-report.component.html',
+    styleUrls: ['./semestr-report.component.scss'],
+    standalone: false
 })
 export class SemestrReportComponent implements OnInit {
   constructor(private translate: TranslateService) {
