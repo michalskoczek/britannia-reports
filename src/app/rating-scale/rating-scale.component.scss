@@ -1,4 +1,4 @@
-@import "../../assets/styles/variables";
+@use "../../assets/styles/variables" as *;
 
 .subtitle {
   font: 600 20px/24px $font;

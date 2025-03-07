@@ -23,9 +23,10 @@ import { DevelopmentPathTeddyEddie } from '../model/development-path-teddy-eddie
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
-  selector: 'app-teddy-eddie-report',
-  templateUrl: './teddy-eddie-report.component.html',
-  styleUrls: ['./teddy-eddie-report.component.scss'],
+    selector: 'app-teddy-eddie-report',
+    templateUrl: './teddy-eddie-report.component.html',
+    styleUrls: ['./teddy-eddie-report.component.scss'],
+    standalone: false
 })
 export class TeddyEddieReportComponent implements OnInit {
   public form: FormGroup;
