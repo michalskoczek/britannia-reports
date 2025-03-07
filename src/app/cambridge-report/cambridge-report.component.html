@@ -2,25 +2,25 @@
   <form [formGroup]="form" class="col-12">
     <div class="row mt-5">
       <div class="col-12 mb-4">
-        <h2 class="subtitle">{{ "Podstawowe informacje" | translate }}</h2>
+        <h2 class="subtitle">{{ "basicInformation" | translate }}</h2>
       </div>
     </div>
 
     <div class="row">
       <mat-form-field class="col-6 my-1">
-        <mat-label>{{ "Imię i nazwisko ucznia" | translate }}</mat-label>
+        <mat-label>{{ "nameAndLastNameStudent" | translate }}</mat-label>
         <input matInput type="text" formControlName="studentName" />
         <mat-error
           *ngIf="this.form.controls['studentName'].hasError('required')"
-          >{{ "Pole jest wymagane" | translate }}
+          >{{ "fieldIsRequired" | translate }}
         </mat-error>
       </mat-form-field>
 
       <mat-form-field class="col-6 my-1">
-        <mat-label>{{ "Wybierz datę" | translate }}</mat-label>
+        <mat-label>{{ "chooseDate" | translate }}</mat-label>
         <input matInput [matDatepicker]="picker" formControlName="date" />
         <mat-error *ngIf="this.form.controls['date'].hasError('required')"
-          >{{ "Pole jest wymagane" | translate }}
+          >{{ "fieldIsRequired" | translate }}
         </mat-error>
         <mat-hint>DD.M.RRRR</mat-hint>
         <mat-datepicker-toggle
@@ -40,7 +40,7 @@
           </mat-option>
         </mat-select>
         <mat-error *ngIf="this.form.controls['class'].hasError('required')"
-          >{{ "Pole jest wymagane" | translate }}
+          >{{ "fieldIsRequired" | translate }}
         </mat-error>
       </mat-form-field>
 
@@ -52,7 +52,7 @@
           </mat-option>
         </mat-select>
         <mat-error *ngIf="this.form.controls['teacher'].hasError('required')"
-          >{{ "Pole jest wymagane" | translate }}
+          >{{ "fieldIsRequired" | translate }}
         </mat-error>
       </mat-form-field>
 
@@ -64,7 +64,7 @@
           </mat-option>
         </mat-select>
         <mat-error *ngIf="this.form.controls['course'].hasError('required')"
-          >{{ "Pole jest wymagane" | translate }}
+          >{{ "fieldIsRequired" | translate }}
         </mat-error>
       </mat-form-field>
     </div>
@@ -111,7 +111,7 @@
           </mat-select>
           <mat-error
             *ngIf="this.form.controls['typeOfExam'].hasError('required')"
-            >{{ "Pole jest wymagane" | translate }}
+            >{{ "fieldIsRequired" | translate }}
           </mat-error>
         </mat-form-field>
       </div>

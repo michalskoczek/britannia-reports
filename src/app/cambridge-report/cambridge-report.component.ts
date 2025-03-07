@@ -17,9 +17,10 @@ import { DocumentDefinitionBase } from '../helper/document-definition/cambridge/
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
-  selector: 'app-cambridge-report',
-  templateUrl: './cambridge-report.component.html',
-  styleUrls: ['./cambridge-report.component.scss'],
+    selector: 'app-cambridge-report',
+    templateUrl: './cambridge-report.component.html',
+    styleUrls: ['./cambridge-report.component.scss'],
+    standalone: false
 })
 export class CambridgeReportComponent implements OnInit {
   constructor(private googleAuthService: GoogleAuthService) {}

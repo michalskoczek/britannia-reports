@@ -22,14 +22,13 @@ import { FileBase64 } from '../shared/base64/file-base64';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
-  selector: 'app-teddy-eddie-report',
-  templateUrl: './teddy-eddie-report.component.html',
-  styleUrls: ['./teddy-eddie-report.component.scss'],
+    selector: 'app-teddy-eddie-report',
+    templateUrl: './teddy-eddie-report.component.html',
+    styleUrls: ['./teddy-eddie-report.component.scss'],
+    standalone: false
 })
 export class TeddyEddieReportComponent implements OnInit {
-  title: string = 'britannia-reports';
-
-  public form!: FormGroup;
+  public form: FormGroup;
 
   public classes: string[] = studentsAgeTE;
   public ageTE: string[] = ageTE;

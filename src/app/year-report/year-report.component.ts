@@ -27,9 +27,10 @@ import { FileBase64 } from '../shared/base64/file-base64';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
-  selector: 'app-year-report',
-  templateUrl: './year-report.component.html',
-  styleUrls: ['./year-report.component.scss'],
+    selector: 'app-year-report',
+    templateUrl: './year-report.component.html',
+    styleUrls: ['./year-report.component.scss'],
+    standalone: false
 })
 export class YearReportComponent implements OnInit {
   title: string = 'britannia-reports';

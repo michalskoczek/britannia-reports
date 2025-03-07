@@ -8,9 +8,10 @@ import pdfFonts from 'pdfmake/build/vfs_fonts';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
-  selector: 'app-special-marks',
-  templateUrl: './special-marks.component.html',
-  styleUrls: ['./special-marks.component.scss'],
+    selector: 'app-special-marks',
+    templateUrl: './special-marks.component.html',
+    styleUrls: ['./special-marks.component.scss'],
+    standalone: false
 })
 export class SpecialMarksComponent implements OnInit {
   public specialMarksForm!: FormGroup;
