@@ -5,7 +5,11 @@ import { AppComponent } from './app.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RatingScaleModule } from './rating-scale/rating-scale.module';
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import {
+  HttpClient,
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -32,45 +36,51 @@ export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
 }
 
-@NgModule({ declarations: [
-        AppComponent,
-        YearReportComponent,
-        SemestrReportComponent,
-        CambridgeReportComponent,
-        TeddyEddieReportComponent,
-    ],
-    bootstrap: [AppComponent], imports: [BrowserModule,
-        BrowserAnimationsModule,
-        TranslateModule.forRoot({
-            loader: {
-                provide: TranslateLoader,
-                useFactory: HttpLoaderFactory,
-                deps: [HttpClient],
-            },
-        }),
-        ReactiveFormsModule,
-        RatingScaleModule,
-        MatButtonModule,
-        MatDatepickerModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatOptionModule,
-        MatSelectModule,
-        MatMomentDateModule,
-        MatInputModule,
-        MatSelectModule,
-        MatTableModule,
-        SpecialMarksModule,
-        MatExpansionModule,
-        MatCheckboxModule,
-        MatIconModule,
-        MatTabsModule,
-        MatRadioModule,
-        MatProgressSpinnerModule,
-        MatFormFieldModule,
-        MatCheckboxModule], providers: [
-        { provide: LOCALE_ID, useValue: 'pl-PL' },
-        { provide: MAT_DATE_LOCALE, useValue: 'pl-PL' },
-        provideHttpClient(withInterceptorsFromDi()),
-    ] })
+@NgModule({
+  declarations: [
+    AppComponent,
+    YearReportComponent,
+    SemestrReportComponent,
+    CambridgeReportComponent,
+    TeddyEddieReportComponent,
+  ],
+  bootstrap: [AppComponent],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient],
+      },
+    }),
+    ReactiveFormsModule,
+    RatingScaleModule,
+    MatButtonModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatOptionModule,
+    MatSelectModule,
+    MatMomentDateModule,
+    MatInputModule,
+    MatSelectModule,
+    MatTableModule,
+    SpecialMarksModule,
+    MatExpansionModule,
+    MatCheckboxModule,
+    MatIconModule,
+    MatTabsModule,
+    MatRadioModule,
+    MatProgressSpinnerModule,
+    MatFormFieldModule,
+    MatCheckboxModule,
+  ],
+  providers: [
+    { provide: LOCALE_ID, useValue: 'pl-PL' },
+    { provide: MAT_DATE_LOCALE, useValue: 'pl-PL' },
+    provideHttpClient(withInterceptorsFromDi()),
+  ],
+})
 export class AppModule {}
