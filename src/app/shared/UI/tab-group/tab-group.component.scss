@@ -1,0 +1,26 @@
+@use "../../../../assets/styles/utils/index" as ds;
+
+.tab-group-wrapper {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  .tab {
+    flex-grow: 1;
+    padding: ds.$distance-16 0;
+    text-align: center;
+    cursor: pointer;
+    color: ds.$britannia-dark;
+    font: 600 16px/1 ds.$font;
+
+    &.active {
+      background-color: ds.$white;
+    }
+
+    &:hover:not(.active) {
+      span {
+        color: ds.$white;
+      }
+    }
+  }
+}

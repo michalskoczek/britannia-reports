@@ -1,0 +1,19 @@
+@use "@angular/material" as mat;
+@use "../../../../assets/styles/utils/index" as ds;
+
+.button {
+  @include mat.button-overrides(
+    (
+      protected-container-color: ds.$main-color,
+      protected-label-text-color: ds.$white,
+    )
+  );
+
+  font: 600 16px/1 ds.$font;
+}
+
+@include ds.breakpoint-max-tablet() {
+  .button {
+    height: 30px;
+  }
+}

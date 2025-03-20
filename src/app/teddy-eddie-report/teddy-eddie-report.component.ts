@@ -19,14 +19,28 @@ import {
 } from '../shared/development-path';
 import { DevelopmentPathInSchool } from '../model/development-path-in-school';
 import { DevelopmentPathTeddyEddie } from '../model/development-path-teddy-eddie';
+import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
+export const MY_FORMATS = {
+  parse: {
+    dateInput: 'MM/DD/YYYY',
+  },
+  display: {
+    dateInput: 'DD.MM.YYYY',
+    monthYearLabel: 'MM YYYY',
+    dateA11yLabel: 'dd',
+    monthYearA11yLabel: 'MM YYYY',
+  },
+};
+
 @Component({
-    selector: 'app-teddy-eddie-report',
-    templateUrl: './teddy-eddie-report.component.html',
-    styleUrls: ['./teddy-eddie-report.component.scss'],
-    standalone: false
+  selector: 'app-teddy-eddie-report',
+  templateUrl: './teddy-eddie-report.component.html',
+  styleUrls: ['./teddy-eddie-report.component.scss'],
+  standalone: false,
+  providers: [provideMomentDateAdapter(MY_FORMATS)],
 })
 export class TeddyEddieReportComponent implements OnInit {
   public form: FormGroup;

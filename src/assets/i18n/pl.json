@@ -1,7 +1,9 @@
 {
-  "Raport semestralny": "Raport semestralny",
-  "Raport całoroczny": "Raport całoroczny",
-  "Raport Cambridge": "Raport Cambridge",
+  "tab.semesterReport": "Raport semestralny",
+  "tab.endOfYearReport": "Raport całoroczny",
+  "tab.cambridge": "Raport Cambridge",
+  "tab.teddyEddieReport": "Raport Teddy Eddie",
+
   "basicInformation": "Podstawowe informacje",
   "nameAndLastNameStudent": "Imię i nazwisko ucznia",
   "Imię ucznia do wyświetlenia w tekście (np. Jaś)": "Imię ucznia do wyświetlenia w tekście (np. Jaś)",
@@ -10,7 +12,7 @@
   "Uczennica": "Uczennica",
   "fieldIsRequired": "Pole jest wymagane",
   "chooseDate": "Wybierz datę",
-  "age": "wiek",
+  "age": "Wiek",
   "tables": "Tabelki",
   "Klasa": "Klasa",
   "Lektor": "Lektor",

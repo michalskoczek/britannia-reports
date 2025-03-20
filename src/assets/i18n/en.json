@@ -1,7 +1,9 @@
 {
-  "Raport semestralny": "Semester Report",
-  "Raport całoroczny": "End-of-year Report",
-  "Raport Cambridge": "Cambridge Report",
+  "tab.semesterReport": "Semester Report",
+  "tab.endOfYearReport": "End-of-year Report",
+  "tab.cambridge": "Cambridge Report",
+  "tab.teddyEddieReport": "Teddy Eddie Report",
+
   "basicInformation": "Basic information",
   "nameAndLastNameStudent": "Student's Name and Surname",
   "Imię ucznia do wyświetlenia w tekście (np. Jaś)": "Student's display name (e.g. Jaś)",

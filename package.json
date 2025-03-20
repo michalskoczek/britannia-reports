@@ -23,7 +23,7 @@
     "@angular/router": "^19.2.1",
     "@ngx-translate/core": "^15.0.0",
     "@ngx-translate/http-loader": "^8.0.0",
-    "bootstrap": "^5.2.3",
+    "bootstrap": "^5.3.3",
     "firebase-tools": "13.6.1",
     "moment": "^2.29.4",
     "pdfmake": "^0.2.7",
@@ -42,7 +42,6 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
-    "prettier": "2.8.8",
     "typescript": "~5.8.2"
   }
 }

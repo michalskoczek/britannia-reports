@@ -1,60 +1,67 @@
-<div class="container">
+<div class="wrapper">
   <header class="header">
     <img
-      class="col-3 img"
-      src="../../assets/images/britannia_logo.svg"
+      class="img"
+      src="./assets/images/logo-britannia.png"
       alt="britannia-logo"
     />
-    <h1 class="w-auto title">Britannia Reports - generator raportów</h1>
+
+    <h1 class="title">{{ title }}</h1>
+
+    <div class="button-wrapper">
+      @if (defaultLanguage) {
+      <app-button
+        [translateKey]="'English'"
+        (clickEvent)="switchLanguage('en')"
+      ></app-button>
+      } @else {
+      <app-button
+        [translateKey]="'Polish'"
+        (clickEvent)="switchLanguage('pl')"
+      ></app-button>
+      }
+    </div>
   </header>
 
-  <div class="d-flex w-auto justify-content-end mb-4">
-    <button
-      mat-raised-button
-      color="primary"
-      class="mx-2"
-      (click)="switchLanguage('en')"
-    >
-      English
-    </button>
-    <button mat-raised-button color="primary" (click)="switchLanguage('pl')">
-      Polish
-    </button>
-  </div>
+  <main class="main-wrapper">
+    <!--    <mat-tab-group>-->
+    <!--      <mat-tab>-->
+    <!--        <ng-template mat-tab-label-->
+    <!--          >{{ "tab.semesterReport" | translate }}-->
+    <!--        </ng-template>-->
+    <!--        <ng-template matTabContent>-->
+    <!--          <app-semestr-report></app-semestr-report>-->
+    <!--        </ng-template>-->
+    <!--      </mat-tab>-->
 
-  <mat-tab-group>
-    <mat-tab>
-      <ng-template mat-tab-label>{{
-        "Raport semestralny" | translate
-      }}</ng-template>
-      <ng-template matTabContent>
-        <app-semestr-report></app-semestr-report>
-      </ng-template>
-    </mat-tab>
+    <!--      <mat-tab>-->
+    <!--        <ng-template mat-tab-label-->
+    <!--          >{{ "tab.endOfYearReport" | translate }}-->
+    <!--        </ng-template>-->
+    <!--        <ng-template matTabContent>-->
+    <!--          <app-year-report></app-year-report>-->
+    <!--        </ng-template>-->
+    <!--      </mat-tab>-->
 
-    <mat-tab>
-      <ng-template mat-tab-label>{{
-        "Raport całoroczny" | translate
-      }}</ng-template>
-      <ng-template matTabContent>
-        <app-year-report></app-year-report>
-      </ng-template>
-    </mat-tab>
+    <!--      <mat-tab>-->
+    <!--        <ng-template mat-tab-label-->
+    <!--          >{{ "tab.cambridge" | translate }}-->
+    <!--        </ng-template>-->
+    <!--        <ng-template matTabContent>-->
+    <!--          <app-cambridge-report></app-cambridge-report>-->
+    <!--        </ng-template>-->
+    <!--      </mat-tab>-->
 
-    <mat-tab>
-      <ng-template mat-tab-label>{{
-        "Raport Cambridge" | translate
-      }}</ng-template>
-      <ng-template matTabContent>
-        <app-cambridge-report></app-cambridge-report>
-      </ng-template>
-    </mat-tab>
+    <!--      <mat-tab>-->
+    <!--        <ng-template mat-tab-label>{{-->
+    <!--          "tab.teddyEddieReport" | translate-->
+    <!--        }}</ng-template>-->
+    <!--        <ng-template matTabContent>-->
+    <!--          <app-teddy-eddie-report></app-teddy-eddie-report>-->
+    <!--        </ng-template>-->
+    <!--      </mat-tab>-->
+    <!--    </mat-tab-group>-->
 
-    <mat-tab>
-      <ng-template mat-tab-label>Raport Teddy Eddie</ng-template>
-      <ng-template matTabContent>
-        <app-teddy-eddie-report></app-teddy-eddie-report>
-      </ng-template>
-    </mat-tab>
-  </mat-tab-group>
+    <app-tab-group></app-tab-group>
+  </main>
 </div>

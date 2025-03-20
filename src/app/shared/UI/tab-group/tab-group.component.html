@@ -1,0 +1,7 @@
+<div class="tab-group-wrapper">
+  @for (tab of tabs; track tab.id) {
+  <div [id]="tab.id" class="tab" [ngClass]="{ 'active': tab.isActive }">
+    <span>{{ tab.name | translate }}</span>
+  </div>
+  }
+</div>

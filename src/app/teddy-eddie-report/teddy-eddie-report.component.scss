@@ -1,5 +1,9 @@
-@use "../../assets/styles/variables" as *;
+@use "../../assets/styles/utils/index" as *;
 @use "../../assets/styles/mixins" as *;
+
+.container {
+  max-width: 1500px;
+}
 
 .generate-btn {
   position: fixed;
