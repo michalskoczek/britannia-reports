@@ -1,7 +1,9 @@
+import { Type } from '@angular/core';
+
 export interface Tab {
   id: string;
   name: string;
   defaultActive: boolean;
   isActive: boolean;
-
+  component: Type<any>;
 }

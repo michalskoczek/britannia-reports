@@ -1,0 +1,23 @@
+<header class="header">
+  <img
+    class="img"
+    src="./assets/images/logo-britannia.png"
+    alt="britannia-logo"
+  />
+
+  <h1 class="title">{{ title }}</h1>
+
+  <div class="button-wrapper">
+    @if (defaultLanguage) {
+    <app-button
+      [translateKey]="'English'"
+      (clickEvent)="switchLanguage('en')"
+    ></app-button>
+    } @else {
+    <app-button
+      [translateKey]="'Polish'"
+      (clickEvent)="switchLanguage('pl')"
+    ></app-button>
+    }
+  </div>
+</header>

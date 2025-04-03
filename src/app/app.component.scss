@@ -1,29 +1,7 @@
 @use "../assets/styles/utils" as ds;
 @use "../assets/styles/mixins" as *;
-@use "@angular/material" as mat;
 
 .wrapper {
-  .header {
-    @include flex-center;
-    justify-content: flex-start;
-    margin: 0 auto ds.$distance-16;
-
-    .img {
-      width: 40px;
-      height: 40px;
-    }
-
-    .title {
-      font: 600 22px/26px ds.$font;
-      color: ds.$britannia-blue;
-      margin: 0 ds.$distance-8;
-    }
-
-    .button-wrapper {
-      margin: 0 0 0 auto;
-    }
-  }
-
   .generate-btn {
     position: fixed;
     bottom: 30px;
@@ -33,94 +11,6 @@
 
 @include ds.breakpoint-tablet() {
   .wrapper {
-    .header {
-      position: relative;
-      justify-content: center;
-
-      .img {
-        width: 80px;
-        height: 80px;
-      }
-
-      .title {
-        font: 600 32px/40px ds.$font;
-        margin: 0 0 0 20px;
-      }
-
-      .button-wrapper {
-        position: absolute;
-        right: 0;
-        margin: 0;
-      }
-    }
-
-    .main-wrapper {
-      ::ng-deep .mat-mdc-tab-body-wrapper {
-        background-color: white;
-        border-radius: 0 0 20px 20px;
-        box-shadow: 0 5px 5px 1px gray;
-      }
-
-      ::ng-deep
-        .mdc-tab.mat-mdc-tab.mat-focus-indicator.mdc-tab--active.mdc-tab-indicator--active {
-        background-color: white;
-        border-radius: 20px 20px 0 0;
-      }
-
-      .mat-mdc-tab-group {
-        //--mat-tab-header-inactive-hover-label-text-color: #ffffffd7;
-        --mat-tab-header-inactive-ripple-color: white;
-        --mat-tab-header-inactive-label-text-color: ds.$britannia-dark;
-        --mat-tab-header-active-label-text-color: ds.$britannia-dark;
-        --mdc-tab-indicator-active-indicator-color: transparent;
-      }
-
-      ::ng-deep .mat-mdc-tab-header {
-        --mat-tab-header-label-text-font: ds.$font;
-        --mat-tab-header-label-text-size: 14px;
-        --mat-tab-header-label-text-tracking: 0.0892857143em;
-        --mat-tab-header-label-text-line-height: 36px;
-        --mat-tab-header-label-text-weight: 500;
-      }
-
-      ::ng-deep .mat-mdc-tab-group,
-      .mat-mdc-tab-nav-bar {
-        --mat-tab-header-disabled-ripple-color: rgba(0, 0, 0, 0.38);
-        --mat-tab-header-pagination-icon-color: black;
-        --mat-tab-header-inactive-label-text-color: rgba(0, 0, 0, 0.6);
-        --mat-tab-header-active-label-text-color: white;
-        --mat-tab-header-active-ripple-color: white;
-        --mat-tab-header-inactive-ripple-color: white;
-        --mat-tab-header-inactive-focus-label-text-color: rgba(0, 0, 0, 0.6);
-        --mat-tab-header-inactive-hover-label-text-color: rgba(0, 0, 0, 0.6);
-        --mat-tab-header-active-focus-label-text-color: white;
-        --mat-tab-header-active-hover-label-text-color: white;
-        --mat-tab-header-active-focus-indicator-color: white;
-        --mat-tab-header-active-hover-indicator-color: white;
-      }
-
-      span.mdc-tab-indicator__content.mdc-tab-indicator__content--underline {
-        display: none;
-      }
-      ::ng-deep .mdc-tab-indicator--active .mdc-tab-indicator__content {
-        display: none;
-      }
-
-      ::ng-deep .mat-mdc-tab .mdc-tab__text-label {
-        color: ds.$britannia-dark;
-      }
-
-      ::ng-deep .mat-tab-list .mat-tab-labels .mat-tab-label:first-child {
-        color: red;
-        background-color: green;
-      }
-
-      ::ng-deep .mat-tab-list .mat-tab-labels .mat-tab-label:first-child:hover {
-        color: green;
-        background-color: red;
-      }
-    }
-
     .generate-btn {
       position: fixed;
       bottom: 30px;

@@ -3,3 +3,11 @@
   justify-content: center;
   align-items: center;
 }
+
+@mixin default-button {
+  background-color: transparent;
+  border: none;
+  margin: 0;
+  padding: 0;
+  color: #000;
+}

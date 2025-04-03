@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { Tab } from './model/tab.interface';
+import { TabData } from './shared/static-data/tab-data';
 
 @Component({
   selector: 'app-root',
@@ -8,16 +9,11 @@ import { TranslateService } from '@ngx-translate/core';
   standalone: false,
 })
 export class AppComponent {
-  constructor(private translate: TranslateService) {
-    this.translate.setDefaultLang('pl');
-  }
+  public activeTab: Tab | undefined = TabData.tabs.find(
+    (tab: Tab) => tab.defaultActive
+  );
 
-  public defaultLanguage: boolean = true;
-
-  protected readonly title: string = 'Britannia Reports';
-
-  public switchLanguage(language: string): void {
-    this.defaultLanguage = !this.defaultLanguage;
-    this.translate.use(language);
+  public emitTab(tab: Tab): void {
+    this.activeTab = tab;
   }
 }

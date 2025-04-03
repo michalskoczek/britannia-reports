@@ -1,21 +1,23 @@
 @use "../../../../assets/styles/utils/index" as ds;
+@use "../../../../assets/styles/mixins" as mixins;
 
 .tab-group-wrapper {
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  width: 100%;
+  gap: ds.$distance-8;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
 
   .tab {
+    @include mixins.default-button;
     flex-grow: 1;
     padding: ds.$distance-16 0;
     text-align: center;
-    cursor: pointer;
     color: ds.$britannia-dark;
     font: 600 16px/1 ds.$font;
-
-    &.active {
-      background-color: ds.$white;
-    }
 
     &:hover:not(.active) {
       span {
@@ -23,4 +25,47 @@
       }
     }
   }
+}
+
+.tab-group-wrapper:has(.tab:nth-child(1)) {
+  --count: 1;
+}
+.tab-group-wrapper:has(.tab:nth-child(2)) {
+  --count: 2;
+}
+.tab-group-wrapper:has(.tab:nth-child(3)) {
+  --count: 3;
+}
+.tab-group-wrapper:has(.tab:nth-child(4)) {
+  --count: 4;
+}
+
+.tab-group-wrapper::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: scale(0.94, 0.8);
+  --width: calc((100% / var(--count)));
+  width: var(--width);
+  margin-left: calc(var(--active) * var(--width));
+  transition: margin-left 300ms;
+  background-color: ds.$white;
+  z-index: -1;
+  border-radius: 20px;
+}
+
+.tab-group-wrapper:has(.tab:nth-child(1).active) {
+  --active: 0;
+}
+
+.tab-group-wrapper:has(.tab:nth-child(2).active) {
+  --active: 1;
+}
+
+.tab-group-wrapper:has(.tab:nth-child(3).active) {
+  --active: 2;
+}
+
+.tab-group-wrapper:has(.tab:nth-child(4).active) {
+  --active: 3;
 }

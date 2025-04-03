@@ -1,0 +1,46 @@
+@use "../../../../assets/styles/utils" as ds;
+@use "../../../../assets/styles/mixins" as *;
+
+.header {
+  @include flex-center;
+  justify-content: flex-start;
+  margin: 0 auto ds.$distance-16;
+
+  .img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .title {
+    font: 600 22px/26px ds.$font;
+    color: ds.$britannia-blue;
+    margin: 0 ds.$distance-8;
+  }
+
+  .button-wrapper {
+    margin: 0 0 0 auto;
+  }
+}
+
+@include ds.breakpoint-tablet() {
+  .header {
+    position: relative;
+    justify-content: center;
+
+    .img {
+      width: 80px;
+      height: 80px;
+    }
+
+    .title {
+      font: 600 32px/40px ds.$font;
+      margin: 0 0 0 20px;
+    }
+
+    .button-wrapper {
+      position: absolute;
+      right: 0;
+      margin: 0;
+    }
+  }
+}
