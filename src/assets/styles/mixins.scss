@@ -1,3 +1,5 @@
+@use "../../assets/styles/utils/index" as ds;
+
 @mixin flex-center {
   display: flex;
   justify-content: center;
@@ -10,4 +12,15 @@
   margin: 0;
   padding: 0;
   color: #000;
+}
+
+@mixin section-tile {
+  font-family: Montserrat, sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: left;
+  color: ds.$white;
+  padding: 0;
+  margin: ds.$distance-8 0;
 }

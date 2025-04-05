@@ -10,6 +10,7 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class ButtonComponent {
   @Input({ required: true }) translateKey: string;
+  @Input() type: string = 'text';
 
   @Output() clickEvent: EventEmitter<void> = new EventEmitter<void>();
 

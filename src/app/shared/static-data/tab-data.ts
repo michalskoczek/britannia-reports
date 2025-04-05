@@ -9,7 +9,7 @@ export class TabData {
     {
       id: 'semester-report',
       name: 'tab.semesterReport',
-      defaultActive: true,
+      defaultActive: false,
       isActive: false,
       component: SemestrReportComponent,
     },
@@ -30,7 +30,7 @@ export class TabData {
     {
       id: 'teddy-eddie-report',
       name: 'tab.teddyEddieReport',
-      defaultActive: false,
+      defaultActive: true,
       isActive: false,
       component: TeddyEddieReportComponent,
     },

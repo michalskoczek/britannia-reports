@@ -2,7 +2,9 @@
   <form [formGroup]="form" (ngSubmit)="generatePDF(form)" class="col-12">
     <div class="row mt-5">
       <div class="col-2 mb-4 pr-4">
-        <h3 class="subtitle mb-4">{{ "basicInformation" | translate }}</h3>
+        <app-section-title
+          [sectionTitle]="'basicInformation'"
+        ></app-section-title>
 
         <mat-form-field class="row w-100 mb-3">
           <mat-label>{{ "nameAndLastNameStudent" | translate }}</mat-label>
@@ -44,342 +46,182 @@
         </mat-form-field>
       </div>
 
-      <div class="col-10">
-        <h3 class="subtitle mb-4">{{ "tables" | translate }}</h3>
+      <!--      <div class="col-10">-->
+      <!--        <app-section-title [sectionTitle]="'tables'"></app-section-title>-->
 
-        <div class="row">
-          <div class="col-12">
-            <!--        Nowa tabelka-->
+      <!--        <div class="row">-->
+      <!--          <div class="col-12">-->
+      <!--            &lt;!&ndash;        Nowa tabelka&ndash;&gt;-->
 
-            <p class="w-100 px-2">
-              {{ "teddyEddie.englishImmersion" | translate }}
-            </p>
+      <!--            <p class="w-100 px-2">-->
+      <!--              {{ "teddyEddie.englishImmersion" | translate }}-->
+      <!--            </p>-->
 
-            <ng-container *ngIf="this.form.getRawValue()['age'] !== null">
-              <div class="row-wrapper-te">
-                <p>{{ "schoolYear" | translate }}</p>
-                <p>{{ "studentAge" | translate }}</p>
-                <p>{{ "course" | translate }}</p>
-                <p>{{ "levelOfCourse" | translate }}</p>
-                <p>{{ "book" | translate }}</p>
-                <p>{{ "withoutThisLine" | translate }}</p>
-              </div>
+      <!--            <ng-container *ngIf="this.form.getRawValue()['age'] !== null">-->
+      <!--              <div class="row-wrapper-te">-->
+      <!--                <p>{{ "schoolYear" | translate }}</p>-->
+      <!--                <p>{{ "studentAge" | translate }}</p>-->
+      <!--                <p>{{ "course" | translate }}</p>-->
+      <!--                <p>{{ "levelOfCourse" | translate }}</p>-->
+      <!--                <p>{{ "book" | translate }}</p>-->
+      <!--                <p>{{ "withoutThisLine" | translate }}</p>-->
+      <!--              </div>-->
 
-              <div
-                *ngFor="let skill of teddyEddieArray.controls; let i = index"
-                class="row-wrapper-te"
-              >
-                <div formArrayName="teddyEddieArray">
-                  <div class="row-group-te" [formGroupName]="i">
-                    <div>
-                      <input type="text" formControlName="schoolYear" />
-                    </div>
+      <!--              <div-->
+      <!--                *ngFor="let skill of teddyEddieArray.controls; let i = index"-->
+      <!--                class="row-wrapper-te"-->
+      <!--              >-->
+      <!--                <div formArrayName="teddyEddieArray">-->
+      <!--                  <div class="row-group-te" [formGroupName]="i">-->
+      <!--                    <div>-->
+      <!--                      <input type="text" formControlName="schoolYear" />-->
+      <!--                    </div>-->
 
-                    <div>
-                      <input type="text" formControlName="studentsAge" />
-                    </div>
+      <!--                    <div>-->
+      <!--                      <input type="text" formControlName="studentsAge" />-->
+      <!--                    </div>-->
 
-                    <div>
-                      <mat-select formControlName="course">
-                        <ng-container *ngFor="let course of courses">
-                          <mat-option [value]="course">
-                            {{ course }}
-                          </mat-option>
-                        </ng-container>
-                      </mat-select>
-                    </div>
+      <!--                    <div>-->
+      <!--                      <mat-select formControlName="course">-->
+      <!--                        <ng-container *ngFor="let course of courses">-->
+      <!--                          <mat-option [value]="course">-->
+      <!--                            {{ course }}-->
+      <!--                          </mat-option>-->
+      <!--                        </ng-container>-->
+      <!--                      </mat-select>-->
+      <!--                    </div>-->
 
-                    <div>
-                      <mat-select formControlName="courseLevel">
-                        <ng-container *ngFor="let level of courseLevelTE">
-                          <mat-option [value]="level">
-                            {{ level }}
-                          </mat-option>
-                        </ng-container>
-                      </mat-select>
-                    </div>
+      <!--                    <div>-->
+      <!--                      <mat-select formControlName="courseLevel">-->
+      <!--                        <ng-container *ngFor="let level of courseLevelTE">-->
+      <!--                          <mat-option [value]="level">-->
+      <!--                            {{ level }}-->
+      <!--                          </mat-option>-->
+      <!--                        </ng-container>-->
+      <!--                      </mat-select>-->
+      <!--                    </div>-->
 
-                    <div>
-                      <mat-select formControlName="book">
-                        <ng-container *ngFor="let books of booksToChoosingTE">
-                          <mat-option [value]="books">
-                            {{ books }}
-                          </mat-option>
-                        </ng-container>
-                      </mat-select>
-                    </div>
+      <!--                    <div>-->
+      <!--                      <mat-select formControlName="book">-->
+      <!--                        <ng-container *ngFor="let books of booksToChoosingTE">-->
+      <!--                          <mat-option [value]="books">-->
+      <!--                            {{ books }}-->
+      <!--                          </mat-option>-->
+      <!--                        </ng-container>-->
+      <!--                      </mat-select>-->
+      <!--                    </div>-->
 
-                    <div>
-                      <input
-                        type="checkbox"
-                        formControlName="shouldDeleteRow"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </ng-container>
-          </div>
-        </div>
+      <!--                    <div>-->
+      <!--                      <input-->
+      <!--                        type="checkbox"-->
+      <!--                        formControlName="shouldDeleteRow"-->
+      <!--                      />-->
+      <!--                    </div>-->
+      <!--                  </div>-->
+      <!--                </div>-->
+      <!--              </div>-->
+      <!--            </ng-container>-->
+      <!--          </div>-->
+      <!--        </div>-->
 
-        <div class="row">
-          <div class="col-12">
-            <!--        Nowa tabelka-->
+      <!--        <div class="row">-->
+      <!--          <div class="col-12">-->
+      <!--            &lt;!&ndash;        Nowa tabelka&ndash;&gt;-->
 
-            <p class="w-100 px-2 mt-4">
-              {{ "teddyEddie.cambridgePath" | translate }}
-            </p>
+      <!--            <p class="w-100 px-2 mt-4">-->
+      <!--              {{ "teddyEddie.cambridgePath" | translate }}-->
+      <!--            </p>-->
 
-            <ng-container *ngIf="this.form.getRawValue()['age'] !== null">
-              <div class="row-wrapper">
-                <p>{{ "schoolYear" | translate }}</p>
-                <p>{{ "studentAge" | translate }}</p>
-                <p>{{ "course" | translate }}</p>
-                <p>{{ "wayInLevel" | translate }}</p>
-                <p>{{ "certificationPurpose" | translate }}</p>
-                <p>{{ "schoolPurpose" | translate }}</p>
-                <p>{{ "withoutThisLine" | translate }}</p>
-              </div>
+      <!--            <ng-container *ngIf="this.form.getRawValue()['age'] !== null">-->
+      <!--              <div class="row-wrapper">-->
+      <!--                <p>{{ "schoolYear" | translate }}</p>-->
+      <!--                <p>{{ "studentAge" | translate }}</p>-->
+      <!--                <p>{{ "course" | translate }}</p>-->
+      <!--                <p>{{ "wayInLevel" | translate }}</p>-->
+      <!--                <p>{{ "certificationPurpose" | translate }}</p>-->
+      <!--                <p>{{ "schoolPurpose" | translate }}</p>-->
+      <!--                <p>{{ "withoutThisLine" | translate }}</p>-->
+      <!--              </div>-->
 
-              <div
-                *ngFor="
-                  let skill of developmentLanguageSkillsArray.controls;
-                  let i = index
-                "
-                class="row-wrapper"
-              >
-                <div formArrayName="developmentLanguageSkillsArray">
-                  <div class="row-group" [formGroupName]="i">
-                    <div>
-                      <input type="text" formControlName="schoolYear" />
-                    </div>
+      <!--              <div-->
+      <!--                *ngFor="-->
+      <!--                  let skill of developmentLanguageSkillsArray.controls;-->
+      <!--                  let i = index-->
+      <!--                "-->
+      <!--                class="row-wrapper"-->
+      <!--              >-->
+      <!--                <div formArrayName="developmentLanguageSkillsArray">-->
+      <!--                  <div class="row-group" [formGroupName]="i">-->
+      <!--                    <div>-->
+      <!--                      <input type="text" formControlName="schoolYear" />-->
+      <!--                    </div>-->
 
-                    <div>
-                      <input type="text" formControlName="classInSchool" />
-                    </div>
+      <!--                    <div>-->
+      <!--                      <input type="text" formControlName="classInSchool" />-->
+      <!--                    </div>-->
 
-                    <div>
-                      <mat-select formControlName="course">
-                        <ng-container *ngFor="let course of courses">
-                          <mat-option [value]="course">
-                            {{ course }}
-                          </mat-option>
-                        </ng-container>
-                      </mat-select>
-                    </div>
+      <!--                    <div>-->
+      <!--                      <mat-select formControlName="course">-->
+      <!--                        <ng-container *ngFor="let course of courses">-->
+      <!--                          <mat-option [value]="course">-->
+      <!--                            {{ course }}-->
+      <!--                          </mat-option>-->
+      <!--                        </ng-container>-->
+      <!--                      </mat-select>-->
+      <!--                    </div>-->
 
-                    <div>
-                      <mat-select formControlName="courseLevel">
-                        <ng-container *ngFor="let level of languageLevels">
-                          <mat-option [value]="level">
-                            {{ level }}
-                          </mat-option>
-                        </ng-container>
-                      </mat-select>
-                    </div>
+      <!--                    <div>-->
+      <!--                      <mat-select formControlName="courseLevel">-->
+      <!--                        <ng-container *ngFor="let level of languageLevels">-->
+      <!--                          <mat-option [value]="level">-->
+      <!--                            {{ level }}-->
+      <!--                          </mat-option>-->
+      <!--                        </ng-container>-->
+      <!--                      </mat-select>-->
+      <!--                    </div>-->
 
-                    <div>
-                      <mat-select formControlName="certificationPurpose">
-                        <ng-container
-                          *ngFor="let certification of certificationPurpose"
-                        >
-                          <mat-option [value]="certification">
-                            {{ certification }}
-                          </mat-option>
-                        </ng-container>
-                      </mat-select>
-                    </div>
+      <!--                    <div>-->
+      <!--                      <mat-select formControlName="certificationPurpose">-->
+      <!--                        <ng-container-->
+      <!--                          *ngFor="let certification of certificationPurpose"-->
+      <!--                        >-->
+      <!--                          <mat-option [value]="certification">-->
+      <!--                            {{ certification }}-->
+      <!--                          </mat-option>-->
+      <!--                        </ng-container>-->
+      <!--                      </mat-select>-->
+      <!--                    </div>-->
 
-                    <div>
-                      <mat-select formControlName="schoolExam">
-                        <ng-container *ngFor="let exam of schoolExamsTE">
-                          <mat-option [value]="exam">
-                            {{ exam }}
-                          </mat-option>
-                        </ng-container>
-                      </mat-select>
-                    </div>
+      <!--                    <div>-->
+      <!--                      <mat-select formControlName="schoolExam">-->
+      <!--                        <ng-container *ngFor="let exam of schoolExamsTE">-->
+      <!--                          <mat-option [value]="exam">-->
+      <!--                            {{ exam }}-->
+      <!--                          </mat-option>-->
+      <!--                        </ng-container>-->
+      <!--                      </mat-select>-->
+      <!--                    </div>-->
 
-                    <div>
-                      <input
-                        type="checkbox"
-                        formControlName="shouldDeleteRow"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </ng-container>
-          </div>
-        </div>
-      </div>
+      <!--                    <div>-->
+      <!--                      <input-->
+      <!--                        type="checkbox"-->
+      <!--                        formControlName="shouldDeleteRow"-->
+      <!--                      />-->
+      <!--                    </div>-->
+      <!--                  </div>-->
+      <!--                </div>-->
+      <!--              </div>-->
+      <!--            </ng-container>-->
+      <!--          </div>-->
+      <!--        </div>-->
+      <!--      </div>-->
     </div>
-
-    <!--    <div class="row">-->
-    <!--      <div class="col-12">-->
-    <!--        &lt;!&ndash;        Nowa tabelka&ndash;&gt;-->
-
-    <!--        <p class="w-100 px-2">-->
-    <!--          {{ "teddyEddie.englishImmersion" | translate }}-->
-    <!--        </p>-->
-
-    <!--        <ng-container *ngIf="this.form.getRawValue()['age'] !== null">-->
-    <!--          <div class="row-wrapper-te">-->
-    <!--            <p>{{ "schoolYear" | translate }}</p>-->
-    <!--            <p>{{ "studentAge" | translate }}</p>-->
-    <!--            <p>{{ "course" | translate }}</p>-->
-    <!--            <p>{{ "levelOfCourse" | translate }}</p>-->
-    <!--            <p>{{ "book" | translate }}</p>-->
-    <!--            <p>{{ "withoutThisLine" | translate }}</p>-->
-    <!--          </div>-->
-
-    <!--          <div-->
-    <!--            *ngFor="let skill of teddyEddieArray.controls; let i = index"-->
-    <!--            class="row-wrapper-te"-->
-    <!--          >-->
-    <!--            <div formArrayName="teddyEddieArray">-->
-    <!--              <div class="row-group-te" [formGroupName]="i">-->
-    <!--                <div>-->
-    <!--                  <input type="text" formControlName="schoolYear" />-->
-    <!--                </div>-->
-
-    <!--                <div>-->
-    <!--                  <input type="text" formControlName="studentsAge" />-->
-    <!--                </div>-->
-
-    <!--                <div>-->
-    <!--                  <mat-select formControlName="course">-->
-    <!--                    <ng-container *ngFor="let course of courses">-->
-    <!--                      <mat-option [value]="course">-->
-    <!--                        {{ course }}-->
-    <!--                      </mat-option>-->
-    <!--                    </ng-container>-->
-    <!--                  </mat-select>-->
-    <!--                </div>-->
-
-    <!--                <div>-->
-    <!--                  <mat-select formControlName="courseLevel">-->
-    <!--                    <ng-container *ngFor="let level of courseLevelTE">-->
-    <!--                      <mat-option [value]="level">-->
-    <!--                        {{ level }}-->
-    <!--                      </mat-option>-->
-    <!--                    </ng-container>-->
-    <!--                  </mat-select>-->
-    <!--                </div>-->
-
-    <!--                <div>-->
-    <!--                  <mat-select formControlName="book">-->
-    <!--                    <ng-container *ngFor="let books of booksToChoosingTE">-->
-    <!--                      <mat-option [value]="books">-->
-    <!--                        {{ books }}-->
-    <!--                      </mat-option>-->
-    <!--                    </ng-container>-->
-    <!--                  </mat-select>-->
-    <!--                </div>-->
-
-    <!--                <div>-->
-    <!--                  <input type="checkbox" formControlName="shouldDeleteRow" />-->
-    <!--                </div>-->
-    <!--              </div>-->
-    <!--            </div>-->
-    <!--          </div>-->
-    <!--        </ng-container>-->
-    <!--      </div>-->
-    <!--    </div>-->
-
-    <!--    <div class="row">-->
-    <!--      <div class="col-12">-->
-    <!--        &lt;!&ndash;        Nowa tabelka&ndash;&gt;-->
-
-    <!--        <p class="w-100 px-2 mt-4">-->
-    <!--          {{ "teddyEddie.cambridgePath" | translate }}-->
-    <!--        </p>-->
-
-    <!--        <ng-container *ngIf="this.form.getRawValue()['age'] !== null">-->
-    <!--          <div class="row-wrapper">-->
-    <!--            <p>{{ "schoolYear" | translate }}</p>-->
-    <!--            <p>{{ "studentAge" | translate }}</p>-->
-    <!--            <p>{{ "course" | translate }}</p>-->
-    <!--            <p>{{ "wayInLevel" | translate }}</p>-->
-    <!--            <p>{{ "certificationPurpose" | translate }}</p>-->
-    <!--            <p>{{ "schoolPurpose" | translate }}</p>-->
-    <!--            <p>{{ "withoutThisLine" | translate }}</p>-->
-    <!--          </div>-->
-
-    <!--          <div-->
-    <!--            *ngFor="-->
-    <!--              let skill of developmentLanguageSkillsArray.controls;-->
-    <!--              let i = index-->
-    <!--            "-->
-    <!--            class="row-wrapper"-->
-    <!--          >-->
-    <!--            <div formArrayName="developmentLanguageSkillsArray">-->
-    <!--              <div class="row-group" [formGroupName]="i">-->
-    <!--                <div>-->
-    <!--                  <input type="text" formControlName="schoolYear" />-->
-    <!--                </div>-->
-
-    <!--                <div>-->
-    <!--                  <input type="text" formControlName="classInSchool" />-->
-    <!--                </div>-->
-
-    <!--                <div>-->
-    <!--                  <mat-select formControlName="course">-->
-    <!--                    <ng-container *ngFor="let course of courses">-->
-    <!--                      <mat-option [value]="course">-->
-    <!--                        {{ course }}-->
-    <!--                      </mat-option>-->
-    <!--                    </ng-container>-->
-    <!--                  </mat-select>-->
-    <!--                </div>-->
-
-    <!--                <div>-->
-    <!--                  <mat-select formControlName="courseLevel">-->
-    <!--                    <ng-container *ngFor="let level of languageLevels">-->
-    <!--                      <mat-option [value]="level">-->
-    <!--                        {{ level }}-->
-    <!--                      </mat-option>-->
-    <!--                    </ng-container>-->
-    <!--                  </mat-select>-->
-    <!--                </div>-->
-
-    <!--                <div>-->
-    <!--                  <mat-select formControlName="certificationPurpose">-->
-    <!--                    <ng-container-->
-    <!--                      *ngFor="let certification of certificationPurpose"-->
-    <!--                    >-->
-    <!--                      <mat-option [value]="certification">-->
-    <!--                        {{ certification }}-->
-    <!--                      </mat-option>-->
-    <!--                    </ng-container>-->
-    <!--                  </mat-select>-->
-    <!--                </div>-->
-
-    <!--                <div>-->
-    <!--                  <mat-select formControlName="schoolExam">-->
-    <!--                    <ng-container *ngFor="let exam of schoolExamsTE">-->
-    <!--                      <mat-option [value]="exam">-->
-    <!--                        {{ exam }}-->
-    <!--                      </mat-option>-->
-    <!--                    </ng-container>-->
-    <!--                  </mat-select>-->
-    <!--                </div>-->
-
-    <!--                <div>-->
-    <!--                  <input type="checkbox" formControlName="shouldDeleteRow" />-->
-    <!--                </div>-->
-    <!--              </div>-->
-    <!--            </div>-->
-    <!--          </div>-->
-    <!--        </ng-container>-->
-    <!--      </div>-->
-    <!--    </div>-->
 
     <div class="row generate-btn">
       <div class="col-12 d-flex justify-content-end">
-        <button mat-raised-button color="primary" type="submit">
+        <app-button [translateKey]="'downloadPDF'" [type]="'submit'">
           {{ "downloadPDF" | translate }}
-        </button>
+        </app-button>
       </div>
     </div>
   </form>

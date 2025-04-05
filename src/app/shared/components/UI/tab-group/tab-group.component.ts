@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { Tab } from '../../../model/tab.interface';
+import { Tab } from '../../../../model/tab.interface';
 import { TranslateModule } from '@ngx-translate/core';
-import { TabData } from '../../static-data/tab-data';
+import { TabData } from '../../../static-data/tab-data';
 import { NgClass } from '@angular/common';
 
 @Component({
