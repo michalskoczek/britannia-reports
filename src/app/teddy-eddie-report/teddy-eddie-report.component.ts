@@ -23,10 +23,10 @@ import { DevelopmentPathTeddyEddie } from '../model/development-path-teddy-eddie
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
-    selector: 'app-teddy-eddie-report',
-    templateUrl: './teddy-eddie-report.component.html',
-    styleUrls: ['./teddy-eddie-report.component.scss'],
-    standalone: false
+  selector: 'app-teddy-eddie-report',
+  templateUrl: './teddy-eddie-report.component.html',
+  styleUrls: ['./teddy-eddie-report.component.scss'],
+  standalone: false,
 })
 export class TeddyEddieReportComponent implements OnInit {
   public form: FormGroup;
@@ -330,7 +330,7 @@ export class TeddyEddieReportComponent implements OnInit {
     };
 
     const fileName: string =
-      'Raport końcowy 2023-24 - ' + form.value.studentName;
+      'Raport końcowy 2024-25 - ' + form.value.studentName;
     pdfMake.createPdf(docDefinition).download(fileName);
   }
 

@@ -27,10 +27,10 @@ import {
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
-    selector: 'app-year-report',
-    templateUrl: './year-report.component.html',
-    styleUrls: ['./year-report.component.scss'],
-    standalone: false
+  selector: 'app-year-report',
+  templateUrl: './year-report.component.html',
+  styleUrls: ['./year-report.component.scss'],
+  standalone: false,
 })
 export class YearReportComponent implements OnInit {
   title: string = 'britannia-reports';
@@ -119,7 +119,6 @@ export class YearReportComponent implements OnInit {
     switch (shortClassesInSchool) {
       case 'Klasa 8 SP':
         return 'egzamin 8-klasisty';
-        break;
       default:
         return null;
     }
@@ -402,7 +401,7 @@ export class YearReportComponent implements OnInit {
     };
 
     const fileName: string =
-      'Raport końcowy 2023-24 - ' + form.value.studentName;
+      'Raport końcowy 2024-25 - ' + form.value.studentName;
     pdfMake.createPdf(docDefinition).download(fileName);
   }
 
