@@ -14,7 +14,6 @@ export const classesInSchool: string[] = [
 ];
 
 export const schoolYears: string[] = [
-  '2023-2024',
   '2024-2025',
   '2025-2026',
   '2026-2027',
@@ -30,6 +29,7 @@ export const schoolYears: string[] = [
   '2036-2037',
   '2037-2038',
   '2038-2039',
+  '2039-2040',
 ];
 
 export const languageLevels: string[] = [
