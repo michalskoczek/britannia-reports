@@ -4,12 +4,13 @@
 .button {
   @include mat.button-overrides(
     (
-      protected-container-color: ds.$main-color,
+      protected-container-color: ds.$britannia-dark,
       protected-label-text-color: ds.$white,
     )
   );
 
-  font: 600 16px/1 ds.$font;
+  font: 600 14px/1 ds.$font;
+  letter-spacing: 0.1px;
 }
 
 @include ds.breakpoint-max-tablet() {

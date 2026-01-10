@@ -20,6 +20,11 @@ import {
 import { DevelopmentPathInSchool } from '../model/development-path-in-school';
 import { DevelopmentPathTeddyEddie } from '../model/development-path-teddy-eddie';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
+import { TeddyEddieReport } from './model/teddy-eddie-report.interface';
+import { FormWrapperComponent } from '../shared/forms/template/layout/form-wrapper-template/form-wrapper-template.component';
+import { TeddyEddieFormComponent } from './teddy-eddie-form/teddy-eddie-form.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { ButtonComponent } from '../shared/components/button/button.component';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -39,14 +44,26 @@ export const MY_FORMATS = {
   selector: 'app-teddy-eddie-report',
   templateUrl: './teddy-eddie-report.component.html',
   styleUrls: ['./teddy-eddie-report.component.scss'],
-  standalone: false,
+  standalone: true,
   providers: [provideMomentDateAdapter(MY_FORMATS)],
+  imports: [
+    FormWrapperComponent,
+    TeddyEddieFormComponent,
+    TranslateModule,
+    ButtonComponent,
+  ],
 })
 export class TeddyEddieReportComponent implements OnInit {
   public form: FormGroup;
 
+  public teddyEddieForm: TeddyEddieReport = {
+    studentName: '',
+    date: null,
+    age: null,
+  };
+
   public classes: string[] = studentsAgeTE;
-  public ageTE: string[] = ageTE;
+  // public ageTE: string[] = ageTE;
 
   public schoolYears: string[] = schoolYears;
   public languageLevels: string[] = languageLevels;
@@ -112,43 +129,43 @@ export class TeddyEddieReportComponent implements OnInit {
     }
   }
 
-  public initTableTE(age: string): void {
-    this.indexClassTE = this.ageTE.findIndex((r: string) => {
-      return r === age;
-    });
-
-    let shortTable: string[] = this.ageTE.slice(
-      this.indexClassTE,
-      this.ageTE.length
-    );
-
-    const clearFormArray = (formArray: FormArray) => {
-      while (formArray.length !== 0) {
-        formArray.removeAt(0);
-      }
-    };
-
-    clearFormArray(this.form.get('teddyEddieArray') as FormArray);
-
-    for (let i: number = 0; i < shortTable.length; i++) {
-      (this.form.get('teddyEddieArray') as FormArray).push(
-        new FormGroup({
-          schoolYear: new FormControl({
-            value: this.schoolYears[i],
-            disabled: true,
-          }),
-          studentsAge: new FormControl({
-            value: shortTable[i],
-            disabled: true,
-          }),
-          course: new FormControl(null),
-          courseLevel: new FormControl(null),
-          book: new FormControl(null),
-          shouldDeleteRow: new FormControl(false),
-        })
-      );
-    }
-  }
+  // public initTableTE(age: string): void {
+  //   this.indexClassTE = this.ageTE.findIndex((r: string) => {
+  //     return r === age;
+  //   });
+  //
+  //   let shortTable: string[] = this.ageTE.slice(
+  //     this.indexClassTE,
+  //     this.ageTE.length
+  //   );
+  //
+  //   const clearFormArray = (formArray: FormArray) => {
+  //     while (formArray.length !== 0) {
+  //       formArray.removeAt(0);
+  //     }
+  //   };
+  //
+  //   clearFormArray(this.form.get('teddyEddieArray') as FormArray);
+  //
+  //   for (let i: number = 0; i < shortTable.length; i++) {
+  //     (this.form.get('teddyEddieArray') as FormArray).push(
+  //       new FormGroup({
+  //         schoolYear: new FormControl({
+  //           value: this.schoolYears[i],
+  //           disabled: true,
+  //         }),
+  //         studentsAge: new FormControl({
+  //           value: shortTable[i],
+  //           disabled: true,
+  //         }),
+  //         course: new FormControl(null),
+  //         courseLevel: new FormControl(null),
+  //         book: new FormControl(null),
+  //         shouldDeleteRow: new FormControl(false),
+  //       })
+  //     );
+  //   }
+  // }
 
   private addSchoolExam(shortClassesInSchool: string): string | null {
     switch (shortClassesInSchool) {
@@ -177,7 +194,7 @@ export class TeddyEddieReportComponent implements OnInit {
   }
 
   public setTableTE(age: string): void {
-    this.initTableTE(age);
+    // this.initTableTE(age);
 
     this.setClasses('Klasa 2 SP');
   }
@@ -212,6 +229,10 @@ export class TeddyEddieReportComponent implements OnInit {
     ) {
       return { text: `${form.value.realizedMaterial}` };
     }
+  }
+
+  public downloadPDF(): any {
+    console.log('Form data:', this.teddyEddieForm);
   }
 
   public generatePDF(form: FormGroup): any {

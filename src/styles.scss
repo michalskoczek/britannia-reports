@@ -1,10 +1,20 @@
 @use "assets/styles/utils/index" as ds;
 @use "assets/styles/custom-theme/tab" as tab;
+@use "@angular/material" as mat;
+
+:root {
+  @include mat.form-field-overrides(
+    (
+      container-height: 36px,
+      container-vertical-padding: 8px,
+    )
+  );
+}
 
 body {
   padding: ds.$distance-16 ds.$distance-8;
-  background: linear-gradient(to right, #57b9ffff 0%, #90d5ffff 100%);
-  //background-color: rgba(245, 247, 255, 1);
+  //background: linear-gradient(to right, #57b9ffff 0%, #90d5ffff 100%);
+  background-color: rgba(245, 247, 255, 1);
 
   @include ds.breakpoint-tablet {
     padding: ds.$distance-16 ds.$distance-24;

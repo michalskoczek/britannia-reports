@@ -16,11 +16,17 @@
 
 @mixin section-tile {
   font-family: Montserrat, sans-serif;
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 20px;
+  font-weight: 600;
   line-height: 1.4;
-  text-align: left;
-  color: ds.$white;
-  padding: 0;
-  margin: ds.$distance-8 0;
+  text-align: center;
+  color: ds.$britannia-blue;
+  padding: ds.$distance-8 ds.$distance-16;
+  margin: 0;
+  border-left: 6px solid ds.$white;
+  border-top: 6px solid ds.$white;
+  border-right: 6px solid ds.$white;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2),
+    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
 }

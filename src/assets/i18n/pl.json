@@ -10,8 +10,7 @@
   "Uczeń/Uczennica": "Uczeń/Uczennica",
   "Uczeń": "Uczeń",
   "Uczennica": "Uczennica",
-  "fieldIsRequired": "Pole jest wymagane",
-  "chooseDate": "Wybierz datę",
+  "chooseDate": "Wybierz datę...",
   "age": "Wiek",
   "tables": "Tabelki",
   "Klasa": "Klasa",
@@ -154,6 +153,10 @@
   "teddyEddie.cambridgePath": "ŚCIEŻKA CAMBRIDGE - cele certyfikacyjne",
   "wayInLevel": "W kierunku poziomu",
   "certificationPurpose": "Cel certyfikacyjny",
-  "schoolPurpose": "Cel szkolny"
+  "schoolPurpose": "Cel szkolny",
 
+  "error.fieldIsRequired": "Pole jest wymagane",
+  "typeValue": "Wpisz wartość...",
+  "selectValue": "Wybierz wartość...",
+  "date": "Data"
 }

@@ -10,8 +10,7 @@
   "Uczeń/Uczennica": "Student (Male/Female)",
   "Uczeń": "Male",
   "Uczennica": "Female",
-  "fieldIsRequired": "The field is required",
-  "chooseDate": "Choose date",
+  "chooseDate": "Choose date...",
   "age": "Age",
   "tables": "Tabels",
   "Klasa": "Class",
@@ -155,5 +154,10 @@
   "teddyEddie.cambridgePath": "CAMBRIDGE PATHWAY - Certification Objectives",
   "wayInLevel": "Towards the level",
   "certificationPurpose": "Certification purpose",
-  "schoolPurpose": "School purpose"
+  "schoolPurpose": "School purpose",
+
+  "error.fieldIsRequired": "The field is required",
+  "typeValue": "Type value...",
+  "selectValue": "Select value...",
+  "date": "Date"
 }

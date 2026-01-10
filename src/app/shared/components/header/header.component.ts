@@ -1,10 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ButtonComponent } from '../button/button.component';
 import { TranslateService } from '@ngx-translate/core';
+import { NgOptimizedImage } from '@angular/common';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-header',
-  imports: [ButtonComponent],
+  imports: [NgOptimizedImage, MatSlideToggle],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })
@@ -19,8 +20,8 @@ export class HeaderComponent implements OnInit {
     this.translateService.setDefaultLang('pl');
   }
 
-  public switchLanguage(language: string): void {
+  public switchLanguage(): void {
     this.defaultLanguage = !this.defaultLanguage;
-    this.translateService.use(language);
+    this.translateService.use(this.defaultLanguage ? 'pl' : 'en');
   }
 }

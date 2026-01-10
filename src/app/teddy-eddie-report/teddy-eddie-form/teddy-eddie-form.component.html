@@ -1,0 +1,21 @@
+<app-input
+  [(model)]="form.studentName"
+  [label]="'nameAndLastNameStudent'"
+  [required]="true"
+  [errorMessage]="'error.fieldIsRequired'"
+></app-input>
+
+<app-select
+  [(model)]="form.age"
+  [label]="'age'"
+  [required]="true"
+  [itemList]="ageTE"
+  [errorMessage]="'error.fieldIsRequired'"
+></app-select>
+
+<app-date
+  [(model)]="form.date"
+  [label]="'date'"
+  [required]="true"
+  [errorMessage]="'error.fieldIsRequired'"
+></app-date>

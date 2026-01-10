@@ -1,20 +1,29 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  input,
+  Input,
+  output,
+  Output,
+} from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { TranslateModule } from '@ngx-translate/core';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-button',
-  imports: [MatButton, TranslateModule],
+  imports: [MatButton, TranslateModule, MatIcon],
   templateUrl: './button.component.html',
   styleUrl: './button.component.scss',
 })
 export class ButtonComponent {
-  @Input({ required: true }) translateKey: string;
-  @Input() type: string = 'text';
+  translateKey = input.required<string>();
+  type = input<string>('text');
+  icon = input<string>();
 
-  @Output() clickEvent: EventEmitter<void> = new EventEmitter<void>();
+  clicked = output();
 
-  public clickedEmitter(): void {
-    this.clickEvent.emit();
+  public emitClicked(): void {
+    this.clicked.emit();
   }
 }
