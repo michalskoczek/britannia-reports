@@ -22,10 +22,10 @@ import { ExamTypes } from '../shared/enum/exam-type.enum';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
-    selector: 'app-cambridge-report',
-    templateUrl: './cambridge-report.component.html',
-    styleUrls: ['./cambridge-report.component.scss'],
-    standalone: false
+  selector: 'app-cambridge-report',
+  templateUrl: './cambridge-report.component.html',
+  styleUrls: ['./cambridge-report.component.scss'],
+  standalone: false,
 })
 export class CambridgeReportComponent implements OnInit {
   title: string = 'britannia-reports';
@@ -249,6 +249,12 @@ export class CambridgeReportComponent implements OnInit {
       }
     };
 
+    const addSpaceAfterTeacher = (teachers: string[]) => {
+      if (!teachers) return;
+
+      return teachers.join(', ');
+    };
+
     let docDefinition: any = {
       content: [
         {
@@ -277,7 +283,7 @@ export class CambridgeReportComponent implements OnInit {
               ],
               [
                 { text: 'Lektor', style: 'tableHeader' },
-                { text: `${form.value.teacher}` },
+                { text: `${addSpaceAfterTeacher(form.value.teachers)}` },
                 { text: 'Kurs', style: 'tableHeader' },
                 { text: `${form.value.course}` },
               ],
@@ -454,7 +460,7 @@ export class CambridgeReportComponent implements OnInit {
       sex: new FormControl(null),
       date: new FormControl(null),
       class: new FormControl(null),
-      teacher: new FormControl(null),
+      teachers: new FormControl(null),
       studentBookTitle: new FormControl(null),
       ownTitleStudentBook: new FormControl(null),
       ownEducationMaterial: new FormControl(false),

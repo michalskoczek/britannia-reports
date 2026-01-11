@@ -10,18 +10,11 @@
       <mat-form-field class="col-6 my-1">
         <mat-label>{{ "nameAndLastNameStudent" | translate }}</mat-label>
         <input matInput type="text" formControlName="studentName" />
-        <mat-error
-          *ngIf="this.form.controls['studentName'].hasError('required')"
-          >{{ "fieldIsRequired" | translate }}
-        </mat-error>
       </mat-form-field>
 
       <mat-form-field class="col-6 my-1">
         <mat-label>{{ "chooseDate" | translate }}</mat-label>
         <input matInput [matDatepicker]="picker" formControlName="date" />
-        <mat-error *ngIf="this.form.controls['date'].hasError('required')"
-          >{{ "fieldIsRequired" | translate }}
-        </mat-error>
         <mat-hint>DD.M.RRRR</mat-hint>
         <mat-datepicker-toggle
           matIconSuffix
@@ -43,21 +36,15 @@
             {{ classValue }}
           </mat-option>
         </mat-select>
-        <mat-error *ngIf="this.form.controls['class'].hasError('required')"
-          >{{ "fieldIsRequired" | translate }}
-        </mat-error>
       </mat-form-field>
 
       <mat-form-field class="col-6 my-1">
-        <mat-label>{{ "Lektor" | translate }}</mat-label>
-        <mat-select name="teacher" formControlName="teacher">
+        <mat-label>{{ "teacher" | translate }}</mat-label>
+        <mat-select name="teacher" formControlName="teachers" multiple>
           <mat-option *ngFor="let teacher of teachers" [value]="teacher">
             {{ teacher }}
           </mat-option>
         </mat-select>
-        <mat-error *ngIf="this.form.controls['teacher'].hasError('required')"
-          >{{ "fieldIsRequired" | translate }}
-        </mat-error>
       </mat-form-field>
     </div>
 
@@ -84,19 +71,11 @@
             {{ book }}
           </mat-option>
         </mat-select>
-        <mat-error
-          *ngIf="this.form.controls['studentBookTitle'].hasError('required')"
-          >{{ "fieldIsRequired" | translate }}
-        </mat-error>
       </mat-form-field>
 
       <mat-form-field class="col-6 my-1" *ngIf="isCheckedOwnTitle">
         <mat-label>{{ "Tytuł i wydawnictwo" | translate }}</mat-label>
         <input matInput type="text" formControlName="ownTitleStudentBook" />
-        <mat-error
-          *ngIf="this.form.controls['ownTitleStudentBook'].hasError('required')"
-          >{{ "fieldIsRequired" | translate }}
-        </mat-error>
       </mat-form-field>
     </div>
 
@@ -114,9 +93,6 @@
             {{ course }}
           </mat-option>
         </mat-select>
-        <mat-error *ngIf="this.form.controls['course'].hasError('required')"
-          >{{ "fieldIsRequired" | translate }}
-        </mat-error>
       </mat-form-field>
     </div>
 
@@ -145,14 +121,10 @@
           formControlName="realizedMaterial"
           placeholder="wpisz np: Units 1-9"
         ></textarea>
-        <mat-error
-          *ngIf="this.form.controls['realizedMaterial'].hasError('required')"
-          >{{ "fieldIsRequired" | translate }}
-        </mat-error>
       </mat-form-field>
     </div>
 
-    <div class="row mt-5">
+    <div class="row mt-2">
       <div class="col-12 mb-4">
         <h2 class="subtitle">{{ "Oceny" | translate }}</h2>
       </div>
@@ -160,7 +132,7 @@
 
     <div class="row">
       <div class="col-2">
-        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z3">
           <ng-container matColumnDef="percent">
             <th mat-header-cell *matHeaderCellDef>
               {{ "Procent" | translate }}
@@ -325,7 +297,7 @@
 
         <p class="w-100 px-2 mt-4">Prognozowana ścieżka rozwoju językowego</p>
 
-        <ng-container *ngIf="this.form.getRawValue()['class'] !== null">
+        <ng-container *ngIf="form.getRawValue()['class'] !== null">
           <div class="row-wrapper">
             <p>Rok szkolny</p>
             <p>Klasa ucznia w szkole</p>
@@ -429,7 +401,7 @@
       </div>
     </div>
 
-    <div class="row mt-5">
+    <div class="row mt-4">
       <div class="col-12 mb-4">
         <h2 class="subtitle">Dodatkowy komentarz</h2>
       </div>
@@ -444,7 +416,7 @@
       </div>
     </div>
 
-    <div class="row mt-5">
+    <div class="row mt-2">
       <div class="col-12 mb-4">
         <h2 class="subtitle">{{ "Podpis" | translate }}</h2>
       </div>

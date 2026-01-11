@@ -228,6 +228,12 @@ export class YearReportComponent implements OnInit {
   public generatePDF(form: FormGroup): any {
     let date: string = new Date(form.value.date).toLocaleDateString();
 
+    const addSpaceAfterTeacher = (teachers: string[]) => {
+      if (!teachers) return;
+
+      return teachers.join(', ');
+    };
+
     let docDefinition = {
       content: [
         {
@@ -268,7 +274,7 @@ export class YearReportComponent implements OnInit {
               ],
               [
                 { text: 'Lektor', style: 'tableHeader' },
-                { text: `${form.value.teacher}` },
+                { text: `${addSpaceAfterTeacher(form.value.teachers)}` },
                 {
                   text: 'Tytuł podręcznika',
                   noWrap: true,
@@ -401,7 +407,7 @@ export class YearReportComponent implements OnInit {
     };
 
     const fileName: string =
-      'Raport końcowy 2024-25 - ' + form.value.studentName;
+      'Raport końcowy 2025-26 - ' + form.value.studentName;
     pdfMake.createPdf(docDefinition).download(fileName);
   }
 
@@ -581,16 +587,16 @@ export class YearReportComponent implements OnInit {
 
   private createForm(): FormGroup {
     return new FormGroup({
-      studentName: new FormControl(null, Validators.required),
-      name: new FormControl(null, Validators.required),
-      sex: new FormControl(null, Validators.required),
-      date: new FormControl(null, Validators.required),
-      class: new FormControl(null, Validators.required),
-      teacher: new FormControl(null, Validators.required),
-      studentBookTitle: new FormControl(null, Validators.required),
-      ownTitleStudentBook: new FormControl(null, Validators.required),
+      studentName: new FormControl(null),
+      name: new FormControl(null),
+      sex: new FormControl(null),
+      date: new FormControl(null),
+      class: new FormControl(null),
+      teachers: new FormControl(null),
+      studentBookTitle: new FormControl(null),
+      ownTitleStudentBook: new FormControl(null),
       ownEducationMaterial: new FormControl(false),
-      course: new FormControl(null, Validators.required),
+      course: new FormControl(null),
       realizedMaterial: new FormControl(null),
       allMaterialCompleted: new FormControl(false),
       halfMaterialCompleted: new FormControl(false),

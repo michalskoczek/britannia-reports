@@ -25,7 +25,7 @@
   <mat-tab-group>
     <mat-tab>
       <ng-template mat-tab-label>{{
-        "Raport semestralny" | translate
+        "semesterTrimesterReport" | translate
       }}</ng-template>
       <ng-template matTabContent>
         <app-semestr-report></app-semestr-report>
@@ -34,7 +34,7 @@
 
     <mat-tab>
       <ng-template mat-tab-label>{{
-        "Raport całoroczny" | translate
+        "endOfYearReport" | translate
       }}</ng-template>
       <ng-template matTabContent>
         <app-year-report></app-year-report>
@@ -43,7 +43,7 @@
 
     <mat-tab>
       <ng-template mat-tab-label>{{
-        "Raport Cambridge" | translate
+        "cambridgeReport" | translate
       }}</ng-template>
       <ng-template matTabContent>
         <app-cambridge-report></app-cambridge-report>
@@ -51,7 +51,9 @@
     </mat-tab>
 
     <mat-tab>
-      <ng-template mat-tab-label>Raport Teddy Eddie</ng-template>
+      <ng-template mat-tab-label>{{
+        "teddyEddieReport" | translate
+      }}</ng-template>
       <ng-template matTabContent>
         <app-teddy-eddie-report></app-teddy-eddie-report>
       </ng-template>
