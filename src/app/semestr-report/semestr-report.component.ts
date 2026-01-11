@@ -78,10 +78,15 @@ export class SemestrReportComponent implements OnInit {
   private readonly imageLogo: string = image;
   private readonly semesterText: string = 'semestralny';
   private readonly trimesterText: string = '(trymestr 1.)';
+  private readonly trimesterTextTitle: string = 'po pierwszym trymestrze';
   private readonly semesterTextMark: string = 'semestralna';
 
-  private readonly additionalExamInformations: string[] =
+  public readonly additionalExamInformations: string[] =
     additionalExamInformations;
+
+  public readonly addExamInfoCambridge: string[] = structuredClone(
+    additionalExamInformations
+  );
 
   private readonly checkmarkLogo: string =
     'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAAv5JREFUaEPtmDmrFEEUhb8Hboio4C4q4gauKGaCkRsGgmjimoggLoFiZmAomIhooGIgZiIugQgKLmiouP0C/4Br7NrnUSXz+k1P3dvT7fTAVDYzp6rOuffUrVszRJ+PoT7nz0BArzM4yMAgA+kITAfuAeuAE8DN1ilNt9AM4EkmYE0g/Qc4BlyNIposQOSfAqtzSZKIo8A1fd9UAUXko5bfwCHZqYkCZobIr0ocj1/AwaYJEPlnwMr02R5GfGqSgFmB/AojecGeN0WA1Tat2j4Am5sgwGsbiRgm3wQLyTYqlVbPjyDf6zJaxvP/It/ri6wS8kUZWAScAz4CZ4Efjqpggc5V9QCWWcAB8z54/nN+Tv4QrwceAoqQxl1gD/DTsVkn6OzgeU+pHGWbomZuU+j6JucY3AH2ViBC5HVJLXcEQ5HfompTNCdmYD9wAxhbALwN7AN0fZcZ84JtljgmF9omn4HjwGVDYyeBh7NzoUbKM8qQfxc8/yW1kTLwHcjbpmjedeAIoJbWMuaHyC+2gAPGTF54CbgP7HRscAVQ1lIiFgTPe8i/DZ5PRj7ylYCJwKOsOmx0iLgEnOwgokzkTZ7Pc4yHeEoobyqj1nExs9+pNuAykS9FPlooctDj+QXgqdEXgNMtIkRel5QuQ+soTT4vQJ91S74EPL49D5wBlgYrLrQyB94Ez391zBkBbddOi4BEyMfW8Q2YBIyxTqiCfLsMxP0VTdlpjoOQB6pSqRt2VG/jWaSTAP2mvzPk52neRRN4V51P7Z16ka0NIqamFjL+Xin5VAYipw3A4+BxI8+2sMrJWwUIp/fnA2BCSQXuG9a6T8pCrevsANRaj7MuHnCvga3Zza1KVfnwCNDm20PvNN7IpLbIx/29AjRPjZ/eB0Vvh7j2K2BbXZHvRoDm7gJudRBRe+S7FdBJxH8j76lCRZbfHTIRWwj1Njqw5n7eeJYKYWXOQH4x2Umttf49OBBeeN3yMs+vQoB5szqAAwF1RNWz5iADnmjVge37DPwFRASGR52JQuMAAAAASUVORK5CYII=';
@@ -245,7 +250,7 @@ export class SemestrReportComponent implements OnInit {
                   text: `Raport ${
                     form.get('reportType')?.value === ReportType.SEMESTER
                       ? this.semesterText
-                      : this.trimesterText
+                      : this.trimesterTextTitle
                   }`,
                   style: 'subheader',
                 },
@@ -471,28 +476,6 @@ export class SemestrReportComponent implements OnInit {
                 { text: '2', alignment: 'center', fontSize: 8 },
                 { text: '1', alignment: 'center', fontSize: 8 },
               ],
-              [
-                { text: 'Informacje dodatkowe' },
-                {
-                  text: `${
-                    form.value.additionalComment
-                      ? form.value.additionalComment
-                      : '-'
-                  }`,
-                  colSpan: 12,
-                },
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-              ],
             ],
           },
         },
@@ -500,14 +483,13 @@ export class SemestrReportComponent implements OnInit {
           text: '* Ocena celująca przyznawana jest za osiągnięcia specjalne, w szczególności za wyróżniające się odpowiedzi ustne lub pisemne.',
           fontSize: 7,
         },
-
-        this.recommendationToExamCambridge(form),
+        this.additionalComment(form),
         this.recommendationExamTitle(form),
         this.examRecommendationToCambridge(form),
         {
-          text: 'Dodatkowe informacje egzaminacyjne',
+          text: 'Międzynarodowe egzaminy Cambridge w Britannii – informacje',
           style: 'header',
-          margin: [0, 10, 0, 2],
+          margin: [0, 5, 0, 2],
         },
         {
           ul: this.additionalExamInformations,
@@ -517,7 +499,7 @@ export class SemestrReportComponent implements OnInit {
 
         {
           text: form.value.signature,
-          margin: [0, 20, 0, 0],
+          margin: [0, 5, 0, 0],
           fontSize: 10,
           alignment: 'right',
         },
@@ -579,11 +561,21 @@ export class SemestrReportComponent implements OnInit {
   }
 
   private additionalComment(form: FormGroup): any {
-    if (this.form.getRawValue().additionalComment !== null) {
+    if (form.getRawValue().additionalComment) {
       return {
-        text: form.value.additionalComment,
-        fontSize: 10,
-        margin: [0, 5, 0, 0],
+        style: 'tableExample',
+        table: {
+          widths: ['auto', '*'],
+          margin: [0, 5, 0, 0],
+          body: [
+            [
+              { text: 'Informacje dodatkowe' },
+              {
+                text: `${form.value.additionalComment}`,
+              },
+            ],
+          ],
+        },
       };
     } else {
       return {};
@@ -591,7 +583,7 @@ export class SemestrReportComponent implements OnInit {
   }
 
   private recommendationToExamCambridge(form: FormGroup): any {
-    if (this.form.getRawValue().recommendationToCambridgeExam) {
+    if (form.getRawValue().recommendationToCambridgeExam) {
       return {
         text: 'Na podstawie grudniowej sesji egzaminacyjno-diagnostycznej wystawiamy wstępną rekomendację do podejścia do egzaminu Cambridge na koniec roku szkolnego.',
         style: 'recommendation',
@@ -602,12 +594,12 @@ export class SemestrReportComponent implements OnInit {
   }
 
   private recommendationExamTitle(form: FormGroup): any {
-    if (this.form.getRawValue().isExamRecommendation) {
+    if (form.getRawValue().isExamRecommendation) {
       return {
         text: 'REKOMENDACJA EGZAMINACYJNA',
         fontSize: 10,
         bold: true,
-        margin: [0, 5, 0, 5],
+        margin: [0, 5, 0, 2],
       };
     } else {
       return {};
@@ -615,7 +607,7 @@ export class SemestrReportComponent implements OnInit {
   }
 
   private examRecommendationToCambridge(form: FormGroup): any {
-    if (this.form.getRawValue().isExamRecommendation) {
+    if (form.getRawValue().isExamRecommendation) {
       return {
         margin: [0, 0, 0, 5],
         fontSize: 9,
