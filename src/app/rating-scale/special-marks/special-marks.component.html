@@ -20,7 +20,7 @@
   </mat-form-field>
 
   <mat-form-field class="w-100 px-2">
-    <mat-label>{{ "Frekwencja w %" | translate }}</mat-label>
+    <mat-label>{{ "frequencyPercentage" | translate }}</mat-label>
     <input matInput type="number" formControlName="frequency" />
     <mat-error
       *ngIf="this.specialMarksForm.controls['frequency'].hasError('required')"
@@ -85,7 +85,7 @@
   </mat-form-field>
 
   <mat-form-field class="w-50 px-2">
-    <mat-label>{{ "Zachowanie" | translate }}</mat-label>
+    <mat-label>{{ "behaviourInClass" | translate }}</mat-label>
     <mat-select formControlName="behaviour">
       <mat-option *ngFor="let mark of marks" [value]="mark.value">
         {{ mark.viewValue }}

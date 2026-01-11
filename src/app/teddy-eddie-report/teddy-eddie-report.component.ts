@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 // @ts-ignore
 import pdfMake from 'pdfmake/build/pdfmake';
 // @ts-ignore
@@ -330,7 +330,7 @@ export class TeddyEddieReportComponent implements OnInit {
     };
 
     const fileName: string =
-      'Raport końcowy 2024-25 - ' + form.value.studentName;
+      'Raport końcowy 2025-26 - ' + form.value.studentName;
     pdfMake.createPdf(docDefinition).download(fileName);
   }
 
@@ -502,12 +502,12 @@ export class TeddyEddieReportComponent implements OnInit {
 
   private createForm(): FormGroup {
     return new FormGroup({
-      studentName: new FormControl(null, Validators.required),
-      name: new FormControl(null, Validators.required),
-      date: new FormControl(null, Validators.required),
+      studentName: new FormControl(null),
+      name: new FormControl(null),
+      date: new FormControl(null),
       class: new FormControl({ value: null, disabled: true }),
 
-      course: new FormControl(null, Validators.required),
+      course: new FormControl(null),
 
       age: new FormControl(null),
 
@@ -521,7 +521,7 @@ export class TeddyEddieReportComponent implements OnInit {
       recommendations: new FormArray([]),
 
       additionalComment: new FormControl(null),
-      signature: new FormControl(null, Validators.required),
+      signature: new FormControl(null),
     });
   }
 }

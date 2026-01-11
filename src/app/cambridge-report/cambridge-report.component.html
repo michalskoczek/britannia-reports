@@ -19,9 +19,6 @@
       <mat-form-field class="col-6 my-1">
         <mat-label>{{ "chooseDate" | translate }}</mat-label>
         <input matInput [matDatepicker]="picker" formControlName="date" />
-        <mat-error *ngIf="this.form.controls['date'].hasError('required')"
-          >{{ "fieldIsRequired" | translate }}
-        </mat-error>
         <mat-hint>DD.M.RRRR</mat-hint>
         <mat-datepicker-toggle
           matIconSuffix
@@ -39,21 +36,15 @@
             {{ class | translate }}
           </mat-option>
         </mat-select>
-        <mat-error *ngIf="this.form.controls['class'].hasError('required')"
-          >{{ "fieldIsRequired" | translate }}
-        </mat-error>
       </mat-form-field>
 
       <mat-form-field class="col-4 my-1">
-        <mat-label>{{ "Lektor" | translate }}</mat-label>
-        <mat-select name="teacher" formControlName="teacher">
+        <mat-label>{{ "teacher" | translate }}</mat-label>
+        <mat-select name="teacher" formControlName="teachers" multiple>
           <mat-option *ngFor="let teacher of teachers" [value]="teacher">
             {{ teacher }}
           </mat-option>
         </mat-select>
-        <mat-error *ngIf="this.form.controls['teacher'].hasError('required')"
-          >{{ "fieldIsRequired" | translate }}
-        </mat-error>
       </mat-form-field>
 
       <mat-form-field class="col-4 my-1">
@@ -63,13 +54,10 @@
             {{ course }}
           </mat-option>
         </mat-select>
-        <mat-error *ngIf="this.form.controls['course'].hasError('required')"
-          >{{ "fieldIsRequired" | translate }}
-        </mat-error>
       </mat-form-field>
     </div>
 
-    <div class="row mt-5">
+    <div class="row mt-2">
       <div class="col-12 mb-4">
         <h2 class="subtitle">{{ "Poziom biegłości" | translate }}</h2>
       </div>
@@ -127,10 +115,6 @@
               {{ exam }}
             </mat-option>
           </mat-select>
-          <mat-error
-            *ngIf="this.form.controls['typeOfExam'].hasError('required')"
-            >{{ "fieldIsRequired" | translate }}
-          </mat-error>
         </mat-form-field>
       </div>
     </div>
@@ -1018,7 +1002,7 @@
       </div>
     </div>
 
-    <div class="row mt-5">
+    <div class="row mt-2">
       <div class="col-12 mb-4">
         <h2 class="subtitle">{{ "Rekomendacje egzaminacyjne" | translate }}</h2>
       </div>
@@ -1132,7 +1116,7 @@
       </div>
     </div>
 
-    <div class="row mt-5">
+    <div class="row mt-3">
       <div class="col-12 mb-4">
         <h2 class="subtitle">{{ "Podpis" | translate }}</h2>
       </div>

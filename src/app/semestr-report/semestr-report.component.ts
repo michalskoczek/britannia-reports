@@ -5,7 +5,13 @@ import pdfMake from 'pdfmake/build/pdfmake';
 // @ts-ignore
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { ELEMENT_DATA, TableElement } from '../rating-scale/table-elements';
-import { classes, teachers, books, courses } from '../shared/select-values';
+import {
+  sexes,
+  classes,
+  teachers,
+  books,
+  courses,
+} from '../shared/select-values';
 import {
   behaviourMarks,
   frequencyMarks,
@@ -20,14 +26,16 @@ import {
 import { learningRecommendations } from '../shared/exams';
 import { image } from '../shared/images-base64';
 import { TranslateService } from '@ngx-translate/core';
+import { ReportType } from '../shared/enum/report-type.enum';
+import { Sex } from '../shared/enum/sex.enum';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
-    selector: 'app-semestr-report',
-    templateUrl: './semestr-report.component.html',
-    styleUrls: ['./semestr-report.component.scss'],
-    standalone: false
+  selector: 'app-semestr-report',
+  templateUrl: './semestr-report.component.html',
+  styleUrls: ['./semestr-report.component.scss'],
+  standalone: false,
 })
 export class SemestrReportComponent implements OnInit {
   constructor(private translate: TranslateService) {
@@ -37,7 +45,7 @@ export class SemestrReportComponent implements OnInit {
 
   public form!: FormGroup;
 
-  public readonly sexes: string[] = ['Uczeń', 'Uczennica'];
+  public readonly sexes: string[] = sexes;
   public readonly classes: string[] = classes;
   public readonly teachers: string[] = teachers;
   public readonly books: string[] = books;
@@ -62,6 +70,10 @@ export class SemestrReportComponent implements OnInit {
   public learningRecommendations: string[] = learningRecommendations;
 
   private readonly imageLogo: string = image;
+  private readonly semesterText: string = 'semestralny';
+  private readonly trimesterText: string = 'po pierwszym trymestrze';
+
+  protected readonly ReportType = ReportType;
 
   ngOnInit(): void {
     this.form = this.createForm();
@@ -170,7 +182,15 @@ export class SemestrReportComponent implements OnInit {
     };
 
     const changeXToEmptyValue = (textValue: string): string => {
-      return textValue.replace(textValue[0], '');
+      return textValue.replace(/^X\s+(\w)/, (match, firstLetter) =>
+        firstLetter.toUpperCase()
+      );
+    };
+
+    const addSpaceAfterTeacher = (teachers: string[]) => {
+      if (!teachers) return;
+
+      return teachers.join(', ');
     };
 
     const getMarkValue = (
@@ -191,7 +211,11 @@ export class SemestrReportComponent implements OnInit {
           alignment: 'center',
         },
         {
-          text: 'Raport semestralny',
+          text: `Raport ${
+            form.get('reportType')?.value === ReportType.SEMESTER
+              ? this.semesterText
+              : this.trimesterText
+          }`,
           style: 'subheader',
           alignment: 'center',
         },
@@ -216,7 +240,7 @@ export class SemestrReportComponent implements OnInit {
               ],
               [
                 { text: 'Lektor', style: 'tableHeader' },
-                { text: `${form.value.teacher}` },
+                { text: `${addSpaceAfterTeacher(form.value.teachers)}` },
                 { text: 'Tytuł podręcznika', style: 'tableHeader' },
                 {
                   text: `${
@@ -443,6 +467,14 @@ export class SemestrReportComponent implements OnInit {
           fontSize: 7,
         },
         {
+          text: `${
+            form.value.recommendationToCambridgeExam
+              ? 'Na podstawie grudniowej sesji egzaminacyjno-diagnostycznej wystawiamy wstępną rekomendację do podejścia do egzaminu Cambridge na koniec roku szkolnego.'
+              : ''
+          }`,
+          style: 'recommendation',
+        },
+        {
           style: 'tableExams',
           table: {
             widths: ['auto', '*'],
@@ -474,7 +506,7 @@ export class SemestrReportComponent implements OnInit {
                 {
                   text: `${changeXToYValue(
                     form.value.vocabulary,
-                    form.value.sex
+                    form.value.sex === Sex.MALE ? 'Uczeń' : 'Uczennica'
                   )}`,
                 },
               ],
@@ -489,7 +521,7 @@ export class SemestrReportComponent implements OnInit {
                 {
                   text: `${changeXToYValue(
                     form.value.homeworks,
-                    form.value.sex
+                    form.value.sex === Sex.MALE ? 'Uczeń' : 'Uczennica'
                   )}`,
                 },
               ],
@@ -544,7 +576,7 @@ export class SemestrReportComponent implements OnInit {
           fontSize: 10,
         },
         tableExams: {
-          margin: [0, 10, 0, 10],
+          margin: [0, 0, 0, 10],
           fontSize: 10,
         },
         marksTable: {
@@ -573,6 +605,11 @@ export class SemestrReportComponent implements OnInit {
         defaultStyle: {
           fontSize: 10,
         },
+        recommendation: {
+          fontSize: 11,
+          bold: true,
+          margin: [0, 10, 0, 10],
+        },
       },
     };
 
@@ -583,12 +620,13 @@ export class SemestrReportComponent implements OnInit {
 
   private createForm(): FormGroup {
     return new FormGroup({
+      reportType: new FormControl(ReportType.SEMESTER, Validators.required),
       studentName: new FormControl(null, Validators.required),
       name: new FormControl(null),
-      sex: new FormControl(null),
+      sex: new FormControl(null, Validators.required),
       date: new FormControl(null),
       class: new FormControl(null),
-      teacher: new FormControl(null),
+      teachers: new FormControl(null),
       studentBookTitle: new FormControl(null),
       ownTitleStudentBook: new FormControl(null),
       ownEducationMaterial: new FormControl(false),
@@ -597,6 +635,7 @@ export class SemestrReportComponent implements OnInit {
 
       marks: new FormControl(null),
       avgMark: new FormControl(null),
+      recommendationToCambridgeExam: new FormControl(null),
       frequency: new FormControl(null),
       lead: new FormControl(null),
       respect: new FormControl(null),
@@ -638,4 +677,6 @@ export class SemestrReportComponent implements OnInit {
       signature: new FormControl(null),
     });
   }
+
+  protected readonly Sex = Sex;
 }

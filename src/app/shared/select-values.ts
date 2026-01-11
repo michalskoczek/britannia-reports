@@ -1,3 +1,7 @@
+import { Sex } from './enum/sex.enum';
+
+export const sexes: string[] = [Sex.MALE, Sex.FEMALE];
+
 export const classes: string[] = [
   'Klasa 2 szkoły podstawowej',
   'Klasa 3 szkoły podstawowej',
@@ -17,14 +21,13 @@ export const classes: string[] = [
 export const teachers: string[] = [
   'Regina Raczyńska',
   'Adam Sikorski',
-  'Dorota Kot',
-  'Aleksandra Mierzejewska',
-  'Jolanta Rybak',
-  'Ala Sandurska',
+  'Agnes Shcherba',
+  'Aneta Górkier-Potier',
+  'Tiago Freitas',
   'Fatima Talaat',
-  'Ewa Gronowska',
-  'Serhiy Huk',
-  'Klaudia Hołubecka-Archacka',
+  'Karolina Kozielska',
+  'Igor Polakowski',
+  'Oliwia Tomaszewska',
 ];
 
 export const books: string[] = [

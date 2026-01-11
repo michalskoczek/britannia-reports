@@ -1,6 +1,10 @@
 @use "../../assets/styles/variables" as *;
 @use "../../assets/styles/mixins" as *;
 
+.subtitle {
+  font: 600 22px/1 $font;
+}
+
 .generate-btn {
   position: fixed;
   bottom: 30px;
