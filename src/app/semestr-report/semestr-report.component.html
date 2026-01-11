@@ -47,7 +47,7 @@
     <div class="row">
       <mat-form-field class="col-6 my-1">
         <mat-label>{{ "maleFemale" | translate }}</mat-label>
-        <mat-select name="teacher" formControlName="sex">
+        <mat-select formControlName="sex">
           <mat-option *ngFor="let sex of sexes" [value]="sex">
             {{ sex | translate }}
           </mat-option>
@@ -75,7 +75,7 @@
     <div class="row form-field">
       <mat-form-field class="col-6 my-1">
         <mat-label>{{ "Klasa" | translate }}</mat-label>
-        <mat-select name="class" formControlName="class">
+        <mat-select formControlName="class">
           <mat-option *ngFor="let class of classes" [value]="class">
             {{ class | translate }}
           </mat-option>
@@ -86,8 +86,8 @@
       </mat-form-field>
 
       <mat-form-field class="col-6 my-1">
-        <mat-label>{{ "teacher" | translate }}</mat-label>
-        <mat-select name="teacher" formControlName="teachers" multiple>
+        <mat-label>{{ "teachers" | translate }}</mat-label>
+        <mat-select formControlName="teachers" multiple>
           <mat-option *ngFor="let teacher of teachers" [value]="teacher">
             {{ teacher }}
           </mat-option>
@@ -193,27 +193,6 @@
       </div>
 
       <div class="col-10">
-        <mat-form-field class="w-100 px-2">
-          <mat-label>{{ "Uzyskane oceny" | translate }}</mat-label>
-          <textarea matInput formControlName="marks"></textarea>
-        </mat-form-field>
-
-        <mat-form-field class="w-100 px-2">
-          <mat-label>{{ "Ocena semestralna" | translate }}</mat-label>
-          <input matInput formControlName="avgMark" />
-        </mat-form-field>
-
-        <ng-container
-          *ngIf="form.controls['reportType'].value === ReportType.SEMESTER"
-        >
-          <mat-checkbox
-            class="mb-4"
-            formControlName="recommendationToCambridgeExam"
-          >
-            {{ "recommendationToCambridgeExam" | translate }}
-          </mat-checkbox>
-        </ng-container>
-
         <p class="w-100">{{ "Ocena opisowa" | translate }}</p>
 
         <mat-form-field class="w-50 px-2">
@@ -372,6 +351,138 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
+
+        <mat-form-field class="w-100 px-2">
+          <mat-label>{{
+            (form.controls["reportType"].value === ReportType.SEMESTER
+              ? "semesterMark"
+              : "trimesterMark"
+            ) | translate
+          }}</mat-label>
+          <input matInput formControlName="avgMark" />
+        </mat-form-field>
+
+        <ng-container
+          *ngIf="form.controls['reportType'].value === ReportType.SEMESTER"
+        >
+          <mat-checkbox
+            class="mb-4"
+            formControlName="recommendationToCambridgeExam"
+          >
+            {{ "recommendationToCambridgeExam" | translate }}
+          </mat-checkbox>
+        </ng-container>
+
+        <mat-form-field class="w-100 px-2">
+          <mat-label>Informacje dodatkowe</mat-label>
+          <textarea matInput formControlName="additionalComment"></textarea>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-12 mb-1">
+        <h2 class="subtitle">{{ "Rekomendacje egzaminacyjne" | translate }}</h2>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <mat-checkbox formControlName="isExamRecommendation"
+          >Dodaj rekomendację egzaminacyjną</mat-checkbox
+        >
+      </div>
+    </div>
+
+    <div class="row mb-4">
+      <mat-radio-group formControlName="examRecommendationOptions">
+        <mat-radio-button
+          value="1"
+          [disabled]="!form.controls['isExamRecommendation'].value"
+          (change)="onCheckboxChangeRecommendation()"
+          >{{
+            "Rekomendacje egzaminacyjne zostaną przekazane po kolejnym próbnym teście Cambridge."
+              | translate
+          }}
+        </mat-radio-button>
+        <mat-radio-button
+          value="2"
+          [disabled]="!form.controls['isExamRecommendation'].value"
+          (change)="onCheckboxChangeRecommendation()"
+          >{{
+            "Nie rekomenduję wzięcia udziału w czerwcowej sesji egzaminacyjnej Cambridge w tym roku szkolnym."
+              | translate
+          }}
+        </mat-radio-button>
+        <mat-radio-button
+          value="3"
+          (change)="onCheckboxChange()"
+          [disabled]="!form.controls['isExamRecommendation'].value"
+          >{{
+            "Rekomenduję wzięcie udziału w czerwcowej sesji egzaminacyjnej Cambridge w tym roku szkolnym."
+              | translate
+          }}
+        </mat-radio-button>
+      </mat-radio-group>
+
+      <div class="col-12" *ngIf="isChecked">
+        <p>{{ "Rekomenduję podejście do egzaminu" | translate }}</p>
+        <mat-form-field class="w-50">
+          <mat-label>{{ "Egzamin" | translate }}</mat-label>
+          <mat-select formControlName="examRecommendationResult">
+            <mat-option
+              *ngFor="let result of examsRecommendations"
+              [value]="result"
+            >
+              {{ result }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <div class="row">
+          <div class="col-12">
+            <mat-accordion class="example-headers-align" multi>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    {{ "additionalExamInformation" | translate }}
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <ul>
+                  <li>
+                    <p>
+                      {{ "additionalExamInfoFirst" | translate }}
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      {{ "additionalExamInfoSecond" | translate }}
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      {{ "additionalExamInfoThird" | translate }}
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      {{ "additionalExamInfoFourth" | translate }}
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      {{ "additionalExamInfoFifth" | translate }}
+                    </p>
+                  </li>
+                </ul>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -382,16 +493,14 @@
     </div>
 
     <div class="row">
-      <div class="col-12">
-        <mat-form-field class="w-100 px-2">
-          <mat-label>{{ "Podpis" | translate }}</mat-label>
-          <textarea
-            class="signature-textarea"
-            matInput
-            formControlName="signature"
-          ></textarea>
-        </mat-form-field>
-      </div>
+      <mat-form-field class="col-12">
+        <mat-label>{{ "teacher" | translate }}</mat-label>
+        <mat-select formControlName="signature">
+          <mat-option *ngFor="let teacher of teachers" [value]="teacher">
+            {{ teacher }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
 
     <div class="row generate-btn">

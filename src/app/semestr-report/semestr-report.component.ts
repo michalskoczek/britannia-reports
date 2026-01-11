@@ -23,7 +23,11 @@ import {
   pronunciationMarks,
   vocabularyMarks,
 } from '../shared/marks';
-import { learningRecommendations } from '../shared/exams';
+import {
+  additionalExamInformations,
+  examsRecommendations,
+  learningRecommendations,
+} from '../shared/exams';
 import { image } from '../shared/images-base64';
 import { TranslateService } from '@ngx-translate/core';
 import { ReportType } from '../shared/enum/report-type.enum';
@@ -69,11 +73,25 @@ export class SemestrReportComponent implements OnInit {
 
   public learningRecommendations: string[] = learningRecommendations;
 
+  public isChecked: boolean = false;
+
   private readonly imageLogo: string = image;
   private readonly semesterText: string = 'semestralny';
-  private readonly trimesterText: string = 'po pierwszym trymestrze';
+  private readonly trimesterText: string = '(trymestr 1.)';
+  private readonly semesterTextMark: string = 'semestralna';
+
+  private readonly additionalExamInformations: string[] =
+    additionalExamInformations;
+
+  private readonly checkmarkLogo: string =
+    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAAv5JREFUaEPtmDmrFEEUhb8Hboio4C4q4gauKGaCkRsGgmjimoggLoFiZmAomIhooGIgZiIugQgKLmiouP0C/4Br7NrnUSXz+k1P3dvT7fTAVDYzp6rOuffUrVszRJ+PoT7nz0BArzM4yMAgA+kITAfuAeuAE8DN1ilNt9AM4EkmYE0g/Qc4BlyNIposQOSfAqtzSZKIo8A1fd9UAUXko5bfwCHZqYkCZobIr0ocj1/AwaYJEPlnwMr02R5GfGqSgFmB/AojecGeN0WA1Tat2j4Am5sgwGsbiRgm3wQLyTYqlVbPjyDf6zJaxvP/It/ri6wS8kUZWAScAz4CZ4Efjqpggc5V9QCWWcAB8z54/nN+Tv4QrwceAoqQxl1gD/DTsVkn6OzgeU+pHGWbomZuU+j6JucY3AH2ViBC5HVJLXcEQ5HfompTNCdmYD9wAxhbALwN7AN0fZcZ84JtljgmF9omn4HjwGVDYyeBh7NzoUbKM8qQfxc8/yW1kTLwHcjbpmjedeAIoJbWMuaHyC+2gAPGTF54CbgP7HRscAVQ1lIiFgTPe8i/DZ5PRj7ylYCJwKOsOmx0iLgEnOwgokzkTZ7Pc4yHeEoobyqj1nExs9+pNuAykS9FPlooctDj+QXgqdEXgNMtIkRel5QuQ+soTT4vQJ91S74EPL49D5wBlgYrLrQyB94Ez391zBkBbddOi4BEyMfW8Q2YBIyxTqiCfLsMxP0VTdlpjoOQB6pSqRt2VG/jWaSTAP2mvzPk52neRRN4V51P7Z16ka0NIqamFjL+Xin5VAYipw3A4+BxI8+2sMrJWwUIp/fnA2BCSQXuG9a6T8pCrevsANRaj7MuHnCvga3Zza1KVfnwCNDm20PvNN7IpLbIx/29AjRPjZ/eB0Vvh7j2K2BbXZHvRoDm7gJudRBRe+S7FdBJxH8j76lCRZbfHTIRWwj1Njqw5n7eeJYKYWXOQH4x2Umttf49OBBeeN3yMs+vQoB5szqAAwF1RNWz5iADnmjVge37DPwFRASGR52JQuMAAAAASUVORK5CYII=';
+
+  private readonly emptyImageLogo: string =
+    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABICAIAAAD51HXFAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACOSURBVHhe7dAxAQAwEAOh+jedrn8eQAJvHDpCR+gIHaEjdISO0BE6QkfoCB2hI3SEjtAROkJH6AgdoSN0hI7QETpCR+gIHaEjdISO0BE6QkfoCB2hI3SEjtAROkJH6AgdoSN0hI7QETpCR+gIHaEjdISO0BE6QkfoCB2hI3SEjtAROkJH6AgdoSN0hI5j+48/qHbII7vkAAAAAElFTkSuQmCC';
 
   protected readonly ReportType = ReportType;
+  protected readonly Sex = Sex;
+  protected readonly examsRecommendations = examsRecommendations;
 
   ngOnInit(): void {
     this.form = this.createForm();
@@ -157,6 +175,15 @@ export class SemestrReportComponent implements OnInit {
     this.form.get('ownTitleStudentBook')?.setValue(null);
   }
 
+  public onCheckboxChange(): void {
+    this.isChecked = !this.isChecked;
+  }
+
+  public onCheckboxChangeRecommendation(): void {
+    this.isChecked = false;
+    this.form.get('examRecommendationResult')?.setValue(null);
+  }
+
   public generatePDF(form: FormGroup): any {
     let date: string = new Date(form.value.date).toLocaleDateString();
 
@@ -208,24 +235,40 @@ export class SemestrReportComponent implements OnInit {
         {
           text: 'PODSUMOWANIE NAUKI I REKOMENDACJE',
           style: 'title',
-          alignment: 'center',
+          alignment: 'left',
         },
         {
-          text: `Raport ${
-            form.get('reportType')?.value === ReportType.SEMESTER
-              ? this.semesterText
-              : this.trimesterText
-          }`,
-          style: 'subheader',
-          alignment: 'center',
-        },
-        {
-          text: [
-            `Imię i Nazwisko ucznia: `,
-            { text: `${form.value.studentName}`, style: 'subtitle' },
+          columns: [
+            {
+              stack: [
+                {
+                  text: `Raport ${
+                    form.get('reportType')?.value === ReportType.SEMESTER
+                      ? this.semesterText
+                      : this.trimesterText
+                  }`,
+                  style: 'subheader',
+                },
+                {
+                  text: [
+                    `Imię i Nazwisko ucznia: `,
+                    { text: `${form.value.studentName}`, style: 'subtitle' },
+                  ],
+                  margin: [0, 5, 0, 0],
+                  style: 'subheader',
+                },
+              ],
+              width: '*',
+            },
+            {
+              image: this.imageLogo,
+              width: 75,
+              height: 55,
+              alignment: 'right',
+              margin: [0, -20, 0, 0],
+            },
           ],
-          margin: [0, 5, 0, 5],
-          alignment: 'center',
+          columnGap: 10,
         },
         {
           style: 'tableExample',
@@ -262,220 +305,7 @@ export class SemestrReportComponent implements OnInit {
           },
         },
         {
-          style: 'tableExample',
-          table: {
-            widths: ['auto', 'auto', 'auto', 'auto', '*'],
-            headerRows: 1,
-            body: [
-              [
-                {
-                  text: 'Nasza skala ocen',
-                  fontSize: 7,
-                  colSpan: 2,
-                  alignment: 'center',
-                },
-                {},
-                {
-                  text: '',
-                  rowSpan: 1,
-                },
-                {
-                  text: 'Uzyskane oceny',
-                  style: 'tableHeader',
-                  colSpan: 2,
-                  alignment: 'center',
-                },
-                {},
-              ],
-              [
-                {
-                  text: '100%+',
-                  fontSize: 7,
-                },
-                {
-                  text: '6*',
-                  fontSize: 7,
-                },
-                {
-                  text: '',
-                  rowSpan: 12,
-                },
-                {
-                  colSpan: 2,
-                  rowSpan: 11,
-                  text: 'Szczegółowe zestawienie ocen oraz ich opis znajdują się w dzienniku elektronicznym EduSky.',
-                  style: 'tableHeader',
-                },
-                {},
-              ],
-              [
-                {
-                  text: '96-100%',
-                  fontSize: 7,
-                },
-                {
-                  text: '5',
-                  fontSize: 7,
-                },
-                '',
-                '',
-                '',
-              ],
-              [
-                {
-                  text: '90-95%',
-                  fontSize: 7,
-                },
-                {
-                  text: '5-',
-                  fontSize: 7,
-                },
-                '',
-                '',
-                '',
-              ],
-              [
-                {
-                  text: '85-89%',
-                  fontSize: 7,
-                },
-                {
-                  text: '4+',
-                  fontSize: 7,
-                },
-                '',
-                '',
-                '',
-              ],
-              [
-                {
-                  text: '80-84%',
-                  fontSize: 7,
-                },
-                {
-                  text: '4',
-                  fontSize: 7,
-                },
-                '',
-                '',
-                '',
-              ],
-              [
-                {
-                  text: '75-79%',
-                  fontSize: 7,
-                },
-                {
-                  text: '4-',
-                  fontSize: 7,
-                },
-                '',
-                '',
-                '',
-              ],
-              [
-                {
-                  text: '70-74%',
-                  fontSize: 7,
-                },
-                {
-                  text: '3+',
-                  fontSize: 7,
-                },
-                '',
-                '',
-                '',
-              ],
-              [
-                {
-                  text: '64-69%',
-                  fontSize: 7,
-                },
-                {
-                  text: '3',
-                  fontSize: 7,
-                },
-                '',
-                '',
-                '',
-              ],
-              [
-                {
-                  text: '60-63%',
-                  fontSize: 7,
-                },
-                {
-                  text: '3-',
-                  fontSize: 7,
-                },
-                '',
-                '',
-                '',
-              ],
-              [
-                {
-                  text: '55-59%',
-                  fontSize: 7,
-                },
-                {
-                  text: '2+',
-                  fontSize: 7,
-                },
-                '',
-                '',
-                '',
-              ],
-              [
-                {
-                  text: '45-54%',
-                  fontSize: 7,
-                },
-                {
-                  text: '2',
-                  fontSize: 7,
-                },
-                '',
-                '',
-                '',
-              ],
-              [
-                {
-                  text: '0-44%',
-                  fontSize: 7,
-                },
-                {
-                  text: '1',
-                  fontSize: 7,
-                },
-                '',
-                {
-                  text: 'Ocena semestralna',
-                  style: 'tableHeader',
-                },
-                {
-                  text: `${form.value.avgMark ? form.value.avgMark : '-'}`,
-                },
-              ],
-            ],
-          },
-          layout: {
-            defaultBorder: true,
-          },
-        },
-        {
-          text: '* Ocena celująca przyznawana jest za osiągnięcia specjalne, w szczególności za wyróżniające się odpowiedzi ustne lub pisemne.',
-          fontSize: 7,
-        },
-        {
-          text: `${
-            form.value.recommendationToCambridgeExam
-              ? 'Na podstawie grudniowej sesji egzaminacyjno-diagnostycznej wystawiamy wstępną rekomendację do podejścia do egzaminu Cambridge na koniec roku szkolnego.'
-              : ''
-          }`,
-          style: 'recommendation',
-        },
-        {
-          style: 'tableExams',
+          style: 'tableMarginTopBottom',
           table: {
             widths: ['auto', '*'],
             headerRows: 1,
@@ -550,42 +380,172 @@ export class SemestrReportComponent implements OnInit {
           },
         },
         {
-          columns: [
-            {
-              text: form.value.signature,
-              margin: [0, 20, 0, 10],
-              fontSize: 10,
-            },
-            {
-              image: this.imageLogo,
-              width: 125,
-              height: 110,
-              alignment: 'right',
-              margin: [0, 20, 0, 0],
-            },
-          ],
+          style: 'tableExample',
+          table: {
+            widths: [
+              '20%',
+              'auto',
+              'auto',
+              'auto',
+              'auto',
+              'auto',
+              'auto',
+              'auto',
+              'auto',
+              'auto',
+              'auto',
+              'auto',
+              'auto',
+            ],
+            body: [
+              [
+                { text: 'Uzyskane oceny' },
+                {
+                  text: 'Szczegółowe zestawienie ocen oraz ich opis znajdują się w dzienniku elektronicznym EduSky.',
+                  colSpan: 12,
+                },
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+              ],
+              [
+                {
+                  text: `Ocena ${
+                    form.value.reportType === ReportType.SEMESTER
+                      ? this.semesterTextMark
+                      : this.trimesterText
+                  }`,
+                },
+                {
+                  text: `${form.value.avgMark ? form.value.avgMark : '-'}`,
+                  alignment: 'left',
+                  colSpan: 12,
+                },
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+              ],
+              [
+                { text: 'Nasza skala ocen', rowSpan: 2, alignment: 'left' },
+                { text: '100%+', alignment: 'left', fontSize: 8 },
+                { text: '96-100%', alignment: 'center', fontSize: 8 },
+                { text: '90-95%', alignment: 'center', fontSize: 8 },
+                { text: '85-89%', alignment: 'center', fontSize: 8 },
+                { text: '80-84%', alignment: 'center', fontSize: 8 },
+                { text: '75-79%', alignment: 'center', fontSize: 8 },
+                { text: '70-74%', alignment: 'center', fontSize: 8 },
+                { text: '64-69%', alignment: 'center', fontSize: 8 },
+                { text: '60-63%', alignment: 'center', fontSize: 8 },
+                { text: '51-63%', alignment: 'center', fontSize: 8 },
+                { text: '45-54%', alignment: 'center', fontSize: 8 },
+                { text: '0-44%', alignment: 'center', fontSize: 8 },
+              ],
+              [
+                {},
+                { text: '6*', alignment: 'center', fontSize: 8 },
+                { text: '5', alignment: 'center', fontSize: 8 },
+                { text: '5-', alignment: 'center', fontSize: 8 },
+                { text: '4+', alignment: 'center', fontSize: 8 },
+                { text: '4', alignment: 'center', fontSize: 8 },
+                { text: '4-', alignment: 'center', fontSize: 8 },
+                { text: '3+', alignment: 'center', fontSize: 8 },
+                { text: '3', alignment: 'center', fontSize: 8 },
+                { text: '3-', alignment: 'center', fontSize: 8 },
+                { text: '2+', alignment: 'center', fontSize: 8 },
+                { text: '2', alignment: 'center', fontSize: 8 },
+                { text: '1', alignment: 'center', fontSize: 8 },
+              ],
+              [
+                { text: 'Informacje dodatkowe' },
+                {
+                  text: `${
+                    form.value.additionalComment
+                      ? form.value.additionalComment
+                      : '-'
+                  }`,
+                  colSpan: 12,
+                },
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+              ],
+            ],
+          },
+        },
+        {
+          text: '* Ocena celująca przyznawana jest za osiągnięcia specjalne, w szczególności za wyróżniające się odpowiedzi ustne lub pisemne.',
+          fontSize: 7,
+        },
+
+        this.recommendationToExamCambridge(form),
+        this.recommendationExamTitle(form),
+        this.examRecommendationToCambridge(form),
+        {
+          text: 'Dodatkowe informacje egzaminacyjne',
+          style: 'header',
+          margin: [0, 10, 0, 2],
+        },
+        {
+          ul: this.additionalExamInformations,
+          fontSize: 9,
+          margin: [0, 0, 0, 0],
+        },
+
+        {
+          text: form.value.signature,
+          margin: [0, 20, 0, 0],
+          fontSize: 10,
+          alignment: 'right',
         },
       ],
       styles: {
         tableHeader: {
-          fontSize: 10,
+          fontSize: 9,
           bold: true,
         },
         tableExample: {
-          margin: [0, 10, 0, 2],
-          fontSize: 10,
+          margin: [0, 5, 0, 2],
+          fontSize: 9,
         },
         tableExams: {
-          margin: [0, 0, 0, 10],
-          fontSize: 10,
+          margin: [0, 0, 0, 5],
+          fontSize: 9,
+        },
+        tableMarginTopBottom: {
+          margin: [0, 5, 0, 5],
+          fontSize: 9,
         },
         marksTable: {
-          margin: [0, 10, 0, 5],
-          fontSize: 10,
+          margin: [0, 5, 0, 5],
+          fontSize: 8,
         },
         header: {
           bold: true,
-          fontSize: 11,
+          fontSize: 10,
         },
         subheader: {
           fontSize: 10,
@@ -598,7 +558,7 @@ export class SemestrReportComponent implements OnInit {
           decoration: 'underline',
         },
         subtitle: {
-          fontSize: 11,
+          fontSize: 12,
           alignment: 'justify',
           bold: true,
         },
@@ -618,9 +578,112 @@ export class SemestrReportComponent implements OnInit {
     pdfMake.createPdf(docDefinition).download(fileName);
   }
 
+  private additionalComment(form: FormGroup): any {
+    if (this.form.getRawValue().additionalComment !== null) {
+      return {
+        text: form.value.additionalComment,
+        fontSize: 10,
+        margin: [0, 5, 0, 0],
+      };
+    } else {
+      return {};
+    }
+  }
+
+  private recommendationToExamCambridge(form: FormGroup): any {
+    if (this.form.getRawValue().recommendationToCambridgeExam) {
+      return {
+        text: 'Na podstawie grudniowej sesji egzaminacyjno-diagnostycznej wystawiamy wstępną rekomendację do podejścia do egzaminu Cambridge na koniec roku szkolnego.',
+        style: 'recommendation',
+      };
+    } else {
+      return {};
+    }
+  }
+
+  private recommendationExamTitle(form: FormGroup): any {
+    if (this.form.getRawValue().isExamRecommendation) {
+      return {
+        text: 'REKOMENDACJA EGZAMINACYJNA',
+        fontSize: 10,
+        bold: true,
+        margin: [0, 5, 0, 5],
+      };
+    } else {
+      return {};
+    }
+  }
+
+  private examRecommendationToCambridge(form: FormGroup): any {
+    if (this.form.getRawValue().isExamRecommendation) {
+      return {
+        margin: [0, 0, 0, 5],
+        fontSize: 9,
+        table: {
+          widths: ['auto', '*'],
+          body: [
+            [
+              {
+                text: 'Rekomendacje egzaminacyjne zostaną przekazane po kolejnym próbnym teście Cambridge.',
+              },
+              {
+                image: `${
+                  form.value.examRecommendationOptions === '1'
+                    ? this.checkmarkLogo
+                    : this.emptyImageLogo
+                }`,
+                width: 15,
+                height: 15,
+                alignment: 'center',
+              },
+            ],
+            [
+              {
+                text: 'Nie rekomenduję wzięcia udziału w czerwcowej sesji egzaminacyjnej Cambridge w tym roku szkolnym.',
+              },
+              {
+                image: `${
+                  form.value.examRecommendationOptions === '2'
+                    ? this.checkmarkLogo
+                    : this.emptyImageLogo
+                }`,
+                width: 15,
+                height: 15,
+                alignment: 'center',
+              },
+            ],
+            [
+              {
+                text:
+                  'Rekomenduję wzięcie udziału w czerwcowej sesji egzaminacyjnej Cambridge w tym roku szkolnym. ' +
+                  `${
+                    form.value.examRecommendationResult
+                      ? `Rekomenduję podejście do egzaminu: ${form.value.examRecommendationResult}`
+                      : ''
+                  }`,
+              },
+              {
+                image: `${
+                  form.value.examRecommendationOptions === '3'
+                    ? this.checkmarkLogo
+                    : this.emptyImageLogo
+                }`,
+                width: 15,
+                height: 15,
+                alignment: 'center',
+              },
+            ],
+          ],
+        },
+      };
+    } else {
+      return {};
+    }
+  }
+
   private createForm(): FormGroup {
     return new FormGroup({
-      reportType: new FormControl(ReportType.SEMESTER, Validators.required),
+      reportType: new FormControl(ReportType.TRIMESTER, Validators.required),
       studentName: new FormControl(null, Validators.required),
       name: new FormControl(null),
       sex: new FormControl(null, Validators.required),
@@ -633,7 +696,6 @@ export class SemestrReportComponent implements OnInit {
       course: new FormControl(null),
       realizedMaterial: new FormControl(null),
 
-      marks: new FormControl(null),
       avgMark: new FormControl(null),
       recommendationToCambridgeExam: new FormControl(null),
       frequency: new FormControl(null),
@@ -646,6 +708,8 @@ export class SemestrReportComponent implements OnInit {
       homeworks: new FormControl(null, Validators.required),
       involvement: new FormControl(null, Validators.required),
       behaviour: new FormControl(null, Validators.required),
+
+      additionalComment: new FormControl(null),
 
       typeOfExam: new FormControl(null),
 
@@ -666,10 +730,12 @@ export class SemestrReportComponent implements OnInit {
 
       comments: new FormArray([]),
 
+      isExamRecommendation: new FormControl(false),
       examRecommendationAcceptCheckbox: new FormControl(false),
       examRecommendationNonCheckbox: new FormControl(false),
       examRecommendationResult: new FormControl(null),
       examRecommendation: new FormControl(''),
+      examRecommendationOptions: new FormControl(null),
 
       learningRecommendations: new FormControl(null),
       recommendations: new FormArray([]),
@@ -677,6 +743,4 @@ export class SemestrReportComponent implements OnInit {
       signature: new FormControl(null),
     });
   }
-
-  protected readonly Sex = Sex;
 }
