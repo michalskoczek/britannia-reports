@@ -76,8 +76,8 @@
       <mat-form-field class="col-6 my-1">
         <mat-label>{{ "Klasa" | translate }}</mat-label>
         <mat-select formControlName="class">
-          <mat-option *ngFor="let class of classes" [value]="class">
-            {{ class | translate }}
+          <mat-option *ngFor="let classItem of classes" [value]="classItem">
+            {{ classItem | translate }}
           </mat-option>
         </mat-select>
         <mat-error *ngIf="form.controls['class'].hasError('required')"
@@ -116,7 +116,7 @@
 
       <mat-form-field class="col-6 my-1" *ngIf="isCheckedBook">
         <mat-label>{{ "Tytuł podręcznika" | translate }}</mat-label>
-        <mat-select name="class" formControlName="studentBookTitle">
+        <mat-select formControlName="studentBookTitle">
           <mat-option *ngFor="let book of books" [value]="book">
             {{ book | translate }}
           </mat-option>
@@ -138,7 +138,7 @@
 
       <mat-form-field class="col-6 my-1">
         <mat-label>{{ "Kurs" | translate }}</mat-label>
-        <mat-select name="course" formControlName="course">
+        <mat-select formControlName="course">
           <mat-option *ngFor="let course of courses" [value]="course">
             {{ course }}
           </mat-option>
@@ -453,29 +453,9 @@
                   </mat-panel-title>
                 </mat-expansion-panel-header>
                 <ul>
-                  <li>
+                  <li *ngFor="let text of addExamInfoCambridge">
                     <p>
-                      {{ "additionalExamInfoFirst" | translate }}
-                    </p>
-                  </li>
-                  <li>
-                    <p>
-                      {{ "additionalExamInfoSecond" | translate }}
-                    </p>
-                  </li>
-                  <li>
-                    <p>
-                      {{ "additionalExamInfoThird" | translate }}
-                    </p>
-                  </li>
-                  <li>
-                    <p>
-                      {{ "additionalExamInfoFourth" | translate }}
-                    </p>
-                  </li>
-                  <li>
-                    <p>
-                      {{ "additionalExamInfoFifth" | translate }}
+                      {{ text }}
                     </p>
                   </li>
                 </ul>

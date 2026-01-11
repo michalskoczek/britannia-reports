@@ -37,11 +37,14 @@ export const examsSelect: string[] = [...A1Exams, ...A2B1Exams, ...B2C1Exams];
 export const examsCount: string[] = ['first', 'second', 'third'];
 
 export const additionalExamInformations: string[] = [
-  'BRITANNIA jest autoryzowanym Cambridge Preparation Centre, więc nasi uczniowie co roku zdają egzaminy na miejscu w szkole. Uczniowie mogą zdawać u nas egzaminy na wszystkich poziomach zaawansowania.',
-  'Egzaminy organizowane są w czerwcu.',
-  'Samo doświadczenie przystąpienia do prawdziwego egzaminu i jego atmosfery jest ogromnie cenne. Przygotowuje dzieci mentalnie do zdawania kolejnych ważnych egzaminów, uodparnia je na stres i podnosi samoocenę. Daje dzieciom dużo motywacji do nauki, a po otrzymaniu certyfikatu z Anglii na naszej doniosłej uroczystości także wielką dozę satysfakcji i chęci do dalszego podnoszenia swoich umiejętności. Dzieci czują się naprawdę wyróżnione.',
-  'Przede wszystkim jest to także najbardziej wiarygodne potwierdzenie uzyskanych umiejętności językowych. Wyniki i certyfikaty przysyłane są z Anglii. Podejście do egzaminu ma być dla dziecka nagrodą i motywacją. Uczestnictwo nie jest obowiązkowe.',
-  'Płatność jest dla ośrodka egzaminacyjnego, nie dla nas. My jesteśmy przewodnikami w drodze do sukcesu Państwa dziecka.',
+  'Międzynarodowe egzaminy Cambridge English to prestiżowa seria certyfikatów językowych dla dzieci, młodzieży i dorosłych. Są one uznawane na całym świecie i potwierdzają znajomość języka angielskiego zgodnie ze Skalą CEFR – od poziomów podstawowych aż po pełną biegłość językową.',
+  'BRITANNIA jest autoryzowanym Cambridge Preparation Centre, co oznacza, że przygotowujemy uczniów zgodnie z oficjalnymi standardami egzaminacyjnymi.',
+  'W ramach kursu języka angielskiego uczniowie Britannii – już od 3 klasy szkoły podstawowej – kilka razy w roku przystępują do diagnozy egzaminacyjnej. Na jej podstawie otrzymują rekomendację do podejścia do odpowiedniego egzaminu. Oficjalna sesja egzaminacyjna w siedzibie Britannii odbywa się w czerwcu.',
+  'Samo doświadczenie udziału w prawdziwym egzaminie i poznanie jego atmosfery ma ogromną wartość edukacyjną. Przygotowuje dzieci mentalnie do kolejnych ważnych sprawdzianów, wzmacnia odporność na stres oraz buduje poczucie własnej wartości. Wyniki i certyfikaty są przesyłane bezpośrednio z Anglii, a ich uroczyste wręczenie podczas doniosłej ceremonii daje dzieciom wiele satysfakcji i dodatkowo motywuje do dalszego rozwoju językowego. Dzieci czują się naprawdę wyróżnione.',
+  'Certyfikaty Cambridge są jednym z najbardziej wiarygodnych potwierdzeń kompetencji językowych. Honoruje je ponad 25 000 instytucji i organizacji na całym świecie. Stanowią realne wsparcie w edukacji i karierze zawodowej, ułatwiają podjęcie studiów za granicą oraz zwiększają szanse na rynku pracy.',
+  'Przystąpienie do egzaminu traktujemy jako nagrodę i silną motywację dla dziecka. Udział w egzaminie nie jest obowiązkowy.',
+  'Opłata wnoszona jest na rzecz ośrodka egzaminacyjnego, a nie naszej szkoły. My pełnimy rolę przewodników i wspieramy Państwa dziecko na drodze do sukcesu.',
+  'Zapisy na egzamin – po przeprowadzeniu diagnozy i uzyskaniu naszej rekomendacji – przyjmujemy w marcu.',
 ];
 
 export const learningRecommendations: string[] = [
