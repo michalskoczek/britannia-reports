@@ -26,6 +26,11 @@ import { TeddyEddieFormComponent } from './teddy-eddie-form/teddy-eddie-form.com
 import { TranslateModule } from '@ngx-translate/core';
 import { ButtonComponent } from '../shared/components/button/button.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatTableModule } from '@angular/material/table';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatOptionModule } from '@angular/material/core';
+import { CommonModule } from '@angular/common';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -48,15 +53,28 @@ export const MY_FORMATS = {
   standalone: true,
   providers: [provideMomentDateAdapter(MY_FORMATS)],
   imports: [
+    CommonModule,
     FormWrapperComponent,
     TeddyEddieFormComponent,
     TranslateModule,
     ButtonComponent,
     ReactiveFormsModule,
+    MatTableModule,
+    MatSelectModule,
+    MatCheckboxModule,
+    MatOptionModule,
   ],
 })
 export class TeddyEddieReportComponent implements OnInit {
   public form: FormGroup;
+  public displayedColumns: string[] = [
+    'schoolYear',
+    'classInSchool',
+    'courseLevel',
+    'certificationPurpose',
+    'schoolExam',
+    'shouldDeleteRow',
+  ];
 
   public teddyEddieForm: TeddyEddieReport = {
     studentName: '',

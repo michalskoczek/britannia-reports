@@ -40,26 +40,24 @@
       0px 1px 3px 0px rgba(0, 0, 0, 0.12);
     overflow: hidden;
 
-    table {
+    table.mat-mdc-table {
       width: 100%;
-      border-collapse: collapse;
 
-      thead tr {
+      .mat-mdc-header-row {
         background-color: ds.$britannia-blue;
 
-        th {
+        .mat-mdc-header-cell {
           color: ds.$white;
           font-family: Montserrat, sans-serif;
           font-size: 12px;
           font-weight: 600;
-          padding: ds.$distance-8 ds.$distance-16;
           text-align: center;
           border: none;
           white-space: nowrap;
         }
       }
 
-      tbody tr {
+      .mat-mdc-row {
         transition: background-color 150ms ease;
 
         &:nth-child(odd) {
@@ -74,17 +72,13 @@
           background-color: rgba(ds.$britannia-blue, 0.08);
         }
 
-        td {
+        .mat-mdc-cell {
           padding: ds.$distance-8;
           text-align: center;
           border-bottom: 1px solid rgba(ds.$britannia-blue, 0.1);
           font-family: Montserrat, sans-serif;
           font-size: 13px;
           color: ds.$britannia-dark;
-
-          &:last-child {
-            border-bottom-color: transparent;
-          }
         }
       }
     }
@@ -103,37 +97,13 @@
   cursor: default;
 }
 
-.cell-select {
+.cell-mat-select {
   width: 100%;
-  background: transparent;
-  border: none;
-  border-bottom: 1.5px solid rgba(ds.$britannia-blue, 0.25);
   font-family: Montserrat, sans-serif;
   font-size: 13px;
-  color: ds.$britannia-dark;
-  padding: 2px 4px;
-  text-align: center;
-  outline: none;
-  cursor: pointer;
-  border-radius: 0;
-  appearance: auto;
-  transition: border-color 150ms ease;
-
-  &:focus {
-    border-bottom-color: ds.$britannia-blue;
-  }
-
-  &:disabled {
-    color: rgba(ds.$britannia-dark, 0.4);
-    cursor: default;
-  }
 }
 
-.cell-checkbox {
-  input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-    accent-color: ds.$britannia-red;
-  }
+::ng-deep .mat-mdc-checkbox {
+  display: flex;
+  justify-content: center;
 }
