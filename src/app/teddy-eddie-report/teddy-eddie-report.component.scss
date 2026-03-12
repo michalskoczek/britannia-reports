@@ -1,4 +1,4 @@
-@use "../../assets/styles/utils/index" as *;
+@use "../../assets/styles/utils/index" as ds;
 @use "../../assets/styles/mixins" as *;
 
 .container {
@@ -11,72 +11,129 @@
   right: 30px;
 }
 
-.row-wrapper {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  width: 100%;
-
-  div {
-    width: 100%;
+.table-section {
+  .table-title {
+    font-family: Montserrat, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: ds.$britannia-blue;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    text-align: center;
+    margin: 0 0 ds.$distance-8 0;
+    padding: ds.$distance-8 ds.$distance-16;
+    border-left: 6px solid ds.$white;
+    border-top: 6px solid ds.$white;
+    border-right: 6px solid ds.$white;
+    border-radius: 20px 20px 0 0;
+    background-color: ds.$white;
+    box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2),
+      0px 1px 1px 0px rgba(0, 0, 0, 0.14),
+      0px 1px 3px 0px rgba(0, 0, 0, 0.12);
   }
 
-  p {
-    width: calc(100% / 7);
-    border: 1px solid black;
-    margin: 0;
-  }
+  .table-container {
+    background-color: ds.$white;
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2),
+      0px 1px 1px 0px rgba(0, 0, 0, 0.14),
+      0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
 
-  .row-group {
-    width: 100%;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    flex-wrap: wrap;
+    table {
+      width: 100%;
+      border-collapse: collapse;
 
-    div {
-      width: calc(100% / 7);
-      border: 1px solid black;
-      margin: 0;
+      thead tr {
+        background-color: ds.$britannia-blue;
 
-      input {
-        width: 100%;
+        th {
+          color: ds.$white;
+          font-family: Montserrat, sans-serif;
+          font-size: 12px;
+          font-weight: 600;
+          padding: ds.$distance-8 ds.$distance-16;
+          text-align: center;
+          border: none;
+          white-space: nowrap;
+        }
+      }
+
+      tbody tr {
+        transition: background-color 150ms ease;
+
+        &:nth-child(odd) {
+          background-color: ds.$white;
+        }
+
+        &:nth-child(even) {
+          background-color: ds.$britannia-background;
+        }
+
+        &:hover {
+          background-color: rgba(ds.$britannia-blue, 0.08);
+        }
+
+        td {
+          padding: ds.$distance-8;
+          text-align: center;
+          border-bottom: 1px solid rgba(ds.$britannia-blue, 0.1);
+          font-family: Montserrat, sans-serif;
+          font-size: 13px;
+          color: ds.$britannia-dark;
+
+          &:last-child {
+            border-bottom-color: transparent;
+          }
+        }
       }
     }
   }
 }
 
-.row-wrapper-te {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
+.cell-input {
   width: 100%;
+  background: transparent;
+  border: none;
+  text-align: center;
+  font-family: Montserrat, sans-serif;
+  font-size: 13px;
+  color: ds.$britannia-dark;
+  outline: none;
+  cursor: default;
+}
 
-  div {
-    width: 100%;
+.cell-select {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1.5px solid rgba(ds.$britannia-blue, 0.25);
+  font-family: Montserrat, sans-serif;
+  font-size: 13px;
+  color: ds.$britannia-dark;
+  padding: 2px 4px;
+  text-align: center;
+  outline: none;
+  cursor: pointer;
+  border-radius: 0;
+  appearance: auto;
+  transition: border-color 150ms ease;
+
+  &:focus {
+    border-bottom-color: ds.$britannia-blue;
   }
 
-  p {
-    width: calc(100% / 6);
-    border: 1px solid black;
-    margin: 0;
+  &:disabled {
+    color: rgba(ds.$britannia-dark, 0.4);
+    cursor: default;
   }
+}
 
-  .row-group-te {
-    width: 100%;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    flex-wrap: wrap;
-
-    div {
-      width: calc(100% / 6);
-      border: 1px solid black;
-      margin: 0;
-
-      input {
-        width: 100%;
-      }
-    }
+.cell-checkbox {
+  input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: ds.$britannia-red;
   }
 }

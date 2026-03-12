@@ -2,200 +2,71 @@
   <div class="row p-0">
     <div class="col-3 p-0">
       <app-form-wrapper-template [sectionTitle]="'basicInformation'">
-        <app-teddy-eddie-form [form]="teddyEddieForm"></app-teddy-eddie-form>
+        <app-teddy-eddie-form
+          [form]="teddyEddieForm"
+          (ageChange)="setTableTE($event)"
+        ></app-teddy-eddie-form>
       </app-form-wrapper-template>
     </div>
 
-    <!--    <div class="col-8 ps-5 pe-0">-->
-    <!--      <app-form-wrapper-template-->
-    <!--        [sectionTitle]="'tables'"-->
-    <!--        [form]="form"-->
-    <!--        (submitEmitter)="downloadPDF(form)"-->
-    <!--      >-->
-    <!--        <app-teddy-eddie-form [formG]="form"></app-teddy-eddie-form>-->
-    <!--      </app-form-wrapper-template>-->
-    <!--    </div>-->
+    @if (developmentLanguageSkillsArray.length > 0) {
+      <div class="col-9 ps-4" [formGroup]="form">
+        <div class="table-section">
+          <p class="table-title">{{ "teddyEddie.cambridgePath" | translate }}</p>
+          <div class="table-container">
+            <table formArrayName="developmentLanguageSkillsArray">
+              <thead>
+                <tr>
+                  <th>{{ "schoolYear" | translate }}</th>
+                  <th>{{ "studentAge" | translate }}</th>
+                  <th>{{ "wayInLevel" | translate }}</th>
+                  <th>{{ "certificationPurpose" | translate }}</th>
+                  <th>{{ "schoolPurpose" | translate }}</th>
+                  <th>{{ "withoutThisLine" | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (row of developmentLanguageSkillsArray.controls; track $index; let i = $index) {
+                  <tr [formGroupName]="i">
+                    <td>
+                      <input type="text" formControlName="schoolYear" class="cell-input" />
+                    </td>
+                    <td>
+                      <input type="text" formControlName="classInSchool" class="cell-input" />
+                    </td>
+                    <td>
+                      <select formControlName="courseLevel" class="cell-select">
+                        @for (level of languageLevels; track level) {
+                          <option [value]="level">{{ level }}</option>
+                        }
+                      </select>
+                    </td>
+                    <td>
+                      <select formControlName="certificationPurpose" class="cell-select">
+                        @for (cert of certificationPurpose; track cert) {
+                          <option [value]="cert">{{ cert }}</option>
+                        }
+                      </select>
+                    </td>
+                    <td>
+                      <select formControlName="schoolExam" class="cell-select">
+                        @for (exam of schoolExamsTE; track exam) {
+                          <option [value]="exam">{{ exam }}</option>
+                        }
+                      </select>
+                    </td>
+                    <td class="cell-checkbox">
+                      <input type="checkbox" formControlName="shouldDeleteRow" />
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    }
   </div>
-
-  <!--  <div class="row mt-5">-->
-  <!--      <div class="col-2 mb-4 pr-4">-->
-  <!--        <app-section-title-->
-  <!--          [sectionTitle]="'basicInformation'"-->
-  <!--        ></app-section-title>-->
-
-  <!--        -->
-  <!--      </div>-->
-
-  <!--      <div class="col-10">-->
-  <!--        <app-section-title [sectionTitle]="'tables'"></app-section-title>-->
-
-  <!--        <div class="row">-->
-  <!--          <div class="col-12">-->
-  <!--            &lt;!&ndash;        Nowa tabelka&ndash;&gt;-->
-
-  <!--            <p class="w-100 px-2">-->
-  <!--              {{ "teddyEddie.englishImmersion" | translate }}-->
-  <!--            </p>-->
-
-  <!--            <ng-container *ngIf="this.form.getRawValue()['age'] !== null">-->
-  <!--              <div class="row-wrapper-te">-->
-  <!--                <p>{{ "schoolYear" | translate }}</p>-->
-  <!--                <p>{{ "studentAge" | translate }}</p>-->
-  <!--                <p>{{ "course" | translate }}</p>-->
-  <!--                <p>{{ "levelOfCourse" | translate }}</p>-->
-  <!--                <p>{{ "book" | translate }}</p>-->
-  <!--                <p>{{ "withoutThisLine" | translate }}</p>-->
-  <!--              </div>-->
-
-  <!--              <div-->
-  <!--                *ngFor="let skill of teddyEddieArray.controls; let i = index"-->
-  <!--                class="row-wrapper-te"-->
-  <!--              >-->
-  <!--                <div formArrayName="teddyEddieArray">-->
-  <!--                  <div class="row-group-te" [formGroupName]="i">-->
-  <!--                    <div>-->
-  <!--                      <input type="text" formControlName="schoolYear" />-->
-  <!--                    </div>-->
-
-  <!--                    <div>-->
-  <!--                      <input type="text" formControlName="studentsAge" />-->
-  <!--                    </div>-->
-
-  <!--                    <div>-->
-  <!--                      <mat-select formControlName="course">-->
-  <!--                        <ng-container *ngFor="let course of courses">-->
-  <!--                          <mat-option [value]="course">-->
-  <!--                            {{ course }}-->
-  <!--                          </mat-option>-->
-  <!--                        </ng-container>-->
-  <!--                      </mat-select>-->
-  <!--                    </div>-->
-
-  <!--                    <div>-->
-  <!--                      <mat-select formControlName="courseLevel">-->
-  <!--                        <ng-container *ngFor="let level of courseLevelTE">-->
-  <!--                          <mat-option [value]="level">-->
-  <!--                            {{ level }}-->
-  <!--                          </mat-option>-->
-  <!--                        </ng-container>-->
-  <!--                      </mat-select>-->
-  <!--                    </div>-->
-
-  <!--                    <div>-->
-  <!--                      <mat-select formControlName="book">-->
-  <!--                        <ng-container *ngFor="let books of booksToChoosingTE">-->
-  <!--                          <mat-option [value]="books">-->
-  <!--                            {{ books }}-->
-  <!--                          </mat-option>-->
-  <!--                        </ng-container>-->
-  <!--                      </mat-select>-->
-  <!--                    </div>-->
-
-  <!--                    <div>-->
-  <!--                      <input-->
-  <!--                        type="checkbox"-->
-  <!--                        formControlName="shouldDeleteRow"-->
-  <!--                      />-->
-  <!--                    </div>-->
-  <!--                  </div>-->
-  <!--                </div>-->
-  <!--              </div>-->
-  <!--            </ng-container>-->
-  <!--          </div>-->
-  <!--        </div>-->
-
-  <!--        <div class="row">-->
-  <!--          <div class="col-12">-->
-  <!--            &lt;!&ndash;        Nowa tabelka&ndash;&gt;-->
-
-  <!--            <p class="w-100 px-2 mt-4">-->
-  <!--              {{ "teddyEddie.cambridgePath" | translate }}-->
-  <!--            </p>-->
-
-  <!--            <ng-container *ngIf="this.form.getRawValue()['age'] !== null">-->
-  <!--              <div class="row-wrapper">-->
-  <!--                <p>{{ "schoolYear" | translate }}</p>-->
-  <!--                <p>{{ "studentAge" | translate }}</p>-->
-  <!--                <p>{{ "course" | translate }}</p>-->
-  <!--                <p>{{ "wayInLevel" | translate }}</p>-->
-  <!--                <p>{{ "certificationPurpose" | translate }}</p>-->
-  <!--                <p>{{ "schoolPurpose" | translate }}</p>-->
-  <!--                <p>{{ "withoutThisLine" | translate }}</p>-->
-  <!--              </div>-->
-
-  <!--              <div-->
-  <!--                *ngFor="-->
-  <!--                  let skill of developmentLanguageSkillsArray.controls;-->
-  <!--                  let i = index-->
-  <!--                "-->
-  <!--                class="row-wrapper"-->
-  <!--              >-->
-  <!--                <div formArrayName="developmentLanguageSkillsArray">-->
-  <!--                  <div class="row-group" [formGroupName]="i">-->
-  <!--                    <div>-->
-  <!--                      <input type="text" formControlName="schoolYear" />-->
-  <!--                    </div>-->
-
-  <!--                    <div>-->
-  <!--                      <input type="text" formControlName="classInSchool" />-->
-  <!--                    </div>-->
-
-  <!--                    <div>-->
-  <!--                      <mat-select formControlName="course">-->
-  <!--                        <ng-container *ngFor="let course of courses">-->
-  <!--                          <mat-option [value]="course">-->
-  <!--                            {{ course }}-->
-  <!--                          </mat-option>-->
-  <!--                        </ng-container>-->
-  <!--                      </mat-select>-->
-  <!--                    </div>-->
-
-  <!--                    <div>-->
-  <!--                      <mat-select formControlName="courseLevel">-->
-  <!--                        <ng-container *ngFor="let level of languageLevels">-->
-  <!--                          <mat-option [value]="level">-->
-  <!--                            {{ level }}-->
-  <!--                          </mat-option>-->
-  <!--                        </ng-container>-->
-  <!--                      </mat-select>-->
-  <!--                    </div>-->
-
-  <!--                    <div>-->
-  <!--                      <mat-select formControlName="certificationPurpose">-->
-  <!--                        <ng-container-->
-  <!--                          *ngFor="let certification of certificationPurpose"-->
-  <!--                        >-->
-  <!--                          <mat-option [value]="certification">-->
-  <!--                            {{ certification }}-->
-  <!--                          </mat-option>-->
-  <!--                        </ng-container>-->
-  <!--                      </mat-select>-->
-  <!--                    </div>-->
-
-  <!--                    <div>-->
-  <!--                      <mat-select formControlName="schoolExam">-->
-  <!--                        <ng-container *ngFor="let exam of schoolExamsTE">-->
-  <!--                          <mat-option [value]="exam">-->
-  <!--                            {{ exam }}-->
-  <!--                          </mat-option>-->
-  <!--                        </ng-container>-->
-  <!--                      </mat-select>-->
-  <!--                    </div>-->
-
-  <!--                    <div>-->
-  <!--                      <input-->
-  <!--                        type="checkbox"-->
-  <!--                        formControlName="shouldDeleteRow"-->
-  <!--                      />-->
-  <!--                    </div>-->
-  <!--                  </div>-->
-  <!--                </div>-->
-  <!--              </div>-->
-  <!--            </ng-container>-->
-  <!--          </div>-->
-  <!--        </div>-->
-  <!--      </div>-->
-  <!--  </div>-->
 
   <div class="row generate-btn">
     <div class="col-12 d-flex justify-content-end">

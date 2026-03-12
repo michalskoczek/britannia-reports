@@ -1,4 +1,4 @@
-import { Component, Input, input, InputSignal, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { ageTE } from '../../shared/development-path';
@@ -22,8 +22,14 @@ import { DateComponent } from '../../shared/forms/template/UI/date/date.componen
 })
 export class TeddyEddieFormComponent implements OnInit {
   @Input() form!: TeddyEddieReport;
+  @Output() ageChange = new EventEmitter<string>();
 
   protected readonly ageTE = ageTE;
 
   ngOnInit(): void {}
+
+  onAgeChange(value: string): void {
+    this.form.age = value;
+    this.ageChange.emit(value);
+  }
 }

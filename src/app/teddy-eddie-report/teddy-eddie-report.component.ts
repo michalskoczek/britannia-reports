@@ -25,6 +25,7 @@ import { FormWrapperComponent } from '../shared/forms/template/layout/form-wrapp
 import { TeddyEddieFormComponent } from './teddy-eddie-form/teddy-eddie-form.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { ButtonComponent } from '../shared/components/button/button.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -51,6 +52,7 @@ export const MY_FORMATS = {
     TeddyEddieFormComponent,
     TranslateModule,
     ButtonComponent,
+    ReactiveFormsModule,
   ],
 })
 export class TeddyEddieReportComponent implements OnInit {

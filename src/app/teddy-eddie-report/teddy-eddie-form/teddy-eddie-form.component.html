@@ -6,11 +6,12 @@
 ></app-input>
 
 <app-select
-  [(model)]="form.age"
+  [model]="form.age"
   [label]="'age'"
   [required]="true"
   [itemList]="ageTE"
   [errorMessage]="'error.fieldIsRequired'"
+  (modelChange)="onAgeChange($event)"
 ></app-select>
 
 <app-date
