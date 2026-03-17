@@ -28,6 +28,8 @@ export const teachers: string[] = [
   'Karolina Kozielska',
   'Igor Polakowski',
   'Oliwia Tomaszewska',
+  'Patrycja Zarębska',
+  'Ewa Biedrzycka',
 ];
 
 export const books: string[] = [
