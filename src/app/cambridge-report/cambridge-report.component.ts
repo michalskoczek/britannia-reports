@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 // @ts-ignore
 import pdfMake from 'pdfmake/build/pdfmake';
@@ -28,6 +28,7 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
   standalone: false,
 })
 export class CambridgeReportComponent implements OnInit {
+  private cd = inject(ChangeDetectorRef);
   title: string = 'britannia-reports';
 
   public form!: FormGroup;
@@ -118,6 +119,7 @@ export class CambridgeReportComponent implements OnInit {
 
   public addNextComment(): void {
     this.comments.push(new FormControl(null));
+    this.cd.detectChanges();
   }
 
   public onSelectTypeOfExam(exam: string): void {
@@ -260,15 +262,32 @@ export class CambridgeReportComponent implements OnInit {
         {
           text: 'RAPORT Z PRZEPROWADZENIA PRÓBNEGO EGZAMINU CAMBRIDGE',
           style: 'title',
-          alignment: 'center',
+          alignment: 'left',
         },
         {
-          text: [
-            `Imię i Nazwisko ucznia: `,
-            { text: `${form.value.studentName}`, bold: true, fontSize: 13 },
+          columns: [
+            {
+              stack: [
+                {
+                  text: [
+                    `Imię i Nazwisko ucznia: `,
+                    { text: `${form.value.studentName}`, style: 'subtitle' },
+                  ],
+                  margin: [0, 5, 0, 0],
+                  style: 'subheader',
+                },
+              ],
+              width: '*',
+            },
+            {
+              image: this.imageLogo,
+              width: 75,
+              height: 55,
+              alignment: 'right',
+              margin: [0, -20, 0, 0],
+            },
           ],
-          margin: [0, 5, 0, 5],
-          alignment: 'center',
+          columnGap: 10,
         },
         {
           style: 'tableExample',
@@ -308,18 +327,11 @@ export class CambridgeReportComponent implements OnInit {
           style: 'header',
         },
         chooseTableOfExam(),
-        {
-          text: `${commentsArray.length > 0 ? 'Komentarz' : ''}`,
-          style: 'subheader',
-        },
-        {
-          ul: commentsArray,
-          fontSize: 10,
-        },
+        this.commentAfterExaResults(form),
         {
           text: 'REKOMENDACJA EGZAMINACYJNA',
           style: 'header',
-          margin: [0, 25, 0, 5],
+          margin: [0, 5, 0, 2],
         },
         {
           style: 'tableExample',
@@ -383,27 +395,17 @@ export class CambridgeReportComponent implements OnInit {
         {
           text: 'Dodatkowe informacje egzaminacyjne',
           style: 'header',
-          margin: [0, 10, 0, 5],
+          margin: [0, 5, 0, 5],
         },
         {
           ul: this.additionalExamInformations,
           fontSize: 9,
         },
         {
-          columns: [
-            {
-              text: form.value.signature,
-              margin: [0, 20, 0, 10],
-              fontSize: 10,
-            },
-            {
-              image: this.imageLogo,
-              width: 125,
-              height: 110,
-              alignment: 'right',
-              margin: [0, 20, 0, 0],
-            },
-          ],
+          text: form.value.signature,
+          margin: [0, 10, 0, 0],
+          fontSize: 10,
+          alignment: 'right',
         },
       ],
       styles: {
@@ -412,7 +414,7 @@ export class CambridgeReportComponent implements OnInit {
           bold: true,
         },
         tableExample: {
-          margin: [0, 10, 0, 2],
+          margin: [0, 5, 0, 2],
           fontSize: 10,
         },
         tableExams: {
@@ -420,7 +422,7 @@ export class CambridgeReportComponent implements OnInit {
           fontSize: 10,
         },
         marksTable: {
-          margin: [0, 10, 0, 5],
+          margin: [0, 5, 0, 5],
           fontSize: 10,
         },
         header: {
@@ -451,6 +453,22 @@ export class CambridgeReportComponent implements OnInit {
     const fileName: string =
       form.value.studentName.split(' ').join('-') + '_cambridge_report';
     pdfMake.createPdf(docDefinition).download(fileName);
+  }
+
+  private commentAfterExaResults(form: FormGroup): any {
+    let commentsArray: string[] = [];
+    form.value.comments.forEach((comment: string) =>
+      commentsArray.push(comment)
+    );
+
+    if (form.getRawValue().comments.length > 0) {
+      return {
+        text: `Komentarz: ${commentsArray.join(' ')}`,
+        style: 'defaultStyle',
+      };
+    } else {
+      return {};
+    }
   }
 
   private createForm(): FormGroup {
