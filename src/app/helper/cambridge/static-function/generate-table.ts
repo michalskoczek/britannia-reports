@@ -7,17 +7,12 @@ export abstract class GenerateTable {
         alignment: 'center',
       },
       {
-        text: `Test nr`,
-        style: 'tableHeader',
-        alignment: 'center',
-      },
-      {
         text: 'Data',
         style: 'tableHeader',
         alignment: 'center',
       },
       {
-        text: 'Uzyskany wynik',
+        text: 'Wynik',
         style: 'tableHeader',
         alignment: 'center',
       },
