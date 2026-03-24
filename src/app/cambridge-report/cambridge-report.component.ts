@@ -298,13 +298,15 @@ export class CambridgeReportComponent implements OnInit {
                 { text: 'Data', style: 'tableHeader' },
                 { text: `${date}` },
                 { text: 'Klasa', style: 'tableHeader' },
-                { text: `${form.value.class}` },
+                { text: `${form.value.class ? form.value.class : undefined}` },
               ],
               [
                 { text: 'Lektor', style: 'tableHeader' },
                 { text: `${addSpaceAfterTeacher(form.value.teachers)}` },
                 { text: 'Kurs', style: 'tableHeader' },
-                { text: `${form.value.course}` },
+                {
+                  text: `${form.value.course ? form.value.course : undefined}`,
+                },
               ],
             ],
           },
