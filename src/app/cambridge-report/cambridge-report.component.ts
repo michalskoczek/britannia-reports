@@ -168,87 +168,62 @@ export class CambridgeReportComponent implements OnInit {
       recommendationsArray.push(comment)
     );
 
+    const getMaxTerms = (...arrays: any[][]): number =>
+      Math.max(0, ...arrays.map((a) => a.length));
+
     const chooseTableOfExam = () => {
+      const v = form.value;
+
       if (
-        form.value.typeOfExam === ExamTypes.STARTERS ||
-        form.value.typeOfExam === ExamTypes.MOVERS ||
-        form.value.typeOfExam === ExamTypes.FLYERS
+        v.typeOfExam === ExamTypes.STARTERS ||
+        v.typeOfExam === ExamTypes.MOVERS ||
+        v.typeOfExam === ExamTypes.FLYERS
       ) {
-        if (
-          form.value.listeningA1Array.length === 3 ||
-          form.value.writingAndReadingA1Array.length === 3 ||
-          form.value.speakingA1Array.length === 3
-        ) {
-          return GenerateTableA1.generateTableOfA1ExamsThreeTerms(form);
-        } else if (
-          form.value.listeningA1Array.length === 2 ||
-          form.value.writingAndReadingA1Array.length === 2 ||
-          form.value.speakingA1Array.length === 2
-        ) {
-          return GenerateTableA1.generateTableOfA1ExamsTwoTerm(form);
-        } else if (
-          form.value.listeningA1Array.length === 1 ||
-          form.value.writingAndReadingA1Array.length === 1 ||
-          form.value.speakingA1Array.length === 1
-        ) {
-          return GenerateTableA1.generateTableOfA1ExamsOneTerm(form);
-        } else return [];
-      } else if (
-        form.value.typeOfExam === ExamTypes.A2_KEY ||
-        form.value.typeOfExam === ExamTypes.B1_PRELIMINARY
-      ) {
-        if (
-          form.value.listeningA2B1Array.length === 3 ||
-          form.value.readingA2B1Array.length === 3 ||
-          form.value.writingA2B1Array.length === 3 ||
-          form.value.speakingA2B1Array.length === 3
-        ) {
-          return GenerateTableA2B1.generateTableOfA2B1ExamsThreeTerms(form);
-        } else if (
-          form.value.listeningA2B1Array.length === 2 ||
-          form.value.readingA2B1Array.length === 2 ||
-          form.value.writingA2B1Array.length === 2 ||
-          form.value.speakingA2B1Array.length === 2
-        ) {
-          return GenerateTableA2B1.generateTableOfA2B1ExamsTwoTerms(form);
-        } else if (
-          form.value.listeningA2B1Array.length === 1 ||
-          form.value.readingA2B1Array.length === 1 ||
-          form.value.writingA2B1Array.length === 1 ||
-          form.value.speakingA2B1Array.length === 1
-        ) {
-          return GenerateTableA2B1.generateTableOfA2B1ExamsOneTerm(form);
-        } else return [];
-      } else if (
-        form.value.typeOfExam === ExamTypes.B2_FIRST ||
-        form.value.typeOfExam === ExamTypes.C1_ADVANCED
-      ) {
-        if (
-          form.value.listeningB2C1Array.length === 3 ||
-          form.value.readingB2C1Array.length === 3 ||
-          form.value.useOfEnglishB2C1Array.length === 3 ||
-          form.value.writingB2C1Array.length === 3 ||
-          form.value.speakingB2C1Array.length === 3
-        ) {
-          return GenerateTableB2C1.generateTableOfB2C1ExamsThreeTerms(form);
-        } else if (
-          form.value.listeningB2C1Array.length === 2 ||
-          form.value.readingB2C1Array.length === 2 ||
-          form.value.useOfEnglishB2C1Array.length === 2 ||
-          form.value.writingB2C1Array.length === 2 ||
-          form.value.speakingB2C1Array.length === 2
-        ) {
-          return GenerateTableB2C1.generateTableOfB2C1ExamsTwoTerms(form);
-        } else if (
-          form.value.listeningB2C1Array.length === 1 ||
-          form.value.readingB2C1Array.length === 1 ||
-          form.value.useOfEnglishB2C1Array.length === 1 ||
-          form.value.writingB2C1Array.length === 1 ||
-          form.value.speakingB2C1Array.length === 1
-        ) {
-          return GenerateTableB2C1.generateTableOfB2C1ExamsOneTerm(form);
-        } else return [];
+        const maxTerms = getMaxTerms(
+          v.listeningA1Array,
+          v.writingAndReadingA1Array,
+          v.speakingA1Array
+        );
+
+        if (maxTerms === 0) return [];
+
+        return GenerateTableA1.generateTable(form, maxTerms);
       }
+
+      if (
+        v.typeOfExam === ExamTypes.A2_KEY ||
+        v.typeOfExam === ExamTypes.B1_PRELIMINARY
+      ) {
+        const maxTerms = getMaxTerms(
+          v.listeningA2B1Array,
+          v.readingA2B1Array,
+          v.writingA2B1Array,
+          v.speakingA2B1Array
+        );
+
+        if (maxTerms === 0) return [];
+
+        return GenerateTableA2B1.generateTable(form, maxTerms);
+      }
+
+      if (
+        v.typeOfExam === ExamTypes.B2_FIRST ||
+        v.typeOfExam === ExamTypes.C1_ADVANCED
+      ) {
+        const maxTerms = getMaxTerms(
+          v.listeningB2C1Array,
+          v.readingB2C1Array,
+          v.useOfEnglishB2C1Array,
+          v.writingB2C1Array,
+          v.speakingB2C1Array
+        );
+
+        if (maxTerms === 0) return [];
+
+        return GenerateTableB2C1.generateTable(form, maxTerms);
+      }
+
+      return [];
     };
 
     const addSpaceAfterTeacher = (teachers: string[]) => {
