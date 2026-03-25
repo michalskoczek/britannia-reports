@@ -6,7 +6,7 @@ export class GenerateTableB2C1 extends GenerateTable {
     return {
       style: 'marksTable',
       table: {
-        widths: ['*', 'auto', 'auto', 'auto', '*'],
+        widths: [125, 75, 50, '*'],
         headerRows: 1,
         body: [
           this.initHeaderInTable(),
@@ -26,7 +26,6 @@ export class GenerateTableB2C1 extends GenerateTable {
     if (array.length > 0) {
       return [
         { text: 'Listening', alignment: 'center' },
-        { text: '1', alignment: 'center' },
         {
           text: `${
             array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
@@ -40,12 +39,12 @@ export class GenerateTableB2C1 extends GenerateTable {
         {
           text: `${array[0].result ? array[0].result : '-'}`,
           alignment: 'center',
+          noWrap: true,
         },
       ];
     } else
       return [
         { text: 'Listening', alignment: 'center' },
-        { text: '-', alignment: 'center' },
         {
           text: `-`,
           alignment: 'center',
@@ -65,7 +64,6 @@ export class GenerateTableB2C1 extends GenerateTable {
     if (array.length > 0) {
       return [
         { text: 'Reading', alignment: 'center' },
-        { text: `1`, alignment: 'center' },
         {
           text: `${
             array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
@@ -79,12 +77,12 @@ export class GenerateTableB2C1 extends GenerateTable {
         {
           text: `${array[0].result ? array[0].result : '-'}`,
           alignment: 'center',
+          noWrap: true,
         },
       ];
     } else
       return [
         { text: 'Reading', alignment: 'center' },
-        { text: `-`, alignment: 'center' },
         {
           text: `-`,
           alignment: 'center',
@@ -104,7 +102,6 @@ export class GenerateTableB2C1 extends GenerateTable {
     if (array.length > 0) {
       return [
         { text: 'Use of English', alignment: 'center' },
-        { text: `1`, alignment: 'center' },
         {
           text: `${
             array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
@@ -118,12 +115,12 @@ export class GenerateTableB2C1 extends GenerateTable {
         {
           text: `${array[0].result ? array[0].result : '-'}`,
           alignment: 'center',
+          noWrap: true,
         },
       ];
     } else
       return [
         { text: 'Use of English', alignment: 'center' },
-        { text: `-`, alignment: 'center' },
         {
           text: `-`,
           alignment: 'center',
@@ -143,7 +140,6 @@ export class GenerateTableB2C1 extends GenerateTable {
     if (array.length > 0) {
       return [
         { text: 'Writing', alignment: 'center' },
-        { text: `1`, alignment: 'center' },
         {
           text: `${
             array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
@@ -157,12 +153,12 @@ export class GenerateTableB2C1 extends GenerateTable {
         {
           text: `${array[0].result ? array[0].result : '-'}`,
           alignment: 'center',
+          noWrap: true,
         },
       ];
     } else
       return [
         { text: 'Writing', alignment: 'center' },
-        { text: `-`, alignment: 'center' },
         {
           text: `-`,
           alignment: 'center',
@@ -182,7 +178,6 @@ export class GenerateTableB2C1 extends GenerateTable {
     if (array.length > 0) {
       return [
         { text: 'Speaking', alignment: 'center' },
-        { text: '1', alignment: 'center' },
         {
           text: `${
             array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
@@ -196,12 +191,12 @@ export class GenerateTableB2C1 extends GenerateTable {
         {
           text: `${array[0].result ? array[0].result : '-'}`,
           alignment: 'center',
+          noWrap: true,
         },
       ];
     } else
       return [
         { text: 'Speaking', alignment: 'center' },
-        { text: '-', alignment: 'center' },
         {
           text: `-`,
           alignment: 'center',
@@ -223,7 +218,7 @@ export class GenerateTableB2C1 extends GenerateTable {
     return {
       style: 'marksTable',
       table: {
-        widths: ['*', 'auto', 'auto', 'auto', '*'],
+        widths: [125, 75, 50, '*'],
         headerRows: 1,
         body: [
           this.initHeaderInTable(),
@@ -244,7 +239,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Listening', alignment: 'center', rowSpan: 2 },
-          { text: '1', alignment: 'center' },
           {
             text: `${
               array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
@@ -258,11 +252,11 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[0].result ? array[0].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
         [
           {},
-          { text: `2`, alignment: 'center' },
           {
             text: `${
               array[1].date ? new Date(array[1].date).toLocaleDateString() : '-'
@@ -276,6 +270,7 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[1].result ? array[1].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
       ];
@@ -284,7 +279,6 @@ export class GenerateTableB2C1 extends GenerateTable {
         [
           [
             { text: 'Listening', alignment: 'center' },
-            { text: '1', alignment: 'center' },
             {
               text: `${
                 array[0].date
@@ -300,6 +294,7 @@ export class GenerateTableB2C1 extends GenerateTable {
             {
               text: `${array[0].result ? array[0].result : '-'}`,
               alignment: 'center',
+              noWrap: true,
             },
           ],
         ],
@@ -308,7 +303,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Listening', alignment: 'center' },
-          { text: '-', alignment: 'center' },
           {
             text: `-`,
             alignment: 'center',
@@ -330,7 +324,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Reading', alignment: 'center', rowSpan: 2 },
-          { text: `1`, alignment: 'center' },
           {
             text: `${
               array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
@@ -344,11 +337,11 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[0].result ? array[0].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
         [
           {},
-          { text: `2`, alignment: 'center' },
           {
             text: `${
               array[1].date ? new Date(array[1].date).toLocaleDateString() : '-'
@@ -362,6 +355,7 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[1].result ? array[1].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
       ];
@@ -369,7 +363,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Reading', alignment: 'center' },
-          { text: `1`, alignment: 'center' },
           {
             text: `${
               array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
@@ -383,6 +376,7 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[0].result ? array[0].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
       ];
@@ -390,7 +384,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Reading', alignment: 'center' },
-          { text: `-`, alignment: 'center' },
           {
             text: `-`,
             alignment: 'center',
@@ -412,7 +405,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Use of English', alignment: 'center', rowSpan: 2 },
-          { text: `1`, alignment: 'center' },
           {
             text: `${
               array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
@@ -426,11 +418,11 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[0].result ? array[0].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
         [
           {},
-          { text: `2`, alignment: 'center' },
           {
             text: `${
               array[1].date ? new Date(array[1].date).toLocaleDateString() : '-'
@@ -444,6 +436,7 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[1].result ? array[1].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
       ];
@@ -451,7 +444,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Use of English', alignment: 'center' },
-          { text: `1`, alignment: 'center' },
           {
             text: `${
               array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
@@ -465,6 +457,7 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[0].result ? array[0].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
       ];
@@ -472,7 +465,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Use of English', alignment: 'center' },
-          { text: `-`, alignment: 'center' },
           {
             text: `-`,
             alignment: 'center',
@@ -494,7 +486,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Writing', alignment: 'center', rowSpan: 2 },
-          { text: `1`, alignment: 'center' },
           {
             text: `${
               array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
@@ -508,11 +499,11 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[0].result ? array[0].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
         [
           {},
-          { text: `2`, alignment: 'center' },
           {
             text: `${
               array[1].date ? new Date(array[1].date).toLocaleDateString() : '-'
@@ -526,6 +517,7 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[1].result ? array[1].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
       ];
@@ -533,7 +525,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Writing', alignment: 'center' },
-          { text: `1`, alignment: 'center' },
           {
             text: `${
               array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
@@ -547,6 +538,7 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[0].result ? array[0].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
       ];
@@ -554,7 +546,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Writing', alignment: 'center' },
-          { text: `-`, alignment: 'center' },
           {
             text: `-`,
             alignment: 'center',
@@ -576,7 +567,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Speaking', alignment: 'center', rowSpan: 2 },
-          { text: '1', alignment: 'center' },
           {
             text: `${
               array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
@@ -590,11 +580,11 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[0].result ? array[0].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
         [
           {},
-          { text: '2', alignment: 'center' },
           {
             text: `${
               array[1].date ? new Date(array[1].date).toLocaleDateString() : '-'
@@ -608,6 +598,7 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[1].result ? array[1].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
       ];
@@ -615,7 +606,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Speaking', alignment: 'center' },
-          { text: '1', alignment: 'center' },
           {
             text: `${
               array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
@@ -629,6 +619,7 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[0].result ? array[0].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
       ];
@@ -636,7 +627,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Speaking', alignment: 'center' },
-          { text: '-', alignment: 'center' },
           {
             text: `-`,
             alignment: 'center',
@@ -659,7 +649,7 @@ export class GenerateTableB2C1 extends GenerateTable {
     return {
       style: 'marksTable',
       table: {
-        widths: ['*', 'auto', 'auto', 'auto', '*'],
+        widths: [125, 75, 50, '*'],
         headerRows: 1,
         body: [
           this.initHeaderInTable(),
@@ -680,7 +670,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Listening', alignment: 'center', rowSpan: 3 },
-          { text: '1', alignment: 'center' },
           {
             text: `${
               array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
@@ -694,11 +683,11 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[0].result ? array[0].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
         [
           {},
-          { text: '2', alignment: 'center' },
           {
             text: `${
               array[1].date ? new Date(array[1].date).toLocaleDateString() : '-'
@@ -712,11 +701,11 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[1].result ? array[1].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
         [
           {},
-          { text: '3', alignment: 'center' },
           {
             text: `${
               array[2].date ? new Date(array[2].date).toLocaleDateString() : '-'
@@ -730,6 +719,7 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[2].result ? array[2].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
       ];
@@ -737,7 +727,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Listening', alignment: 'center', rowSpan: 2 },
-          { text: '1', alignment: 'center' },
           {
             text: `${
               array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
@@ -751,11 +740,11 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[0].result ? array[0].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
         [
           {},
-          { text: '2', alignment: 'center' },
           {
             text: `${
               array[1].date ? new Date(array[1].date).toLocaleDateString() : '-'
@@ -769,6 +758,7 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[1].result ? array[1].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
       ];
@@ -776,7 +766,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Listening', alignment: 'center' },
-          { text: '1', alignment: 'center' },
           {
             text: `${
               array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
@@ -790,6 +779,7 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[0].result ? array[0].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
       ];
@@ -797,7 +787,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Listening', alignment: 'center' },
-          { text: '-', alignment: 'center' },
           {
             text: `-`,
             alignment: 'center',
@@ -819,7 +808,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Reading', alignment: 'center', rowSpan: 3 },
-          { text: `1`, alignment: 'center' },
           {
             text: `${
               array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
@@ -833,11 +821,11 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[0].result ? array[0].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
         [
           {},
-          { text: `2`, alignment: 'center' },
           {
             text: `${
               array[1].date ? new Date(array[1].date).toLocaleDateString() : '-'
@@ -851,11 +839,11 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[1].result ? array[1].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
         [
           {},
-          { text: `3`, alignment: 'center' },
           {
             text: `${
               array[2].date ? new Date(array[2].date).toLocaleDateString() : '-'
@@ -869,6 +857,7 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[2].result ? array[2].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
       ];
@@ -876,7 +865,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Reading', alignment: 'center', rowSpan: 2 },
-          { text: `1`, alignment: 'center' },
           {
             text: `${
               array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
@@ -890,11 +878,11 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[0].result ? array[0].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
         [
           {},
-          { text: `2`, alignment: 'center' },
           {
             text: `${
               array[1].date ? new Date(array[1].date).toLocaleDateString() : '-'
@@ -908,6 +896,7 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[1].result ? array[1].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
       ];
@@ -915,7 +904,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Reading', alignment: 'center' },
-          { text: `1`, alignment: 'center' },
           {
             text: `${
               array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
@@ -929,6 +917,7 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[0].result ? array[0].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
       ];
@@ -936,7 +925,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Reading', alignment: 'center' },
-          { text: `-`, alignment: 'center' },
           {
             text: `-`,
             alignment: 'center',
@@ -958,7 +946,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Use of English', alignment: 'center', rowSpan: 3 },
-          { text: `1`, alignment: 'center' },
           {
             text: `${
               array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
@@ -972,11 +959,11 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[0].result ? array[0].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
         [
           {},
-          { text: `2`, alignment: 'center' },
           {
             text: `${
               array[1].date ? new Date(array[1].date).toLocaleDateString() : '-'
@@ -990,11 +977,11 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[1].result ? array[1].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
         [
           {},
-          { text: `3`, alignment: 'center' },
           {
             text: `${
               array[2].date ? new Date(array[2].date).toLocaleDateString() : '-'
@@ -1008,6 +995,7 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[2].result ? array[2].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
       ];
@@ -1015,7 +1003,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Use of English', alignment: 'center', rowSpan: 2 },
-          { text: `1`, alignment: 'center' },
           {
             text: `${
               array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
@@ -1029,11 +1016,11 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[0].result ? array[0].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
         [
           {},
-          { text: `2`, alignment: 'center' },
           {
             text: `${
               array[1].date ? new Date(array[1].date).toLocaleDateString() : '-'
@@ -1047,6 +1034,7 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[1].result ? array[1].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
       ];
@@ -1054,7 +1042,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Use of English', alignment: 'center' },
-          { text: `1`, alignment: 'center' },
           {
             text: `${
               array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
@@ -1068,6 +1055,7 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[0].result ? array[0].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
       ];
@@ -1075,7 +1063,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Use of English', alignment: 'center' },
-          { text: `-`, alignment: 'center' },
           {
             text: `-`,
             alignment: 'center',
@@ -1097,7 +1084,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Writing', alignment: 'center', rowSpan: 3 },
-          { text: `1`, alignment: 'center' },
           {
             text: `${
               array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
@@ -1111,11 +1097,11 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[0].result ? array[0].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
         [
           {},
-          { text: `2`, alignment: 'center' },
           {
             text: `${
               array[1].date ? new Date(array[1].date).toLocaleDateString() : '-'
@@ -1129,11 +1115,11 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[1].result ? array[1].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
         [
           {},
-          { text: `3`, alignment: 'center' },
           {
             text: `${
               array[2].date ? new Date(array[2].date).toLocaleDateString() : '-'
@@ -1147,6 +1133,7 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[2].result ? array[2].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
       ];
@@ -1154,7 +1141,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Writing', alignment: 'center', rowSpan: 2 },
-          { text: `1`, alignment: 'center' },
           {
             text: `${
               array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
@@ -1168,11 +1154,11 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[0].result ? array[0].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
         [
           {},
-          { text: `2`, alignment: 'center' },
           {
             text: `${
               array[1].date ? new Date(array[1].date).toLocaleDateString() : '-'
@@ -1186,6 +1172,7 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[1].result ? array[1].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
       ];
@@ -1193,7 +1180,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Writing', alignment: 'center' },
-          { text: `1`, alignment: 'center' },
           {
             text: `${
               array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
@@ -1207,6 +1193,7 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[0].result ? array[0].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
       ];
@@ -1214,7 +1201,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Writing', alignment: 'center' },
-          { text: `-`, alignment: 'center' },
           {
             text: `-`,
             alignment: 'center',
@@ -1236,7 +1222,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Speaking', alignment: 'center', rowSpan: 3 },
-          { text: '1', alignment: 'center' },
           {
             text: `${
               array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
@@ -1250,11 +1235,11 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[0].result ? array[0].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
         [
           {},
-          { text: '2', alignment: 'center' },
           {
             text: `${
               array[1].date ? new Date(array[1].date).toLocaleDateString() : '-'
@@ -1268,11 +1253,11 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[1].result ? array[1].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
         [
           {},
-          { text: '3', alignment: 'center' },
           {
             text: `${
               array[2].date ? new Date(array[2].date).toLocaleDateString() : '-'
@@ -1286,6 +1271,7 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[2].result ? array[2].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
       ];
@@ -1293,7 +1279,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Speaking', alignment: 'center', rowSpan: 2 },
-          { text: '1', alignment: 'center' },
           {
             text: `${
               array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
@@ -1307,11 +1292,11 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[0].result ? array[0].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
         [
           {},
-          { text: '2', alignment: 'center' },
           {
             text: `${
               array[1].date ? new Date(array[1].date).toLocaleDateString() : '-'
@@ -1325,6 +1310,7 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[1].result ? array[1].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
       ];
@@ -1332,7 +1318,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Speaking', alignment: 'center' },
-          { text: '1', alignment: 'center' },
           {
             text: `${
               array[0].date ? new Date(array[0].date).toLocaleDateString() : '-'
@@ -1346,6 +1331,7 @@ export class GenerateTableB2C1 extends GenerateTable {
           {
             text: `${array[0].result ? array[0].result : '-'}`,
             alignment: 'center',
+            noWrap: true,
           },
         ],
       ];
@@ -1353,7 +1339,6 @@ export class GenerateTableB2C1 extends GenerateTable {
       return [
         [
           { text: 'Speaking', alignment: 'center' },
-          { text: '-', alignment: 'center' },
           {
             text: `-`,
             alignment: 'center',
