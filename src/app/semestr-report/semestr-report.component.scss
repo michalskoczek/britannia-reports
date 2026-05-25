@@ -1,5 +1,9 @@
 @use "../../assets/styles/mixins" as *;
 
+.subtitle {
+  font: 600 22px/1 $font;
+}
+
 .generate-btn {
   position: fixed;
   bottom: 30px;
@@ -8,4 +12,12 @@
 
 .signature-textarea {
   height: 250px !important;
+}
+
+::ng-deep .mat-mdc-radio-button .mdc-radio {
+  padding: 8px 2px 8px 16px;
+}
+
+::ng-deep .mat-mdc-row {
+  height: 38px !important;
 }

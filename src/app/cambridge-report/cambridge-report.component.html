@@ -18,10 +18,13 @@
 
       <mat-form-field class="col-6 my-1">
         <mat-label>{{ "chooseDate" | translate }}</mat-label>
-        <input matInput [matDatepicker]="picker" formControlName="date" />
-        <mat-error *ngIf="this.form.controls['date'].hasError('required')"
-          >{{ "fieldIsRequired" | translate }}
-        </mat-error>
+        <input
+          matInput
+          [matDatepicker]="picker"
+          formControlName="date"
+          [readonly]="true"
+          (click)="picker.open()"
+        />
         <mat-hint>DD.M.RRRR</mat-hint>
         <mat-datepicker-toggle
           matIconSuffix
@@ -39,21 +42,15 @@
             {{ class | translate }}
           </mat-option>
         </mat-select>
-        <mat-error *ngIf="this.form.controls['class'].hasError('required')"
-          >{{ "fieldIsRequired" | translate }}
-        </mat-error>
       </mat-form-field>
 
       <mat-form-field class="col-4 my-1">
-        <mat-label>{{ "Lektor" | translate }}</mat-label>
-        <mat-select name="teacher" formControlName="teacher">
+        <mat-label>{{ "teacher" | translate }}</mat-label>
+        <mat-select name="teacher" formControlName="teachers" multiple>
           <mat-option *ngFor="let teacher of teachers" [value]="teacher">
             {{ teacher }}
           </mat-option>
         </mat-select>
-        <mat-error *ngIf="this.form.controls['teacher'].hasError('required')"
-          >{{ "fieldIsRequired" | translate }}
-        </mat-error>
       </mat-form-field>
 
       <mat-form-field class="col-4 my-1">
@@ -63,13 +60,10 @@
             {{ course }}
           </mat-option>
         </mat-select>
-        <mat-error *ngIf="this.form.controls['course'].hasError('required')"
-          >{{ "fieldIsRequired" | translate }}
-        </mat-error>
       </mat-form-field>
     </div>
 
-    <div class="row mt-5">
+    <div class="row mt-2">
       <div class="col-12 mb-4">
         <h2 class="subtitle">{{ "Poziom biegłości" | translate }}</h2>
       </div>
@@ -83,28 +77,10 @@
               <mat-panel-title>{{ "Opis" | translate }}</mat-panel-title>
             </mat-expansion-panel-header>
             <p>
-              {{
-                "Zależy nam na tym, by jak najwcześniej diagnozować poziom
-              umiejętności dzieci, by jak najszybciej łączyć je w grupy według
-              poziomu ich umiejętności, by mogły rozwijać się językowo w swoim
-              tempie i jak najpełniej korzystać z lekcji. Jak co roku została
-              przeprowadzona diagnoza poziomu języka naszych uczniów według
-              Europejskiego Systemu Kształcenia Językowego z wykorzystaniem
-              próbnych egzaminów Cambridge." | translate
-              }}
+              {{ "proficiencyLevelDescriptionOne" | translate }}
             </p>
             <p>
-              {{
-                "Testy Cambridge dla dzieci to testy przekrojowe, diagnostyczne -
-              nie można ich nie zdać, mają wskazać poziom biegłości językowej.
-              Ważne są procenty. Uznajemy, że uczeń wskoczył na dany poziom
-              biegłości, jeśli uzyskał minimum 60%. Jednak, by stwierdzić, że
-              uczeń faktycznie osiągnął dany poziom językowy i może przystąpić
-              do oficjalnego egzaminu Cambridge, powinien osiągnąć on ok. 80% z
-              testów próbnych. Na testach próbnych diagnozujemy umiejętności
-              Słuchania oraz Czytania i Pisania. Na egzaminie jest też Mówienie,
-              co ćwiczymy i sprawdzamy na bieżąco." | translate
-              }}
+              {{ "proficiencyLevelDescriptionTwo" | translate }}
             </p>
           </mat-expansion-panel>
         </mat-accordion>
@@ -127,10 +103,6 @@
               {{ exam }}
             </mat-option>
           </mat-select>
-          <mat-error
-            *ngIf="this.form.controls['typeOfExam'].hasError('required')"
-            >{{ "fieldIsRequired" | translate }}
-          </mat-error>
         </mat-form-field>
       </div>
     </div>
@@ -1018,7 +990,7 @@
       </div>
     </div>
 
-    <div class="row mt-5">
+    <div class="row mt-2">
       <div class="col-12 mb-4">
         <h2 class="subtitle">{{ "Rekomendacje egzaminacyjne" | translate }}</h2>
       </div>
@@ -1070,58 +1042,33 @@
               <mat-expansion-panel>
                 <mat-expansion-panel-header>
                   <mat-panel-title>
-                    {{ "Dodatkowe informacje egzaminacyjne" | translate }}
+                    {{ "additionalExamInformation" | translate }}
                   </mat-panel-title>
                 </mat-expansion-panel-header>
                 <ul>
                   <li>
                     <p>
-                      {{
-                        "BRITANNIA jest autoryzowanym Cambridge Preparation Centre,
-                      więc nasi uczniowie co roku zdają egzaminy na miejscu w
-                      szkole. Uczniowie mogą zdawać u nas egzaminy na wszystkich
-                      poziomach zaawansowania." | translate
-                      }}
+                      {{ "additionalExamInfoFirst" | translate }}
                     </p>
                   </li>
                   <li>
                     <p>
-                      {{ "Egzaminy organizowane są w czerwcu." | translate }}
+                      {{ "additionalExamInfoSecond" | translate }}
                     </p>
                   </li>
                   <li>
                     <p>
-                      {{
-                        "Samo doświadczenie przystąpienia do prawdziwego egzaminu i
-                      jego atmosfery jest ogromnie cenne. Przygotowuje dzieci
-                      mentalnie do zdawania kolejnych ważnych egzaminów,
-                      uodparnia je na stres i podnosi samoocenę. Daje dzieciom
-                      dużo motywacji do nauki, a po otrzymaniu certyfikatu z
-                      Anglii na naszej doniosłej uroczystości także wielką dozę
-                      satysfakcji i chęci do dalszego podnoszenia swoich
-                      umiejętności. Dzieci czują się naprawdę wyróżnione."
-                          | translate
-                      }}
+                      {{ "additionalExamInfoThird" | translate }}
                     </p>
                   </li>
                   <li>
                     <p>
-                      {{
-                        "Przede wszystkim jest to także najbardziej wiarygodne
-                      potwierdzenie uzyskanych umiejętności językowych. Wyniki i
-                      certyfikaty przysyłane są z Anglii. Podejście do egzaminu
-                      ma być dla dziecka nagrodą i motywacją. Uczestnictwo nie
-                      jest obowiązkowe." | translate
-                      }}
+                      {{ "additionalExamInfoFourth" | translate }}
                     </p>
                   </li>
                   <li>
                     <p>
-                      {{
-                        "Płatność jest dla ośrodka egzaminacyjnego, nie dla nas. My
-                      jesteśmy przewodnikami w drodze do sukcesu Państwa
-                      dziecka." | translate
-                      }}
+                      {{ "additionalExamInfoFifth" | translate }}
                     </p>
                   </li>
                 </ul>
@@ -1132,28 +1079,31 @@
       </div>
     </div>
 
-    <div class="row mt-5">
+    <div class="row mt-3">
       <div class="col-12 mb-4">
         <h2 class="subtitle">{{ "Podpis" | translate }}</h2>
       </div>
     </div>
 
     <div class="row">
-      <div class="col-12">
-        <mat-form-field class="w-100 px-2">
-          <mat-label>{{ "Podpis" | translate }}</mat-label>
-          <textarea
-            class="signature-textarea"
-            matInput
-            formControlName="signature"
-          ></textarea>
-        </mat-form-field>
-      </div>
+      <mat-form-field class="col-12">
+        <mat-label>{{ "teacher" | translate }}</mat-label>
+        <mat-select formControlName="signature">
+          <mat-option *ngFor="let teacher of teachers" [value]="teacher">
+            {{ teacher }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
 
     <div class="row generate-btn">
       <div class="col-12 d-flex justify-content-end">
-        <button mat-raised-button color="primary" type="submit">
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="form.invalid"
+        >
           {{ "downloadPDF" | translate }}
         </button>
       </div>

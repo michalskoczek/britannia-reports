@@ -1,5 +1,9 @@
 @use "../../assets/styles/mixins" as *;
 
+.subtitle {
+  font: 600 22px/1 $font;
+}
+
 .generate-btn {
   position: fixed;
   bottom: 10px;

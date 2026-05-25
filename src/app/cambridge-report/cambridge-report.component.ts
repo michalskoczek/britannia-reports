@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 // @ts-ignore
 import pdfMake from 'pdfmake/build/pdfmake';
@@ -22,12 +22,13 @@ import { ExamTypes } from '../shared/enum/exam-type.enum';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
-    selector: 'app-cambridge-report',
-    templateUrl: './cambridge-report.component.html',
-    styleUrls: ['./cambridge-report.component.scss'],
-    standalone: false
+  selector: 'app-cambridge-report',
+  templateUrl: './cambridge-report.component.html',
+  styleUrls: ['./cambridge-report.component.scss'],
+  standalone: false,
 })
 export class CambridgeReportComponent implements OnInit {
+  private cd = inject(ChangeDetectorRef);
   title: string = 'britannia-reports';
 
   public form!: FormGroup;
@@ -118,6 +119,7 @@ export class CambridgeReportComponent implements OnInit {
 
   public addNextComment(): void {
     this.comments.push(new FormControl(null));
+    this.cd.detectChanges();
   }
 
   public onSelectTypeOfExam(exam: string): void {
@@ -166,87 +168,68 @@ export class CambridgeReportComponent implements OnInit {
       recommendationsArray.push(comment)
     );
 
+    const getMaxTerms = (...arrays: any[][]): number =>
+      Math.max(0, ...arrays.map((a) => a.length));
+
     const chooseTableOfExam = () => {
+      const v = form.value;
+
       if (
-        form.value.typeOfExam === ExamTypes.STARTERS ||
-        form.value.typeOfExam === ExamTypes.MOVERS ||
-        form.value.typeOfExam === ExamTypes.FLYERS
+        v.typeOfExam === ExamTypes.STARTERS ||
+        v.typeOfExam === ExamTypes.MOVERS ||
+        v.typeOfExam === ExamTypes.FLYERS
       ) {
-        if (
-          form.value.listeningA1Array.length === 3 ||
-          form.value.writingAndReadingA1Array.length === 3 ||
-          form.value.speakingA1Array.length === 3
-        ) {
-          return GenerateTableA1.generateTableOfA1ExamsThreeTerms(form);
-        } else if (
-          form.value.listeningA1Array.length === 2 ||
-          form.value.writingAndReadingA1Array.length === 2 ||
-          form.value.speakingA1Array.length === 2
-        ) {
-          return GenerateTableA1.generateTableOfA1ExamsTwoTerm(form);
-        } else if (
-          form.value.listeningA1Array.length === 1 ||
-          form.value.writingAndReadingA1Array.length === 1 ||
-          form.value.speakingA1Array.length === 1
-        ) {
-          return GenerateTableA1.generateTableOfA1ExamsOneTerm(form);
-        } else return [];
-      } else if (
-        form.value.typeOfExam === ExamTypes.A2_KEY ||
-        form.value.typeOfExam === ExamTypes.B1_PRELIMINARY
-      ) {
-        if (
-          form.value.listeningA2B1Array.length === 3 ||
-          form.value.readingA2B1Array.length === 3 ||
-          form.value.writingA2B1Array.length === 3 ||
-          form.value.speakingA2B1Array.length === 3
-        ) {
-          return GenerateTableA2B1.generateTableOfA2B1ExamsThreeTerms(form);
-        } else if (
-          form.value.listeningA2B1Array.length === 2 ||
-          form.value.readingA2B1Array.length === 2 ||
-          form.value.writingA2B1Array.length === 2 ||
-          form.value.speakingA2B1Array.length === 2
-        ) {
-          return GenerateTableA2B1.generateTableOfA2B1ExamsTwoTerms(form);
-        } else if (
-          form.value.listeningA2B1Array.length === 1 ||
-          form.value.readingA2B1Array.length === 1 ||
-          form.value.writingA2B1Array.length === 1 ||
-          form.value.speakingA2B1Array.length === 1
-        ) {
-          return GenerateTableA2B1.generateTableOfA2B1ExamsOneTerm(form);
-        } else return [];
-      } else if (
-        form.value.typeOfExam === ExamTypes.B2_FIRST ||
-        form.value.typeOfExam === ExamTypes.C1_ADVANCED
-      ) {
-        if (
-          form.value.listeningB2C1Array.length === 3 ||
-          form.value.readingB2C1Array.length === 3 ||
-          form.value.useOfEnglishB2C1Array.length === 3 ||
-          form.value.writingB2C1Array.length === 3 ||
-          form.value.speakingB2C1Array.length === 3
-        ) {
-          return GenerateTableB2C1.generateTableOfB2C1ExamsThreeTerms(form);
-        } else if (
-          form.value.listeningB2C1Array.length === 2 ||
-          form.value.readingB2C1Array.length === 2 ||
-          form.value.useOfEnglishB2C1Array.length === 2 ||
-          form.value.writingB2C1Array.length === 2 ||
-          form.value.speakingB2C1Array.length === 2
-        ) {
-          return GenerateTableB2C1.generateTableOfB2C1ExamsTwoTerms(form);
-        } else if (
-          form.value.listeningB2C1Array.length === 1 ||
-          form.value.readingB2C1Array.length === 1 ||
-          form.value.useOfEnglishB2C1Array.length === 1 ||
-          form.value.writingB2C1Array.length === 1 ||
-          form.value.speakingB2C1Array.length === 1
-        ) {
-          return GenerateTableB2C1.generateTableOfB2C1ExamsOneTerm(form);
-        } else return [];
+        const maxTerms = getMaxTerms(
+          v.listeningA1Array,
+          v.writingAndReadingA1Array,
+          v.speakingA1Array
+        );
+
+        if (maxTerms === 0) return [];
+
+        return GenerateTableA1.generateTable(form, maxTerms);
       }
+
+      if (
+        v.typeOfExam === ExamTypes.A2_KEY ||
+        v.typeOfExam === ExamTypes.B1_PRELIMINARY
+      ) {
+        const maxTerms = getMaxTerms(
+          v.listeningA2B1Array,
+          v.readingA2B1Array,
+          v.writingA2B1Array,
+          v.speakingA2B1Array
+        );
+
+        if (maxTerms === 0) return [];
+
+        return GenerateTableA2B1.generateTable(form, maxTerms);
+      }
+
+      if (
+        v.typeOfExam === ExamTypes.B2_FIRST ||
+        v.typeOfExam === ExamTypes.C1_ADVANCED
+      ) {
+        const maxTerms = getMaxTerms(
+          v.listeningB2C1Array,
+          v.readingB2C1Array,
+          v.useOfEnglishB2C1Array,
+          v.writingB2C1Array,
+          v.speakingB2C1Array
+        );
+
+        if (maxTerms === 0) return [];
+
+        return GenerateTableB2C1.generateTable(form, maxTerms);
+      }
+
+      return [];
+    };
+
+    const addSpaceAfterTeacher = (teachers: string[]) => {
+      if (!teachers) return;
+
+      return teachers.join(', ');
     };
 
     let docDefinition: any = {
@@ -254,15 +237,32 @@ export class CambridgeReportComponent implements OnInit {
         {
           text: 'RAPORT Z PRZEPROWADZENIA PRÓBNEGO EGZAMINU CAMBRIDGE',
           style: 'title',
-          alignment: 'center',
+          alignment: 'left',
         },
         {
-          text: [
-            `Imię i Nazwisko ucznia: `,
-            { text: `${form.value.studentName}`, bold: true, fontSize: 13 },
+          columns: [
+            {
+              stack: [
+                {
+                  text: [
+                    `Imię i Nazwisko ucznia: `,
+                    { text: `${form.value.studentName}`, style: 'subtitle' },
+                  ],
+                  margin: [0, 5, 0, 0],
+                  style: 'subheader',
+                },
+              ],
+              width: '*',
+            },
+            {
+              image: this.imageLogo,
+              width: 75,
+              height: 55,
+              alignment: 'right',
+              margin: [0, -20, 0, 0],
+            },
           ],
-          margin: [0, 5, 0, 5],
-          alignment: 'center',
+          columnGap: 10,
         },
         {
           style: 'tableExample',
@@ -273,13 +273,15 @@ export class CambridgeReportComponent implements OnInit {
                 { text: 'Data', style: 'tableHeader' },
                 { text: `${date}` },
                 { text: 'Klasa', style: 'tableHeader' },
-                { text: `${form.value.class}` },
+                { text: `${form.value.class ? form.value.class : undefined}` },
               ],
               [
                 { text: 'Lektor', style: 'tableHeader' },
-                { text: `${form.value.teacher}` },
+                { text: `${addSpaceAfterTeacher(form.value.teachers)}` },
                 { text: 'Kurs', style: 'tableHeader' },
-                { text: `${form.value.course}` },
+                {
+                  text: `${form.value.course ? form.value.course : undefined}`,
+                },
               ],
             ],
           },
@@ -302,18 +304,11 @@ export class CambridgeReportComponent implements OnInit {
           style: 'header',
         },
         chooseTableOfExam(),
-        {
-          text: `${commentsArray.length > 0 ? 'Komentarz' : ''}`,
-          style: 'subheader',
-        },
-        {
-          ul: commentsArray,
-          fontSize: 10,
-        },
+        this.commentAfterExaResults(form),
         {
           text: 'REKOMENDACJA EGZAMINACYJNA',
           style: 'header',
-          margin: [0, 25, 0, 5],
+          margin: [0, 5, 0, 2],
         },
         {
           style: 'tableExample',
@@ -377,27 +372,17 @@ export class CambridgeReportComponent implements OnInit {
         {
           text: 'Dodatkowe informacje egzaminacyjne',
           style: 'header',
-          margin: [0, 10, 0, 5],
+          margin: [0, 5, 0, 5],
         },
         {
           ul: this.additionalExamInformations,
           fontSize: 9,
         },
         {
-          columns: [
-            {
-              text: form.value.signature,
-              margin: [0, 20, 0, 10],
-              fontSize: 10,
-            },
-            {
-              image: this.imageLogo,
-              width: 125,
-              height: 110,
-              alignment: 'right',
-              margin: [0, 20, 0, 0],
-            },
-          ],
+          text: form.value.signature,
+          margin: [0, 10, 0, 0],
+          fontSize: 10,
+          alignment: 'right',
         },
       ],
       styles: {
@@ -406,7 +391,7 @@ export class CambridgeReportComponent implements OnInit {
           bold: true,
         },
         tableExample: {
-          margin: [0, 10, 0, 2],
+          margin: [0, 5, 0, 2],
           fontSize: 10,
         },
         tableExams: {
@@ -414,7 +399,7 @@ export class CambridgeReportComponent implements OnInit {
           fontSize: 10,
         },
         marksTable: {
-          margin: [0, 10, 0, 5],
+          margin: [0, 5, 0, 5],
           fontSize: 10,
         },
         header: {
@@ -447,6 +432,22 @@ export class CambridgeReportComponent implements OnInit {
     pdfMake.createPdf(docDefinition).download(fileName);
   }
 
+  private commentAfterExaResults(form: FormGroup): any {
+    let commentsArray: string[] = [];
+    form.value.comments.forEach((comment: string) =>
+      commentsArray.push(comment)
+    );
+
+    if (form.getRawValue().comments.length > 0) {
+      return {
+        text: `Komentarz: ${commentsArray.join(' ')}`,
+        style: 'defaultStyle',
+      };
+    } else {
+      return {};
+    }
+  }
+
   private createForm(): FormGroup {
     return new FormGroup({
       studentName: new FormControl(null, Validators.required),
@@ -454,7 +455,7 @@ export class CambridgeReportComponent implements OnInit {
       sex: new FormControl(null),
       date: new FormControl(null),
       class: new FormControl(null),
-      teacher: new FormControl(null),
+      teachers: new FormControl(null),
       studentBookTitle: new FormControl(null),
       ownTitleStudentBook: new FormControl(null),
       ownEducationMaterial: new FormControl(false),

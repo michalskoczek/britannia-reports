@@ -1,6 +1,8 @@
 export interface Marks {
   viewValue: string;
   value: string;
+  viewValueFemale?: string;
+  valueFemale?: string;
 }
 
 export const marks: Marks[] = [
@@ -20,162 +22,229 @@ export const marks: Marks[] = [
 
 export const pronunciationMarks: Marks[] = [
   {
-    viewValue: '5 - X ma nienaganną wymowę.',
-    value: 'X ma nienaganną wymowę.',
+    viewValue: 'pronunciationMarkFiveViewValue',
+    viewValueFemale: 'pronunciationMarkFiveViewValue',
+    value:
+      'X posługuje się bardzo dobrą, naturalną wymową. Wyraźnie artykułuje słowa, poprawnie realizuje głoski i akcent, a ewentualne drobne potknięcia nie wpływają na zrozumiałość wypowiedzi.',
+    valueFemale:
+      'X posługuje się bardzo dobrą, naturalną wymową. Wyraźnie artykułuje słowa, poprawnie realizuje głoski i akcent, a ewentualne drobne potknięcia nie wpływają na zrozumiałość wypowiedzi.',
   },
   {
-    viewValue:
-      '4 - X ma bardzo dobrą wymowę, a okazjonalne błędy nie zakłócają komunikacji.',
+    viewValue: 'pronunciationMarkFourViewValue',
+    viewValueFemale: 'pronunciationMarkFourViewValue',
     value:
-      'X ma bardzo dobrą wymowę, a okazjonalne błędy nie zakłócają komunikacji.',
+      'X ma dobrą i wyraźną wymowę. Sporadyczne błędy fonetyczne nie zakłócają komunikacji i nie utrudniają odbioru.',
+    valueFemale:
+      'X ma dobrą i wyraźną wymowę. Sporadyczne błędy fonetyczne nie zakłócają komunikacji i nie utrudniają odbioru.',
   },
   {
-    viewValue:
-      '3 - X ma poprawną wymowę, ale należy popracować nad wymową niektórych głosek.',
+    viewValue: 'pronunciationMarkThreeViewValue',
+    viewValueFemale: 'pronunciationMarkThreeViewValue',
     value:
-      'X ma poprawną wymowę, ale należy popracować nad wymową niektórych głosek.',
+      'X prezentuje wymowę na ogół poprawną. Zdarzają się błędy w trudniejszych głoskach lub intonacji, dlatego wskazana jest dalsza praca nad płynnością i precyzją artykulacji.',
+    valueFemale:
+      'X prezentuje wymowę na ogół poprawną. Zdarzają się błędy w trudniejszych głoskach lub intonacji, dlatego wskazana jest dalsza praca nad płynnością i precyzją artykulacji.',
   },
   {
-    viewValue:
-      '2 - X w większości przypadków wymawia słowa poprawnie, ale błędy czasem mogą zakłócać komunikację. Należy popracować nad wymową niektórych głosek.',
+    viewValue: 'pronunciationMarkTwoViewValue',
+    viewValueFemale: 'pronunciationMarkTwoViewValue',
     value:
-      'X w większości przypadków wymawia słowa poprawnie, ale błędy czasem mogą zakłócać komunikację. Należy popracować nad wymową niektórych głosek.',
+      'X w większości sytuacji wymawia słowa poprawnie, ale z wyraźnym obcym akcentem. Błędy fonetyczne mogą czasami utrudniać zrozumienie, co wymaga systematycznego doskonalenia wymowy.',
+    valueFemale:
+      'X w większości sytuacji wymawia słowa poprawnie, ale z wyraźnym obcym akcentem. Błędy fonetyczne mogą czasami utrudniać zrozumienie, co wymaga systematycznego doskonalenia wymowy.',
   },
 ];
 
 export const vocabularyMarks: Marks[] = [
   {
-    viewValue:
-      '5 - X ma bogaty zasób słownictwa i chętnie używa go w trakcie zajęć.',
-    value: 'X ma bogaty zasób słownictwa i chętnie używa go w trakcie zajęć.',
+    viewValue: 'vocabularyMarkFiveViewValue',
+    viewValueFemale: 'vocabularyMarkFiveViewValueFemale',
+    value:
+      'X dysponuje bardzo bogatym zasobem słownictwa. Swobodnie i trafnie dobiera wyrażenia, a jego wypowiedzi są precyzyjne, zróżnicowane i adekwatne do poziomu.',
+    valueFemale:
+      'X dysponuje bardzo bogatym zasobem słownictwa. Swobodnie i trafnie dobiera wyrażenia, a jej wypowiedzi są precyzyjne, zróżnicowane i adekwatne do poziomu. ',
   },
   {
-    viewValue:
-      '4 - X ma zadowalający zasób słownictwa i chętnie wykorzystuje go w trakcie zajęć.',
+    viewValue: 'vocabularyMarkFourViewValue',
+    viewValueFemale: 'vocabularyMarkFourViewValue',
     value:
-      'X ma zadowalający zasób słownictwa i chętnie wykorzystuje go w trakcie zajęć.',
+      'X ma szeroki i solidny zasób słownictwa. Chętnie wykorzystuje poznane słowa i zwroty w praktyce; drobne braki nie ograniczają komunikacji.',
+    valueFemale:
+      'X ma szeroki i solidny zasób słownictwa. Chętnie wykorzystuje poznane słowa i zwroty w praktyce; drobne braki nie ograniczają komunikacji.',
   },
   {
-    viewValue:
-      '3 - X musi bardziej pracować w domu nad pamięciowym opanowaniem słownictwa, które pojawia się na zajęciach.',
+    viewValue: 'vocabularyMarkThreeViewValue',
+    viewValueFemale: 'vocabularyMarkThreeViewValueFemale',
     value:
-      'X musi bardziej pracować w domu nad pamięciowym opanowaniem słownictwa, które pojawia się na zajęciach.',
+      'X posiada wystarczający zasób słownictwa na danym poziomie. Na ogół radzi sobie w typowych sytuacjach językowych, jednak wskazana jest dalsza praca nad utrwalaniem nowego materiału.',
+    valueFemale:
+      'X posiada wystarczający zasób słownictwa na danym poziomie. Na ogół radzi sobie w typowych sytuacjach językowych, jednak wskazana jest dalsza praca nad utrwalaniem nowego materiału.',
   },
   {
-    viewValue:
-      '2 - X musi dużo bardziej popracować nad opanowaniem słownictwa, które pojawia się na zajęciach. Opanowanie słownictwa to jeden z najistotniejszych punktów w nauce języka obcego, bez którego trudno jest z sukcesem kontynuować naukę.',
+    viewValue: 'vocabularyMarkTwoViewValue',
+    viewValueFemale: 'vocabularyMarkTwoViewValueFemale',
     value:
-      'X musi dużo bardziej popracować nad opanowaniem słownictwa, które pojawia się na zajęciach. Opanowanie słownictwa to jeden z najistotniejszych punktów w nauce języka obcego, bez którego trudno jest z sukcesem kontynuować naukę.',
+      'X ma ograniczony zasób słownictwa. Ma trudności z zastosowaniem poznanych słów i często potrzebuje wsparcia w budowaniu wypowiedzi; konieczne jest systematyczne doskonalenie leksyki.',
+    valueFemale:
+      'X ma ograniczony zasób słownictwa. Ma trudności z zastosowaniem poznanych słów i często potrzebuje wsparcia w budowaniu wypowiedzi; konieczne jest systematyczne doskonalenie leksyki.',
   },
 ];
 
 export const prepareToLectureMarks: Marks[] = [
   {
-    viewValue: '5 - X zawsze w pełni przygotowuje się do zajęć.',
-    value: 'X Zawsze w pełni przygotowuje się do zajęć.',
+    viewValue: 'preparationForClassesMarkFiveViewValue',
+    viewValueFemale: 'preparationForClassesMarkFiveViewValue',
+    value:
+      'X zawsze w pełni przygotowuje się do zajęć. Regularnie odrabia prace domowe, utrwala materiał i aktywnie korzysta z przygotowanych treści.',
+    valueFemale:
+      'X zawsze w pełni przygotowuje się do zajęć. Regularnie odrabia prace domowe, utrwala materiał i aktywnie korzysta z przygotowanych treści.',
   },
   {
-    viewValue: '4 - X zwykle dobrze przygotowuje się do zajęć.',
-    value: 'X Zwykle dobrze przygotowuje się do zajęć.',
+    viewValue: 'preparationForClassesMarkFourViewValue',
+    viewValueFemale: 'preparationForClassesMarkFourViewValueFemale',
+    value:
+      'X zwykle dobrze przygotowuje się do zajęć. Systematycznie pracuje z materiałem, a ewentualne sporadyczne braki nie wpływają na postępy.',
+    valueFemale:
+      'X zwykle dobrze przygotowuje się do zajęć. Systematycznie pracuje z materiałem, a ewentualne sporadyczne braki nie wpływają na postępy.',
   },
   {
-    viewValue: '3 - X dość często nie przygotowuje się w pełni do zajęć.',
-    value: 'X Dość często nie przygotowuje się w pełni do zajęć.',
+    viewValue: 'preparationForClassesMarkThreeViewValue',
+    viewValueFemale: 'preparationForClassesMarkThreeViewValueFemale',
+    value:
+      'X wystarczająco przygotowuje się do zajęć, ale dość często nie utrwala materiału w pełnym zakresie, dlatego wskazana jest większa regularność w pracy własnej.',
+    valueFemale:
+      'X wystarczająco przygotowuje się do zajęć, ale dość często nie utrwala materiału w pełnym zakresie, dlatego wskazana jest większa regularność w pracy własnej.',
   },
   {
-    viewValue: '2 - X rzadko przygotowuje się do zajęć.',
-    value: 'X Rzadko przygotowuje się do zajęć.',
+    viewValue: 'preparationForClassesMarkTwoViewValue',
+    viewValueFemale: 'preparationForClassesMarkTwoViewValue',
+    value:
+      'X rzadko przygotowuje się do zajęć. Nieregularnie odrabia prace domowe i często przychodzi na lekcje bez znajomości przerabianego materiału.',
+    valueFemale:
+      'X rzadko przygotowuje się do zajęć. Nieregularnie odrabia prace domowe i często przychodzi na lekcje bez znajomości przerabianego materiału.',
   },
 ];
 
 export const homeworksMarks: Marks[] = [
   {
-    viewValue: '5 - X zawsze odrabia zadaną pracę domową.',
-    value: 'X zawsze odrabia zadaną pracę domową.',
+    viewValue: 'homeworkMarkFiveViewValue',
+    viewValueFemale: 'homeworkMarkFiveViewValueFemale',
+    value:
+      'X zawsze odrabia zadaną pracę domową. Wykonuje ją starannie i terminowo, co wyraźnie wspiera systematyczne postępy w nauce.',
+    valueFemale:
+      'X zawsze odrabia zadaną pracę domową. Wykonuje ją starannie i terminowo, co wyraźnie wspiera systematyczne postępy w nauce.',
   },
   {
-    viewValue: '4 - X od czasu do czasu nie odrabia zadanej pracy domowej.',
-    value: 'X od czasu do czasu nie odrabia zadanej pracy domowej.',
+    viewValue: 'homeworkMarkFourViewValue',
+    viewValueFemale: 'homeworkMarkFourViewValueFemale',
+    value:
+      'X zwykle odrabia pracę domową. Zdarzają się sporadyczne braki lub drobne opóźnienia, jednak na ogół wywiązuje się z powierzonych zadań.',
+    valueFemale:
+      'X zwykle odrabia pracę domową. Zdarzają się sporadyczne braki lub drobne opóźnienia, jednak na ogół wywiązuje się z powierzonych zadań.',
   },
   {
-    viewValue: '3 - X często nie odrabia zadanej pracy domowej.',
-    value: 'X często nie odrabia zadanej pracy domowej.',
+    viewValue: 'homeworkMarkThreeViewValue',
+    viewValueFemale: 'homeworkMarkThreeViewValue',
+    value:
+      'X odrabia pracę domową nieregularnie. Często nie wykonuje jej w pełnym zakresie, dlatego wskazana jest większa konsekwencja w pracy własnej.',
+    valueFemale:
+      'X odrabia pracę domową nieregularnie. Często nie wykonuje jej w pełnym zakresie, dlatego wskazana jest większa konsekwencja w pracy własnej.',
   },
   {
-    viewValue: '2 - X najczęściej nie ma pracy domowej.',
-    value: 'X najczęściej nie ma pracy domowej.',
+    viewValue: 'homeworkMarkTwoViewValue',
+    viewValueFemale: 'homeworkMarkTwoViewValue',
+    value:
+      'X rzadko odrabia zadaną pracę domową. Brak przygotowania utrudnia utrwalanie materiału i ogranicza możliwość pełnego korzystania z zajęć.',
+    valueFemale:
+      'X rzadko odrabia zadaną pracę domową. Brak przygotowania utrudnia utrwalanie materiału i ogranicza możliwość pełnego korzystania z zajęć.',
   },
 ];
 
 export const involvementMarks: Marks[] = [
   {
-    viewValue:
-      '5 - X z dużym zaangażowaniem bierze udział w zajęciach. Chętnie odpowiada na zadawane pytania i samodzielnie zgłasza się do odpowiedzi. Z motywacją bierze udział we wszystkich proponowanych aktywnościach.',
+    viewValue: 'engagementMarkFiveViewValue',
+    viewValueFemale: 'engagementMarkFiveViewValue',
     value:
-      'X z dużym zaangażowaniem bierze udział w zajęciach. Chętnie odpowiada na zadawane pytania i samodzielnie zgłasza się do odpowiedzi. Z motywacją bierze udział we wszystkich proponowanych aktywnościach.',
+      'X wykazuje bardzo duże zaangażowanie w trakcie zajęć. Chętnie odpowiada na pytania, samodzielnie zgłasza się do wypowiedzi i z wysoką motywacją bierze udział we wszystkich proponowanych aktywnościach. ',
+    valueFemale:
+      'X wykazuje bardzo duże zaangażowanie w trakcie zajęć. Chętnie odpowiada na pytania, samodzielnie zgłasza się do wypowiedzi i z wysoką motywacją bierze udział we wszystkich proponowanych aktywnościach. ',
   },
   {
-    viewValue:
-      '4 - X chętnie bierze udział w zajęciach, ale samodzielne odpowiedzi wymagają zachęty ze strony lektora.  Z motywacją bierze udział w większości proponowanych aktywności.',
+    viewValue: 'engagementMarkFourViewValue',
+    viewValueFemale: 'engagementMarkFourViewValueFemale',
     value:
-      'X chętnie bierze udział w zajęciach, ale samodzielne odpowiedzi wymagają zachęty ze strony lektora.  Z motywacją bierze udział w większości proponowanych aktywności.',
+      'X jest wyraźnie zaangażowany w przebieg lekcji. Aktywnie uczestniczy w zajęciach, choć jego samodzielne wypowiedzi czasami wymagają zachęty ze strony nauczyciela. Z motywacją bierze udział w większości aktywności.',
+    valueFemale:
+      'X jest wyraźnie zaangażowana w przebieg lekcji. Aktywnie uczestniczy w zajęciach, choć jej samodzielne wypowiedzi czasami wymagają zachęty ze strony nauczyciela. Z motywacją bierze udział w większości aktywności.',
   },
   {
-    viewValue:
-      '3 - X zwykle angażuje się w przebieg zajęć. Prawie zawsze potrzebuje zachęty nauczyciela, by samodzielnie odpowiedzieć na pytania, rzadko robi to z własnej inicjatywy.',
+    viewValue: 'engagementMarkThreeViewValue',
+    viewValueFemale: 'engagementMarkThreeViewValueFemale',
     value:
-      'X zwykle angażuje się w przebieg zajęć. Prawie zawsze potrzebuje zachęty nauczyciela, by samodzielnie odpowiedzieć na pytania, rzadko robi to z własnej inicjatywy.',
+      'X angażuje się na wystarczającym poziomie. Zwykle uczestniczy w lekcji i odpowiada na pytania, jednak rzadko robi to z własnej inicjatywy.',
+    valueFemale:
+      'X angażuje się na wystarczającym poziomie. Zwykle uczestniczy w lekcji i odpowiada na pytania, jednak rzadko robi to z własnej inicjatywy.',
   },
   {
-    viewValue:
-      '2 - X podchodzi dość do zajęć dość obojętnie. Nie wykazuje inicjatywy, odpowiada na pytania w zasadzie tylko po wskazaniu przez lektora.',
+    viewValue: 'engagementMarkTwoViewValue',
+    viewValueFemale: 'engagementMarkTwoViewValue',
     value:
-      'X podchodzi dość do zajęć dość obojętnie. Nie wykazuje inicjatywy, odpowiada na pytania w zasadzie tylko po wskazaniu przez lektora.',
+      'X podchodzi do zajęć dość obojętnie. Nie wykazuje inicjatywy i wypowiada się głównie po bezpośrednim wskazaniu przez lektora; konieczna jest praca nad motywacją do aktywniejszego udziału. ',
+    valueFemale:
+      'X podchodzi do zajęć dość obojętnie. Nie wykazuje inicjatywy i wypowiada się głównie po bezpośrednim wskazaniu przez lektora; konieczna jest praca nad motywacją do aktywniejszego udziału. ',
   },
 ];
 
 export const behaviourMarks: Marks[] = [
   {
-    viewValue:
-      '5 - X na zajęciach zachowuje się wzorowo i nie sprawia żadnych problemów, które mogłyby zaburzać ich przebieg.',
+    viewValue: 'behaviourInClassMarkFiveViewValue',
+    viewValueFemale: 'behaviourInClassMarkFiveViewValueFemale',
     value:
-      'X Na zajęciach zachowuje się wzorowo i nie sprawia żadnych problemów, które mogłyby zaburzać ich przebieg.',
+      'X zachowuje się na zajęciach wzorowo. Odnosi się z szacunkiem do nauczyciela i innych uczniów, uważnie słucha poleceń oraz aktywnie współpracuje w grupie.',
+    valueFemale:
+      'X zachowuje się na zajęciach wzorowo. Odnosi się z szacunkiem do nauczyciela i innych uczniów, uważnie słucha poleceń oraz aktywnie współpracuje w grupie.',
   },
   {
-    viewValue:
-      '4 - X na zajęciach zachowuje się bardzo dobrze. Odnosi się z szacunkiem do innych uczniów i uważnie słucha lektora.',
+    viewValue: 'behaviourInClassMarkFourViewValue',
+    viewValueFemale: 'behaviourInClassMarkFourViewValueFemale',
     value:
-      'X Na zajęciach zachowuje się bardzo dobrze. Odnosi się z szacunkiem do innych uczniów i uważnie słucha lektora.',
+      'X zachowuje się bardzo dobrze. Przestrzega zasad obowiązujących w klasie i nie sprawia problemów wychowawczych; jego postawa sprzyja spokojnemu przebiegowi lekcji.',
+    valueFemale:
+      'X zachowuje się bardzo dobrze. Przestrzega zasad obowiązujących w klasie i nie sprawia problemów wychowawczych; jej postawa sprzyja spokojnemu przebiegowi lekcji.',
   },
   {
-    viewValue:
-      '3 - X na zajęciach zachowuje się w większości dobrze. Okazjonalnie zdarza się, że zachowuje się głośno lub nie słucha poleceń nauczyciela, jednak nie są to zachowania, które budziłyby większy niepokój.',
+    viewValue: 'behaviourInClassMarkThreeViewValue',
+    viewValueFemale: 'behaviourInClassMarkThreeViewValue',
     value:
-      'X Na zajęciach zachowuje się w większości dobrze. Okazjonalnie zdarza się, że zachowuje się głośno lub nie słucha poleceń nauczyciela, jednak nie są to zachowania, które budziłyby większy niepokój.',
+      'X zachowuje się na ogół poprawne. Sporadyczny brak koncentracji nie zakłóca w istotny sposób pracy na zajęciach.',
+    valueFemale:
+      'X zachowuje się na ogół poprawne. Sporadyczny brak koncentracji nie zakłóca w istotny sposób pracy na zajęciach.',
   },
   {
-    viewValue:
-      '2 - X na zajęciach zachowuje się zwykle nieodpowiednio. Nie reaguje na uwagi nauczyciela i rozprasza innych uczniów.',
+    viewValue: 'behaviourInClassMarkTwoViewValue',
+    viewValueFemale: 'behaviourInClassMarkTwoViewValue',
     value:
-      'X Na zajęciach zachowuje się zwykle nieodpowiednio. Nie reaguje na uwagi nauczyciela i rozprasza innych uczniów.',
+      'X miewa trudności z odpowiednim zachowaniem. Czasami nie reaguje na uwagi nauczyciela lub rozprasza innych, dlatego wskazana jest praca nad postawą na lekcji.',
+    valueFemale:
+      'X miewa trudności z odpowiednim zachowaniem. Czasami nie reaguje na uwagi nauczyciela lub rozprasza innych, dlatego wskazana jest praca nad postawą na lekcji.',
   },
 ];
 
 export const frequencyMarks: Marks[] = [
   {
-    viewValue: '5 - bardzo dobra',
+    viewValue: 'attendanceMarkFiveViewValue',
     value: 'Bardzo dobra',
   },
   {
-    viewValue: '4 - dobra',
+    viewValue: 'attendanceMarkFourViewValue',
     value: 'Dobra',
   },
   {
-    viewValue: '3 - dostateczna',
+    viewValue: 'attendanceMarkThreeViewValue',
     value: 'Dostateczna',
   },
   {
-    viewValue: '2 - dopuszczająca',
+    viewValue: 'attendanceMarkTwoViewValue',
     value: 'Dopuszczająca',
   },
 ];
