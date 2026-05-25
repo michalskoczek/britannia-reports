@@ -1,0 +1,106 @@
+@use "../../../../../assets/styles/utils/index" as ds;
+@use "../../../../../assets/styles/mixins" as mixins;
+
+.tab-group-wrapper {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  gap: ds.$distance-8;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2),
+    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+
+  .tab {
+    @include mixins.default-button;
+    flex-grow: 1;
+    padding: ds.$distance-16 0;
+    text-align: center;
+    color: ds.$britannia-blue;
+    font: 600 16px/1 ds.$font;
+
+    @media (max-width: 768px) {
+      width: 100%;
+    }
+
+    &:hover:not(.active) {
+      span {
+        color: ds.$britannia-blue;
+      }
+    }
+
+    &.active {
+      span {
+        color: ds.$white;
+      }
+    }
+  }
+}
+
+.tab-group-wrapper:has(.tab:nth-child(1)) {
+  --count: 1;
+}
+.tab-group-wrapper:has(.tab:nth-child(2)) {
+  --count: 2;
+}
+.tab-group-wrapper:has(.tab:nth-child(3)) {
+  --count: 3;
+}
+.tab-group-wrapper:has(.tab:nth-child(4)) {
+  --count: 4;
+}
+
+.tab-group-wrapper::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: scale(0.94, 0.8);
+  --width: calc((100% / var(--count)));
+  width: var(--width);
+  margin-left: calc(var(--active) * var(--width));
+  transition: margin-left 300ms;
+  background-color: ds.$britannia-blue;
+  z-index: -1;
+  border-radius: 20px;
+}
+
+.tab-group-wrapper:has(.tab:nth-child(1).active) {
+  --active: 0;
+}
+
+.tab-group-wrapper:has(.tab:nth-child(2).active) {
+  --active: 1;
+}
+
+.tab-group-wrapper:has(.tab:nth-child(3).active) {
+  --active: 2;
+}
+
+.tab-group-wrapper:has(.tab:nth-child(4).active) {
+  --active: 3;
+}
+
+@include ds.breakpoint-max-tablet() {
+  .tab-group-wrapper {
+    flex-direction: column;
+  }
+
+  .tab-group-wrapper::after {
+    @media (max-width: 768px) {
+      --height: calc(
+        (100% - (var(--count) - 1) * #{ds.$distance-8}) / var(--count)
+      );
+      --gap: #{ds.$distance-8};
+      width: 100%;
+      height: var(--height);
+      margin-left: 0;
+      top: calc(var(--active) * var(--height) + var(--active) * var(--gap));
+      margin-top: 0;
+      transition: top 300ms;
+    }
+  }
+}

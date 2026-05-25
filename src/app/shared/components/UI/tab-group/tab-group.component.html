@@ -1,0 +1,12 @@
+<div class="tab-group-wrapper">
+  @for (tab of tabs; track tab.id) {
+  <button
+    class="tab"
+    [id]="tab.id"
+    [ngClass]="{ active: tab.isActive }"
+    (click)="onClick(tab)"
+  >
+    <span>{{ tab.name | translate }}</span>
+  </button>
+  }
+</div>

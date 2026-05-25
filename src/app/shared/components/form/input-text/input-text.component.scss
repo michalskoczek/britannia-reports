@@ -1,0 +1,11 @@
+.cs-label {
+  font-size: 16px;
+}
+
+.cs-input {
+  background-color: rgb(244.8, 244.8, 244.8);
+
+  &:focus {
+    background-color: white;
+  }
+}

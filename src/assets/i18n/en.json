@@ -176,5 +176,10 @@
   "wayInLevel": "Towards the level",
   "certificationPurpose": "Certification purpose",
   "schoolPurpose": "School purpose",
+
+  "error.fieldIsRequired": "The field is required",
+  "typeValue": "Type value...",
+  "selectValue": "Select value...",
+  "date": "Date",
   "recommendationToCambridgeExam": "Based on the December diagnostic assessment, we provide a preliminary recommendation for taking the Cambridge exam at the end of the school year."
 }

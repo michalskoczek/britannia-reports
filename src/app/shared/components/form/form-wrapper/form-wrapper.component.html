@@ -1,0 +1,8 @@
+<app-section-title [sectionTitle]="sectionTitle"></app-section-title>
+<div class="wrapper">
+  <div class="wrapper-form">
+    <form [formGroup]="formG" (ngSubmit)="onSubmit(formG)">
+      <ng-content></ng-content>
+    </form>
+  </div>
+</div>

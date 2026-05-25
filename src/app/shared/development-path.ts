@@ -1,3 +1,5 @@
+import { SelectList } from './forms/template/model/select-list';
+
 export const classesInSchool: string[] = [
   'Klasa 2 SP',
   'Klasa 3 SP',
@@ -101,6 +103,23 @@ export const coursesTE: string[] = [
   'English Diamonds',
 ];
 
-export const ageTE: string[] = ['4 lata', '5 lat', '6 lat', 'Klasa 1 SP'];
+export const ageTE: SelectList<string>[] = [
+  {
+    label: '4 lata',
+    value: '4 lata',
+  },
+  {
+    label: '5 lat',
+    value: '5 lat',
+  },
+  {
+    label: '6 lat',
+    value: '6 lat',
+  },
+  {
+    label: 'Klasa 1 SP',
+    value: 'Klasa 1 SP',
+  },
+];
 
 export const courseLevelTE: string[] = ['Standard', 'Abc', 'Superhero'];

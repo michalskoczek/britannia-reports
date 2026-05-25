@@ -176,5 +176,10 @@
   "wayInLevel": "W kierunku poziomu",
   "certificationPurpose": "Cel certyfikacyjny",
   "schoolPurpose": "Cel szkolny",
-  "recommendationToCambridgeExam": "Na podstawie grudniowej sesji egzaminacyjno-diagnostycznej wystawiamy wstępną rekomendację do podejścia do egzaminu Cambridge na koniec roku szkolnego."
+  "recommendationToCambridgeExam": "Na podstawie grudniowej sesji egzaminacyjno-diagnostycznej wystawiamy wstępną rekomendację do podejścia do egzaminu Cambridge na koniec roku szkolnego.",
+
+  "error.fieldIsRequired": "Pole jest wymagane",
+  "typeValue": "Wpisz wartość...",
+  "selectValue": "Wybierz wartość...",
+  "date": "Data"
 }

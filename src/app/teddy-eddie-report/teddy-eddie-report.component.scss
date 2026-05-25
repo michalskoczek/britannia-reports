@@ -1,8 +1,8 @@
-@use "../../assets/styles/variables" as *;
+@use "../../assets/styles/utils/index" as *;
 @use "../../assets/styles/mixins" as *;
 
-.subtitle {
-  font: 600 22px/1 $font;
+.container {
+  max-width: 1400px;
 }
 
 .generate-btn {

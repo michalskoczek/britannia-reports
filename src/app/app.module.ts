@@ -5,10 +5,17 @@ import { AppComponent } from './app.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RatingScaleModule } from './rating-scale/rating-scale.module';
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import {
+  HttpClient,
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import {
+  MAT_FORM_FIELD_DEFAULT_OPTIONS,
+  MatFormFieldModule,
+} from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MAT_DATE_LOCALE, MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
@@ -26,51 +33,75 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { CambridgeReportComponent } from './cambridge-report/cambridge-report.component';
-import { TeddyEddieReportComponent } from './teddy-eddie-report/teddy-eddie-report.component';
+import { ButtonComponent } from './shared/components/button/button.component';
+import { TabGroupComponent } from './shared/components/UI/tab-group/tab-group.component';
+import { HeaderComponent } from './shared/components/header/header.component';
+import { SectionTitleComponent } from './shared/components/UI/section-title/section-title.component';
+import { FormWrapperComponent } from './shared/components/form/form-wrapper/form-wrapper.component';
+import { TeddyEddieFormComponent } from './teddy-eddie-report/teddy-eddie-form/teddy-eddie-form.component';
+import { NgOptimizedImage } from '@angular/common';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
 }
 
-@NgModule({ declarations: [
-        AppComponent,
-        YearReportComponent,
-        SemestrReportComponent,
-        CambridgeReportComponent,
-        TeddyEddieReportComponent,
-    ],
-    bootstrap: [AppComponent], imports: [BrowserModule,
-        BrowserAnimationsModule,
-        TranslateModule.forRoot({
-            loader: {
-                provide: TranslateLoader,
-                useFactory: HttpLoaderFactory,
-                deps: [HttpClient],
-            },
-        }),
-        ReactiveFormsModule,
-        RatingScaleModule,
-        MatButtonModule,
-        MatDatepickerModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatOptionModule,
-        MatSelectModule,
-        MatMomentDateModule,
-        MatInputModule,
-        MatSelectModule,
-        MatTableModule,
-        SpecialMarksModule,
-        MatExpansionModule,
-        MatCheckboxModule,
-        MatIconModule,
-        MatTabsModule,
-        MatRadioModule,
-        MatProgressSpinnerModule,
-        MatFormFieldModule,
-        MatCheckboxModule], providers: [
-        { provide: LOCALE_ID, useValue: 'pl-PL' },
-        { provide: MAT_DATE_LOCALE, useValue: 'pl-PL' },
-        provideHttpClient(withInterceptorsFromDi()),
-    ] })
+@NgModule({
+  declarations: [
+    AppComponent,
+    YearReportComponent,
+    SemestrReportComponent,
+    CambridgeReportComponent,
+  ],
+  bootstrap: [AppComponent],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient],
+      },
+    }),
+    ReactiveFormsModule,
+    RatingScaleModule,
+    MatButtonModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatOptionModule,
+    MatSelectModule,
+    MatMomentDateModule,
+    MatInputModule,
+    MatSelectModule,
+    MatTableModule,
+    SpecialMarksModule,
+    MatExpansionModule,
+    MatCheckboxModule,
+    MatIconModule,
+    MatTabsModule,
+    MatRadioModule,
+    MatProgressSpinnerModule,
+    MatFormFieldModule,
+    MatCheckboxModule,
+    ButtonComponent,
+    TabGroupComponent,
+    HeaderComponent,
+    SectionTitleComponent,
+    FormWrapperComponent,
+    TeddyEddieFormComponent,
+    TeddyEddieFormComponent,
+    NgOptimizedImage,
+    FormWrapperComponent,
+  ],
+  providers: [
+    { provide: LOCALE_ID, useValue: 'pl-PL' },
+    { provide: MAT_DATE_LOCALE, useValue: 'pl-PL' },
+    provideHttpClient(withInterceptorsFromDi()),
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: { floatLabel: 'always' },
+    },
+  ],
+})
 export class AppModule {}

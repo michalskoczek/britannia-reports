@@ -1,0 +1,12 @@
+<button
+  mat-raised-button
+  class="button"
+  [type]="type()"
+  (click)="emitClicked()"
+>
+  @if (icon()) {
+  <mat-icon class="material-symbols-outlined">{{ icon() }}</mat-icon>
+  }
+
+  {{ translateKey() | translate }}
+</button>
