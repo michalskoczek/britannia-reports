@@ -21,7 +21,7 @@ import { ExamTypes } from '../shared/enum/exam-type.enum';
 import {MatError, MatFormField, MatHint, MatInput, MatLabel} from '@angular/material/input';
 import {TranslateModule} from '@ngx-translate/core';
 import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
-import {NgForOf, NgIf} from '@angular/common';
+
 import {MatOption, MatSelect} from '@angular/material/select';
 import {
   MatAccordion,
@@ -50,7 +50,6 @@ standalone: true,
     MatDatepickerToggle,
     MatInput,
     MatDatepicker,
-    NgIf,
     MatSelect,
     MatOption,
     MatAccordion,
@@ -59,9 +58,8 @@ standalone: true,
     MatExpansionPanelTitle,
     MatRadioGroup,
     MatRadioButton,
-    MatButton,
-    NgForOf,
-  ],
+    MatButton
+],
 })
 export class CambridgeReportComponent implements OnInit {
   private cd = inject(ChangeDetectorRef);

@@ -26,7 +26,7 @@ import { TeddyEddieFormComponent } from './teddy-eddie-form/teddy-eddie-form.com
 import { TranslateModule } from '@ngx-translate/core';
 import { ButtonComponent } from '../shared/components/button/button.component';
 import {SectionTitleComponent} from '../shared/components/UI/section-title/section-title.component';
-import {NgForOf, NgIf} from '@angular/common';
+
 import {MatOption, MatSelect} from '@angular/material/select';
 import {SelectList} from '../shared/forms/template/model/select-list';
 
@@ -57,11 +57,9 @@ export const MY_FORMATS = {
     ButtonComponent,
     SectionTitleComponent,
     ReactiveFormsModule,
-    NgForOf,
     MatSelect,
-    MatOption,
-    NgIf,
-  ],
+    MatOption
+],
 })
 export class TeddyEddieReportComponent implements OnInit {
   public form: FormGroup;

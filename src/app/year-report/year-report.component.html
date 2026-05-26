@@ -28,22 +28,25 @@
       <mat-form-field class="col-6 my-1">
         <mat-label>{{ "Klasa" | translate }}</mat-label>
         <mat-select name="class" formControlName="class">
-          <mat-option
-            *ngFor="let classValue of classes"
-            [value]="classValue"
-            (click)="setClasses(classValue)"
-          >
-            {{ classValue }}
-          </mat-option>
+          @for (classValue of classes; track classValue) {
+            <mat-option
+              [value]="classValue"
+              (click)="setClasses(classValue)"
+              >
+              {{ classValue }}
+            </mat-option>
+          }
         </mat-select>
       </mat-form-field>
 
       <mat-form-field class="col-6 my-1">
         <mat-label>{{ "teacher" | translate }}</mat-label>
         <mat-select name="teacher" formControlName="teachers" multiple>
-          <mat-option *ngFor="let teacher of teachers" [value]="teacher">
-            {{ teacher }}
-          </mat-option>
+          @for (teacher of teachers; track teacher) {
+            <mat-option [value]="teacher">
+              {{ teacher }}
+            </mat-option>
+          }
         </mat-select>
       </mat-form-field>
     </div>
@@ -64,19 +67,25 @@
         </mat-radio-button>
       </mat-radio-group>
 
-      <mat-form-field class="col-6 my-1" *ngIf="isCheckedBook">
-        <mat-label>{{ "Tytuł podręcznika" | translate }}</mat-label>
-        <mat-select name="class" formControlName="studentBookTitle">
-          <mat-option *ngFor="let book of books" [value]="book">
-            {{ book }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+      @if (isCheckedBook) {
+        <mat-form-field class="col-6 my-1">
+          <mat-label>{{ "Tytuł podręcznika" | translate }}</mat-label>
+          <mat-select name="class" formControlName="studentBookTitle">
+            @for (book of books; track book) {
+              <mat-option [value]="book">
+                {{ book }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      }
 
-      <mat-form-field class="col-6 my-1" *ngIf="isCheckedOwnTitle">
-        <mat-label>{{ "Tytuł i wydawnictwo" | translate }}</mat-label>
-        <input matInput type="text" formControlName="ownTitleStudentBook" />
-      </mat-form-field>
+      @if (isCheckedOwnTitle) {
+        <mat-form-field class="col-6 my-1">
+          <mat-label>{{ "Tytuł i wydawnictwo" | translate }}</mat-label>
+          <input matInput type="text" formControlName="ownTitleStudentBook" />
+        </mat-form-field>
+      }
     </div>
 
     <div class="row">
@@ -89,9 +98,11 @@
       <mat-form-field class="col-12 my-1">
         <mat-label>{{ "Kurs" | translate }}</mat-label>
         <mat-select name="course" formControlName="course">
-          <mat-option *ngFor="let course of courses" [value]="course">
-            {{ course }}
-          </mat-option>
+          @for (course of courses; track course) {
+            <mat-option [value]="course">
+              {{ course }}
+            </mat-option>
+          }
         </mat-select>
       </mat-form-field>
     </div>
@@ -104,343 +115,331 @@
         <div class="w-100">
           <mat-checkbox formControlName="allMaterialCompleted"
             >Pierwsza połowa materiału</mat-checkbox
-          >
-          <mat-checkbox formControlName="halfMaterialCompleted"
-            >Cały materiał</mat-checkbox
-          >
-        </div>
-      </div>
-    </div>
-
-    <div class="row form-field">
-      <mat-form-field class="col-12 my-1">
-        <mat-label>Zrealizowany materiał - własny tekst</mat-label>
-        <textarea
-          matInput
-          type="text"
-          formControlName="realizedMaterial"
-          placeholder="wpisz np: Units 1-9"
-        ></textarea>
-      </mat-form-field>
-    </div>
-
-    <div class="row mt-2">
-      <div class="col-12 mb-4">
-        <h2 class="subtitle">{{ "Oceny" | translate }}</h2>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-2">
-        <table mat-table [dataSource]="dataSource" class="mat-elevation-z3">
-          <ng-container matColumnDef="percent">
-            <th mat-header-cell *matHeaderCellDef>
-              {{ "Procent" | translate }}
-            </th>
-            <td mat-cell *matCellDef="let element">{{ element.percent }}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="mark">
-            <th mat-header-cell *matHeaderCellDef>{{ "Ocena" | translate }}</th>
-            <td mat-cell *matCellDef="let element">{{ element.mark }}</td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-        </table>
-      </div>
-
-      <div class="col-10">
-        <!--        Tabelka ze szczegółami (najnowsza) - start -->
-
-        <div class="table-wrapper">
-          <div class="table-row">
-            <div class="title"><p>Temat</p></div>
-
-            <div class="select-wrapper">Do wyboru</div>
-
-            <div class="checkbox-wrapper">Usuń linijkę</div>
-          </div>
-
-          <div class="table-row">
-            <div class="title">
-              <p>Ocena końcoworoczna</p>
+            >
+            <mat-checkbox formControlName="halfMaterialCompleted"
+              >Cały materiał</mat-checkbox
+              >
             </div>
-
-            <div class="select-wrapper">
-              <mat-select formControlName="eofEvaluation">
-                <ng-container *ngFor="let mark of markEvaluations">
-                  <mat-option [value]="mark">
-                    {{ mark }}
-                  </mat-option>
-                </ng-container>
-              </mat-select>
-            </div>
-
-            <div class="checkbox-wrapper"></div>
-          </div>
-
-          <div class="table-row">
-            <div class="title">
-              <p>Frekwencja</p>
-            </div>
-
-            <div class="select-wrapper">
-              <input type="text" formControlName="frequency" />
-            </div>
-
-            <div class="checkbox-wrapper">
-              <input type="checkbox" formControlName="frequencyDelete" />
-            </div>
-          </div>
-
-          <div class="table-row">
-            <div class="title">
-              <p>Cel certyfikacyjny na bieżący rok szkolny</p>
-            </div>
-
-            <div class="select-wrapper">
-              <mat-select formControlName="certificationPurposeOnThisYear">
-                <ng-container
-                  *ngFor="
-                    let certificationPurpose of certificationPurposeOnThisYear
-                  "
-                >
-                  <mat-option [value]="certificationPurpose">
-                    {{ certificationPurpose }}
-                  </mat-option>
-                </ng-container>
-              </mat-select>
-            </div>
-
-            <div class="checkbox-wrapper">
-              <input
-                type="checkbox"
-                formControlName="certificationPurposeOnThisYearDelete"
-              />
-            </div>
-          </div>
-
-          <div class="table-row">
-            <div class="title">
-              <p>Egzamin Cambridge rekomendowany po bieżącym roku szkolnym</p>
-            </div>
-
-            <div class="select-wrapper">
-              <mat-select formControlName="examRecommendationInTable">
-                <ng-container
-                  *ngFor="let recommendation of examsRecommendations"
-                >
-                  <mat-option [value]="recommendation">
-                    {{ recommendation }}
-                  </mat-option>
-                </ng-container>
-              </mat-select>
-            </div>
-
-            <div class="checkbox-wrapper">
-              <input
-                type="checkbox"
-                formControlName="examRecommendationInTableDelete"
-              />
-            </div>
-          </div>
-
-          <div class="table-row">
-            <div class="title">
-              <p>
-                Decyzja Rodzica o podchodzeniu przez ucznia do oficjalnego
-                egzaminu Cambridge
-              </p>
-            </div>
-
-            <div class="select-wrapper">
-              <mat-select formControlName="parentDecision">
-                <ng-container *ngFor="let decision of parentDecisionValues">
-                  <mat-option [value]="decision">
-                    {{ decision }}
-                  </mat-option>
-                </ng-container>
-              </mat-select>
-            </div>
-
-            <div class="checkbox-wrapper">
-              <input type="checkbox" formControlName="parentDecisionDelete" />
-            </div>
-          </div>
-
-          <div class="table-row">
-            <div class="title">
-              <p>Tryb nauki* rekomendowany na przyszły rok szkolny</p>
-            </div>
-
-            <div class="select-wrapper">
-              <mat-select formControlName="recommendationInNextYear">
-                <ng-container
-                  *ngFor="
-                    let recommendationInNextYear of recommendationsInNextYear
-                  "
-                >
-                  <mat-option [value]="recommendationInNextYear">
-                    {{ recommendationInNextYear }}
-                  </mat-option>
-                </ng-container>
-              </mat-select>
-            </div>
-
-            <div class="checkbox-wrapper"></div>
           </div>
         </div>
-        <!--        Tabelka ze szczegółami (najnowsza) - koniec -->
 
-        <!--        Nowa tabelka - start -->
+        <div class="row form-field">
+          <mat-form-field class="col-12 my-1">
+            <mat-label>Zrealizowany materiał - własny tekst</mat-label>
+            <textarea
+              matInput
+              type="text"
+              formControlName="realizedMaterial"
+              placeholder="wpisz np: Units 1-9"
+            ></textarea>
+          </mat-form-field>
+        </div>
 
-        <p class="w-100 px-2 mt-4">Prognozowana ścieżka rozwoju językowego</p>
+        <div class="row mt-2">
+          <div class="col-12 mb-4">
+            <h2 class="subtitle">{{ "Oceny" | translate }}</h2>
+          </div>
+        </div>
 
-        <ng-container *ngIf="form.getRawValue()['class'] !== null">
-          <div class="row-wrapper">
-            <p>Rok szkolny</p>
-            <p>Klasa ucznia w szkole</p>
-            <p>W kierunku poziomu</p>
-            <p>Cel certyfikacyjny</p>
-            <p>Egzamin szkolny</p>
-            <p>Bez tej linijki?</p>
+        <div class="row">
+          <div class="col-2">
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-z3">
+              <ng-container matColumnDef="percent">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ "Procent" | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element">{{ element.percent }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="mark">
+                <th mat-header-cell *matHeaderCellDef>{{ "Ocena" | translate }}</th>
+                <td mat-cell *matCellDef="let element">{{ element.mark }}</td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
           </div>
 
-          <div
-            *ngFor="
-              let skill of developmentLanguageSkillsArray.controls;
-              let i = index
-            "
-            class="row-wrapper"
-          >
-            <div formArrayName="developmentLanguageSkillsArray">
-              <div class="row-group" [formGroupName]="i">
-                <div>
-                  <input type="text" formControlName="schoolYear" />
+          <div class="col-10">
+            <!--        Tabelka ze szczegółami (najnowsza) - start -->
+
+            <div class="table-wrapper">
+              <div class="table-row">
+                <div class="title"><p>Temat</p></div>
+
+                <div class="select-wrapper">Do wyboru</div>
+
+                <div class="checkbox-wrapper">Usuń linijkę</div>
+              </div>
+
+              <div class="table-row">
+                <div class="title">
+                  <p>Ocena końcoworoczna</p>
                 </div>
 
-                <div>
-                  <input type="text" formControlName="classInSchool" />
-                </div>
-
-                <div>
-                  <mat-select formControlName="courseLevel">
-                    <ng-container *ngFor="let level of languageLevels">
-                      <mat-option [value]="level">
-                        {{ level }}
+                <div class="select-wrapper">
+                  <mat-select formControlName="eofEvaluation">
+                    @for (mark of markEvaluations; track mark) {
+                      <mat-option [value]="mark">
+                        {{ mark }}
                       </mat-option>
-                    </ng-container>
+                    }
                   </mat-select>
                 </div>
 
-                <div>
-                  <mat-select formControlName="certificationPurpose">
-                    <ng-container
-                      *ngFor="let certification of certificationPurpose"
-                    >
-                      <mat-option [value]="certification">
-                        {{ certification }}
+                <div class="checkbox-wrapper"></div>
+              </div>
+
+              <div class="table-row">
+                <div class="title">
+                  <p>Frekwencja</p>
+                </div>
+
+                <div class="select-wrapper">
+                  <input type="text" formControlName="frequency" />
+                </div>
+
+                <div class="checkbox-wrapper">
+                  <input type="checkbox" formControlName="frequencyDelete" />
+                </div>
+              </div>
+
+              <div class="table-row">
+                <div class="title">
+                  <p>Cel certyfikacyjny na bieżący rok szkolny</p>
+                </div>
+
+                <div class="select-wrapper">
+                  <mat-select formControlName="certificationPurposeOnThisYear">
+                    @for (
+                      certificationPurpose of certificationPurposeOnThisYear
+                      ; track
+                      certificationPurpose) {
+                      <mat-option [value]="certificationPurpose">
+                        {{ certificationPurpose }}
                       </mat-option>
-                    </ng-container>
+                    }
                   </mat-select>
                 </div>
 
-                <div>
-                  <mat-select formControlName="schoolExam">
-                    <ng-container *ngFor="let exam of schoolExam">
-                      <mat-option [value]="exam">
-                        {{ exam }}
+                <div class="checkbox-wrapper">
+                  <input
+                    type="checkbox"
+                    formControlName="certificationPurposeOnThisYearDelete"
+                    />
+                </div>
+              </div>
+
+              <div class="table-row">
+                <div class="title">
+                  <p>Egzamin Cambridge rekomendowany po bieżącym roku szkolnym</p>
+                </div>
+
+                <div class="select-wrapper">
+                  <mat-select formControlName="examRecommendationInTable">
+                    @for (recommendation of examsRecommendations; track recommendation) {
+                      <mat-option [value]="recommendation">
+                        {{ recommendation }}
                       </mat-option>
-                    </ng-container>
+                    }
                   </mat-select>
                 </div>
 
-                <div>
-                  <input type="checkbox" formControlName="shouldDeleteRow" />
+                <div class="checkbox-wrapper">
+                  <input
+                    type="checkbox"
+                    formControlName="examRecommendationInTableDelete"
+                    />
                 </div>
+              </div>
+
+              <div class="table-row">
+                <div class="title">
+                  <p>
+                    Decyzja Rodzica o podchodzeniu przez ucznia do oficjalnego
+                    egzaminu Cambridge
+                  </p>
+                </div>
+
+                <div class="select-wrapper">
+                  <mat-select formControlName="parentDecision">
+                    @for (decision of parentDecisionValues; track decision) {
+                      <mat-option [value]="decision">
+                        {{ decision }}
+                      </mat-option>
+                    }
+                  </mat-select>
+                </div>
+
+                <div class="checkbox-wrapper">
+                  <input type="checkbox" formControlName="parentDecisionDelete" />
+                </div>
+              </div>
+
+              <div class="table-row">
+                <div class="title">
+                  <p>Tryb nauki* rekomendowany na przyszły rok szkolny</p>
+                </div>
+
+                <div class="select-wrapper">
+                  <mat-select formControlName="recommendationInNextYear">
+                    @for (
+                      recommendationInNextYear of recommendationsInNextYear
+                      ; track
+                      recommendationInNextYear) {
+                      <mat-option [value]="recommendationInNextYear">
+                        {{ recommendationInNextYear }}
+                      </mat-option>
+                    }
+                  </mat-select>
+                </div>
+
+                <div class="checkbox-wrapper"></div>
+              </div>
+            </div>
+            <!--        Tabelka ze szczegółami (najnowsza) - koniec -->
+
+            <!--        Nowa tabelka - start -->
+
+            <p class="w-100 px-2 mt-4">Prognozowana ścieżka rozwoju językowego</p>
+
+            @if (form.getRawValue()['class'] !== null) {
+              <div class="row-wrapper">
+                <p>Rok szkolny</p>
+                <p>Klasa ucznia w szkole</p>
+                <p>W kierunku poziomu</p>
+                <p>Cel certyfikacyjny</p>
+                <p>Egzamin szkolny</p>
+                <p>Bez tej linijki?</p>
+              </div>
+              @for (
+                skill of developmentLanguageSkillsArray.controls; track
+                skill; let i = $index) {
+                <div
+                  class="row-wrapper"
+                  >
+                  <div formArrayName="developmentLanguageSkillsArray">
+                    <div class="row-group" [formGroupName]="i">
+                      <div>
+                        <input type="text" formControlName="schoolYear" />
+                      </div>
+                      <div>
+                        <input type="text" formControlName="classInSchool" />
+                      </div>
+                      <div>
+                        <mat-select formControlName="courseLevel">
+                          @for (level of languageLevels; track level) {
+                            <mat-option [value]="level">
+                              {{ level }}
+                            </mat-option>
+                          }
+                        </mat-select>
+                      </div>
+                      <div>
+                        <mat-select formControlName="certificationPurpose">
+                          @for (certification of certificationPurpose; track certification) {
+                            <mat-option [value]="certification">
+                              {{ certification }}
+                            </mat-option>
+                          }
+                        </mat-select>
+                      </div>
+                      <div>
+                        <mat-select formControlName="schoolExam">
+                          @for (exam of schoolExam; track exam) {
+                            <mat-option [value]="exam">
+                              {{ exam }}
+                            </mat-option>
+                          }
+                        </mat-select>
+                      </div>
+                      <div>
+                        <input type="checkbox" formControlName="shouldDeleteRow" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+            }
+
+            <!--        Nowa tabelka - koniec -->
+          </div>
+
+          <div class="col-12">
+            <small>{{ "* Ocena celująca" | translate }}</small>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <div class="row mt-4">
+              <div class="col-12">
+                <mat-accordion class="example-headers-align" multi>
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>*Tryb nauki</mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <p>{{ "learningMode.firstParagraph" | translate }}</p>
+                    <p>{{ "learningMode.secondParagraph" | translate }}</p>
+                    <ol>
+                      <li>
+                        <p>{{ "learningMode.list.firstElement" | translate }}</p>
+                      </li>
+                      <li>
+                        <p>{{ "learningMode.list.secondElement" | translate }}</p>
+                      </li>
+                      <li>
+                        <p>{{ "learningMode.list.thirdElement" | translate }}</p>
+                      </li>
+                    </ol>
+                  </mat-expansion-panel>
+                </mat-accordion>
               </div>
             </div>
           </div>
-        </ng-container>
+        </div>
 
-        <!--        Nowa tabelka - koniec -->
-      </div>
-
-      <div class="col-12">
-        <small>{{ "* Ocena celująca" | translate }}</small>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-12">
         <div class="row mt-4">
-          <div class="col-12">
-            <mat-accordion class="example-headers-align" multi>
-              <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                  <mat-panel-title>*Tryb nauki</mat-panel-title>
-                </mat-expansion-panel-header>
-                <p>{{ "learningMode.firstParagraph" | translate }}</p>
-                <p>{{ "learningMode.secondParagraph" | translate }}</p>
-                <ol>
-                  <li>
-                    <p>{{ "learningMode.list.firstElement" | translate }}</p>
-                  </li>
-                  <li>
-                    <p>{{ "learningMode.list.secondElement" | translate }}</p>
-                  </li>
-                  <li>
-                    <p>{{ "learningMode.list.thirdElement" | translate }}</p>
-                  </li>
-                </ol>
-              </mat-expansion-panel>
-            </mat-accordion>
+          <div class="col-12 mb-4">
+            <h2 class="subtitle">Dodatkowy komentarz</h2>
           </div>
         </div>
-      </div>
-    </div>
 
-    <div class="row mt-4">
-      <div class="col-12 mb-4">
-        <h2 class="subtitle">Dodatkowy komentarz</h2>
-      </div>
-    </div>
+        <div class="row">
+          <div class="col-12">
+            <mat-form-field class="w-100 px-2">
+              <mat-label>Dodatkowy komentarz</mat-label>
+              <textarea matInput formControlName="additionalComment"></textarea>
+            </mat-form-field>
+          </div>
+        </div>
 
-    <div class="row">
-      <div class="col-12">
-        <mat-form-field class="w-100 px-2">
-          <mat-label>Dodatkowy komentarz</mat-label>
-          <textarea matInput formControlName="additionalComment"></textarea>
-        </mat-form-field>
-      </div>
-    </div>
+        <div class="row mt-2">
+          <div class="col-12 mb-4">
+            <h2 class="subtitle">{{ "Podpis" | translate }}</h2>
+          </div>
+        </div>
 
-    <div class="row mt-2">
-      <div class="col-12 mb-4">
-        <h2 class="subtitle">{{ "Podpis" | translate }}</h2>
-      </div>
-    </div>
+        <div class="row">
+          <div class="col-12">
+            <mat-form-field class="w-100 px-2">
+              <mat-label>{{ "Podpis" | translate }}</mat-label>
+              <textarea
+                class="signature-textarea"
+                matInput
+                formControlName="signature"
+              ></textarea>
+            </mat-form-field>
+          </div>
+        </div>
 
-    <div class="row">
-      <div class="col-12">
-        <mat-form-field class="w-100 px-2">
-          <mat-label>{{ "Podpis" | translate }}</mat-label>
-          <textarea
-            class="signature-textarea"
-            matInput
-            formControlName="signature"
-          ></textarea>
-        </mat-form-field>
-      </div>
+        <div class="row generate-btn">
+          <div class="col-12 d-flex justify-content-end">
+            <button mat-raised-button color="primary" type="submit">
+              {{ "downloadPDF" | translate }}
+            </button>
+          </div>
+        </div>
+      </form>
     </div>
-
-    <div class="row generate-btn">
-      <div class="col-12 d-flex justify-content-end">
-        <button mat-raised-button color="primary" type="submit">
-          {{ "downloadPDF" | translate }}
-        </button>
-      </div>
-    </div>
-  </form>
-</div>

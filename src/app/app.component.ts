@@ -3,7 +3,7 @@ import { Tab } from './model/tab.interface';
 import { TabData } from './shared/static-data/tab-data';
 import {HeaderComponent} from './shared/components/header/header.component';
 import {TabGroupComponent} from './shared/components/UI/tab-group/tab-group.component';
-import {NgComponentOutlet, NgIf} from '@angular/common';
+import { NgComponentOutlet } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -13,9 +13,8 @@ standalone: true,
   imports: [
     HeaderComponent,
     TabGroupComponent,
-    NgIf,
-    NgComponentOutlet,
-  ],
+    NgComponentOutlet
+],
 })
 export class AppComponent {
   public activeTab: Tab | undefined = TabData.tabs.find(

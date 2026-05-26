@@ -34,7 +34,7 @@ import { ReportType } from '../shared/enum/report-type.enum';
 import { Sex } from '../shared/enum/sex.enum';
 import {MatError, MatFormField, MatHint, MatInput, MatLabel} from '@angular/material/input';
 import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
-import {NgForOf, NgIf} from '@angular/common';
+
 import {MatOption, MatSelect} from '@angular/material/select';
 import {
   MatAccordion,
@@ -73,7 +73,6 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
     MatDatepickerToggle,
     MatInput,
     MatDatepicker,
-    NgIf,
     MatSelect,
     MatOption,
     MatAccordion,
@@ -83,7 +82,6 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
     MatRadioGroup,
     MatRadioButton,
     MatButton,
-    NgForOf,
     MatTable,
     MatColumnDef,
     MatCell,
@@ -94,8 +92,8 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
     MatHeaderCellDef,
     MatCellDef,
     MatHeaderRowDef,
-    MatRowDef,
-  ],
+    MatRowDef
+],
 })
 export class SemestrReportComponent implements OnInit {
   constructor(private translate: TranslateService) {

@@ -26,7 +26,7 @@ import {
 import {MatFormField, MatHint, MatInput, MatLabel} from '@angular/material/input';
 import {TranslateModule} from '@ngx-translate/core';
 import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
-import {NgForOf, NgIf} from '@angular/common';
+
 import {MatOption, MatSelect} from '@angular/material/select';
 import {
   MatAccordion,
@@ -64,7 +64,6 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
     MatDatepickerToggle,
     MatInput,
     MatDatepicker,
-    NgIf,
     MatSelect,
     MatOption,
     MatAccordion,
@@ -74,7 +73,6 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
     MatRadioGroup,
     MatRadioButton,
     MatButton,
-    NgForOf,
     MatTable,
     MatColumnDef,
     MatCell,
@@ -85,8 +83,8 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
     MatHeaderCellDef,
     MatCellDef,
     MatHeaderRowDef,
-    MatRowDef,
-  ]
+    MatRowDef
+]
 })
 export class YearReportComponent implements OnInit {
   title = 'britannia-reports';
