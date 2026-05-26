@@ -8,6 +8,6 @@ import { SectionTitleComponent } from '../../../../components/UI/section-title/s
   templateUrl: './form-wrapper-template.component.html',
   styleUrl: './form-wrapper-template.component.scss',
 })
-export class FormWrapperComponent {
+export class FormWrapperTemplateComponent {
   sectionTitle: InputSignal<string> = input<string>('SET SECTION TITLE');
 }
