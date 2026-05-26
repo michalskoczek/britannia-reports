@@ -7,11 +7,12 @@ import { NgClass } from '@angular/common';
 @Component({
   selector: 'app-tab-group',
   imports: [TranslateModule, NgClass],
+  standalone: true,
   templateUrl: './tab-group.component.html',
   styleUrl: './tab-group.component.scss',
 })
 export class TabGroupComponent implements OnInit {
-  @Output() clickTabEvent: EventEmitter<Tab> = new EventEmitter();
+  @Output() clickTabEvent = new EventEmitter<Tab>();
 
   protected readonly tabs: Tab[] = TabData.tabs;
 

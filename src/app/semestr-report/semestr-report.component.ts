@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import {FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 // @ts-ignore
 import pdfMake from 'pdfmake/build/pdfmake';
 // @ts-ignore
@@ -29,9 +29,31 @@ import {
   learningRecommendations,
 } from '../shared/exams';
 import { image } from '../shared/images-base64';
-import { TranslateService } from '@ngx-translate/core';
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
 import { ReportType } from '../shared/enum/report-type.enum';
 import { Sex } from '../shared/enum/sex.enum';
+import {MatError, MatFormField, MatHint, MatInput, MatLabel} from '@angular/material/input';
+import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
+import {NgForOf, NgIf} from '@angular/common';
+import {MatOption, MatSelect} from '@angular/material/select';
+import {
+  MatAccordion,
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+  MatExpansionPanelTitle,
+} from '@angular/material/expansion';
+import {MatRadioButton, MatRadioGroup} from '@angular/material/radio';
+import {MatButton} from '@angular/material/button';
+import {
+  MatCell, MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow, MatHeaderRowDef,
+  MatRow, MatRowDef,
+  MatTable,
+} from '@angular/material/table';
+import {MatCheckbox} from '@angular/material/checkbox';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -39,13 +61,47 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
   selector: 'app-semestr-report',
   templateUrl: './semestr-report.component.html',
   styleUrls: ['./semestr-report.component.scss'],
-  standalone: false,
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    TranslateModule,
+    MatError,
+    MatDatepickerInput,
+    MatHint,
+    MatDatepickerToggle,
+    MatInput,
+    MatDatepicker,
+    NgIf,
+    MatSelect,
+    MatOption,
+    MatAccordion,
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
+    MatExpansionPanelTitle,
+    MatRadioGroup,
+    MatRadioButton,
+    MatButton,
+    NgForOf,
+    MatTable,
+    MatColumnDef,
+    MatCell,
+    MatHeaderCell,
+    MatHeaderRow,
+    MatRow,
+    MatCheckbox,
+    MatHeaderCellDef,
+    MatCellDef,
+    MatHeaderRowDef,
+    MatRowDef,
+  ],
 })
 export class SemestrReportComponent implements OnInit {
   constructor(private translate: TranslateService) {
     this.translate.setDefaultLang('pl');
   }
-  title: string = 'britannia-reports';
+  title = 'britannia-reports';
 
   public form!: FormGroup;
 
@@ -68,12 +124,12 @@ export class SemestrReportComponent implements OnInit {
   public readonly behaviourMarks: Marks[] = behaviourMarks;
   public readonly frequencyMarks: Marks[] = frequencyMarks;
 
-  public isCheckedBook: boolean = false;
-  public isCheckedOwnTitle: boolean = false;
+  public isCheckedBook = false;
+  public isCheckedOwnTitle = false;
 
   public learningRecommendations: string[] = learningRecommendations;
 
-  public isChecked: boolean = false;
+  public isChecked = false;
 
   private readonly imageLogo: string = image;
   private readonly semesterText: string = 'semestralny';
@@ -190,14 +246,14 @@ export class SemestrReportComponent implements OnInit {
   }
 
   public generatePDF(form: FormGroup): any {
-    let date: string = new Date(form.value.date).toLocaleDateString();
+    const date: string = new Date(form.value.date).toLocaleDateString();
 
-    let commentsArray: string[] = [];
+    const commentsArray: string[] = [];
     form.value.comments.forEach((comment: string) =>
       commentsArray.push(comment)
     );
 
-    let recommendationsArray: string[] = [];
+    const recommendationsArray: string[] = [];
     form.value.recommendations.forEach((comment: string) =>
       recommendationsArray.push(comment)
     );
@@ -229,13 +285,13 @@ export class SemestrReportComponent implements OnInit {
       selectedValue: string,
       marks: Marks[]
     ): string | undefined => {
-      let markObj: Marks | undefined = marks.find(
+      const markObj: Marks | undefined = marks.find(
         (mark: Marks): boolean => mark.value === selectedValue
       );
       return markObj?.viewValue[0];
     };
 
-    let docDefinition = {
+    const docDefinition = {
       content: [
         {
           text: 'PODSUMOWANIE NAUKI I REKOMENDACJE',

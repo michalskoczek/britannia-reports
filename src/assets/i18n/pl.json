@@ -181,5 +181,6 @@
   "error.fieldIsRequired": "Pole jest wymagane",
   "typeValue": "Wpisz wartość...",
   "selectValue": "Wybierz wartość...",
-  "date": "Data"
+  "date": "Data",
+  "cambridge": "Raport Cambridge"
 }

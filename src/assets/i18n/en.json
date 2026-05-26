@@ -181,5 +181,6 @@
   "typeValue": "Type value...",
   "selectValue": "Select value...",
   "date": "Date",
-  "recommendationToCambridgeExam": "Based on the December diagnostic assessment, we provide a preliminary recommendation for taking the Cambridge exam at the end of the school year."
+  "recommendationToCambridgeExam": "Based on the December diagnostic assessment, we provide a preliminary recommendation for taking the Cambridge exam at the end of the school year.",
+  "cambridge": "Raport Cambridge"
 }

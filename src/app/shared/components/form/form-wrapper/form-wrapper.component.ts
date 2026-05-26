@@ -9,10 +9,10 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
   styleUrl: './form-wrapper.component.scss',
 })
 export class FormWrapperComponent {
-  @Input() sectionTitle: string = 'SET SECTION TITLE';
+  @Input() sectionTitle = 'SET SECTION TITLE';
   @Input() formG: FormGroup;
 
-  @Output() submitEmitter: EventEmitter<FormGroup> = new EventEmitter();
+  @Output() submitEmitter = new EventEmitter<FormGroup>();
 
   onSubmit(formGroup: FormGroup): void {
     this.submitEmitter.emit(formGroup);

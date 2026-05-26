@@ -12,7 +12,7 @@ import { MatSlideToggle } from '@angular/material/slide-toggle';
 export class HeaderComponent implements OnInit {
   private translateService: TranslateService = inject(TranslateService);
 
-  public defaultLanguage: boolean = true;
+  public defaultLanguage = true;
 
   protected readonly title: string = 'Britannia Reports';
 

@@ -1,10 +1,7 @@
 import { Component, forwardRef, Input } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import {
-  AbstractControl,
   ControlValueAccessor,
-  FormControlName,
-  FormGroup,
   NG_VALUE_ACCESSOR,
   ReactiveFormsModule,
 } from '@angular/forms';
@@ -23,11 +20,11 @@ import {
   ],
 })
 export class InputTextComponent implements ControlValueAccessor {
-  @Input({ required: true }) labelName: string = 'SET LABEL NAME';
-  @Input() placeholder: string = '';
+  @Input({ required: true }) labelName = 'SET LABEL NAME';
+  @Input() placeholder = '';
 
   value: string;
-  disabled: boolean = false;
+  disabled = false;
   onChange = (_: any) => {};
   onTouched = () => {};
 

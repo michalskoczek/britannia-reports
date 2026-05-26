@@ -7,6 +7,7 @@
 
 <app-select
   [(model)]="form.age"
+  (modelChange)="onAgeChange($event)"
   [label]="'age'"
   [required]="true"
   [itemList]="ageTE"

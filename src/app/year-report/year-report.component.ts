@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import {FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 // @ts-ignore
 import pdfMake from 'pdfmake/build/pdfmake';
 // @ts-ignore
@@ -23,6 +23,29 @@ import {
   parentDecisionValues,
   recommendationsInNextYear,
 } from '../shared/year-report/year-report-static-data';
+import {MatFormField, MatHint, MatInput, MatLabel} from '@angular/material/input';
+import {TranslateModule} from '@ngx-translate/core';
+import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
+import {NgForOf, NgIf} from '@angular/common';
+import {MatOption, MatSelect} from '@angular/material/select';
+import {
+  MatAccordion,
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+  MatExpansionPanelTitle,
+} from '@angular/material/expansion';
+import {MatRadioButton, MatRadioGroup} from '@angular/material/radio';
+import {MatButton} from '@angular/material/button';
+import {
+  MatCell, MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow, MatHeaderRowDef,
+  MatRow, MatRowDef,
+  MatTable,
+} from '@angular/material/table';
+import {MatCheckbox} from '@angular/material/checkbox';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -30,10 +53,43 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
   selector: 'app-year-report',
   templateUrl: './year-report.component.html',
   styleUrls: ['./year-report.component.scss'],
-  standalone: false,
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    TranslateModule,
+    MatDatepickerInput,
+    MatHint,
+    MatDatepickerToggle,
+    MatInput,
+    MatDatepicker,
+    NgIf,
+    MatSelect,
+    MatOption,
+    MatAccordion,
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
+    MatExpansionPanelTitle,
+    MatRadioGroup,
+    MatRadioButton,
+    MatButton,
+    NgForOf,
+    MatTable,
+    MatColumnDef,
+    MatCell,
+    MatHeaderCell,
+    MatHeaderRow,
+    MatRow,
+    MatCheckbox,
+    MatHeaderCellDef,
+    MatCellDef,
+    MatHeaderRowDef,
+    MatRowDef,
+  ]
 })
 export class YearReportComponent implements OnInit {
-  title: string = 'britannia-reports';
+  title = 'britannia-reports';
 
   public form!: FormGroup;
 
@@ -59,10 +115,10 @@ export class YearReportComponent implements OnInit {
 
   public readonly examsRecommendations: string[] = examsRecommendationsInTable;
 
-  public isCheckedBook: boolean = false;
-  public isCheckedOwnTitle: boolean = false;
+  public isCheckedBook = false;
+  public isCheckedOwnTitle = false;
 
-  public indexClass: number = 0;
+  public indexClass = 0;
 
   private readonly banerLogo: string = baner;
 
@@ -71,13 +127,13 @@ export class YearReportComponent implements OnInit {
   }
 
   public initClassesFromFirstSelectedClass(classValue: string): void {
-    let newClasses: string[] = this.classes.slice(0, -1);
+    const newClasses: string[] = this.classes.slice(0, -1);
 
     this.indexClass = newClasses.findIndex((r: string) => {
       return r === classValue;
     });
 
-    let shortClassesInSchool: string[] = this.classesInSchool.slice(
+    const shortClassesInSchool: string[] = this.classesInSchool.slice(
       this.indexClass,
       this.classesInSchool.length
     );
@@ -92,7 +148,7 @@ export class YearReportComponent implements OnInit {
       this.form.get('developmentLanguageSkillsArray') as FormArray
     );
 
-    for (let i: number = 0; i < shortClassesInSchool.length; i++) {
+    for (let i = 0; i < shortClassesInSchool.length; i++) {
       (this.form.get('developmentLanguageSkillsArray') as FormArray).push(
         new FormGroup({
           schoolYear: new FormControl({
@@ -132,7 +188,7 @@ export class YearReportComponent implements OnInit {
   }
 
   public setClasses(classValue: string): void {
-    let newClasses: string[] = this.classes.slice(0, -1);
+    const newClasses: string[] = this.classes.slice(0, -1);
 
     this.indexClass = newClasses.findIndex((r: string) => {
       return r === this.form.getRawValue()['class'];
@@ -226,7 +282,7 @@ export class YearReportComponent implements OnInit {
   }
 
   public generatePDF(form: FormGroup): any {
-    let date: string = new Date(form.value.date).toLocaleDateString();
+    const date: string = new Date(form.value.date).toLocaleDateString();
 
     const addSpaceAfterTeacher = (teachers: string[]) => {
       if (!teachers) return;
@@ -234,7 +290,7 @@ export class YearReportComponent implements OnInit {
       return teachers.join(', ');
     };
 
-    let docDefinition = {
+    const docDefinition = {
       content: [
         {
           image: this.banerLogo,
@@ -412,9 +468,9 @@ export class YearReportComponent implements OnInit {
   }
 
   private generateRowsInDevelopmentLanguageSkillsTable(form: FormGroup): any {
-    let formValue = form.getRawValue();
+    const formValue = form.getRawValue();
 
-    let arraySkills: DevelopmentPathInSchool[] = [];
+    const arraySkills: DevelopmentPathInSchool[] = [];
 
     formValue.developmentLanguageSkillsArray.forEach(
       (row: DevelopmentPathInSchool) => {
@@ -424,7 +480,7 @@ export class YearReportComponent implements OnInit {
       }
     );
 
-    let arrayWithObjects: any[] = [];
+    const arrayWithObjects: any[] = [];
 
     arrayWithObjects.push([
       {
@@ -454,7 +510,7 @@ export class YearReportComponent implements OnInit {
       },
     ]);
 
-    for (let i: number = 0; i < arraySkills.length; i++) {
+    for (let i = 0; i < arraySkills.length; i++) {
       arrayWithObjects.push([
         {
           text: arraySkills[i].schoolYear,
@@ -497,9 +553,9 @@ export class YearReportComponent implements OnInit {
   }
 
   private getBodyInSkills(form: FormGroup) {
-    let formValue = form.getRawValue();
+    const formValue = form.getRawValue();
 
-    let arrDetails: any[] = [];
+    const arrDetails: any[] = [];
     arrDetails.push([
       {
         text: 'Ocena końcoworoczna',

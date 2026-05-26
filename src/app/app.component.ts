@@ -1,12 +1,21 @@
 import { Component } from '@angular/core';
 import { Tab } from './model/tab.interface';
 import { TabData } from './shared/static-data/tab-data';
+import {HeaderComponent} from './shared/components/header/header.component';
+import {TabGroupComponent} from './shared/components/UI/tab-group/tab-group.component';
+import {NgComponentOutlet, NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  standalone: false,
+standalone: true,
+  imports: [
+    HeaderComponent,
+    TabGroupComponent,
+    NgIf,
+    NgComponentOutlet,
+  ],
 })
 export class AppComponent {
   public activeTab: Tab | undefined = TabData.tabs.find(

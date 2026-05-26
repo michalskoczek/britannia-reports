@@ -1,14 +1,10 @@
 import {
-  ChangeDetectionStrategy,
   Component,
   EventEmitter,
   input,
   Input,
   InputSignal,
   Output,
-  output,
-  signal,
-  WritableSignal,
 } from '@angular/core';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -31,7 +27,7 @@ import { TranslateModule } from '@ngx-translate/core';
 export class InputComponent {
   @Input() model: any;
 
-  @Output() modelChange: EventEmitter<any> = new EventEmitter();
+  @Output() modelChange = new EventEmitter<any>();
 
   type: InputSignal<string> = input<string>('text');
   placeholder: InputSignal<string> = input<string>('typeValue');

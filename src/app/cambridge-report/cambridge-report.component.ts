@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import {FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 // @ts-ignore
 import pdfMake from 'pdfmake/build/pdfmake';
 // @ts-ignore
@@ -18,6 +18,19 @@ import { GenerateTableA1 } from '../helper/cambridge/static-function/generate-ta
 import { GenerateTableA2B1 } from '../helper/cambridge/static-function/generate-table-A2-B1';
 import { GenerateTableB2C1 } from '../helper/cambridge/static-function/generate-table-B2-C1';
 import { ExamTypes } from '../shared/enum/exam-type.enum';
+import {MatError, MatFormField, MatHint, MatInput, MatLabel} from '@angular/material/input';
+import {TranslateModule} from '@ngx-translate/core';
+import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
+import {NgForOf, NgIf} from '@angular/common';
+import {MatOption, MatSelect} from '@angular/material/select';
+import {
+  MatAccordion,
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+  MatExpansionPanelTitle,
+} from '@angular/material/expansion';
+import {MatRadioButton, MatRadioGroup} from '@angular/material/radio';
+import {MatButton} from '@angular/material/button';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -25,11 +38,34 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
   selector: 'app-cambridge-report',
   templateUrl: './cambridge-report.component.html',
   styleUrls: ['./cambridge-report.component.scss'],
-  standalone: false,
+standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    TranslateModule,
+    MatError,
+    MatDatepickerInput,
+    MatHint,
+    MatDatepickerToggle,
+    MatInput,
+    MatDatepicker,
+    NgIf,
+    MatSelect,
+    MatOption,
+    MatAccordion,
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
+    MatExpansionPanelTitle,
+    MatRadioGroup,
+    MatRadioButton,
+    MatButton,
+    NgForOf,
+  ],
 })
 export class CambridgeReportComponent implements OnInit {
   private cd = inject(ChangeDetectorRef);
-  title: string = 'britannia-reports';
+  title = 'britannia-reports';
 
   public form!: FormGroup;
 
@@ -40,11 +76,11 @@ export class CambridgeReportComponent implements OnInit {
 
   public readonly resultOfExam: string[] = resultOfExam;
   public readonly examsSelect: string[] = examsSelect;
-  public selectedTypeOfExam: string = '';
+  public selectedTypeOfExam = '';
 
   public readonly examsRecommendations: string[] = examsRecommendations;
 
-  public isChecked: boolean = false;
+  public isChecked = false;
 
   public learningRecommendations: string[] = learningRecommendations;
 
@@ -151,19 +187,19 @@ export class CambridgeReportComponent implements OnInit {
   }
 
   public onRemoveExamTerm(index: number, nameOfArray: string): void {
-    const control = <FormArray>this.form.controls[nameOfArray];
+    const control = this.form.controls[nameOfArray] as FormArray;
     control.removeAt(index);
   }
 
   public generatePDF(form: FormGroup): any {
-    let date: string = new Date(form.value.date).toLocaleDateString();
+    const date: string = new Date(form.value.date).toLocaleDateString();
 
-    let commentsArray: string[] = [];
+    const commentsArray: string[] = [];
     form.value.comments.forEach((comment: string) =>
       commentsArray.push(comment)
     );
 
-    let recommendationsArray: string[] = [];
+    const recommendationsArray: string[] = [];
     form.value.recommendations.forEach((comment: string) =>
       recommendationsArray.push(comment)
     );
@@ -232,7 +268,7 @@ export class CambridgeReportComponent implements OnInit {
       return teachers.join(', ');
     };
 
-    let docDefinition: any = {
+    const docDefinition: any = {
       content: [
         {
           text: 'RAPORT Z PRZEPROWADZENIA PRÓBNEGO EGZAMINU CAMBRIDGE',
@@ -433,7 +469,7 @@ export class CambridgeReportComponent implements OnInit {
   }
 
   private commentAfterExaResults(form: FormGroup): any {
-    let commentsArray: string[] = [];
+    const commentsArray: string[] = [];
     form.value.comments.forEach((comment: string) =>
       commentsArray.push(comment)
     );

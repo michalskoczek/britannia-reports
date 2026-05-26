@@ -8,28 +8,28 @@ export class TabData {
   static tabs: Tab[] = [
     {
       id: 'semester-report',
-      name: 'tab.semesterReport',
+      name: 'semesterReport',
       defaultActive: false,
       isActive: false,
       component: SemestrReportComponent,
     },
     {
       id: 'end-of-year-report',
-      name: 'tab.endOfYearReport',
+      name: 'endOfYearReport',
       defaultActive: false,
       isActive: false,
       component: YearReportComponent,
     },
     {
       id: 'cambridge',
-      name: 'tab.cambridge',
+      name: 'cambridge',
       defaultActive: false,
       isActive: false,
       component: CambridgeReportComponent,
     },
     {
       id: 'teddy-eddie-report',
-      name: 'tab.teddyEddieReport',
+      name: 'teddyEddieReport',
       defaultActive: true,
       isActive: false,
       component: TeddyEddieReportComponent,
