@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {FormArray, FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 // @ts-ignore
 import pdfMake from 'pdfmake/build/pdfmake';
 // @ts-ignore
@@ -21,14 +21,14 @@ import { DevelopmentPathInSchool } from '../model/development-path-in-school';
 import { DevelopmentPathTeddyEddie } from '../model/development-path-teddy-eddie';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
 import { TeddyEddieReport } from './model/teddy-eddie-report.interface';
-import { FormWrapperComponent } from '../shared/forms/template/layout/form-wrapper-template/form-wrapper-template.component';
+import { FormWrapperTemplateComponent } from '../shared/forms/template/layout/form-wrapper-template/form-wrapper-template.component';
 import { TeddyEddieFormComponent } from './teddy-eddie-form/teddy-eddie-form.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { ButtonComponent } from '../shared/components/button/button.component';
-import {SectionTitleComponent} from '../shared/components/UI/section-title/section-title.component';
-import {NgForOf, NgIf} from '@angular/common';
-import {MatOption, MatSelect} from '@angular/material/select';
-import {SelectList} from '../shared/forms/template/model/select-list';
+import { SectionTitleComponent } from '../shared/components/UI/section-title/section-title.component';
+
+import { MatOption, MatSelect } from '@angular/material/select';
+import { SelectList } from '../shared/forms/template/model/select-list';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -51,16 +51,14 @@ export const MY_FORMATS = {
   standalone: true,
   providers: [provideMomentDateAdapter(MY_FORMATS)],
   imports: [
-    FormWrapperComponent,
+    FormWrapperTemplateComponent,
     TeddyEddieFormComponent,
     TranslateModule,
     ButtonComponent,
     SectionTitleComponent,
     ReactiveFormsModule,
-    NgForOf,
     MatSelect,
     MatOption,
-    NgIf,
   ],
 })
 export class TeddyEddieReportComponent implements OnInit {
@@ -98,10 +96,7 @@ export class TeddyEddieReportComponent implements OnInit {
       return r === classValue;
     });
 
-    const shortClassesInSchool: string[] = this.classes.slice(
-      this.indexClass,
-      this.classes.length
-    );
+    const shortClassesInSchool: string[] = this.classes.slice(this.indexClass, this.classes.length);
 
     const clearFormArray = (formArray: FormArray) => {
       while (formArray.length !== 0) {
@@ -109,9 +104,7 @@ export class TeddyEddieReportComponent implements OnInit {
       }
     };
 
-    clearFormArray(
-      this.form.get('developmentLanguageSkillsArray') as FormArray
-    );
+    clearFormArray(this.form.get('developmentLanguageSkillsArray') as FormArray);
 
     const yearsCount: number = this.teddyEddieArray.length;
 
@@ -144,10 +137,7 @@ export class TeddyEddieReportComponent implements OnInit {
       return r.value === age;
     });
 
-    let shortTable: SelectList<string>[] = this.ageTE.slice(
-      this.indexClassTE,
-      this.ageTE.length
-    );
+    let shortTable: SelectList<string>[] = this.ageTE.slice(this.indexClassTE, this.ageTE.length);
 
     const clearFormArray = (formArray: FormArray) => {
       while (formArray.length !== 0) {
@@ -189,10 +179,7 @@ export class TeddyEddieReportComponent implements OnInit {
   }
 
   private setDisabledInSchoolExam(shortClassesInSchool: string): boolean {
-    return !(
-      shortClassesInSchool === 'Klasa IV LIC/TECH' ||
-      shortClassesInSchool === 'Klasa V TECH'
-    );
+    return !(shortClassesInSchool === 'Klasa IV LIC/TECH' || shortClassesInSchool === 'Klasa V TECH');
   }
 
   public setClasses(classValue: string): void {
@@ -233,10 +220,7 @@ export class TeddyEddieReportComponent implements OnInit {
       return { text: 'Pierwsza połowa materiału' };
     } else if (form.value.halfMaterialCompleted) {
       return { text: 'Cały materiał' };
-    } else if (
-      !form.value.allMaterialCompleted &&
-      !form.value.halfMaterialCompleted
-    ) {
+    } else if (!form.value.allMaterialCompleted && !form.value.halfMaterialCompleted) {
       return { text: `${form.value.realizedMaterial}` };
     }
   }
@@ -265,10 +249,7 @@ export class TeddyEddieReportComponent implements OnInit {
           alignment: 'center',
         },
         {
-          text: [
-            `Imię i Nazwisko: `,
-            { text: `${form.value.studentName}`, style: 'subtitle' },
-          ],
+          text: [`Imię i Nazwisko: `, { text: `${form.value.studentName}`, style: 'subtitle' }],
           margin: [0, 5, 0, 5],
           alignment: 'center',
         },
@@ -374,8 +355,7 @@ export class TeddyEddieReportComponent implements OnInit {
       },
     };
 
-    const fileName: string =
-      'Raport końcowy 2025-26 - ' + form.value.studentName;
+    const fileName: string = 'Raport końcowy 2025-26 - ' + form.value.studentName;
     pdfMake.createPdf(docDefinition).download(fileName);
   }
 
@@ -384,13 +364,11 @@ export class TeddyEddieReportComponent implements OnInit {
 
     const arraySkills: DevelopmentPathInSchool[] = [];
 
-    formValue.developmentLanguageSkillsArray.forEach(
-      (row: DevelopmentPathInSchool) => {
-        if (!row.shouldDeleteRow) {
-          arraySkills.push(row);
-        }
+    formValue.developmentLanguageSkillsArray.forEach((row: DevelopmentPathInSchool) => {
+      if (!row.shouldDeleteRow) {
+        arraySkills.push(row);
       }
-    );
+    });
 
     const arrayWithObjects: any[] = [];
 
@@ -437,9 +415,7 @@ export class TeddyEddieReportComponent implements OnInit {
           alignment: 'center',
         },
         {
-          text: arraySkills[i].certificationPurpose
-            ? arraySkills[i].certificationPurpose
-            : '',
+          text: arraySkills[i].certificationPurpose ? arraySkills[i].certificationPurpose : '',
           alignment: 'center',
         },
         {

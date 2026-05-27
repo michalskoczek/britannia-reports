@@ -4,8 +4,8 @@
   <main class="main-wrapper">
     <app-tab-group (clickTabEvent)="emitTab($event)"></app-tab-group>
 
-    <ng-container *ngIf="activeTab">
+    @if (activeTab) {
       <ng-container *ngComponentOutlet="activeTab.component"></ng-container>
-    </ng-container>
+    }
   </main>
 </div>
