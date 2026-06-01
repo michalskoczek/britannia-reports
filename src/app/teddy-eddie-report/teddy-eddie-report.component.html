@@ -1,186 +1,42 @@
 <div class="container pb-5 my-4">
-  <div class="row p-0">
-    <div class="col-3 p-0">
-      <app-form-wrapper-template [sectionTitle]="'basicInformation'">
-        <app-teddy-eddie-form [form]="teddyEddieForm" (ageSelected)="setTableTE($event)"></app-teddy-eddie-form>
-      </app-form-wrapper-template>
+  <div class="row">
+    <div class="col-12">
+      <app-form-wrapper [sectionTitle]="'basicInformation'">
+        <app-teddy-eddie-form [form]="form" (ageSelected)="setTableTE($event)"></app-teddy-eddie-form>
+      </app-form-wrapper>
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-12">
+      <app-section-title [sectionTitle]="'teddyEddie.englishImmersion'"></app-section-title>
+
+      <app-teddy-eddie-table
+        [formArray]="teddyEddieArray"
+        [courses]="courses"
+        [courseLevels]="courseLevelTE"
+        [books]="booksToChoosingTE"
+      ></app-teddy-eddie-table>
     </div>
   </div>
 
-  <div class="row mt-5">
-    <div class="col-2 mb-4 pr-4">
-      <app-section-title
-        [sectionTitle]="'basicInformation'"
-      ></app-section-title>
+  <div class="row mt-4">
+    <div class="col-12">
+      <app-section-title [sectionTitle]="'teddyEddie.cambridgePath'"></app-section-title>
 
-
-    </div>
-
-    <div class="col-10">
-      <app-section-title [sectionTitle]="'tables'"></app-section-title>
-
-      <div class="row">
-        <div class="col-12">
-          <!--        Nowa tabelka-->
-
-          <p class="w-100 px-2">
-            {{ "teddyEddie.englishImmersion" | translate }}
-          </p>
-
-          @if (teddyEddieForm.age !== null) {
-            <div class="row-wrapper-te">
-              <p>{{ "schoolYear" | translate }}</p>
-              <p>{{ "studentAge" | translate }}</p>
-              <p>{{ "course" | translate }}</p>
-              <p>{{ "levelOfCourse" | translate }}</p>
-              <p>{{ "book" | translate }}</p>
-              <p>{{ "withoutThisLine" | translate }}</p>
-            </div>
-            @for (skill of teddyEddieArray.controls; track skill; let i = $index) {
-              <div
-                class="row-wrapper-te"
-                >
-                <div formArrayName="teddyEddieArray">
-                  <div class="row-group-te" [formGroupName]="i">
-                    <div>
-                      <input type="text" formControlName="schoolYear" />
-                    </div>
-                    <div>
-                      <input type="text" formControlName="studentsAge" />
-                    </div>
-                    <div>
-                      <mat-select formControlName="course">
-                        @for (course of courses; track course) {
-                          <mat-option [value]="course">
-                            {{ course }}
-                          </mat-option>
-                        }
-                      </mat-select>
-                    </div>
-                    <div>
-                      <mat-select formControlName="courseLevel">
-                        @for (level of courseLevelTE; track level) {
-                          <mat-option [value]="level">
-                            {{ level }}
-                          </mat-option>
-                        }
-                      </mat-select>
-                    </div>
-                    <div>
-                      <mat-select formControlName="book">
-                        @for (books of booksToChoosingTE; track books) {
-                          <mat-option [value]="books">
-                            {{ books }}
-                          </mat-option>
-                        }
-                      </mat-select>
-                    </div>
-                    <div>
-                      <input
-                        type="checkbox"
-                        formControlName="shouldDeleteRow"
-                        />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            }
-          }
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-12">
-          <!--        Nowa tabelka-->
-
-          <p class="w-100 px-2 mt-4">
-            {{ "teddyEddie.cambridgePath" | translate }}
-          </p>
-
-          @if (teddyEddieForm.age !== null) {
-            <div class="row-wrapper">
-              <p>{{ "schoolYear" | translate }}</p>
-              <p>{{ "studentAge" | translate }}</p>
-              <p>{{ "course" | translate }}</p>
-              <p>{{ "wayInLevel" | translate }}</p>
-              <p>{{ "certificationPurpose" | translate }}</p>
-              <p>{{ "schoolPurpose" | translate }}</p>
-              <p>{{ "withoutThisLine" | translate }}</p>
-            </div>
-            @for (
-              skill of developmentLanguageSkillsArray.controls; track
-              skill; let i = $index) {
-              <div
-                class="row-wrapper"
-                >
-                <div formArrayName="developmentLanguageSkillsArray">
-                  <div class="row-group" [formGroupName]="i">
-                    <div>
-                      <input type="text" formControlName="schoolYear" />
-                    </div>
-                    <div>
-                      <input type="text" formControlName="classInSchool" />
-                    </div>
-                    <div>
-                      <mat-select formControlName="course">
-                        @for (course of courses; track course) {
-                          <mat-option [value]="course">
-                            {{ course }}
-                          </mat-option>
-                        }
-                      </mat-select>
-                    </div>
-                    <div>
-                      <mat-select formControlName="courseLevel">
-                        @for (level of languageLevels; track level) {
-                          <mat-option [value]="level">
-                            {{ level }}
-                          </mat-option>
-                        }
-                      </mat-select>
-                    </div>
-                    <div>
-                      <mat-select formControlName="certificationPurpose">
-                        @for (certification of certificationPurpose; track certification) {
-                          <mat-option [value]="certification">
-                            {{ certification }}
-                          </mat-option>
-                        }
-                      </mat-select>
-                    </div>
-                    <div>
-                      <mat-select formControlName="schoolExam">
-                        @for (exam of schoolExamsTE; track exam) {
-                          <mat-option [value]="exam">
-                            {{ exam }}
-                          </mat-option>
-                        }
-                      </mat-select>
-                    </div>
-                    <div>
-                      <input
-                        type="checkbox"
-                        formControlName="shouldDeleteRow"
-                        />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            }
-          }
-        </div>
-      </div>
+      <app-cambridge-path-table
+        [formArray]="developmentLanguageSkillsArray"
+        [courses]="courses"
+        [languageLevels]="languageLevels"
+        [certificationPurpose]="certificationPurpose"
+        [schoolExams]="schoolExamsTE"
+      ></app-cambridge-path-table>
     </div>
   </div>
 
   <div class="row generate-btn">
     <div class="col-12 d-flex justify-content-end">
-      <app-button
-        [translateKey]="'PDF'"
-        (clicked)="downloadPDF()"
-        [icon]="'download'"
-        >
-        {{ "downloadPDF" | translate }}
+      <app-button [translateKey]="'PDF'" (clicked)="downloadPDF()" [icon]="'download'">
+        {{ 'downloadPDF' | translate }}
       </app-button>
     </div>
   </div>

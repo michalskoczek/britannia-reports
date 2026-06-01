@@ -48,7 +48,7 @@ import {
 } from '@angular/material/table';
 import { MatCheckbox } from '@angular/material/checkbox';
 
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+pdfMake.vfs = pdfFonts.vfs;
 
 @Component({
   selector: 'app-semestr-report',

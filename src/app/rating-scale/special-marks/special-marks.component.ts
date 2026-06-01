@@ -10,7 +10,7 @@ import { NgIf } from '@angular/common';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { MatButton } from '@angular/material/button';
 
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+pdfMake.vfs = pdfFonts.vfs;
 
 @Component({
   selector: 'app-special-marks',

@@ -1,0 +1,96 @@
+<div class="wrapper">
+  <table
+    mat-table
+    [trackBy]="trackByIndex"
+    [dataSource]="formArray().controls"
+    [class.is-empty]="formArray().length === 0"
+    class="cambridge-table"
+  >
+    <ng-container matColumnDef="schoolYear">
+      <th mat-header-cell *matHeaderCellDef>{{ 'schoolYear' | translate }}</th>
+      <td mat-cell *matCellDef="let row; let i = index" [formGroup]="getRowGroup(i)">
+        <mat-form-field appearance="outline" class="cell-field">
+          <input matInput formControlName="schoolYear" />
+        </mat-form-field>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="classInSchool">
+      <th mat-header-cell *matHeaderCellDef>{{ 'studentAge' | translate }}</th>
+      <td mat-cell *matCellDef="let row; let i = index" [formGroup]="getRowGroup(i)">
+        <mat-form-field appearance="outline" class="cell-field">
+          <input matInput formControlName="classInSchool" />
+        </mat-form-field>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="course">
+      <th mat-header-cell *matHeaderCellDef>{{ 'course' | translate }}</th>
+      <td mat-cell *matCellDef="let row; let i = index" [formGroup]="getRowGroup(i)">
+        <mat-form-field appearance="outline" class="cell-field">
+          <mat-select formControlName="course">
+            @for (course of courses(); track course) {
+              <mat-option [value]="course">{{ course }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="courseLevel">
+      <th mat-header-cell *matHeaderCellDef>{{ 'wayInLevel' | translate }}</th>
+      <td mat-cell *matCellDef="let row; let i = index" [formGroup]="getRowGroup(i)">
+        <mat-form-field appearance="outline" class="cell-field">
+          <mat-select formControlName="courseLevel">
+            @for (level of languageLevels(); track level) {
+              <mat-option [value]="level">{{ level }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="certificationPurpose">
+      <th mat-header-cell *matHeaderCellDef>{{ 'certificationPurpose' | translate }}</th>
+      <td mat-cell *matCellDef="let row; let i = index" [formGroup]="getRowGroup(i)">
+        <mat-form-field appearance="outline" class="cell-field">
+          <mat-select formControlName="certificationPurpose">
+            @for (cert of certificationPurpose(); track cert) {
+              <mat-option [value]="cert">{{ cert }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </td>
+    </ng-container>
+
+    <!-- Cel szkolny -->
+    <ng-container matColumnDef="schoolExam">
+      <th mat-header-cell *matHeaderCellDef>{{ 'schoolPurpose' | translate }}</th>
+      <td mat-cell *matCellDef="let row; let i = index" [formGroup]="getRowGroup(i)">
+        <mat-form-field appearance="outline" class="cell-field">
+          <mat-select formControlName="schoolExam">
+            @for (exam of schoolExams(); track exam) {
+              <mat-option [value]="exam">{{ exam }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="shouldDeleteRow">
+      <th mat-header-cell *matHeaderCellDef>{{ 'withoutThisLine' | translate }}</th>
+      <td mat-cell *matCellDef="let row; let i = index" [formGroup]="getRowGroup(i)">
+        <mat-checkbox formControlName="shouldDeleteRow"></mat-checkbox>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+    <tr class="mat-row no-data-row" *matNoDataRow>
+      <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+        {{ 'selectStudentsClassToShowTable' | translate }}
+      </td>
+    </tr>
+  </table>
+</div>

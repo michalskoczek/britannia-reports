@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-// @ts-ignore
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+// @ts-expect-error pdfMake
 import pdfMake from 'pdfmake/build/pdfmake';
-// @ts-ignore
+// @ts-expect-error pdfFont
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { ELEMENT_DATA, TableElement } from '../rating-scale/table-elements';
 import { classes, teachers, books, courses } from '../shared/select-values';
@@ -23,31 +23,34 @@ import {
   parentDecisionValues,
   recommendationsInNextYear,
 } from '../shared/year-report/year-report-static-data';
-import {MatFormField, MatHint, MatInput, MatLabel} from '@angular/material/input';
-import {TranslateModule} from '@ngx-translate/core';
-import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
+import { MatFormField, MatHint, MatInput, MatLabel } from '@angular/material/input';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from '@angular/material/datepicker';
 
-import {MatOption, MatSelect} from '@angular/material/select';
+import { MatOption, MatSelect } from '@angular/material/select';
 import {
   MatAccordion,
   MatExpansionPanel,
   MatExpansionPanelHeader,
   MatExpansionPanelTitle,
 } from '@angular/material/expansion';
-import {MatRadioButton, MatRadioGroup} from '@angular/material/radio';
-import {MatButton} from '@angular/material/button';
+import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
+import { MatButton } from '@angular/material/button';
 import {
-  MatCell, MatCellDef,
+  MatCell,
+  MatCellDef,
   MatColumnDef,
   MatHeaderCell,
   MatHeaderCellDef,
-  MatHeaderRow, MatHeaderRowDef,
-  MatRow, MatRowDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
   MatTable,
 } from '@angular/material/table';
-import {MatCheckbox} from '@angular/material/checkbox';
+import { MatCheckbox } from '@angular/material/checkbox';
 
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+pdfMake.vfs = pdfFonts.vfs;
 
 @Component({
   selector: 'app-year-report',
@@ -83,8 +86,8 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
     MatHeaderCellDef,
     MatCellDef,
     MatHeaderRowDef,
-    MatRowDef
-]
+    MatRowDef,
+  ],
 })
 export class YearReportComponent implements OnInit {
   title = 'britannia-reports';
@@ -106,8 +109,7 @@ export class YearReportComponent implements OnInit {
   public schoolExam: string[] = schoolExam;
 
   public parentDecisionValues: string[] = parentDecisionValues;
-  public certificationPurposeOnThisYear: string[] =
-    certificationPurposeOnThisYear;
+  public certificationPurposeOnThisYear: string[] = certificationPurposeOnThisYear;
   public markEvaluations: string[] = markEvaluations;
   public recommendationsInNextYear: string[] = recommendationsInNextYear;
 
@@ -131,10 +133,7 @@ export class YearReportComponent implements OnInit {
       return r === classValue;
     });
 
-    const shortClassesInSchool: string[] = this.classesInSchool.slice(
-      this.indexClass,
-      this.classesInSchool.length
-    );
+    const shortClassesInSchool: string[] = this.classesInSchool.slice(this.indexClass, this.classesInSchool.length);
 
     const clearFormArray = (formArray: FormArray) => {
       while (formArray.length !== 0) {
@@ -142,9 +141,7 @@ export class YearReportComponent implements OnInit {
       }
     };
 
-    clearFormArray(
-      this.form.get('developmentLanguageSkillsArray') as FormArray
-    );
+    clearFormArray(this.form.get('developmentLanguageSkillsArray') as FormArray);
 
     for (let i = 0; i < shortClassesInSchool.length; i++) {
       (this.form.get('developmentLanguageSkillsArray') as FormArray).push(
@@ -179,10 +176,7 @@ export class YearReportComponent implements OnInit {
   }
 
   private setDisabledInSchoolExam(shortClassesInSchool: string): boolean {
-    return !(
-      shortClassesInSchool === 'Klasa IV LIC/TECH' ||
-      shortClassesInSchool === 'Klasa V TECH'
-    );
+    return !(shortClassesInSchool === 'Klasa IV LIC/TECH' || shortClassesInSchool === 'Klasa V TECH');
   }
 
   public setClasses(classValue: string): void {
@@ -249,26 +243,20 @@ export class YearReportComponent implements OnInit {
       return { text: 'Pierwsza połowa materiału' };
     } else if (form.value.halfMaterialCompleted) {
       return { text: 'Cały materiał' };
-    } else if (
-      !form.value.allMaterialCompleted &&
-      !form.value.halfMaterialCompleted
-    ) {
+    } else if (!form.value.allMaterialCompleted && !form.value.halfMaterialCompleted) {
       return { text: `${form.value.realizedMaterial}` };
     }
   }
 
   certificationPurposeText(form: FormGroup): any {
-    if (
-      form.value.certificationPurposeYES ||
-      form.value.certificationPurposeNO
-    ) {
+    if (form.value.certificationPurposeYES || form.value.certificationPurposeNO) {
       return {
         text: `Cel certyfikacyjny na bieżący rok szkolny: ${
           form.value.certificationPurposeYES
             ? 'zrealizowany'
             : form.value.certificationPurposeNO
-            ? 'niezrealizowany'
-            : ''
+              ? 'niezrealizowany'
+              : ''
         }`,
         bold: true,
         fontSize: 10,
@@ -308,10 +296,7 @@ export class YearReportComponent implements OnInit {
           alignment: 'center',
         },
         {
-          text: [
-            `Imię i Nazwisko ucznia: `,
-            { text: `${form.value.studentName}`, style: 'subtitle' },
-          ],
+          text: [`Imię i Nazwisko ucznia: `, { text: `${form.value.studentName}`, style: 'subtitle' }],
           margin: [0, 5, 0, 5],
           alignment: 'center',
         },
@@ -339,8 +324,8 @@ export class YearReportComponent implements OnInit {
                     form.value.studentBookTitle
                       ? form.value.studentBookTitle
                       : form.value.ownTitleStudentBook
-                      ? form.value.ownTitleStudentBook
-                      : 'Własne materiały szkoleniowe'
+                        ? form.value.ownTitleStudentBook
+                        : 'Własne materiały szkoleniowe'
                   }`,
                 },
               ],
@@ -460,8 +445,7 @@ export class YearReportComponent implements OnInit {
       },
     };
 
-    const fileName: string =
-      'Raport końcowy 2025-26 - ' + form.value.studentName;
+    const fileName: string = 'Raport końcowy 2025-26 - ' + form.value.studentName;
     pdfMake.createPdf(docDefinition).download(fileName);
   }
 
@@ -470,13 +454,11 @@ export class YearReportComponent implements OnInit {
 
     const arraySkills: DevelopmentPathInSchool[] = [];
 
-    formValue.developmentLanguageSkillsArray.forEach(
-      (row: DevelopmentPathInSchool) => {
-        if (!row.shouldDeleteRow) {
-          arraySkills.push(row);
-        }
+    formValue.developmentLanguageSkillsArray.forEach((row: DevelopmentPathInSchool) => {
+      if (!row.shouldDeleteRow) {
+        arraySkills.push(row);
       }
-    );
+    });
 
     const arrayWithObjects: any[] = [];
 
@@ -508,28 +490,26 @@ export class YearReportComponent implements OnInit {
       },
     ]);
 
-    for (let i = 0; i < arraySkills.length; i++) {
+    for (const item of arraySkills) {
       arrayWithObjects.push([
         {
-          text: arraySkills[i].schoolYear,
+          text: item.schoolYear,
           alignment: 'center',
         },
         {
-          text: arraySkills[i].classInSchool,
+          text: item.classInSchool,
           alignment: 'center',
         },
         {
-          text: arraySkills[i].courseLevel ? arraySkills[i].courseLevel : '',
+          text: item.courseLevel ? item.courseLevel : '',
           alignment: 'center',
         },
         {
-          text: arraySkills[i].certificationPurpose
-            ? arraySkills[i].certificationPurpose
-            : '',
+          text: item.certificationPurpose ? item.certificationPurpose : '',
           alignment: 'center',
         },
         {
-          text: arraySkills[i].schoolExam ? arraySkills[i].schoolExam : '',
+          text: item.schoolExam ? item.schoolExam : '',
           alignment: 'center',
         },
       ]);

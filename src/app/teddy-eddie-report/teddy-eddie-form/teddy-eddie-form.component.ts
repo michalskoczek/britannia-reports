@@ -1,34 +1,36 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Subject, takeUntil } from 'rxjs';
 
 import { ageTE } from '../../shared/development-path';
 import { TranslateModule } from '@ngx-translate/core';
-import { InputComponent } from '../../shared/forms/template/UI/input/input.component';
-import { TeddyEddieReport } from '../model/teddy-eddie-report.interface';
-import { SelectComponent } from '../../shared/forms/template/UI/select/select.component';
-import { DateComponent } from '../../shared/forms/template/UI/date/date.component';
+import { InputTextComponent } from '../../shared/components/form/input-text/input-text.component';
+import { SelectComponent } from '../../shared/components/form/select/select.component';
+import { DateComponent } from '../../shared/components/form/date/date.component';
 
 @Component({
   selector: 'app-teddy-eddie-form',
-  imports: [
-    FormsModule,
-    TranslateModule,
-    InputComponent,
-    SelectComponent,
-    DateComponent,
-  ],
+  imports: [ReactiveFormsModule, TranslateModule, InputTextComponent, SelectComponent, DateComponent],
   templateUrl: './teddy-eddie-form.component.html',
   styleUrl: './teddy-eddie-form.component.scss',
 })
-export class TeddyEddieFormComponent implements OnInit {
-  @Input() form!: TeddyEddieReport;
+export class TeddyEddieFormComponent implements OnInit, OnDestroy {
+  @Input({ required: true }) form!: FormGroup;
   @Output() ageSelected = new EventEmitter<string>();
 
   protected readonly ageTE = ageTE;
 
-  ngOnInit(): void {}
+  private readonly destroy$ = new Subject<void>();
 
-  onAgeChange(age: string): void {
-    this.ageSelected.emit(age);
+  ngOnInit(): void {
+    this.form
+      .get('age')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((age: string) => this.ageSelected.emit(age));
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

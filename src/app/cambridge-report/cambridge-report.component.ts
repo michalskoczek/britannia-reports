@@ -32,7 +32,7 @@ import {
 import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
 import { MatButton } from '@angular/material/button';
 
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+pdfMake.vfs = pdfFonts.vfs;
 
 @Component({
   selector: 'app-cambridge-report',

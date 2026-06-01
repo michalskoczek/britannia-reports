@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-// @ts-ignore
+import { Component, inject } from '@angular/core';
+import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+// @ts-expect-error pdfmake
 import pdfMake from 'pdfmake/build/pdfmake';
-// @ts-ignore
+// @ts-expect-error pdfFont
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { image } from '../shared/images-base64';
 import { baner } from '../shared/baner-base64';
@@ -19,59 +19,55 @@ import {
 } from '../shared/development-path';
 import { DevelopmentPathInSchool } from '../model/development-path-in-school';
 import { DevelopmentPathTeddyEddie } from '../model/development-path-teddy-eddie';
-import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
-import { TeddyEddieReport } from './model/teddy-eddie-report.interface';
-import { FormWrapperTemplateComponent } from '../shared/forms/template/layout/form-wrapper-template/form-wrapper-template.component';
 import { TeddyEddieFormComponent } from './teddy-eddie-form/teddy-eddie-form.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { ButtonComponent } from '../shared/components/button/button.component';
 import { SectionTitleComponent } from '../shared/components/UI/section-title/section-title.component';
+import { TeddyEddieTableComponent } from './tables/teddy-eddie-table/teddy-eddie-table.component';
+import { CambridgePathTableComponent } from './tables/cambridge-path-table/cambridge-path-table.component';
+import { FormWrapperComponent } from '../shared/components/form/form-wrapper/form-wrapper.component';
+import { SelectOptions } from '../shared/components/form/select/select-options';
 
-import { MatOption, MatSelect } from '@angular/material/select';
-import { SelectList } from '../shared/forms/template/model/select-list';
-
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
-
-export const MY_FORMATS = {
-  parse: {
-    dateInput: 'MM/DD/YYYY',
-  },
-  display: {
-    dateInput: 'DD.MM.YYYY',
-    monthYearLabel: 'MM YYYY',
-    dateA11yLabel: 'dd',
-    monthYearA11yLabel: 'MM YYYY',
-  },
-};
+pdfMake.vfs = pdfFonts.vfs;
 
 @Component({
   selector: 'app-teddy-eddie-report',
   templateUrl: './teddy-eddie-report.component.html',
   styleUrls: ['./teddy-eddie-report.component.scss'],
   standalone: true,
-  providers: [provideMomentDateAdapter(MY_FORMATS)],
   imports: [
-    FormWrapperTemplateComponent,
     TeddyEddieFormComponent,
     TranslateModule,
     ButtonComponent,
     SectionTitleComponent,
     ReactiveFormsModule,
-    MatSelect,
-    MatOption,
+    TeddyEddieTableComponent,
+    CambridgePathTableComponent,
+    FormWrapperComponent,
   ],
 })
-export class TeddyEddieReportComponent implements OnInit {
-  public form: FormGroup;
+export class TeddyEddieReportComponent {
+  private fb = inject(FormBuilder);
 
-  public teddyEddieForm: TeddyEddieReport = {
-    studentName: '',
+  public form: FormGroup = this.fb.nonNullable.group({
+    studentName: null,
+    name: null,
     date: null,
+    class: [{ value: null, disabled: true }],
+    course: null,
     age: null,
-  };
+    avgMark: null,
+    frequency: null,
+    developmentLanguageSkillsArray: this.fb.array([]),
+    teddyEddieArray: this.fb.array([]),
+    learningRecommendations: null,
+    recommendations: this.fb.array([]),
+    additionalComment: null,
+    signature: null,
+  });
 
   public classes: string[] = studentsAgeTE;
-  public ageTE: SelectList<string>[] = ageTE;
+  public ageTE: SelectOptions<string>[] = ageTE;
 
   public schoolYears: string[] = schoolYears;
   public languageLevels: string[] = languageLevels;
@@ -87,29 +83,15 @@ export class TeddyEddieReportComponent implements OnInit {
   private readonly imageLogo: string = image;
   private readonly banerLogo: string = baner;
 
-  ngOnInit(): void {
-    this.form = this.createForm();
-  }
-
   public initClassesFromFirstSelectedClass(classValue: string): void {
-    this.indexClass = this.classes.findIndex((r: string) => {
-      return r === classValue;
-    });
+    this.indexClass = this.classes.findIndex((r: string) => r === classValue);
 
-    const shortClassesInSchool: string[] = this.classes.slice(this.indexClass, this.classes.length);
-
-    const clearFormArray = (formArray: FormArray) => {
-      while (formArray.length !== 0) {
-        formArray.removeAt(0);
-      }
-    };
-
-    clearFormArray(this.form.get('developmentLanguageSkillsArray') as FormArray);
-
+    const shortClassesInSchool: string[] = this.classes.slice(this.indexClass);
     const yearsCount: number = this.teddyEddieArray.length;
 
+    const newArray = new FormArray<FormGroup>([]);
     for (let i = 0; i < shortClassesInSchool.length; i++) {
-      (this.form.get('developmentLanguageSkillsArray') as FormArray).push(
+      newArray.push(
         new FormGroup({
           schoolYear: new FormControl({
             value: this.schoolYears[i + yearsCount],
@@ -130,32 +112,25 @@ export class TeddyEddieReportComponent implements OnInit {
         })
       );
     }
+
+    this.form.setControl('developmentLanguageSkillsArray', newArray);
   }
 
   public initTableTE(age: string): void {
-    this.indexClassTE = this.ageTE.findIndex((r: SelectList<string>) => {
-      return r.value === age;
-    });
+    this.indexClassTE = this.ageTE.findIndex((r: SelectOptions<string>) => r.value === age);
 
-    let shortTable: SelectList<string>[] = this.ageTE.slice(this.indexClassTE, this.ageTE.length);
+    const shortTable: SelectOptions<string>[] = this.ageTE.slice(this.indexClassTE);
 
-    const clearFormArray = (formArray: FormArray) => {
-      while (formArray.length !== 0) {
-        formArray.removeAt(0);
-      }
-    };
-
-    clearFormArray(this.form.get('teddyEddieArray') as FormArray);
-
-    for (let i: number = 0; i < shortTable.length; i++) {
-      (this.form.get('teddyEddieArray') as FormArray).push(
+    const newArray = new FormArray<FormGroup>([]);
+    for (let i = 0; i < shortTable.length; i++) {
+      newArray.push(
         new FormGroup({
           schoolYear: new FormControl({
             value: this.schoolYears[i],
             disabled: true,
           }),
           studentsAge: new FormControl({
-            value: shortTable[i],
+            value: shortTable[i].value,
             disabled: true,
           }),
           course: new FormControl(null),
@@ -165,8 +140,9 @@ export class TeddyEddieReportComponent implements OnInit {
         })
       );
     }
-  }
 
+    this.form.setControl('teddyEddieArray', newArray);
+  }
   private addSchoolExam(shortClassesInSchool: string): string | null {
     switch (shortClassesInSchool) {
       case 'Klasa 3 SP':
@@ -192,7 +168,6 @@ export class TeddyEddieReportComponent implements OnInit {
 
   public setTableTE(age: string): void {
     this.initTableTE(age);
-
     this.setClasses('Klasa 2 SP');
   }
 
@@ -226,7 +201,7 @@ export class TeddyEddieReportComponent implements OnInit {
   }
 
   public downloadPDF(): any {
-    console.log('Form data:', this.teddyEddieForm);
+    this.generatePDF(this.form);
   }
 
   public generatePDF(form: FormGroup): any {
@@ -400,26 +375,26 @@ export class TeddyEddieReportComponent implements OnInit {
       },
     ]);
 
-    for (let i = 0; i < arraySkills.length; i++) {
+    for (const item of arraySkills) {
       arrayWithObjects.push([
         {
-          text: arraySkills[i].schoolYear,
+          text: item.schoolYear,
           alignment: 'center',
         },
         {
-          text: arraySkills[i].classInSchool,
+          text: item.classInSchool,
           alignment: 'center',
         },
         {
-          text: arraySkills[i].courseLevel ? arraySkills[i].courseLevel : '',
+          text: item.courseLevel ? item.courseLevel : '',
           alignment: 'center',
         },
         {
-          text: arraySkills[i].certificationPurpose ? arraySkills[i].certificationPurpose : '',
+          text: item.certificationPurpose ? item.certificationPurpose : '',
           alignment: 'center',
         },
         {
-          text: arraySkills[i].schoolExam ? arraySkills[i].schoolExam : '',
+          text: item.schoolExam ? item.schoolExam : '',
           alignment: 'center',
         },
       ]);
@@ -469,26 +444,26 @@ export class TeddyEddieReportComponent implements OnInit {
       },
     ]);
 
-    for (let i = 0; i < arraySkills.length; i++) {
+    for (const item of arraySkills) {
       arrayWithObjects.push([
         {
-          text: arraySkills[i].schoolYear,
+          text: item.schoolYear,
           alignment: 'center',
         },
         {
-          text: arraySkills[i].studentsAge,
+          text: item.studentsAge,
           alignment: 'center',
         },
         {
-          text: arraySkills[i].course,
+          text: item.course,
           alignment: 'center',
         },
         {
-          text: arraySkills[i].courseLevel ? arraySkills[i].courseLevel : '',
+          text: item.courseLevel ? item.courseLevel : '',
           alignment: 'center',
         },
         {
-          text: arraySkills[i].book,
+          text: item.book,
           alignment: 'center',
         },
       ]);
@@ -519,30 +494,5 @@ export class TeddyEddieReportComponent implements OnInit {
         body: this.generateRowsInTETable(form),
       },
     };
-  }
-
-  private createForm(): FormGroup {
-    return new FormGroup({
-      studentName: new FormControl(null),
-      name: new FormControl(null),
-      date: new FormControl(null),
-      class: new FormControl({ value: null, disabled: true }),
-
-      course: new FormControl(null),
-
-      age: new FormControl(null),
-
-      avgMark: new FormControl(null),
-      frequency: new FormControl(null),
-
-      developmentLanguageSkillsArray: new FormArray([]),
-      teddyEddieArray: new FormArray([]),
-
-      learningRecommendations: new FormControl(null),
-      recommendations: new FormArray([]),
-
-      additionalComment: new FormControl(null),
-      signature: new FormControl(null),
-    });
   }
 }

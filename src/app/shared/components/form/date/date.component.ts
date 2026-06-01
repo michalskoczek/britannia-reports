@@ -1,9 +1,15 @@
 import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
-import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
+import { MatError, MatFormField, MatFormFieldModule, MatLabel } from '@angular/material/form-field';
+import {
+  MatDatepicker,
+  MatDatepickerInput,
+  MatDatepickerModule,
+  MatDatepickerToggle,
+} from '@angular/material/datepicker';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatInput, MatInputModule } from '@angular/material/input';
 import { ControlValueAccessor, FormControl, NgControl, ReactiveFormsModule } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { TranslateModule } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
 
 class ParentErrorStateMatcher implements ErrorStateMatcher {
@@ -16,25 +22,37 @@ class ParentErrorStateMatcher implements ErrorStateMatcher {
 }
 
 @Component({
-  selector: 'app-input-text',
-  imports: [MatFormField, MatLabel, MatInput, ReactiveFormsModule, TranslateModule, MatError],
-  templateUrl: './input-text.component.html',
-  styleUrl: './input-text.component.scss',
+  selector: 'app-date',
+  imports: [
+    MatLabel,
+    MatDatepicker,
+    MatFormField,
+    MatError,
+    MatDatepickerToggle,
+    TranslateModule,
+    MatDatepickerInput,
+    MatInput,
+    ReactiveFormsModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+  ],
+  templateUrl: './date.component.html',
+  styleUrl: './date.component.scss',
 })
-export class InputTextComponent implements ControlValueAccessor, OnInit, OnDestroy {
-  type = input<string>('text');
-  placeholder = input<string>('typeValue');
-  label = input<string>('set label');
+export class DateComponent implements ControlValueAccessor, OnInit, OnDestroy {
+  label = input<string>('chooseDate');
+  placeholder = input<string>('chooseDate');
   required = input<boolean>(false);
   errorMessage = input<string>('error.fieldIsRequired');
 
   public readonly ngControl = inject(NgControl, { self: true, optional: true });
 
-  protected readonly control = new FormControl<any>(null);
+  protected readonly control = new FormControl<Date | null>(null);
   protected readonly errorStateMatcher: ErrorStateMatcher;
 
   private readonly destroy$ = new Subject<void>();
-  private onChange: (value: any) => void = () => {};
+  private onChange: (value: Date | null) => void = () => {};
   private onTouched: () => void = () => {};
 
   constructor() {
@@ -53,11 +71,11 @@ export class InputTextComponent implements ControlValueAccessor, OnInit, OnDestr
     this.destroy$.complete();
   }
 
-  writeValue(value: any): void {
+  writeValue(value: Date | null): void {
     this.control.setValue(value, { emitEvent: false });
   }
 
-  registerOnChange(fn: (value: any) => void): void {
+  registerOnChange(fn: (value: Date | null) => void): void {
     this.onChange = fn;
   }
 

@@ -1,10 +1,11 @@
 import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
-import { ControlValueAccessor, FormControl, NgControl, ReactiveFormsModule } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material/core';
+import { MatOption, ErrorStateMatcher } from '@angular/material/core';
+import { MatSelect } from '@angular/material/select';
 import { TranslateModule } from '@ngx-translate/core';
+import { ControlValueAccessor, FormControl, NgControl, ReactiveFormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
+import { SelectOptions } from './select-options';
 
 class ParentErrorStateMatcher implements ErrorStateMatcher {
   constructor(private readonly ngControlRef: () => NgControl | null) {}
@@ -16,17 +17,17 @@ class ParentErrorStateMatcher implements ErrorStateMatcher {
 }
 
 @Component({
-  selector: 'app-input-text',
-  imports: [MatFormField, MatLabel, MatInput, ReactiveFormsModule, TranslateModule, MatError],
-  templateUrl: './input-text.component.html',
-  styleUrl: './input-text.component.scss',
+  selector: 'app-select',
+  imports: [MatFormField, MatError, MatLabel, MatOption, MatSelect, TranslateModule, ReactiveFormsModule],
+  templateUrl: './select.component.html',
+  styleUrl: './select.component.scss',
 })
-export class InputTextComponent implements ControlValueAccessor, OnInit, OnDestroy {
-  type = input<string>('text');
-  placeholder = input<string>('typeValue');
+export class SelectComponent implements ControlValueAccessor, OnInit, OnDestroy {
   label = input<string>('set label');
+  placeholder = input<string>('selectValue');
   required = input<boolean>(false);
   errorMessage = input<string>('error.fieldIsRequired');
+  itemList = input.required<SelectOptions<any>[]>();
 
   public readonly ngControl = inject(NgControl, { self: true, optional: true });
 
@@ -69,7 +70,7 @@ export class InputTextComponent implements ControlValueAccessor, OnInit, OnDestr
     isDisabled ? this.control.disable({ emitEvent: false }) : this.control.enable({ emitEvent: false });
   }
 
-  protected onBlur(): void {
+  protected onClosed(): void {
     this.onTouched();
   }
 }

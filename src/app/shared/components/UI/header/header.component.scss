@@ -1,5 +1,5 @@
-@use "../../../../assets/styles/utils" as ds;
-@use "../../../../assets/styles/mixins" as *;
+@use '../../../../../assets/styles/utils/index' as ds;
+@use '../../../../../assets/styles/mixins' as *;
 
 .header {
   @include flex-center;
