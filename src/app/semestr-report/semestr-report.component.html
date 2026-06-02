@@ -114,11 +114,11 @@
     </div>
 
     <div class="row form-field">
-      <label id="example-radio-group-label">{{
+      <span id="example-radio-group-label">{{
         "Podręcznik:" | translate
-      }}</label>
+      }}</span>
       <mat-radio-group
-        aria-label="Select an option"
+        aria-labelledby="example-radio-group-label"
         formControlName="ownEducationMaterial"
         >
         <mat-radio-button value="1" (change)="onCheckboxChangeBook()"

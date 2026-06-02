@@ -30,14 +30,18 @@ export class TabGroupComponent implements OnInit {
 
   private initDefaultActiveTab(): void {
     this.tabs.forEach((tab: Tab): void => {
-      tab.defaultActive ? (tab.isActive = true) : false;
+      if (tab.defaultActive) {
+        tab.isActive = true;
+      }
     });
   }
 
   private changeActiveTab(clickedTab: Tab): void {
     this.tabs.forEach((tab: Tab): void => {
       tab.isActive = false;
-      tab.id === clickedTab.id ? (tab.isActive = true) : false;
+      if (tab.id === clickedTab.id) {
+        tab.isActive = true;
+      }
     });
   }
 }

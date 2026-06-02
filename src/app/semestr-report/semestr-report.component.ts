@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 // @ts-expect-error pdfMake
 import pdfMake from 'pdfmake/build/pdfmake';
@@ -89,7 +89,9 @@ pdfMake.vfs = pdfFonts.vfs;
   ],
 })
 export class SemestrReportComponent implements OnInit {
-  constructor(private translate: TranslateService) {
+  private readonly translate = inject(TranslateService);
+
+  constructor() {
     this.translate.setDefaultLang('pl');
   }
   title = 'britannia-reports';
@@ -258,11 +260,6 @@ export class SemestrReportComponent implements OnInit {
       if (!teachers) return;
 
       return teachers.join(', ');
-    };
-
-    const getMarkValue = (selectedValue: string, marks: Marks[]): string | undefined => {
-      const markObj: Marks | undefined = marks.find((mark: Marks): boolean => mark.value === selectedValue);
-      return markObj?.viewValue[0];
     };
 
     const docDefinition = {

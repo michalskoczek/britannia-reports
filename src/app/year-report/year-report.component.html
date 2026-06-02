@@ -52,10 +52,12 @@
     </div>
 
     <div class="row form-field">
-      <label id="example-radio-group-label" class="font-weight-bold">{{
+      <span id="example-radio-group-label" class="font-weight-bold">{{
         "Podręcznik:" | translate
-      }}</label>
-      <mat-radio-group formControlName="ownEducationMaterial">
+      }}</span>
+      <mat-radio-group
+        aria-labelledby="example-radio-group-label"
+        formControlName="ownEducationMaterial">
         <mat-radio-button value="1" (change)="onCheckboxChangeBook()"
           >{{ "Podręcznik z listy" | translate }}
         </mat-radio-button>

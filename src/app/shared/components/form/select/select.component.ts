@@ -67,7 +67,11 @@ export class SelectComponent implements ControlValueAccessor, OnInit, OnDestroy 
   }
 
   setDisabledState(isDisabled: boolean): void {
-    isDisabled ? this.control.disable({ emitEvent: false }) : this.control.enable({ emitEvent: false });
+    if (isDisabled) {
+      this.control.disable({ emitEvent: false });
+    } else {
+      this.control.enable({ emitEvent: false });
+    }
   }
 
   protected onClosed(): void {
