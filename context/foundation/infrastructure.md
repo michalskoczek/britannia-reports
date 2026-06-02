@@ -1,12 +1,13 @@
 ---
 project: britannia-reports
 researched_at: 2026-05-25
+frontmatter_refreshed_at: 2026-06-02
 recommended_platform: Firebase (Hosting + Authentication + Firestore)
 runner_up: Cloudflare (Pages + D1 + Access)
 context_type: mvp
 tech_stack:
   language: TypeScript
-  framework: Angular 19 (NgModule, SPA)
+  framework: Angular 20 (standalone, SPA)
   runtime: browser (static SPA bundle, output dist/britannia-reports/browser)
 ---
 
