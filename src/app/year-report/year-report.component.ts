@@ -20,7 +20,7 @@ import {
   certificationPurposeOnThisYear,
   examsRecommendationsInTable,
   markEvaluations,
-  parentDecisionValues,
+  parentDecisionValues, readinessToContinueOnNextLevelOptions,
   recommendationsInNextYear,
 } from '../shared/year-report/year-report-static-data';
 
@@ -56,6 +56,7 @@ export class YearReportComponent implements OnInit {
     certificationPurposeOnThisYear;
   public markEvaluations: string[] = markEvaluations;
   public recommendationsInNextYear: string[] = recommendationsInNextYear;
+  public readinessToContinueOnNextLevelOptions: string[] = readinessToContinueOnNextLevelOptions;
 
   public readonly examsRecommendations: string[] = examsRecommendationsInTable;
 
@@ -209,7 +210,7 @@ export class YearReportComponent implements OnInit {
       form.value.certificationPurposeNO
     ) {
       return {
-        text: `Cel certyfikacyjny na bieżący rok szkolny: ${
+        text: `Stopień opanowania materiału kursowego: ${
           form.value.certificationPurposeYES
             ? 'zrealizowany'
             : form.value.certificationPurposeNO
@@ -520,15 +521,18 @@ export class YearReportComponent implements OnInit {
     let formValue = form.getRawValue();
 
     let arrDetails: any[] = [];
-    arrDetails.push([
-      {
-        text: 'Ocena końcoworoczna',
-        style: 'tableHeader',
-      },
-      {
-        text: `${formValue.eofEvaluation ? formValue.eofEvaluation : '-'}`,
-      },
-    ]);
+
+    if (!formValue.eofEvaluationDelete) {
+      arrDetails.push([
+        {
+          text: 'Ocena końcoworoczna',
+          style: 'tableHeader',
+        },
+        {
+          text: `${formValue.eofEvaluation ? formValue.eofEvaluation : '-'}`,
+        },
+      ]);
+    }
 
     if (!formValue.frequencyDelete) {
       arrDetails.push([
@@ -545,7 +549,7 @@ export class YearReportComponent implements OnInit {
     if (!formValue.certificationPurposeOnThisYearDelete) {
       arrDetails.push([
         {
-          text: 'Cel certyfikacyjny na bieżący rok szkolny',
+          text: 'Stopień opanowania materiału kursowego',
           noWrap: true,
           style: 'tableHeader',
         },
@@ -553,6 +557,19 @@ export class YearReportComponent implements OnInit {
           text: `${formValue.certificationPurposeOnThisYear}`,
         },
       ]);
+    }
+
+    if (!formValue.readinessToContinueOnNextLevelDelete) {
+      arrDetails.push([
+        {
+          text: 'Gotowość do kontynuacji nauki na kolejnym poziomie',
+          noWrap: true,
+          style: 'tableHeader',
+        },
+        {
+          text: `${formValue.readinessToContinueOnNextLevel}`,
+        },
+      ])
     }
 
     if (!formValue.examRecommendationInTableDelete) {
@@ -626,6 +643,7 @@ export class YearReportComponent implements OnInit {
 
       eofEvaluation: new FormControl(null),
       frequency: new FormControl(null),
+      readinessToContinueOnNextLevel: new FormControl(null),
 
       // table with student development path
       developmentLanguageSkillsArray: new FormArray([]),
@@ -637,11 +655,13 @@ export class YearReportComponent implements OnInit {
       recommendationInNextYear: new FormControl(null),
 
       // checkbox in array - delete row
+      eofEvaluationDelete: new FormControl(false),
       frequencyDelete: new FormControl(false),
       certificationPurposeOnThisYearDelete: new FormControl(false),
       examRecommendationInTableDelete: new FormControl(false),
       parentDecisionDelete: new FormControl(false),
       recommendationInNextYearInTableDelete: new FormControl(false),
+      readinessToContinueOnNextLevelDelete: new FormControl(false),
 
       comments: new FormArray([]),
 

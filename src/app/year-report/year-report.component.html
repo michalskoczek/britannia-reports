@@ -177,7 +177,9 @@
               </mat-select>
             </div>
 
-            <div class="checkbox-wrapper"></div>
+            <div class="checkbox-wrapper">
+              <input type="checkbox" formControlName="eofEvaluationDelete" />
+            </div>
           </div>
 
           <div class="table-row">
@@ -196,7 +198,7 @@
 
           <div class="table-row">
             <div class="title">
-              <p>Cel certyfikacyjny na bieżący rok szkolny</p>
+              <p>Stopień opanowania materiału kursowego</p>
             </div>
 
             <div class="select-wrapper">
@@ -217,6 +219,33 @@
               <input
                 type="checkbox"
                 formControlName="certificationPurposeOnThisYearDelete"
+              />
+            </div>
+          </div>
+
+          <div class="table-row">
+            <div class="title">
+              <p>Gotowość do kontynuacji nauki na kolejnym poziomie</p>
+            </div>
+
+            <div class="select-wrapper">
+              <mat-select formControlName="readinessToContinueOnNextLevel">
+                <ng-container
+                  *ngFor="
+                    let readinessToContinueOnNextLevelOption of readinessToContinueOnNextLevelOptions
+                  "
+                >
+                  <mat-option [value]="readinessToContinueOnNextLevelOption">
+                    {{ readinessToContinueOnNextLevelOption }}
+                  </mat-option>
+                </ng-container>
+              </mat-select>
+            </div>
+
+            <div class="checkbox-wrapper">
+              <input
+                type="checkbox"
+                formControlName="readinessToContinueOnNextLevelDelete"
               />
             </div>
           </div>
