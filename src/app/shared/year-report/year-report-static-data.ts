@@ -23,7 +23,7 @@ export const markEvaluations: string[] = [
 export const recommendationsInNextYear: string[] = [
   'Fast Track',
   'Regular Track',
-  'Support Track',
+  'Steady Track',
 ];
 
 export const examsRecommendationsInTable: string[] = [
