@@ -1,23 +1,25 @@
 export const parentDecisionValues: string[] = ['Tak', 'Nie', 'Brak'];
 
 export const certificationPurposeOnThisYear: string[] = [
-  'zrealizowany',
-  'niezrealizowany',
+  'W pełni',
+  'W dużym stopniu',
+  'Częściowo',
+  'Do utrwalenia'
 ];
 
 export const markEvaluations: string[] = [
-  'celujący',
-  'bardzo dobry',
-  'bardzo dobry –',
-  'dobry +',
-  'dobry',
-  'dobry -',
-  'dostateczny +',
-  'dostateczny',
-  'dostateczny -',
-  'dopuszczający +',
-  'dopuszczający',
-  'niedostateczny',
+  'Celujący',
+  'Bardzo dobry',
+  'Bardzo dobry –',
+  'Dobry +',
+  'Dobry',
+  'Dobry -',
+  'Dostateczny +',
+  'Dostateczny',
+  'Dostateczny -',
+  'Dopuszczający +',
+  'Dopuszczający',
+  'Niedostateczny',
 ];
 
 export const recommendationsInNextYear: string[] = [
@@ -36,3 +38,10 @@ export const examsRecommendationsInTable: string[] = [
   'Cambridge B2 First for Schools (FCE)',
   'Cambridge C1 Advanced (CAE)',
 ];
+
+export const readinessToContinueOnNextLevelOptions: string[] = [
+  'Pełna',
+  'Częściowa',
+  'Warunkowa',
+  'Brak',
+]
