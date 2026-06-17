@@ -164,7 +164,11 @@
   "learningMode.secondParagraph": "Staramy się maksymalnie wspierać potencjał językowy uczniów i łączyć dzieci według umiejętności. Gdy tylko jest to możliwe, tworzymy trzy rodzaje kursów:",
   "learningMode.list.firstElement": "BFT czyli BRITANNIA Fast Track – dla uczniów celujących i wzorowych, którzy mają wyniki od 90% wzwyż, wyróżniają się swobodą w komunikacji i aktywnie wykorzystują poznane treści, są otwarci i maksymalnie zaangażowani w naukę, regularnie i w szybszym tempie podchodzą do kolejnych egzaminów Cambridge. Często w tej grupie znajdują się dzieci, które w kolejnych latach startują w konkursach językowych lub wybierają dwujęzyczne profile w liceum. Grupy BFT zazwyczaj nie są grupami dowożonymi, są złożone z dzieci z różnych klas i szkół.",
   "learningMode.list.secondElement": "BRT czyli BRITANNIA Regular Track – dla uczniów, którzy opanowali materiał bardzo dobrze i dobrze, są zawsze przygotowani, oraz chętni i zmotywowani, by posługiwać się angielskim i osiągać jak najlepsze rezultaty; zależy im, by jak najlepiej poznać angielski. Uczniowie z tej grupy zazwyczaj regularnie podchodzą do kolejnych egzaminów Cambridge.",
-  "learningMode.list.thirdElement": "BST czyli BRITANNIA Support Track – dla uczniów osiągających wyniki poniżej 65% oraz tych, którzy potrzebują więcej wsparcia w opanowaniu materiału i z nieśmiałością podchodzą do aktywizacji mówienia i muszą bardziej otworzyć się na naukę.",
+  "learningMode.list.thirdElement": "BST czyli BRITANNIA Steady Track – dla uczniów osiągających wyniki poniżej 65% oraz tych, którzy potrzebują więcej wsparcia w opanowaniu materiału i z nieśmiałością podchodzą do aktywizacji mówienia i muszą bardziej otworzyć się na naukę.",
+  "learningMode.list.newFirstElement": "Fast — ścieżka egzaminacyjna przyspieszonego rozwoju językowego",
+  "learningMode.list.newSecondElement": "Regular — ścieżka egzaminacyjna standardowego rozwoju językowego",
+  "learningMode.list.newThirdElement": "Steady — ścieżka egzaminacyjna stabilnego rozwoju językowego",
+
   "teddyEddie.englishImmersion": "Metoda Teddy Eddie - zanurzenie w angielski",
   "schoolYear": "Rok szkolny",
   "studentAge": "Wiek ucznia",

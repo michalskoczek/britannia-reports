@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 // @ts-ignore
 import pdfMake from 'pdfmake/build/pdfmake';
 // @ts-ignore
@@ -307,51 +307,71 @@ export class YearReportComponent implements OnInit {
         {
           text: 'Prognozowana ścieżka rozwoju językowego',
           style: 'header',
-          margin: [0, 10, 0, 5],
+          margin: [0, 20, 0, 5],
         },
         {
-          text: 'Oto prognozowana ścieżka rozwoju językowego po bieżącym roku szkolnym.',
+          text: 'Całoroczna praca ucznia, jego zaangażowanie podczas zajęć, stopień opanowania materiału oraz wyniki testów bieżących\ni próbnych egzaminów diagnozujących są dla nas bardzo ważne i stanowią podstawę do planowania dalszej ścieżki rozwoju językowego. Na tej podstawie kwalifikujemy uczniów do grup o zbliżonych kompetencjach językowych, możliwościach oraz tempie pracy w kolejnym roku szkolnym.',
           margin: [0, 0, 0, 0],
+          fontSize: 9,
+        },
+        {
+          text: 'Podczas tworzenia prognozowanej ścieżki rozwoju bierzemy pod uwagę nie tylko wyniki osiągane przez ucznia, ale również jego indywidualne predyspozycje językowe, systematyczność, motywację oraz aktywność na lekcjach w trakcie całego roku szkolnego.',
+          margin: [0, 5, 0, 0],
+          fontSize: 9,
+        },
+        {
+          text: 'Warto pamiętać, że prognozowana ścieżka rozwoju językowego nie jest decyzją ostateczną. W zależności od przyszłorocznego poziomu zaangażowania ucznia, regularności utrwalania wiedzy w domu oraz wkładu pracy podczas zajęć, ścieżka ta może ulec zmianie pod koniec kolejnego roku szkolnego.Poniżej przedstawiamy prognozowaną ścieżkę rozwoju językowego ucznia po bieżącym roku nauki.',
+          margin: [0, 5, 0, 0],
           fontSize: 9,
         },
         this.generateDevelopmentLanguageSkillsTable(form),
         this.certificationPurposeText(form),
         {
-          text: 'W zależności od przyszłorocznego wkładu pracy, czyli poziomu zaangażowania na lekcjach i systematyczności utrwalania wiedzy w domu, prognozowana ścieżka rozwoju językowego może ulec zmianie na koniec kolejnego roku szkolnego. ',
-          margin: [0, 5, 0, 0],
-          fontSize: 9,
-        },
-        {
-          text: '*Tryb nauki',
-          style: 'header',
+          text: '*Ścieżki egzaminacyjne',
+          style: 'subheader',
           margin: [0, 10, 0, 5],
         },
         {
-          text: 'Całoroczna praca ucznia, jego zaangażowanie i stopień opanowania materiału, wyniki testów bieżących oraz próbnych egzaminów diagnozujących są dla nas ważne i stanowią podstawę do kwalifikacji do grup o zbliżonych kompetencjach językowych w kolejnym roku szkolnym. Bierzemy też pod uwagę indywidualne zdolności oraz stopień motywacji ucznia w trakcie całego roku szkolnego.',
-          style: 'margins',
-          fontSize: 9,
+          text: [
+            {
+            text: 'Fast',
+            bold: true,
+            fontSize: 9,
+            },
+            {
+            text: ' — ścieżka egzaminacyjna przyspieszonego rozwoju językowego',
+            fontSize: 9,
+            },
+          ],
         },
         { text: '\n', fontSize: 5 },
         {
-          text: 'Staramy się maksymalnie wspierać potencjał językowy uczniów i łączyć dzieci według umiejętności. Gdy tylko jest to możliwe, tworzymy trzy rodzaje kursów:',
-          style: 'margins',
-          fontSize: 9,
+          text: [
+            {
+              text: 'Regular',
+              bold: true,
+              fontSize: 9,
+            },
+            {
+              text: ' — ścieżka egzaminacyjna standardowego rozwoju językowego',
+              fontSize: 9,
+            },
+          ],
+        },
+        { text: '\n', fontSize: 5 },
+        {
+          text: [
+            {
+              text: 'Steady',
+              bold: true,
+              fontSize: 9,
+            },         {
+              text: ' — ścieżka egzaminacyjna stabilnego rozwoju językowego',
+              fontSize: 9,
+            },
+          ]
         },
         { text: '\n', fontSize: 4 },
-        {
-          text: '1) BFT czyli BRITANNIA Fast Track – dla uczniów celujących i wzorowych, którzy mają wyniki od 90% wzwyż, wyróżniają się swobodą w komunikacji i aktywnie wykorzystują poznane treści, są otwarci i maksymalnie zaangażowani w naukę, regularnie i w szybszym tempie podchodzą do kolejnych egzaminów Cambridge. Często w tej grupie znajdują się dzieci, które w kolejnych latach startują w konkursach językowych lub wybierają dwujęzyczne profile w liceum. Grupy BFT zazwyczaj nie są grupami dowożonymi, są złożone z dzieci z różnych klas i szkół.',
-          fontSize: 9,
-        },
-        { text: '\n', fontSize: 4 },
-        {
-          text: '2) BRT czyli BRITANNIA Regular Track – dla uczniów, którzy opanowali materiał bardzo dobrze i dobrze, są zawsze przygotowani, oraz chętni i zmotywowani, by posługiwać się angielskim i osiągać jak najlepsze rezultaty; zależy im, by jak najlepiej poznać angielski. Uczniowie z tej grupy zazwyczaj regularnie podchodzą do kolejnych egzaminów Cambridge.',
-          fontSize: 9,
-        },
-        { text: '\n', fontSize: 4 },
-        {
-          text: '3) BST czyli BRITANNIA Support Track – dla uczniów osiągających wyniki poniżej 65% oraz tych, którzy potrzebują więcej wsparcia w opanowaniu materiału i z nieśmiałością podchodzą do aktywizacji mówienia i muszą bardziej otworzyć się na naukę.',
-          fontSize: 9,
-        },
         this.isAdditionalComment(),
         this.additionalComment(form),
         {
@@ -561,16 +581,19 @@ export class YearReportComponent implements OnInit {
       ]);
     }
 
-    arrDetails.push([
-      {
-        text: 'Tryb nauki* rekomendowany na przyszły rok szkolny',
-        noWrap: true,
-        style: 'tableHeader',
-      },
-      {
-        text: `${formValue.recommendationInNextYear}`,
-      },
-    ]);
+    if (!formValue.recommendationInNextYearInTableDelete) {
+      arrDetails.push([
+        {
+          text: 'Prognozowana ścieżka egzaminacyjna* na przyszły rok szkolny',
+          noWrap: true,
+          style: 'tableHeader',
+        },
+        {
+          text: `${formValue.recommendationInNextYear}`,
+        },
+      ]);
+    }
+
 
     return arrDetails;
   }
@@ -618,11 +641,12 @@ export class YearReportComponent implements OnInit {
       certificationPurposeOnThisYearDelete: new FormControl(false),
       examRecommendationInTableDelete: new FormControl(false),
       parentDecisionDelete: new FormControl(false),
+      recommendationInNextYearInTableDelete: new FormControl(false),
 
       comments: new FormArray([]),
 
       additionalComment: new FormControl(null),
-      signature: new FormControl(null, Validators.required),
+      signature: new FormControl(null),
     });
   }
 }
