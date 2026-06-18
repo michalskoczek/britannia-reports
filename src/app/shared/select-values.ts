@@ -3,19 +3,19 @@ import { Sex } from './enum/sex.enum';
 export const sexes: string[] = [Sex.MALE, Sex.FEMALE];
 
 export const classes: string[] = [
-  'Klasa 2 szkoły podstawowej',
-  'Klasa 3 szkoły podstawowej',
-  'Klasa 4 szkoły podstawowej',
-  'Klasa 5 szkoły podstawowej',
-  'Klasa 6 szkoły podstawowej',
-  'Klasa 7 szkoły podstawowej',
-  'Klasa 8 szkoły podstawowej',
-  'Klasa 1 szkoły średniej',
-  'Klasa 2 szkoły średniej',
-  'Klasa 3 szkoły średniej',
-  'Klasa 4 szkoły średniej',
-  'Klasa 5 szkoły średniej',
-  'osoba dorosła',
+  "grade2PrimarySchool",
+  "grade3PrimarySchool",
+  "grade4PrimarySchool",
+  "grade5PrimarySchool",
+  "grade6PrimarySchool",
+  "grade7PrimarySchool",
+  "grade8PrimarySchool",
+  "grade1SecondarySchool",
+  "grade2SecondarySchool",
+  "grade3SecondarySchool",
+  "grade4SecondarySchool",
+  "grade5SecondarySchool",
+  "adult"
 ];
 
 export const teachers: string[] = [
