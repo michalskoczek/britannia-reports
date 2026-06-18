@@ -33,7 +33,7 @@
             [value]="classValue"
             (click)="setClasses(classValue)"
           >
-            {{ classValue }}
+            {{ classValue | translate }}
           </mat-option>
         </mat-select>
       </mat-form-field>
@@ -50,17 +50,17 @@
 
     <div class="row form-field">
       <label id="example-radio-group-label" class="font-weight-bold">{{
-        "Podręcznik:" | translate
-      }}</label>
+          "Podręcznik:" | translate
+        }}</label>
       <mat-radio-group formControlName="ownEducationMaterial">
         <mat-radio-button value="1" (change)="onCheckboxChangeBook()"
-          >{{ "Podręcznik z listy" | translate }}
+        >{{ "Podręcznik z listy" | translate }}
         </mat-radio-button>
         <mat-radio-button value="2" (change)="onCheckboxChangeOwnTitle()"
-          >{{ "Wpisz tytuł i wydawnictwo" | translate }}
+        >{{ "Wpisz tytuł i wydawnictwo" | translate }}
         </mat-radio-button>
         <mat-radio-button (change)="onCheckboxChangeOwnMaterialEducation()"
-          >{{ "Własne materiały szkoleniowe" | translate }}
+        >{{ "Własne materiały szkoleniowe" | translate }}
         </mat-radio-button>
       </mat-radio-group>
 
@@ -82,7 +82,7 @@
     <div class="row">
       <div class="col-12">
         <div class="w-100">
-          <p class="font-weight-bold">Kurs:</p>
+          <p class="font-weight-bold">{{ "Kurs" | translate }}:</p>
         </div>
       </div>
 
@@ -99,27 +99,23 @@
     <div class="row">
       <div class="col-12">
         <div class="w-100">
-          <p class="font-weight-bold">Zrealizowany materiał:</p>
+          <p class="font-weight-bold">{{ "Zrealizowany materiał" | translate }}:</p>
         </div>
         <div class="w-100">
-          <mat-checkbox formControlName="allMaterialCompleted"
-            >Pierwsza połowa materiału</mat-checkbox
-          >
-          <mat-checkbox formControlName="halfMaterialCompleted"
-            >Cały materiał</mat-checkbox
-          >
+          <mat-checkbox formControlName="allMaterialCompleted">{{ "firstHalfOfMaterial" | translate }}</mat-checkbox>
+          <mat-checkbox formControlName="halfMaterialCompleted">{{ "allMaterial" | translate }}</mat-checkbox>
         </div>
       </div>
     </div>
 
     <div class="row form-field">
       <mat-form-field class="col-12 my-1">
-        <mat-label>Zrealizowany materiał - własny tekst</mat-label>
+        <mat-label>{{ "realizedMaterialOwnText" | translate }}</mat-label>
         <textarea
           matInput
           type="text"
           formControlName="realizedMaterial"
-          placeholder="wpisz np: Units 1-9"
+          [placeholder]="'realizedMaterialPlaceholder' | translate"
         ></textarea>
       </mat-form-field>
     </div>
@@ -155,16 +151,16 @@
 
         <div class="table-wrapper">
           <div class="table-row">
-            <div class="title"><p>Temat</p></div>
+            <div class="title"><p>{{ "topic" | translate }}</p></div>
 
-            <div class="select-wrapper">Do wyboru</div>
+            <div class="select-wrapper">{{ "toChoose" | translate }}</div>
 
-            <div class="checkbox-wrapper">Usuń linijkę</div>
+            <div class="checkbox-wrapper">{{ "deleteLine" | translate }}</div>
           </div>
 
           <div class="table-row">
             <div class="title">
-              <p>Ocena końcoworoczna</p>
+              <p>{{ "endOfYearEvaluation" | translate }}</p>
             </div>
 
             <div class="select-wrapper">
@@ -184,7 +180,7 @@
 
           <div class="table-row">
             <div class="title">
-              <p>Frekwencja</p>
+              <p>{{ "frequency" | translate }}</p>
             </div>
 
             <div class="select-wrapper">
@@ -198,7 +194,7 @@
 
           <div class="table-row">
             <div class="title">
-              <p>Stopień opanowania materiału kursowego</p>
+              <p>{{ "degreeOfCourseMaterialMastery" | translate }}</p>
             </div>
 
             <div class="select-wrapper">
@@ -225,7 +221,7 @@
 
           <div class="table-row">
             <div class="title">
-              <p>Gotowość do kontynuacji nauki na kolejnym poziomie</p>
+              <p>{{ "readinessToContinueOnNextLevel" | translate }}</p>
             </div>
 
             <div class="select-wrapper">
@@ -252,7 +248,7 @@
 
           <div class="table-row">
             <div class="title">
-              <p>Egzamin Cambridge rekomendowany po bieżącym roku szkolnym</p>
+              <p>{{ "cambridgeExamRecommendedAfterCurrentYear" | translate }}</p>
             </div>
 
             <div class="select-wrapper">
@@ -277,10 +273,7 @@
 
           <div class="table-row">
             <div class="title">
-              <p>
-                Decyzja Rodzica o podchodzeniu przez ucznia do oficjalnego
-                egzaminu Cambridge
-              </p>
+              <p>{{ "parentDecisionOnCambridgeExam" | translate }}</p>
             </div>
 
             <div class="select-wrapper">
@@ -300,7 +293,7 @@
 
           <div class="table-row">
             <div class="title">
-              <p>Prognozowana ścieżka egzaminacyjna* na przyszły rok szkolny</p>
+              <p>{{ "predictedExamPathNextYear" | translate }}</p>
             </div>
 
             <div class="select-wrapper">
@@ -329,16 +322,16 @@
 
         <!--        Nowa tabelka - start -->
 
-        <p class="w-100 px-2 mt-4">Prognozowana ścieżka rozwoju językowego</p>
+        <p class="w-100 px-2 mt-4">{{ "predictedLanguageDevelopmentPath" | translate }}</p>
 
         <ng-container *ngIf="form.getRawValue()['class'] !== null">
           <div class="row-wrapper">
-            <p>Rok szkolny</p>
-            <p>Klasa ucznia w szkole</p>
-            <p>W kierunku poziomu</p>
-            <p>Cel certyfikacyjny</p>
-            <p>Egzamin szkolny</p>
-            <p>Bez tej linijki?</p>
+            <p>{{ "schoolYear" | translate }}</p>
+            <p>{{ "studentClassInSchool" | translate }}</p>
+            <p>{{ "towardsLevel" | translate }}</p>
+            <p>{{ "certificationGoal" | translate }}</p>
+            <p>{{ "schoolExam" | translate }}</p>
+            <p>{{ "withoutThisLine" | translate }}</p>
           </div>
 
           <div
@@ -413,7 +406,7 @@
             <mat-accordion class="example-headers-align" multi>
               <mat-expansion-panel>
                 <mat-expansion-panel-header>
-                  <mat-panel-title>*Ścieżki egzaminacyjne</mat-panel-title>
+                  <mat-panel-title>{{ "examPaths" | translate }}</mat-panel-title>
                 </mat-expansion-panel-header>
                 <ol>
                   <li>
@@ -435,14 +428,14 @@
 
     <div class="row mt-4">
       <div class="col-12 mb-4">
-        <h2 class="subtitle">Dodatkowy komentarz</h2>
+        <h2 class="subtitle">{{ "additionalComment" | translate }}</h2>
       </div>
     </div>
 
     <div class="row">
       <div class="col-12">
         <mat-form-field class="w-100 px-2">
-          <mat-label>Dodatkowy komentarz</mat-label>
+          <mat-label>{{ "additionalComment" | translate }}</mat-label>
           <textarea matInput formControlName="additionalComment"></textarea>
         </mat-form-field>
       </div>
