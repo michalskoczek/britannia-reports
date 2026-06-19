@@ -38,8 +38,8 @@
       <mat-form-field class="col-4 my-1">
         <mat-label>{{ "Klasa" | translate }}</mat-label>
         <mat-select name="class" formControlName="class">
-          <mat-option *ngFor="let class of classes" [value]="class">
-            {{ class | translate }}
+          <mat-option *ngFor="let class of classes" [value]="class.value">
+            {{ class.label | translate }}
           </mat-option>
         </mat-select>
       </mat-form-field>

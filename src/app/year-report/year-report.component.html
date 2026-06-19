@@ -31,9 +31,9 @@
           <mat-option
             *ngFor="let classValue of classes"
             [value]="classValue"
-            (click)="setClasses(classValue)"
+            (click)="setClasses(classValue.value)"
           >
-            {{ classValue | translate }}
+            {{ classValue.label | translate }}
           </mat-option>
         </mat-select>
       </mat-form-field>
@@ -166,8 +166,8 @@
             <div class="select-wrapper">
               <mat-select formControlName="eofEvaluation">
                 <ng-container *ngFor="let mark of markEvaluations">
-                  <mat-option [value]="mark">
-                    {{ mark }}
+                  <mat-option [value]="mark.value">
+                    {{ mark.label | translate }}
                   </mat-option>
                 </ng-container>
               </mat-select>
@@ -204,8 +204,8 @@
                     let certificationPurpose of certificationPurposeOnThisYear
                   "
                 >
-                  <mat-option [value]="certificationPurpose">
-                    {{ certificationPurpose }}
+                  <mat-option [value]="certificationPurpose.value">
+                    {{ certificationPurpose.label | translate }}
                   </mat-option>
                 </ng-container>
               </mat-select>
@@ -231,8 +231,8 @@
                     let readinessToContinueOnNextLevelOption of readinessToContinueOnNextLevelOptions
                   "
                 >
-                  <mat-option [value]="readinessToContinueOnNextLevelOption">
-                    {{ readinessToContinueOnNextLevelOption }}
+                  <mat-option [value]="readinessToContinueOnNextLevelOption.value">
+                    {{ readinessToContinueOnNextLevelOption.label | translate }}
                   </mat-option>
                 </ng-container>
               </mat-select>
@@ -256,8 +256,8 @@
                 <ng-container
                   *ngFor="let recommendation of examsRecommendations"
                 >
-                  <mat-option [value]="recommendation">
-                    {{ recommendation }}
+                  <mat-option [value]="recommendation.value">
+                    {{ recommendation.label | translate }}
                   </mat-option>
                 </ng-container>
               </mat-select>
@@ -279,8 +279,8 @@
             <div class="select-wrapper">
               <mat-select formControlName="parentDecision">
                 <ng-container *ngFor="let decision of parentDecisionValues">
-                  <mat-option [value]="decision">
-                    {{ decision }}
+                  <mat-option [value]="decision.value">
+                    {{ decision.label | translate }}
                   </mat-option>
                 </ng-container>
               </mat-select>
@@ -303,8 +303,8 @@
                     let recommendationInNextYear of recommendationsInNextYear
                   "
                 >
-                  <mat-option [value]="recommendationInNextYear">
-                    {{ recommendationInNextYear }}
+                  <mat-option [value]="recommendationInNextYear.value">
+                    {{ recommendationInNextYear.label | translate }}
                   </mat-option>
                 </ng-container>
               </mat-select>

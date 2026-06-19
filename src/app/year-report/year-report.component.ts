@@ -37,7 +37,7 @@ export class YearReportComponent implements OnInit {
 
   public form!: FormGroup;
 
-  public classes: string[] = classes;
+  public classes: { label: string; value: string }[] = classes;
   public readonly teachers: string[] = teachers;
   public readonly books: string[] = books;
   public readonly courses: string[] = courses;
@@ -51,14 +51,14 @@ export class YearReportComponent implements OnInit {
   public certificationPurpose: string[] = certificationPurpose;
   public schoolExam: string[] = schoolExam;
 
-  public parentDecisionValues: string[] = parentDecisionValues;
-  public certificationPurposeOnThisYear: string[] =
+  public parentDecisionValues: { label: string; value: string }[] = parentDecisionValues;
+  public certificationPurposeOnThisYear: { label: string; value: string }[] =
     certificationPurposeOnThisYear;
-  public markEvaluations: string[] = markEvaluations;
-  public recommendationsInNextYear: string[] = recommendationsInNextYear;
-  public readinessToContinueOnNextLevelOptions: string[] = readinessToContinueOnNextLevelOptions;
+  public markEvaluations: { label: string; value: string }[] = markEvaluations;
+  public recommendationsInNextYear: { label: string; value: string }[] = recommendationsInNextYear;
+  public readinessToContinueOnNextLevelOptions: { label: string; value: string }[] = readinessToContinueOnNextLevelOptions;
 
-  public readonly examsRecommendations: string[] = examsRecommendationsInTable;
+  public readonly examsRecommendations: { label: string; value: string }[] = examsRecommendationsInTable;
 
   public isCheckedBook: boolean = false;
   public isCheckedOwnTitle: boolean = false;
@@ -72,10 +72,10 @@ export class YearReportComponent implements OnInit {
   }
 
   public initClassesFromFirstSelectedClass(classValue: string): void {
-    let newClasses: string[] = this.classes.slice(0, -1);
+    let newClasses: { label: string; value: string }[] = this.classes.slice(0, -1);
 
-    this.indexClass = newClasses.findIndex((r: string) => {
-      return r === classValue;
+    this.indexClass = newClasses.findIndex((r: { label: string; value: string }) => {
+      return r.value === classValue;
     });
 
     let shortClassesInSchool: string[] = this.classesInSchool.slice(
@@ -133,10 +133,10 @@ export class YearReportComponent implements OnInit {
   }
 
   public setClasses(classValue: string): void {
-    let newClasses: string[] = this.classes.slice(0, -1);
+    let newClasses: { label: string; value: string }[] = this.classes.slice(0, -1);
 
-    this.indexClass = newClasses.findIndex((r: string) => {
-      return r === this.form.getRawValue()['class'];
+    this.indexClass = newClasses.findIndex((r: { label: string; value: string }) => {
+      return r.value === this.form.getRawValue()['class'];
     });
 
     this.initClassesFromFirstSelectedClass(classValue);
@@ -271,7 +271,7 @@ export class YearReportComponent implements OnInit {
                 { text: 'Data', style: 'tableHeader' },
                 { text: `${date}` },
                 { text: 'Klasa', style: 'tableHeader' },
-                { text: `${form.value.class}` },
+                { text: `${form.value.class.value}` },
               ],
               [
                 { text: 'Lektor', style: 'tableHeader' },
