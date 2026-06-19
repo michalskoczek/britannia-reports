@@ -50,7 +50,7 @@ export class SemestrReportComponent implements OnInit {
   public form!: FormGroup;
 
   public readonly sexes: string[] = sexes;
-  public readonly classes: string[] = classes;
+  public readonly classes: { label: string; value: string }[] = classes;
   public readonly teachers: string[] = teachers;
   public readonly books: string[] = books;
   public readonly courses: string[] = courses;
