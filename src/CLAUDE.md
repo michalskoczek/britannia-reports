@@ -14,7 +14,7 @@ Britannia Reports is an Angular 20 single-page app that generates end-of-term an
 
 ```bash
 npm start                                                  # ng serve on http://localhost:4200
-npm run build                                              # production build → dist/britannia-reports/browser
+npm run build                                              # production build → dist/browser
 npm run watch                                              # dev build with --watch
 npm test                                                   # Karma + Jasmine, interactive (launches Chrome)
 npm test -- --watch=false --browsers=ChromeHeadless        # headless single-run (use in CI / for verification)
@@ -57,13 +57,15 @@ Running a single spec: `npm test -- --include='**/teddy-eddie-form.component.spe
 
 **Pre-existing `@typescript-eslint/no-explicit-any` errors in PDF builders are known.** `*-report.component.ts` files carry `any` types around `pdfmake` doc-definition construction. The `eslint.config.js` has `@typescript-eslint/no-explicit-any: 'off'` so these don't fail lint. Do not add new `any` in new code; do not block work on refactoring legacy `any` unless the task is explicitly about typing the PDF builders.
 
-**ESLint must be clean before merging.** `npm run lint` exits 0 on `master` today; that is a maintained invariant. Run `ng lint` locally before pushing — there is no CI gate yet.
+**ESLint must be clean before merging.** `npm run lint` exits 0 on `master`; that is a maintained invariant. Run `npm run lint` locally before pushing — there is no CI gate yet.
+
+As of 2026-07-10, `dev` does **not** satisfy this: 9 errors in `src/app/year-report/year-report.component.ts` (`prefer-const`, `no-inferrable-types`, an unused `Validators` import). All are cosmetic and 8 are `--fix`-able, but the file is under the PDF-fidelity guardrail, so clear them in a dedicated change with a before/after PDF check — not as a drive-by during unrelated work. Do not add a CI lint gate until this is cleared.
 
 **For subscription cleanup, use `takeUntil`, `async` pipe, or `destroyRef` — pick one per file.** Material modules and `ngx-translate` observables are the usual culprits.
 
 **Design tokens live in `src/assets/styles/utils/`** (`_colors.scss`, `_typography.scss`, `_spacing.scss`, `_breakpoints.scss`, barrelled via `index.scss`; plus `src/assets/styles/mixins.scss`). New component SCSS must `@use` these tokens (see `src/app/teddy-eddie-report/teddy-eddie-form/teddy-eddie-form.component.scss` for the pattern) — do not hardcode hex colours, px font sizes, or breakpoint widths. The Teddy Eddie report is the styling reference for which tokens get used together; the older report types (Cambridge, semester/trimester, year-end) reflect earlier visual iterations and are not the reference, so do not copy their styling into new work.
 
-**Build output is `dist/britannia-reports/browser`** (Angular 17+ application builder). `firebase.json` points `hosting.public` at `dist/browser` — confirm the path after `ng build` if deploying.
+**Build output is `dist/browser`.** `angular.json` sets `outputPath: { base: "dist" }` and `@angular/build:application` appends the `browser` subdirectory. `firebase.json` points `hosting.public` at `dist/browser`, so the two are aligned — **do not "fix" either one in isolation.** If you ever change `outputPath`, change `hosting.public` in the same commit; otherwise `firebase deploy` cheerfully publishes an empty directory over the live site and exits 0. Gate deploys on `ls dist/browser/index.html` after building.
 
 ## Context directory
 
