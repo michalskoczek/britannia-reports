@@ -1,17 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-// @ts-ignore
+import { Component, inject, OnInit } from '@angular/core';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+// @ts-expect-error pdfMake
 import pdfMake from 'pdfmake/build/pdfmake';
-// @ts-ignore
+// @ts-expect-error pdfFonts
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { ELEMENT_DATA, TableElement } from '../rating-scale/table-elements';
-import {
-  sexes,
-  classes,
-  teachers,
-  books,
-  courses,
-} from '../shared/select-values';
+import { sexes, classes, teachers, books, courses } from '../shared/select-values';
 import {
   behaviourMarks,
   frequencyMarks,
@@ -23,29 +17,84 @@ import {
   pronunciationMarks,
   vocabularyMarks,
 } from '../shared/marks';
-import {
-  additionalExamInformations,
-  examsRecommendations,
-  learningRecommendations,
-} from '../shared/exams';
+import { additionalExamInformations, examsRecommendations, learningRecommendations } from '../shared/exams';
 import { image } from '../shared/images-base64';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ReportType } from '../shared/enum/report-type.enum';
 import { Sex } from '../shared/enum/sex.enum';
+import { MatError, MatFormField, MatHint, MatInput, MatLabel } from '@angular/material/input';
+import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from '@angular/material/datepicker';
 
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import { MatOption, MatSelect } from '@angular/material/select';
+import {
+  MatAccordion,
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+  MatExpansionPanelTitle,
+} from '@angular/material/expansion';
+import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
+import { MatButton } from '@angular/material/button';
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable,
+} from '@angular/material/table';
+import { MatCheckbox } from '@angular/material/checkbox';
+
+pdfMake.vfs = pdfFonts.vfs;
 
 @Component({
   selector: 'app-semestr-report',
   templateUrl: './semestr-report.component.html',
   styleUrls: ['./semestr-report.component.scss'],
-  standalone: false,
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    TranslateModule,
+    MatError,
+    MatDatepickerInput,
+    MatHint,
+    MatDatepickerToggle,
+    MatInput,
+    MatDatepicker,
+    MatSelect,
+    MatOption,
+    MatAccordion,
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
+    MatExpansionPanelTitle,
+    MatRadioGroup,
+    MatRadioButton,
+    MatButton,
+    MatTable,
+    MatColumnDef,
+    MatCell,
+    MatHeaderCell,
+    MatHeaderRow,
+    MatRow,
+    MatCheckbox,
+    MatHeaderCellDef,
+    MatCellDef,
+    MatHeaderRowDef,
+    MatRowDef,
+  ],
 })
 export class SemestrReportComponent implements OnInit {
-  constructor(private translate: TranslateService) {
+  private readonly translate = inject(TranslateService);
+
+  constructor() {
     this.translate.setDefaultLang('pl');
   }
-  title: string = 'britannia-reports';
+  title = 'britannia-reports';
 
   public form!: FormGroup;
 
@@ -68,12 +117,12 @@ export class SemestrReportComponent implements OnInit {
   public readonly behaviourMarks: Marks[] = behaviourMarks;
   public readonly frequencyMarks: Marks[] = frequencyMarks;
 
-  public isCheckedBook: boolean = false;
-  public isCheckedOwnTitle: boolean = false;
+  public isCheckedBook = false;
+  public isCheckedOwnTitle = false;
 
   public learningRecommendations: string[] = learningRecommendations;
 
-  public isChecked: boolean = false;
+  public isChecked = false;
 
   private readonly imageLogo: string = image;
   private readonly semesterText: string = 'semestralny';
@@ -81,12 +130,9 @@ export class SemestrReportComponent implements OnInit {
   private readonly trimesterTextTitle: string = 'po pierwszym trymestrze';
   private readonly semesterTextMark: string = 'semestralna';
 
-  public readonly additionalExamInformations: string[] =
-    additionalExamInformations;
+  public readonly additionalExamInformations: string[] = additionalExamInformations;
 
-  public readonly addExamInfoCambridge: string[] = [
-    ...additionalExamInformations,
-  ];
+  public readonly addExamInfoCambridge: string[] = [...additionalExamInformations];
 
   private readonly checkmarkLogo: string =
     'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAAv5JREFUaEPtmDmrFEEUhb8Hboio4C4q4gauKGaCkRsGgmjimoggLoFiZmAomIhooGIgZiIugQgKLmiouP0C/4Br7NrnUSXz+k1P3dvT7fTAVDYzp6rOuffUrVszRJ+PoT7nz0BArzM4yMAgA+kITAfuAeuAE8DN1ilNt9AM4EkmYE0g/Qc4BlyNIposQOSfAqtzSZKIo8A1fd9UAUXko5bfwCHZqYkCZobIr0ocj1/AwaYJEPlnwMr02R5GfGqSgFmB/AojecGeN0WA1Tat2j4Am5sgwGsbiRgm3wQLyTYqlVbPjyDf6zJaxvP/It/ri6wS8kUZWAScAz4CZ4Efjqpggc5V9QCWWcAB8z54/nN+Tv4QrwceAoqQxl1gD/DTsVkn6OzgeU+pHGWbomZuU+j6JucY3AH2ViBC5HVJLXcEQ5HfompTNCdmYD9wAxhbALwN7AN0fZcZ84JtljgmF9omn4HjwGVDYyeBh7NzoUbKM8qQfxc8/yW1kTLwHcjbpmjedeAIoJbWMuaHyC+2gAPGTF54CbgP7HRscAVQ1lIiFgTPe8i/DZ5PRj7ylYCJwKOsOmx0iLgEnOwgokzkTZ7Pc4yHeEoobyqj1nExs9+pNuAykS9FPlooctDj+QXgqdEXgNMtIkRel5QuQ+soTT4vQJ91S74EPL49D5wBlgYrLrQyB94Ez391zBkBbddOi4BEyMfW8Q2YBIyxTqiCfLsMxP0VTdlpjoOQB6pSqRt2VG/jWaSTAP2mvzPk52neRRN4V51P7Z16ka0NIqamFjL+Xin5VAYipw3A4+BxI8+2sMrJWwUIp/fnA2BCSQXuG9a6T8pCrevsANRaj7MuHnCvga3Zza1KVfnwCNDm20PvNN7IpLbIx/29AjRPjZ/eB0Vvh7j2K2BbXZHvRoDm7gJudRBRe+S7FdBJxH8j76lCRZbfHTIRWwj1Njqw5n7eeJYKYWXOQH4x2Umttf49OBBeeN3yMs+vQoB5szqAAwF1RNWz5iADnmjVge37DPwFRASGR52JQuMAAAAASUVORK5CYII=';
@@ -190,22 +236,15 @@ export class SemestrReportComponent implements OnInit {
   }
 
   public generatePDF(form: FormGroup): any {
-    let date: string = new Date(form.value.date).toLocaleDateString();
+    const date: string = new Date(form.value.date).toLocaleDateString();
 
-    let commentsArray: string[] = [];
-    form.value.comments.forEach((comment: string) =>
-      commentsArray.push(comment)
-    );
+    const commentsArray: string[] = [];
+    form.value.comments.forEach((comment: string) => commentsArray.push(comment));
 
-    let recommendationsArray: string[] = [];
-    form.value.recommendations.forEach((comment: string) =>
-      recommendationsArray.push(comment)
-    );
+    const recommendationsArray: string[] = [];
+    form.value.recommendations.forEach((comment: string) => recommendationsArray.push(comment));
 
-    const changeXToStudentName = (
-      textValue: string,
-      studentName: string
-    ): string => {
+    const changeXToStudentName = (textValue: string, studentName: string): string => {
       return textValue.replace(textValue[0], studentName);
     };
 
@@ -214,9 +253,7 @@ export class SemestrReportComponent implements OnInit {
     };
 
     const changeXToEmptyValue = (textValue: string): string => {
-      return textValue.replace(/^X\s+(\w)/, (match, firstLetter) =>
-        firstLetter.toUpperCase()
-      );
+      return textValue.replace(/^X\s+(\w)/, (match, firstLetter) => firstLetter.toUpperCase());
     };
 
     const addSpaceAfterTeacher = (teachers: string[]) => {
@@ -225,17 +262,7 @@ export class SemestrReportComponent implements OnInit {
       return teachers.join(', ');
     };
 
-    const getMarkValue = (
-      selectedValue: string,
-      marks: Marks[]
-    ): string | undefined => {
-      let markObj: Marks | undefined = marks.find(
-        (mark: Marks): boolean => mark.value === selectedValue
-      );
-      return markObj?.viewValue[0];
-    };
-
-    let docDefinition = {
+    const docDefinition = {
       content: [
         {
           text: 'PODSUMOWANIE NAUKI I REKOMENDACJE',
@@ -248,17 +275,12 @@ export class SemestrReportComponent implements OnInit {
               stack: [
                 {
                   text: `Raport ${
-                    form.get('reportType')?.value === ReportType.SEMESTER
-                      ? this.semesterText
-                      : this.trimesterTextTitle
+                    form.get('reportType')?.value === ReportType.SEMESTER ? this.semesterText : this.trimesterTextTitle
                   }`,
                   style: 'subheader',
                 },
                 {
-                  text: [
-                    `Imię i Nazwisko ucznia: `,
-                    { text: `${form.value.studentName}`, style: 'subtitle' },
-                  ],
+                  text: [`Imię i Nazwisko ucznia: `, { text: `${form.value.studentName}`, style: 'subtitle' }],
                   margin: [0, 5, 0, 0],
                   style: 'subheader',
                 },
@@ -295,8 +317,8 @@ export class SemestrReportComponent implements OnInit {
                     form.value.studentBookTitle
                       ? form.value.studentBookTitle
                       : form.value.ownTitleStudentBook
-                      ? form.value.ownTitleStudentBook
-                      : 'Własne materiały szkoleniowe'
+                        ? form.value.ownTitleStudentBook
+                        : 'Własne materiały szkoleniowe'
                   }`,
                 },
               ],
@@ -330,10 +352,7 @@ export class SemestrReportComponent implements OnInit {
               [
                 { text: 'Wymowa' },
                 {
-                  text: `${changeXToStudentName(
-                    form.value.pronunciation,
-                    form.value.name
-                  )}`,
+                  text: `${changeXToStudentName(form.value.pronunciation, form.value.name)}`,
                 },
               ],
               [
@@ -354,19 +373,13 @@ export class SemestrReportComponent implements OnInit {
               [
                 { text: 'Prace domowe' },
                 {
-                  text: `${changeXToYValue(
-                    form.value.homeworks,
-                    form.value.sex === Sex.MALE ? 'Uczeń' : 'Uczennica'
-                  )}`,
+                  text: `${changeXToYValue(form.value.homeworks, form.value.sex === Sex.MALE ? 'Uczeń' : 'Uczennica')}`,
                 },
               ],
               [
                 { text: 'Zaangażowanie' },
                 {
-                  text: `${changeXToStudentName(
-                    form.value.involvement,
-                    form.value.name
-                  )}`,
+                  text: `${changeXToStudentName(form.value.involvement, form.value.name)}`,
                 },
               ],
               [
@@ -424,9 +437,7 @@ export class SemestrReportComponent implements OnInit {
               [
                 {
                   text: `Ocena ${
-                    form.value.reportType === ReportType.SEMESTER
-                      ? this.semesterTextMark
-                      : this.trimesterText
+                    form.value.reportType === ReportType.SEMESTER ? this.semesterTextMark : this.trimesterText
                   }`,
                 },
                 {
@@ -554,8 +565,7 @@ export class SemestrReportComponent implements OnInit {
       },
     };
 
-    const fileName: string =
-      form.value.studentName.split(' ').join('-') + '_semester_report';
+    const fileName: string = form.value.studentName.split(' ').join('-') + '_semester_report';
     pdfMake.createPdf(docDefinition).download(fileName);
   }
 
@@ -618,11 +628,7 @@ export class SemestrReportComponent implements OnInit {
                 text: 'Rekomendacje egzaminacyjne zostaną przekazane po kolejnym próbnym teście Cambridge.',
               },
               {
-                image: `${
-                  form.value.examRecommendationOptions === '1'
-                    ? this.checkmarkLogo
-                    : this.emptyImageLogo
-                }`,
+                image: `${form.value.examRecommendationOptions === '1' ? this.checkmarkLogo : this.emptyImageLogo}`,
                 width: 15,
                 height: 15,
                 alignment: 'center',
@@ -633,11 +639,7 @@ export class SemestrReportComponent implements OnInit {
                 text: 'Nie rekomenduję wzięcia udziału w czerwcowej sesji egzaminacyjnej Cambridge w tym roku szkolnym.',
               },
               {
-                image: `${
-                  form.value.examRecommendationOptions === '2'
-                    ? this.checkmarkLogo
-                    : this.emptyImageLogo
-                }`,
+                image: `${form.value.examRecommendationOptions === '2' ? this.checkmarkLogo : this.emptyImageLogo}`,
                 width: 15,
                 height: 15,
                 alignment: 'center',
@@ -654,11 +656,7 @@ export class SemestrReportComponent implements OnInit {
                   }`,
               },
               {
-                image: `${
-                  form.value.examRecommendationOptions === '3'
-                    ? this.checkmarkLogo
-                    : this.emptyImageLogo
-                }`,
+                image: `${form.value.examRecommendationOptions === '3' ? this.checkmarkLogo : this.emptyImageLogo}`,
                 width: 15,
                 height: 15,
                 alignment: 'center',

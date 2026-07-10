@@ -1,17 +1,35 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-// @ts-ignore
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+// @ts-expect-error pdfmake
 import pdfMake from 'pdfmake/build/pdfmake';
-// @ts-ignore
+// @ts-expect-error pdfFonts
 import pdfFonts from 'pdfmake/build/vfs_fonts';
+import { MatError, MatFormField, MatHint, MatInput, MatLabel } from '@angular/material/input';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgIf } from '@angular/common';
+import { MatOption, MatSelect } from '@angular/material/select';
+import { MatButton } from '@angular/material/button';
 
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+pdfMake.vfs = pdfFonts.vfs;
 
 @Component({
-    selector: 'app-special-marks',
-    templateUrl: './special-marks.component.html',
-    styleUrls: ['./special-marks.component.scss'],
-    standalone: false
+  selector: 'app-special-marks',
+  templateUrl: './special-marks.component.html',
+  styleUrls: ['./special-marks.component.scss'],
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    TranslateModule,
+    MatHint,
+    MatError,
+    MatInput,
+    NgIf,
+    MatSelect,
+    MatOption,
+    MatButton,
+  ],
 })
 export class SpecialMarksComponent implements OnInit {
   public specialMarksForm!: FormGroup;
@@ -36,7 +54,7 @@ export class SpecialMarksComponent implements OnInit {
   }
 
   public generatePDF(form: FormGroup): any {
-    let docDefinition = {
+    const docDefinition = {
       content: [
         {
           style: 'tableExample',
@@ -212,22 +230,10 @@ export class SpecialMarksComponent implements OnInit {
           table: {
             widths: ['*', 'auto'],
             body: [
-              [
-                { text: 'Zaangażowanie i udział w lekcjach' },
-                { text: `${form.value.involvementInLessons}` },
-              ],
-              [
-                { text: 'Prowadzenie zeszytu, notatek' },
-                { text: `${form.value.lead}` },
-              ],
-              [
-                { text: 'Szacunek do nauczyciela i innych kursantów z grupy' },
-                { text: `${form.value.respect}` },
-              ],
-              [
-                { text: 'Skupienie uwagi na lekcjach' },
-                { text: `${form.value.focus}` },
-              ],
+              [{ text: 'Zaangażowanie i udział w lekcjach' }, { text: `${form.value.involvementInLessons}` }],
+              [{ text: 'Prowadzenie zeszytu, notatek' }, { text: `${form.value.lead}` }],
+              [{ text: 'Szacunek do nauczyciela i innych kursantów z grupy' }, { text: `${form.value.respect}` }],
+              [{ text: 'Skupienie uwagi na lekcjach' }, { text: `${form.value.focus}` }],
               [{ text: 'Zachowanie' }, { text: `${form.value.behaviour}` }],
             ],
           },

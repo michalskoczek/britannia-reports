@@ -1,62 +1,11 @@
-<div class="container">
-  <header class="header">
-    <img
-      class="col-3 img"
-      src="../../assets/images/britannia_logo.svg"
-      alt="britannia-logo"
-    />
-    <h1 class="w-auto title">Britannia Reports - generator raportów</h1>
-  </header>
+<div class="wrapper">
+  <app-header></app-header>
 
-  <div class="d-flex w-auto justify-content-end mb-4">
-    <button
-      mat-raised-button
-      color="primary"
-      class="mx-2"
-      (click)="switchLanguage('en')"
-    >
-      English
-    </button>
-    <button mat-raised-button color="primary" (click)="switchLanguage('pl')">
-      Polish
-    </button>
-  </div>
+  <main class="main-wrapper">
+    <app-tab-group (clickTabEvent)="emitTab($event)"></app-tab-group>
 
-  <mat-tab-group>
-    <mat-tab>
-      <ng-template mat-tab-label>{{
-        "semesterTrimesterReport" | translate
-      }}</ng-template>
-      <ng-template matTabContent>
-        <app-semestr-report></app-semestr-report>
-      </ng-template>
-    </mat-tab>
-
-    <mat-tab>
-      <ng-template mat-tab-label>{{
-        "endOfYearReport" | translate
-      }}</ng-template>
-      <ng-template matTabContent>
-        <app-year-report></app-year-report>
-      </ng-template>
-    </mat-tab>
-
-    <mat-tab>
-      <ng-template mat-tab-label>{{
-        "cambridgeReport" | translate
-      }}</ng-template>
-      <ng-template matTabContent>
-        <app-cambridge-report></app-cambridge-report>
-      </ng-template>
-    </mat-tab>
-
-    <mat-tab>
-      <ng-template mat-tab-label>{{
-        "teddyEddieReport" | translate
-      }}</ng-template>
-      <ng-template matTabContent>
-        <app-teddy-eddie-report></app-teddy-eddie-report>
-      </ng-template>
-    </mat-tab>
-  </mat-tab-group>
+    @if (activeTab) {
+      <ng-container *ngComponentOutlet="activeTab.component"></ng-container>
+    }
+  </main>
 </div>

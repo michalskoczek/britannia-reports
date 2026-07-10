@@ -245,5 +245,11 @@
   "cambridgeB2First": "Cambridge B2 First for Schools (FCE)",
   "cambridgeC1Advanced": "Cambridge C1 Advanced (CAE)",
   "full": "Pełna",
-  "conditional": "Warunkowa"
+  "conditional": "Warunkowa",
+  "error.fieldIsRequired": "Pole jest wymagane",
+  "typeValue": "Wpisz wartość...",
+  "selectValue": "Wybierz wartość...",
+  "date": "Data",
+  "cambridge": "Raport Cambridge",
+  "selectStudentsClassToShowTable": "Zawartość tabeli pojawi się po wybraniu klasy ucznia"
 }

@@ -1,18 +1,21 @@
 import { Component } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { Tab } from './model/tab.interface';
+import { TabData } from './shared/static-data/tab-data';
+import { HeaderComponent } from './shared/components/UI/header/header.component';
+import { TabGroupComponent } from './shared/components/UI/tab-group/tab-group.component';
+import { NgComponentOutlet } from '@angular/common';
 
 @Component({
-    selector: 'app-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss'],
-    standalone: false
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
+  standalone: true,
+  imports: [HeaderComponent, TabGroupComponent, NgComponentOutlet],
 })
 export class AppComponent {
-  constructor(private translate: TranslateService) {
-    this.translate.setDefaultLang('pl');
-  }
+  public activeTab: Tab | undefined = TabData.tabs.find((tab: Tab) => tab.defaultActive);
 
-  public switchLanguage(language: string) {
-    this.translate.use(language);
+  public emitTab(tab: Tab): void {
+    this.activeTab = tab;
   }
 }

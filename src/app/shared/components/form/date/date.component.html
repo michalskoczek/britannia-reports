@@ -1,0 +1,17 @@
+<mat-form-field appearance="outline">
+  <mat-label>{{ label() | translate }}</mat-label>
+  <input
+    matInput
+    [formControl]="control"
+    [matDatepicker]="picker"
+    [required]="required()"
+    [placeholder]="placeholder() | translate"
+    [errorStateMatcher]="errorStateMatcher"
+    (blur)="onBlur()"
+  />
+
+  <mat-error>{{ errorMessage() | translate }}</mat-error>
+
+  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker #picker></mat-datepicker>
+</mat-form-field>

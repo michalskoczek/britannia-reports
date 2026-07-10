@@ -1,0 +1,23 @@
+<form [formGroup]="form" class="wrapper">
+  <app-input-text
+    formControlName="studentName"
+    [label]="'nameAndLastNameStudent'"
+    [required]="true"
+    [errorMessage]="'error.fieldIsRequired'"
+  ></app-input-text>
+
+  <app-select
+    formControlName="age"
+    [label]="'age'"
+    [required]="true"
+    [itemList]="ageTE"
+    [errorMessage]="'error.fieldIsRequired'"
+  ></app-select>
+
+  <app-date
+    formControlName="date"
+    [label]="'date'"
+    [required]="true"
+    [errorMessage]="'error.fieldIsRequired'"
+  ></app-date>
+</form>

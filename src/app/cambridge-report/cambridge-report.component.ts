@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-// @ts-ignore
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+// @ts-expect-error pdfmake
 import pdfMake from 'pdfmake/build/pdfmake';
-// @ts-ignore
+// @ts-expect-error pdfFonts
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { classes, teachers, courses } from '../shared/select-values';
 import { Marks, marks } from '../shared/marks';
@@ -18,18 +18,52 @@ import { GenerateTableA1 } from '../helper/cambridge/static-function/generate-ta
 import { GenerateTableA2B1 } from '../helper/cambridge/static-function/generate-table-A2-B1';
 import { GenerateTableB2C1 } from '../helper/cambridge/static-function/generate-table-B2-C1';
 import { ExamTypes } from '../shared/enum/exam-type.enum';
+import { MatError, MatFormField, MatHint, MatInput, MatLabel } from '@angular/material/input';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from '@angular/material/datepicker';
 
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import { MatOption, MatSelect } from '@angular/material/select';
+import {
+  MatAccordion,
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+  MatExpansionPanelTitle,
+} from '@angular/material/expansion';
+import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
+import { MatButton } from '@angular/material/button';
+
+pdfMake.vfs = pdfFonts.vfs;
 
 @Component({
   selector: 'app-cambridge-report',
   templateUrl: './cambridge-report.component.html',
   styleUrls: ['./cambridge-report.component.scss'],
-  standalone: false,
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    TranslateModule,
+    MatError,
+    MatDatepickerInput,
+    MatHint,
+    MatDatepickerToggle,
+    MatInput,
+    MatDatepicker,
+    MatSelect,
+    MatOption,
+    MatAccordion,
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
+    MatExpansionPanelTitle,
+    MatRadioGroup,
+    MatRadioButton,
+    MatButton,
+  ],
 })
 export class CambridgeReportComponent implements OnInit {
   private cd = inject(ChangeDetectorRef);
-  title: string = 'britannia-reports';
+  title = 'britannia-reports';
 
   public form!: FormGroup;
 
@@ -40,16 +74,15 @@ export class CambridgeReportComponent implements OnInit {
 
   public readonly resultOfExam: string[] = resultOfExam;
   public readonly examsSelect: string[] = examsSelect;
-  public selectedTypeOfExam: string = '';
+  public selectedTypeOfExam = '';
 
   public readonly examsRecommendations: string[] = examsRecommendations;
 
-  public isChecked: boolean = false;
+  public isChecked = false;
 
   public learningRecommendations: string[] = learningRecommendations;
 
-  private readonly additionalExamInformations: string[] =
-    additionalExamInformations;
+  private readonly additionalExamInformations: string[] = additionalExamInformations;
   private readonly imageLogo: string = image;
   private readonly checkmarkLogo: string =
     'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAAv5JREFUaEPtmDmrFEEUhb8Hboio4C4q4gauKGaCkRsGgmjimoggLoFiZmAomIhooGIgZiIugQgKLmiouP0C/4Br7NrnUSXz+k1P3dvT7fTAVDYzp6rOuffUrVszRJ+PoT7nz0BArzM4yMAgA+kITAfuAeuAE8DN1ilNt9AM4EkmYE0g/Qc4BlyNIposQOSfAqtzSZKIo8A1fd9UAUXko5bfwCHZqYkCZobIr0ocj1/AwaYJEPlnwMr02R5GfGqSgFmB/AojecGeN0WA1Tat2j4Am5sgwGsbiRgm3wQLyTYqlVbPjyDf6zJaxvP/It/ri6wS8kUZWAScAz4CZ4Efjqpggc5V9QCWWcAB8z54/nN+Tv4QrwceAoqQxl1gD/DTsVkn6OzgeU+pHGWbomZuU+j6JucY3AH2ViBC5HVJLXcEQ5HfompTNCdmYD9wAxhbALwN7AN0fZcZ84JtljgmF9omn4HjwGVDYyeBh7NzoUbKM8qQfxc8/yW1kTLwHcjbpmjedeAIoJbWMuaHyC+2gAPGTF54CbgP7HRscAVQ1lIiFgTPe8i/DZ5PRj7ylYCJwKOsOmx0iLgEnOwgokzkTZ7Pc4yHeEoobyqj1nExs9+pNuAykS9FPlooctDj+QXgqdEXgNMtIkRel5QuQ+soTT4vQJ91S74EPL49D5wBlgYrLrQyB94Ez391zBkBbddOi4BEyMfW8Q2YBIyxTqiCfLsMxP0VTdlpjoOQB6pSqRt2VG/jWaSTAP2mvzPk52neRRN4V51P7Z16ka0NIqamFjL+Xin5VAYipw3A4+BxI8+2sMrJWwUIp/fnA2BCSQXuG9a6T8pCrevsANRaj7MuHnCvga3Zza1KVfnwCNDm20PvNN7IpLbIx/29AjRPjZ/eB0Vvh7j2K2BbXZHvRoDm7gJudRBRe+S7FdBJxH8j76lCRZbfHTIRWwj1Njqw5n7eeJYKYWXOQH4x2Umttf49OBBeeN3yMs+vQoB5szqAAwF1RNWz5iADnmjVge37DPwFRASGR52JQuMAAAAASUVORK5CYII=';
@@ -151,25 +184,20 @@ export class CambridgeReportComponent implements OnInit {
   }
 
   public onRemoveExamTerm(index: number, nameOfArray: string): void {
-    const control = <FormArray>this.form.controls[nameOfArray];
+    const control = this.form.controls[nameOfArray] as FormArray;
     control.removeAt(index);
   }
 
-  public generatePDF(form: FormGroup): any {
-    let date: string = new Date(form.value.date).toLocaleDateString();
+  public generatePDF(form: FormGroup): void {
+    const date: string = new Date(form.value.date).toLocaleDateString();
 
-    let commentsArray: string[] = [];
-    form.value.comments.forEach((comment: string) =>
-      commentsArray.push(comment)
-    );
+    const commentsArray: string[] = [];
+    form.value.comments.forEach((comment: string) => commentsArray.push(comment));
 
-    let recommendationsArray: string[] = [];
-    form.value.recommendations.forEach((comment: string) =>
-      recommendationsArray.push(comment)
-    );
+    const recommendationsArray: string[] = [];
+    form.value.recommendations.forEach((comment: string) => recommendationsArray.push(comment));
 
-    const getMaxTerms = (...arrays: any[][]): number =>
-      Math.max(0, ...arrays.map((a) => a.length));
+    const getMaxTerms = (...arrays: any[][]): number => Math.max(0, ...arrays.map((a) => a.length));
 
     const chooseTableOfExam = () => {
       const v = form.value;
@@ -179,37 +207,22 @@ export class CambridgeReportComponent implements OnInit {
         v.typeOfExam === ExamTypes.MOVERS ||
         v.typeOfExam === ExamTypes.FLYERS
       ) {
-        const maxTerms = getMaxTerms(
-          v.listeningA1Array,
-          v.writingAndReadingA1Array,
-          v.speakingA1Array
-        );
+        const maxTerms = getMaxTerms(v.listeningA1Array, v.writingAndReadingA1Array, v.speakingA1Array);
 
         if (maxTerms === 0) return [];
 
         return GenerateTableA1.generateTable(form, maxTerms);
       }
 
-      if (
-        v.typeOfExam === ExamTypes.A2_KEY ||
-        v.typeOfExam === ExamTypes.B1_PRELIMINARY
-      ) {
-        const maxTerms = getMaxTerms(
-          v.listeningA2B1Array,
-          v.readingA2B1Array,
-          v.writingA2B1Array,
-          v.speakingA2B1Array
-        );
+      if (v.typeOfExam === ExamTypes.A2_KEY || v.typeOfExam === ExamTypes.B1_PRELIMINARY) {
+        const maxTerms = getMaxTerms(v.listeningA2B1Array, v.readingA2B1Array, v.writingA2B1Array, v.speakingA2B1Array);
 
         if (maxTerms === 0) return [];
 
         return GenerateTableA2B1.generateTable(form, maxTerms);
       }
 
-      if (
-        v.typeOfExam === ExamTypes.B2_FIRST ||
-        v.typeOfExam === ExamTypes.C1_ADVANCED
-      ) {
+      if (v.typeOfExam === ExamTypes.B2_FIRST || v.typeOfExam === ExamTypes.C1_ADVANCED) {
         const maxTerms = getMaxTerms(
           v.listeningB2C1Array,
           v.readingB2C1Array,
@@ -232,7 +245,7 @@ export class CambridgeReportComponent implements OnInit {
       return teachers.join(', ');
     };
 
-    let docDefinition: any = {
+    const docDefinition: any = {
       content: [
         {
           text: 'RAPORT Z PRZEPROWADZENIA PRÓBNEGO EGZAMINU CAMBRIDGE',
@@ -244,10 +257,7 @@ export class CambridgeReportComponent implements OnInit {
             {
               stack: [
                 {
-                  text: [
-                    `Imię i Nazwisko ucznia: `,
-                    { text: `${form.value.studentName}`, style: 'subtitle' },
-                  ],
+                  text: [`Imię i Nazwisko ucznia: `, { text: `${form.value.studentName}`, style: 'subtitle' }],
                   margin: [0, 5, 0, 0],
                   style: 'subheader',
                 },
@@ -320,11 +330,7 @@ export class CambridgeReportComponent implements OnInit {
                   text: 'Rekomendacje egzaminacyjne zostaną przekazane po kolejnym próbnym teście Cambridge.',
                 },
                 {
-                  image: `${
-                    form.value.examRecommendationOptions === '1'
-                      ? this.checkmarkLogo
-                      : this.emptyImageLogo
-                  }`,
+                  image: `${form.value.examRecommendationOptions === '1' ? this.checkmarkLogo : this.emptyImageLogo}`,
                   width: 15,
                   height: 15,
                   alignment: 'center',
@@ -335,11 +341,7 @@ export class CambridgeReportComponent implements OnInit {
                   text: 'Nie rekomenduję wzięcia udziału w czerwcowej sesji egzaminacyjnej Cambridge w tym roku szkolnym.',
                 },
                 {
-                  image: `${
-                    form.value.examRecommendationOptions === '2'
-                      ? this.checkmarkLogo
-                      : this.emptyImageLogo
-                  }`,
+                  image: `${form.value.examRecommendationOptions === '2' ? this.checkmarkLogo : this.emptyImageLogo}`,
                   width: 15,
                   height: 15,
                   alignment: 'center',
@@ -356,11 +358,7 @@ export class CambridgeReportComponent implements OnInit {
                     }`,
                 },
                 {
-                  image: `${
-                    form.value.examRecommendationOptions === '3'
-                      ? this.checkmarkLogo
-                      : this.emptyImageLogo
-                  }`,
+                  image: `${form.value.examRecommendationOptions === '3' ? this.checkmarkLogo : this.emptyImageLogo}`,
                   width: 15,
                   height: 15,
                   alignment: 'center',
@@ -427,16 +425,13 @@ export class CambridgeReportComponent implements OnInit {
       },
     };
 
-    const fileName: string =
-      form.value.studentName.split(' ').join('-') + '_cambridge_report';
+    const fileName: string = form.value.studentName.split(' ').join('-') + '_cambridge_report';
     pdfMake.createPdf(docDefinition).download(fileName);
   }
 
   private commentAfterExaResults(form: FormGroup): any {
-    let commentsArray: string[] = [];
-    form.value.comments.forEach((comment: string) =>
-      commentsArray.push(comment)
-    );
+    const commentsArray: string[] = [];
+    form.value.comments.forEach((comment: string) => commentsArray.push(comment));
 
     if (form.getRawValue().comments.length > 0) {
       return {
