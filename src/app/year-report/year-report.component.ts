@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 // @ts-expect-error pdfMake
 import pdfMake from 'pdfmake/build/pdfmake';
 // @ts-expect-error pdfFont
@@ -90,7 +90,7 @@ pdfMake.vfs = pdfFonts.vfs;
   ],
 })
 export class YearReportComponent implements OnInit {
-  title: string = 'britannia-reports';
+  title = 'britannia-reports';
 
   public form!: FormGroup;
 
@@ -117,10 +117,10 @@ export class YearReportComponent implements OnInit {
 
   public readonly examsRecommendations: { label: string; value: string }[] = examsRecommendationsInTable;
 
-  public isCheckedBook: boolean = false;
-  public isCheckedOwnTitle: boolean = false;
+  public isCheckedBook = false;
+  public isCheckedOwnTitle = false;
 
-  public indexClass: number = 0;
+  public indexClass = 0;
 
   private readonly banerLogo: string = baner;
 
@@ -129,13 +129,13 @@ export class YearReportComponent implements OnInit {
   }
 
   public initClassesFromFirstSelectedClass(classValue: string): void {
-    let newClasses: { label: string; value: string }[] = this.classes.slice(0, -1);
+    const newClasses: { label: string; value: string }[] = this.classes.slice(0, -1);
 
     this.indexClass = newClasses.findIndex((r: { label: string; value: string }) => {
       return r.value === classValue;
     });
 
-    let shortClassesInSchool: string[] = this.classesInSchool.slice(
+    const shortClassesInSchool: string[] = this.classesInSchool.slice(
       this.indexClass,
       this.classesInSchool.length
     );
@@ -185,7 +185,7 @@ export class YearReportComponent implements OnInit {
   }
 
   public setClasses(classValue: string): void {
-    let newClasses: { label: string; value: string }[] = this.classes.slice(0, -1);
+    const newClasses: { label: string; value: string }[] = this.classes.slice(0, -1);
 
     this.indexClass = newClasses.findIndex((r: { label: string; value: string }) => {
       return r.value === this.form.getRawValue()['class'];
@@ -558,7 +558,7 @@ export class YearReportComponent implements OnInit {
   private getBodyInSkills(form: FormGroup) {
     const formValue = form.getRawValue();
 
-    let arrDetails: any[] = [];
+    const arrDetails: any[] = [];
 
     if (!formValue.eofEvaluationDelete) {
       arrDetails.push([
