@@ -238,15 +238,11 @@
 
             <div class="select-wrapper">
               <mat-select formControlName="readinessToContinueOnNextLevel">
-                <ng-container
-                  *ngFor="
-                    let readinessToContinueOnNextLevelOption of readinessToContinueOnNextLevelOptions
-                  "
-                >
+                @for (readinessToContinueOnNextLevelOption of readinessToContinueOnNextLevelOptions; track readinessToContinueOnNextLevelOption) {
                   <mat-option [value]="readinessToContinueOnNextLevelOption.value">
                     {{ readinessToContinueOnNextLevelOption.label | translate }}
                   </mat-option>
-                </ng-container>
+                }
               </mat-select>
             </div>
 
