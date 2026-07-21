@@ -89,8 +89,8 @@
         <mat-label>{{ "Klasa" | translate }}</mat-label>
         <mat-select formControlName="class">
           @for (classItem of classes; track classItem) {
-            <mat-option [value]="classItem">
-              {{ classItem | translate }}
+            <mat-option [value]="classItem.value">
+              {{ classItem.label | translate }}
             </mat-option>
           }
         </mat-select>

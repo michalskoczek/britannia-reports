@@ -2,20 +2,20 @@ import { Sex } from './enum/sex.enum';
 
 export const sexes: string[] = [Sex.MALE, Sex.FEMALE];
 
-export const classes: string[] = [
-  'Klasa 2 szkoły podstawowej',
-  'Klasa 3 szkoły podstawowej',
-  'Klasa 4 szkoły podstawowej',
-  'Klasa 5 szkoły podstawowej',
-  'Klasa 6 szkoły podstawowej',
-  'Klasa 7 szkoły podstawowej',
-  'Klasa 8 szkoły podstawowej',
-  'Klasa 1 szkoły średniej',
-  'Klasa 2 szkoły średniej',
-  'Klasa 3 szkoły średniej',
-  'Klasa 4 szkoły średniej',
-  'Klasa 5 szkoły średniej',
-  'osoba dorosła',
+export const classes: { label: string; value: string }[] = [
+  { label: "grade2PrimarySchool", value: "Klasa 2 szkoły podstawowej" },
+  { label: "grade3PrimarySchool", value: "Klasa 3 szkoły podstawowej" },
+  { label: "grade4PrimarySchool", value: "Klasa 4 szkoły podstawowej" },
+  { label: "grade5PrimarySchool", value: "Klasa 5 szkoły podstawowej" },
+  { label: "grade6PrimarySchool", value: "Klasa 6 szkoły podstawowej" },
+  { label: "grade7PrimarySchool", value: "Klasa 7 szkoły podstawowej" },
+  { label: "grade8PrimarySchool", value: "Klasa 8 szkoły podstawowej" },
+  { label: "grade1SecondarySchool", value: "Klasa 1 szkoły średniej" },
+  { label: "grade2SecondarySchool", value: "Klasa 2 szkoły średniej" },
+  { label: "grade3SecondarySchool", value: "Klasa 3 szkoły średniej" },
+  { label: "grade4SecondarySchool", value: "Klasa 4 szkoły średniej" },
+  { label: "grade5SecondarySchool", value: "Klasa 5 szkoły średniej" },
+  { label: "adult", value: "Osoba dorosła" },
 ];
 
 export const teachers: string[] = [

@@ -5,17 +5,29 @@ agent_readiness: ready-with-compensation
 context_type: brownfield
 stack_components:
   language: TypeScript
-  framework: Angular 19
+  framework: Angular 20
   build_tool: Angular CLI
   test_runner: Jasmine + Karma
   package_manager: npm
   ci_provider: null
-  deployment_target: null
+  deployment_target: firebase-hosting
 gates_passed: 4
 gates_failed: 0
 ---
 
 # Stack Assessment — britannia-reports
+
+> ⚠️ **Point-in-time snapshot taken 2026-05-23. The prose below is preserved as written; several findings went stale by 2026-07-10.**
+> The frontmatter above has been corrected (it is machine-read and must be true); the body has not been rewritten.
+>
+> **What changed since the assessment:**
+> - **Angular 19 → 20.3, and the app is now fully standalone.** There is no `AppModule`; `src/main.ts` calls `bootstrapApplication(AppComponent, appConfig)` with providers in `src/app/app.config.ts`. Every mention of NgModule below is obsolete.
+> - **A linter is configured.** `eslint.config.js` + `angular-eslint` are present and `npm run lint` is wired. (Gap 2 — closed. Caveat: lint currently fails on `dev` with 9 pre-existing cosmetic errors in `year-report.component.ts`.)
+> - **Project-level instruction files exist.** Root `CLAUDE.md` plus the authoritative `src/CLAUDE.md`. (Gap 1 — closed.)
+> - **Firebase is no longer ambiguous.** `firebase.json` + `.firebaserc` exist and the app is **deployed and live** at https://britannia-reports.web.app. `hosting.public` is `dist/browser`, which matches `angular.json`'s `outputPath.base: "dist"`. Deploys ship from `dev`. (Gap 5 — closed. See `infrastructure.md` for the full deploy story.)
+> - **Prettier 2.8.8 → 3.8.3**, and `.prettierrc.json` now exists at the project root, so the "built-in defaults, no pinned style" finding no longer holds.
+>
+> **Still open:** Gap 3 (no CI/CD pipeline) and Gap 4 (Karma on the deprecation path).
 
 This assessment evaluates the existing Angular 19 codebase against the four agent-friendly criteria and identifies what to add to instruction files before/during the brownfield change scoped in `context/foundation/prd.md`.
 

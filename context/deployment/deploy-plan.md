@@ -1,191 +1,196 @@
-# Deploy Plan — Walking-skeleton deploy of britannia-reports to Firebase Hosting
+# Deploy Runbook — britannia-reports → Firebase Hosting
+
+This is a **living runbook**, not a one-time plan. Follow it for every deploy of the static SPA to Firebase Hosting. It replaces the original "walking-skeleton first deploy" plan (2026-06), which described a project-creation flow that was **planned but never executed** — see [Historical note](#historical-note-what-changed-from-the-original-plan).
 
 ## Context
 
-`context/foundation/infrastructure.md` (researched 2026-05-25, frontmatter refreshed 2026-06-02) picks **Firebase (Hosting + Auth + Firestore)** as the deploy target for this Angular 20 SPA. The health check from earlier today (`context/foundation/health-check.md`) confirms the project is operationally ready: 5/5 tests pass, `ng lint` is clean, `ng build --configuration production` succeeds, `firebase-tools` v15.19.0 is installed, and `firebase.json` + `.firebaserc` are on disk.
+`context/foundation/infrastructure.md` picks **Firebase (Hosting + Auth + Firestore)** as the deploy target for this Angular 20 standalone SPA. Only **Hosting** is in use today.
 
-The goal of this deploy is a **walking-skeleton first deploy**: get the current SPA (the four existing report types — Cambridge, semester/trimester, Teddy Eddie, year-end) live on Firebase Hosting via a preview channel, verify the four PDF report flows still produce visually identical PDFs (per the project's hard guardrail in `src/CLAUDE.md`), then promote to the live channel.
+This runbook covers publishing the current SPA — the four report types (Cambridge, semester/trimester, Teddy Eddie, year-end) — to Firebase Hosting via a preview channel, verifying the PDF flows against the project's hard fidelity guardrail (`src/CLAUDE.md`), then promoting to the live channel.
 
-**Out of scope** (deferred to the brownfield change that implements FR-001..FR-014):
+**Out of scope** (deferred to the brownfield change implementing FR-001..FR-014):
 
-- Firebase Authentication (Google OAuth) — no app code uses it yet.
-- Firestore — no app code reads/writes persistent data yet. Database location decision (one-way per infrastructure.md risk register) is deferred until the FR-005..009 work begins.
+- Firebase Authentication (Google OAuth) — no app code uses it yet; provider not enabled in the Console.
+- Firestore — no app code reads/writes persistent data. `firebase firestore:databases:list` returns `No databases found`. The one-way database-location decision is **recorded as `eur3`** in `infrastructure.md` but deliberately not executed.
 - `@angular/fire` SDK integration — premature without Auth/Firestore.
-- CI/CD pipeline — explicitly deferred to lesson M1L5 (`Sprint Zero z Agentem: infrastruktura, walking skeleton i pierwszy deploy`).
-- Cloud Functions, custom domains, multi-region setup — all v2 concerns per the PRD.
+- CI/CD pipeline.
+- Cloud Functions, custom domains, multi-region setup — v2 concerns per the PRD.
 
-**User decision recorded during planning:** they will create a **new** Firebase project (the example name was `britannia-reports-2`) rather than reuse the existing `britannia-reports` project. The plan therefore includes a project-creation step plus an aliased `.firebaserc` update that keeps the legacy project ID accessible.
+## Standing facts (verified 2026-07-10)
 
-## Prerequisites already verified (read-only checks during planning)
-
-- `package.json` — `firebase-tools@^15.18.0` (actual installed: 15.19.0); `firebase deploy --only hosting` script not in `package.json` scripts, will run via `npx`.
-- `angular.json:44` — `outputPath.base: "dist"`. **This invalidates the "Day-0 bug" warning in infrastructure.md `## Unknown Unknowns` and `## Getting Started` step 1.** Current build writes to `dist/browser/`; `firebase.json:3` correctly points `public` at `dist/browser`. No firebase.json edit required.
-- `firebase.json` — single `hosting` block, SPA rewrite (`**` → `/index.html`) wired correctly.
-- `.firebaserc` — `projects.default: "britannia-reports"` (will be updated to the new project ID).
-- `dist/browser/` exists from the production build run earlier this session.
-- `firebase login:list` — returns "No authorized accounts" on this machine; login is the first manual step.
+- **Firebase project: `britannia-reports`.** It is the *only* project on the account. `.firebaserc` sets it as `default`; there are no other aliases and none are needed.
+- **Live site: https://britannia-reports.web.app** — already in production. Deploys are **not** first deploys.
+- **Deploy source branch is `dev`, not `master`.** `dev` is ~156 commits ahead. Deploying from `master` would ship a much older app (it predates the Angular 20 upgrade and has no `year-report` component).
+- **Signed in** as `mwskoczek@gmail.com` (`firebase login:list`). `firebase login` is only needed on a fresh machine.
+- **`firebase-tools` 15.19.0**, installed as a devDependency. Invoke via `npx firebase`; there is no `deploy` script in `package.json`.
+- **Build output is `dist/browser`.** `angular.json` sets `outputPath.base: "dist"` and `@angular/build:application` appends `browser`. `firebase.json` points `hosting.public` at `dist/browser`. **These two are coupled — never change one without the other in the same commit.**
+  Note: `infrastructure.md` once called this configuration a "day-0 bug" and instructed changing `public` to `dist/britannia-reports/browser`. That was wrong and has since been corrected in that document. Do not reintroduce it: `dist/britannia-reports/` does not exist, and `firebase deploy` publishes an empty directory **without erroring**.
+- **`firebase.json`** — single `hosting` block, SPA rewrite (`**` → `/index.html`) wired correctly.
+- **`.firebase/`** is a local deploy cache, gitignored. Not a source artifact.
 
 ## Steps
 
-Each step marks who runs it: **(User)** = manual, browser/console or interactive CLI; **(Agent)** = the agent runs it once the plan is approved.
+**(User)** = manual, browser or interactive. **(Agent)** = the agent runs it once approved.
 
-### Phase 1 — One-time account + project setup
+### Phase 1 — Build & pre-deploy verification
 
-1. **(User) Decide the new project ID.** Firebase project IDs are global and irreversible (per infrastructure.md `## Unknown Unknowns` and the risk register row "Firebase project ID is irreversible"). Pick a final ID — the example was `britannia-reports-2`, but a more specific name (e.g. `britannia-reports-mvp`, `britannia-reports-prod`) is worth considering before locking it in. The chosen ID gets baked into the auth domain (`<id>.firebaseapp.com`), storage bucket name, and any future OAuth callback URLs.
-
-2. **(User) `firebase login`.** In a terminal in the repo root, run `npx firebase login` (or `firebase login` if installed globally). Opens a browser, signs in with Google. One-time per machine.
-
-3. **(User) Create the Firebase project via the Firebase Console.** Go to https://console.firebase.google.com, click "Add project", enter the ID chosen in step 1. **Skip Google Analytics** (irrelevant for a static SPA at MVP scale; can be added later). Use the default project location closest to PL users (multi-region `eur3` is the eventual Firestore choice — but that decision happens when Firestore is initialized, not at project creation). Console creation is preferred over `firebase projects:create` because the CLI variant sometimes requires the Blaze billing plan for the quota check, and Spark-plan project creation is reliably free in the Console.
-
-4. **(Agent) Verify the project is visible to the logged-in account.**
-
-   ```bash
-   npx firebase projects:list
-   ```
-
-   The new ID should appear in the listed projects. If it doesn't, the user is logged in to a different Google account from the one that created the project — they fix login and re-run.
-
-### Phase 2 — Wire the project to the repo
-
-5. **(Agent) Update `.firebaserc` to point at the new project and keep an alias for the legacy one.** Edit `.firebaserc`:
-
-   ```json
-   {
-     "projects": {
-       "default": "<new-project-id>",
-       "legacy": "britannia-reports"
-     }
-   }
-   ```
-
-   The `legacy` alias lets you flip back with `firebase use legacy` if you ever need to access the old project (e.g. to clean up, archive, or compare). The `default` alias is what `firebase deploy` uses unless `--project <id>` is passed explicitly.
-
-6. **(Agent) Confirm the active project.**
-
-   ```bash
-   npx firebase use
-   ```
-
-   Should print the new project ID. If wrong, `npx firebase use default`.
-
-### Phase 3 — Build & pre-deploy verification
-
-7. **(Agent) Reproducible install.**
+1. **(Agent) Reproducible install.**
 
    ```bash
    npm ci
    ```
 
-   Locks the install to `package-lock.json`. Catches drift between developer machines.
+   Locks the install to `package-lock.json`. Catches drift between machines. Skip only if `node_modules` is known-fresh.
 
-8. **(Agent) Lint + tests + production build, in that order. Abort the deploy on any failure.**
+2. **(Agent) Lint, tests, production build — in that order. Abort on any failure.**
 
    ```bash
    npm run lint
    npx ng test --watch=false --browsers=ChromeHeadless
-   npx ng build --configuration production
+   npm run build
    ```
 
-   Each must exit 0. The health-check baseline confirmed all three were green at the start of this session.
+   Each must exit 0. All three are green on `dev` as of 2026-07-10 (lint was red until the `year-report.component.ts` cleanup landed; tests are 5/5; build succeeds with pre-existing CommonJS warnings from `moment` and `pdfmake`, which are expected and not failures).
 
-9. **(Agent) Pre-deploy file-existence check** (mitigation for risk register row "no native pre-deploy validation that the bundle actually loaded — silent empty deploys possible if path is wrong"):
+3. **(Agent) Pre-deploy file-existence gate.**
 
    ```bash
    ls dist/browser/index.html
    ```
 
-   If missing, the build silently failed — abort.
+   Missing file ⇒ the build silently produced nothing ⇒ **abort**. `firebase deploy` exits 0 on an empty directory, so this check is the only thing standing between a broken build and a blank production site.
 
-### Phase 4 — Preview deploy + manual verification
+### Phase 2 — Preview deploy + manual verification
 
-10. **(Agent) Deploy to a preview channel with a 7-day expiry.**
+4. **(Agent) Deploy to a preview channel with a 7-day expiry.**
 
-    ```bash
-    npx firebase hosting:channel:deploy preview --expires 7d
-    ```
+   ```bash
+   npx firebase hosting:channel:deploy <channel-name> --expires 7d
+   ```
 
-    Returns a temporary public URL (`https://<new-project-id>--preview-<hash>.web.app` or similar). The preview channel is the safe verification surface before promoting to `live`. Per infrastructure.md `## Operational Story`, preview channel URLs are public by default — fine here because there is no user data and no Auth on the app yet.
+   Returns a temporary public URL, `https://britannia-reports--<channel>-<hash>.web.app`. Confirm the CLI prints **`found N files in dist/browser`** with a non-zero `N` — that line is the cheapest proof the bundle is real.
 
-11. **(User) Visually verify the preview URL.** Open the URL in a browser. Click through each of the four report tabs (Cambridge, semester/trimester, Teddy Eddie, year-end). For each:
+   Preview URLs are public. That is acceptable today because the app holds no user data and has no Auth. **Once FR-001/FR-002 land, revisit this** — a preview channel would expose an unauthenticated surface.
 
-    - Confirm the form renders with no console errors.
-    - Fill in a minimal valid form payload.
-    - Generate a PDF.
-    - Compare the PDF against one generated locally (`npm start` → same form inputs) — they must be visually identical. **This is the PDF-fidelity hard guardrail from `src/CLAUDE.md` line 7.**
+5. **(Agent) Automated smoke test.**
 
-    The locale should display as Polish (date format `DD.MM.YYYY`, Polish month names) per `app.config.ts`. The English UI toggle (if exposed in the header) should swap strings but leave dates Polish-formatted (intentional per `src/CLAUDE.md`).
+   ```bash
+   U=<preview-url>
+   curl -sI "$U" | head -1                        # expect HTTP/2 200
+   curl -s  "$U" | grep -o "<app-root></app-root>" # expect a match
+   curl -sI "$U/assets/i18n/pl.json" | head -1     # expect 200 — i18n is HTTP-loaded
+   curl -sI "$U/assets/i18n/en.json" | head -1     # expect 200
+   curl -sI "$U/no-such-route" | head -1           # expect 200 — SPA rewrite
+   ```
 
-12. **(User) Decision point.** If the preview verifies clean, proceed to step 13. If not, capture the issue (which report? what was different in the PDF? was there a console error?) and abort the deploy — the issue gets fixed in code first, then the plan re-runs from step 7.
+   The i18n checks matter: `ngx-translate` fetches `./assets/i18n/*.json` at runtime, so a broken `assets` entry in `angular.json` shows up only on a deployed build, never on `ng serve`.
 
-### Phase 5 — Promote to live
+6. **(User) Visually verify the preview URL.** Click through each of the four report tabs. For each:
 
-13. **(Agent) Deploy to the live channel.**
+   - Confirm the form renders with no console errors.
+   - Fill in a minimal valid payload.
+   - Generate a PDF.
+   - Compare against a PDF generated locally (`npm start`, same inputs) — they must be visually identical. **This is the PDF-fidelity hard guardrail (`src/CLAUDE.md`).** No automated substitute exists; this step cannot be delegated to the agent.
 
-    ```bash
-    npx firebase deploy --only hosting
-    ```
+   Locale should render Polish (`DD.MM.YYYY`, Polish month names) per `app.config.ts`. The EN toggle swaps strings but leaves dates Polish-formatted — intentional.
 
-    Publishes the build to `https://<new-project-id>.web.app` and `https://<new-project-id>.firebaseapp.com`. Time-to-live is typically under a minute.
+7. **(User) Decision point.** Clean ⇒ go to step 8. Otherwise capture the issue (which report, what differed in the PDF, any console error), abort, fix in code, re-run from step 1.
 
-14. **(User) Visually verify the live URL** the same way as step 11 — four reports, four PDFs, visual diff against local.
+### Phase 3 — Promote to live
 
-### Phase 6 — Capture the deploy state
+8. **(Agent) Deploy to the live channel.**
 
-15. **(Agent) Append a short record to the bottom of this file (`context/deployment/deploy-plan.md`).** The record should include: chosen project ID, live URL, preview channel URL (if still valid), the date of first deploy, and the firebase-tools version used. This is a write-once artifact created on first deploy; subsequent deploys don't update it unless the project ID, hosting URL, or secrets wiring changes.
+   ```bash
+   npx firebase deploy --only hosting
+   ```
 
-## Files to modify
+   Publishes to `https://britannia-reports.web.app` and `https://britannia-reports.firebaseapp.com`. Under a minute.
 
-- `.firebaserc` — single edit, adds `default` (new project) and `legacy` (existing `britannia-reports`) aliases.
-- This file (`context/deployment/deploy-plan.md`) — appended with the deploy record in step 15.
+9. **(Agent) Confirm the release landed.**
 
-No changes required to:
+   ```bash
+   curl -sI https://britannia-reports.web.app | head -1   # expect HTTP/2 200
+   npx firebase hosting:channel:list                      # 'live' shows a fresh Last Release Time
+   ```
 
-- `firebase.json` — current `public: "dist/browser"` matches the actual build output.
-- `angular.json` — output path is already correct.
-- `package.json` — `firebase-tools` is at the latest 15.x; no script change needed (`npx firebase` is fine for a one-time deploy; a `deploy` script can be added later when CI lands in M1L5).
-- `src/CLAUDE.md` — the build-output note ("confirm the path after `ng build` if deploying") is accurate as-is.
-- Any application code — the walking-skeleton deploy is pure static-bundle hosting.
+10. **(User) Visually verify the live URL** the same way as step 6.
 
-## Verification
+11. **(Agent) Update the [Deploy record](#deploy-record)** at the bottom of this file with the date, branch, commit, and `firebase-tools` version.
 
-End-to-end success criteria:
+### Rollback
 
-1. `npx firebase projects:list` shows the new project ID.
-2. `npx firebase use` prints the new project ID as default.
-3. `npm ci && npm run lint && npx ng test --watch=false --browsers=ChromeHeadless && npx ng build --configuration production` exits 0 at every step.
-4. `dist/browser/index.html` exists after step 8.
-5. The preview channel URL returned by step 10 loads in a browser, all four report tabs render, all four PDFs generate and match a locally-generated PDF visually.
-6. The live URL after step 13 serves the same content as the preview verified in step 11.
-7. This file records the deploy facts at the bottom (step 15).
+Firebase Console → Hosting → pick a prior release → **Rollback**. This stays a manual, human-clicked operation per the production-access boundary in the root `CLAUDE.md`: destructive and irreversible actions are human-only.
 
-## Risks (relevant to this deploy only)
+`infrastructure.md` cites `firebase hosting:versions:clone` as a CLI path. **Verify the verb against `npx firebase hosting --help` on v15 before relying on it** — do not assume the documented syntax is current.
 
-Lifted and scoped from infrastructure.md `## Risk Register`. The auth/Firestore/Functions risks are out of scope for this walking-skeleton deploy and not repeated here.
+Hosting rollback does **not** touch Firestore. Once persistence lands, a hosting rollback will leave migrated data in its new shape; schema reversals need their own scripts.
 
-| Risk | Likelihood | Impact | Mitigation in this plan |
+## Files modified by a deploy
+
+**None.** A deploy is pure static-bundle publishing.
+
+- `firebase.json` — no edit. `public: "dist/browser"` is correct.
+- `angular.json` — no edit. Output path is correct.
+- `.firebaserc` — no edit. `default: britannia-reports` is correct.
+- `package.json` — no edit.
+- Application code — untouched.
+
+The only file this runbook writes is itself (step 11, the deploy record).
+
+## Verification checklist
+
+1. `npm ci && npm run lint && npx ng test --watch=false --browsers=ChromeHeadless && npm run build` exits 0 at every step.
+2. `dist/browser/index.html` exists.
+3. `hosting:channel:deploy` reports a non-zero file count from `dist/browser`.
+4. Preview URL: HTTP 200, `<app-root>` present, both i18n files 200, SPA rewrite 200.
+5. Preview URL, by hand: four tabs render, four PDFs generate and match locally-generated PDFs visually.
+6. Live URL serves the same content as the verified preview.
+7. The deploy record below is updated.
+
+## Risks
+
+Scoped to a hosting deploy. Auth/Firestore/Functions risks live in `infrastructure.md` and are out of scope here.
+
+| Risk | Likelihood | Impact | Mitigation |
 |---|---|---|---|
-| Wrong Firebase project selected at deploy time (deploy lands in `britannia-reports` instead of the new project) | Low | High | Step 6 verifies `firebase use` shows the new default. The `legacy` alias makes the old project explicit and accessible but not active by default. |
-| Silent empty deploy because build output path mismatch | Very low (was Day-0 risk in infrastructure.md; no longer applicable per `angular.json:44`) | High if it happens | Step 9 file-existence check on `dist/browser/index.html` before deploy. |
-| PDF fidelity regression (the hard guardrail) | Low (no application code changed in this deploy) | High | Steps 11 and 14 do explicit visual PDF diffs against locally-generated outputs. If even one of the four reports differs, the deploy is rejected. |
-| Firebase project ID locked into auth domain, storage bucket, OAuth callbacks | High likelihood of regret if rushed | High if regretted | Step 1 explicitly forces the user to think about the name before creation. |
-| Preview channel URL is public — fine now (no user data), but becomes load-bearing once Auth lands | N/A this deploy | N/A this deploy | Documented at the bottom of this file so the FR-001..002 work knows to gate Auth before the next deploy. |
+| Silent empty deploy from a build-output path mismatch | Low (paths verified aligned 2026-07-10) | High | Step 3 file-existence gate; step 4's `found N files` line. Never edit `outputPath` and `hosting.public` apart. |
+| PDF fidelity regression — the hard guardrail | Low on a no-code deploy; **real whenever a report component changed** | High | Steps 6 and 10: explicit visual PDF diff against local output, all four reports. One mismatch ⇒ reject the deploy. |
+| Deploying the wrong branch (`master` instead of `dev`) | Medium — `master` is the repo's default branch, so tooling and habit both point at it | High | Confirm `git branch --show-current` prints `dev` before step 1. `master` lacks `year-report` entirely. |
+| An agent "fixes" `firebase.json` to `dist/britannia-reports/browser` on the strength of a stale doc | Low (source corrected) | High | Called out in Standing facts above and in `src/CLAUDE.md`. The path is `dist/browser`. |
+| Preview channel URL is public — harmless now, load-bearing once Auth lands | N/A today | Medium later | Noted in step 4. FR-001/FR-002 work must gate Auth before the next preview deploy. |
 
 ## What the agent does NOT do without explicit further approval
 
-- Does not create the Firebase project via CLI (`firebase projects:create`). Console-driven creation is the user's call.
-- Does not pick the project ID — that's irreversible and user-owned.
-- Does not skip the preview-first phase. Direct promotion to `live` without preview verification breaks the safety net.
-- Does not edit `firebase.json` (no edit needed) or any application code (out of scope).
-- Does not initialize Firestore, enable Auth providers, or install `@angular/fire`. Those land with the brownfield FR-001..014 change.
+- Does not promote to `live`. Steps 8–10 run only after the user confirms the preview (step 7).
+- Does not create Firebase projects, or edit `.firebaserc`.
+- Does not edit `firebase.json`, `angular.json`, or application code.
+- Does not initialize Firestore, enable Auth providers, or install `@angular/fire`.
+- Does not roll back production. Rollback is a human Console operation.
+
+---
+
+## Historical note: what changed from the original plan
+
+The 2026-06 version of this file planned to **create a new Firebase project** (working name `britannia-reports-2`), repoint `.firebaserc` at it, and keep `britannia-reports` as a `legacy` alias. Recorded as a user decision at the time.
+
+**That never happened.** As of 2026-07-10 the account holds exactly one project, `.firebaserc` has no `legacy` alias, and production has been live on the original `britannia-reports` since 2026-06-19. The first deploy went to the *existing* project, contradicting phases 1–2 of the old plan.
+
+Those phases have been deleted rather than preserved, because an agent executing them today would create a second project, repoint `.firebaserc`, and publish to a fresh empty domain — orphaning the live site. If a project migration is ever genuinely wanted, plan it fresh with the live site's existence as the starting condition.
+
+Two smaller corrections from the same pass: the old plan asserted `firebase login:list` returns "No authorized accounts" (it does not — the account is authenticated), and claimed a `src/CLAUDE.md` note reading "confirm the path after `ng build` if deploying" was accurate as-is (that note has since been rewritten to state the `dist/browser` coupling outright).
+
+The old plan did get one important thing right, and it was the only document in the repo that did: it flagged, at its line 22, that `infrastructure.md`'s "Day-0 bug" warning about `firebase.json` was invalid per `angular.json`. That finding is now upstreamed into `infrastructure.md` and `src/CLAUDE.md`.
 
 ---
 
 ## Deploy record
 
-(To be filled in by step 15 on first successful live deploy.)
-
-- **Project ID:** _<to be set>_
-- **Live URL:** _<to be set>_
-- **First deploy date:** _<to be set>_
-- **firebase-tools version at deploy:** _<to be set>_
-- **Legacy project alias:** `britannia-reports`
+- **Project ID:** `britannia-reports` (global, irreversible; baked into `britannia-reports.firebaseapp.com`)
+- **Live URL:** https://britannia-reports.web.app
+- **Deploy source branch:** `dev`
+- **First live deploy:** 2026-06-19 12:59:43 (per `firebase hosting:channel:list`; `firebase-tools` version at that time not recorded)
+- **firebase-tools version (current):** 15.19.0
+- **Firestore:** not provisioned. Location decision recorded as `eur3`, not executed.
+- **Auth:** Google provider not enabled.
+- **Web app:** `britannia-reports-web`, App ID `1:1039458477078:web:90de33b8569b522a060137`. Config via `npx firebase apps:sdkconfig WEB <app-id>` — not a secret; it ships in the SPA bundle.
+- **Secrets wired:** none. Hosting a static bundle needs no runtime secrets.

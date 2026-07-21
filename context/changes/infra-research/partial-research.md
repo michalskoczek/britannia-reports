@@ -1,5 +1,7 @@
 ---
-status: partial
+status: superseded
+superseded_by: context/foundation/infrastructure.md
+superseded_at: 2026-07-10
 researched_at: 2026-05-25
 session_limit_hit_at: ~17:00 Europe/Warsaw
 session_resets_at: 2026-05-25T17:40+02:00
@@ -21,6 +23,13 @@ interview_answers:
 ---
 
 # Partial Infra Research — Britannia Reports
+
+> ⚠️ **Superseded by `context/foundation/infrastructure.md` (2026-07-10). Do not act on this file.**
+> It is retained only as a record of the interrupted research run. Its `hard_constraints` are wrong on two counts, both corrected in `infrastructure.md`:
+> - **Framework** is Angular **20.3, fully standalone** — not "Angular 19 (NgModule)". There is no `AppModule` in this repo.
+> - **Build output** is `dist/browser` — not `dist/britannia-reports/browser`. Any deploy command below that names the latter path (e.g. the Cloudflare Pages `wrangler pages deploy` line) would publish an empty directory.
+>
+> The platform decision has been made: **Firebase Hosting**, already live at https://britannia-reports.web.app.
 
 Three of seven platform subagents returned full research before the session limit kicked in at ~17:00 Europe/Warsaw. The remaining four (Netlify, Railway, Render, Firebase) hit the limit and returned empty payloads. Firebase is the critical missing one — it's the project's currently-configured deploy target (`firebase.json` + `.firebaserc` on disk).
 

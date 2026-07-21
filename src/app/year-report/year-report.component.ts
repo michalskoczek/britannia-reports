@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 // @ts-expect-error pdfMake
 import pdfMake from 'pdfmake/build/pdfmake';
 // @ts-expect-error pdfFont
@@ -20,7 +20,7 @@ import {
   certificationPurposeOnThisYear,
   examsRecommendationsInTable,
   markEvaluations,
-  parentDecisionValues,
+  parentDecisionValues, readinessToContinueOnNextLevelOptions,
   recommendationsInNextYear,
 } from '../shared/year-report/year-report-static-data';
 import { MatFormField, MatHint, MatInput, MatLabel } from '@angular/material/input';
@@ -94,7 +94,7 @@ export class YearReportComponent implements OnInit {
 
   public form!: FormGroup;
 
-  public classes: string[] = classes;
+  public classes: { label: string; value: string }[] = classes;
   public readonly teachers: string[] = teachers;
   public readonly books: string[] = books;
   public readonly courses: string[] = courses;
@@ -108,12 +108,14 @@ export class YearReportComponent implements OnInit {
   public certificationPurpose: string[] = certificationPurpose;
   public schoolExam: string[] = schoolExam;
 
-  public parentDecisionValues: string[] = parentDecisionValues;
-  public certificationPurposeOnThisYear: string[] = certificationPurposeOnThisYear;
-  public markEvaluations: string[] = markEvaluations;
-  public recommendationsInNextYear: string[] = recommendationsInNextYear;
+  public parentDecisionValues: { label: string; value: string }[] = parentDecisionValues;
+  public certificationPurposeOnThisYear: { label: string; value: string }[] =
+    certificationPurposeOnThisYear;
+  public markEvaluations: { label: string; value: string }[] = markEvaluations;
+  public recommendationsInNextYear: { label: string; value: string }[] = recommendationsInNextYear;
+  public readinessToContinueOnNextLevelOptions: { label: string; value: string }[] = readinessToContinueOnNextLevelOptions;
 
-  public readonly examsRecommendations: string[] = examsRecommendationsInTable;
+  public readonly examsRecommendations: { label: string; value: string }[] = examsRecommendationsInTable;
 
   public isCheckedBook = false;
   public isCheckedOwnTitle = false;
@@ -127,13 +129,16 @@ export class YearReportComponent implements OnInit {
   }
 
   public initClassesFromFirstSelectedClass(classValue: string): void {
-    const newClasses: string[] = this.classes.slice(0, -1);
+    const newClasses: { label: string; value: string }[] = this.classes.slice(0, -1);
 
-    this.indexClass = newClasses.findIndex((r: string) => {
-      return r === classValue;
+    this.indexClass = newClasses.findIndex((r: { label: string; value: string }) => {
+      return r.value === classValue;
     });
 
-    const shortClassesInSchool: string[] = this.classesInSchool.slice(this.indexClass, this.classesInSchool.length);
+    const shortClassesInSchool: string[] = this.classesInSchool.slice(
+      this.indexClass,
+      this.classesInSchool.length
+    );
 
     const clearFormArray = (formArray: FormArray) => {
       while (formArray.length !== 0) {
@@ -180,10 +185,10 @@ export class YearReportComponent implements OnInit {
   }
 
   public setClasses(classValue: string): void {
-    const newClasses: string[] = this.classes.slice(0, -1);
+    const newClasses: { label: string; value: string }[] = this.classes.slice(0, -1);
 
-    this.indexClass = newClasses.findIndex((r: string) => {
-      return r === this.form.getRawValue()['class'];
+    this.indexClass = newClasses.findIndex((r: { label: string; value: string }) => {
+      return r.value === this.form.getRawValue()['class'];
     });
 
     this.initClassesFromFirstSelectedClass(classValue);
@@ -251,7 +256,7 @@ export class YearReportComponent implements OnInit {
   certificationPurposeText(form: FormGroup): any {
     if (form.value.certificationPurposeYES || form.value.certificationPurposeNO) {
       return {
-        text: `Cel certyfikacyjny na bieżący rok szkolny: ${
+        text: `Stopień opanowania materiału kursowego: ${
           form.value.certificationPurposeYES
             ? 'zrealizowany'
             : form.value.certificationPurposeNO
@@ -309,7 +314,7 @@ export class YearReportComponent implements OnInit {
                 { text: 'Data', style: 'tableHeader' },
                 { text: `${date}` },
                 { text: 'Klasa', style: 'tableHeader' },
-                { text: `${form.value.class}` },
+                { text: `${form.value.class.value}` },
               ],
               [
                 { text: 'Lektor', style: 'tableHeader' },
@@ -346,51 +351,71 @@ export class YearReportComponent implements OnInit {
         {
           text: 'Prognozowana ścieżka rozwoju językowego',
           style: 'header',
-          margin: [0, 10, 0, 5],
+          margin: [0, 20, 0, 5],
         },
         {
-          text: 'Oto prognozowana ścieżka rozwoju językowego po bieżącym roku szkolnym.',
+          text: 'Całoroczna praca ucznia, jego zaangażowanie podczas zajęć, stopień opanowania materiału oraz wyniki testów bieżących\ni próbnych egzaminów diagnozujących są dla nas bardzo ważne i stanowią podstawę do planowania dalszej ścieżki rozwoju językowego. Na tej podstawie kwalifikujemy uczniów do grup o zbliżonych kompetencjach językowych, możliwościach oraz tempie pracy w kolejnym roku szkolnym.',
           margin: [0, 0, 0, 0],
+          fontSize: 9,
+        },
+        {
+          text: 'Podczas tworzenia prognozowanej ścieżki rozwoju bierzemy pod uwagę nie tylko wyniki osiągane przez ucznia, ale również jego indywidualne predyspozycje językowe, systematyczność, motywację oraz aktywność na lekcjach w trakcie całego roku szkolnego.',
+          margin: [0, 5, 0, 0],
+          fontSize: 9,
+        },
+        {
+          text: 'Warto pamiętać, że prognozowana ścieżka rozwoju językowego nie jest decyzją ostateczną. W zależności od przyszłorocznego poziomu zaangażowania ucznia, regularności utrwalania wiedzy w domu oraz wkładu pracy podczas zajęć, ścieżka ta może ulec zmianie pod koniec kolejnego roku szkolnego.Poniżej przedstawiamy prognozowaną ścieżkę rozwoju językowego ucznia po bieżącym roku nauki.',
+          margin: [0, 5, 0, 0],
           fontSize: 9,
         },
         this.generateDevelopmentLanguageSkillsTable(form),
         this.certificationPurposeText(form),
         {
-          text: 'W zależności od przyszłorocznego wkładu pracy, czyli poziomu zaangażowania na lekcjach i systematyczności utrwalania wiedzy w domu, prognozowana ścieżka rozwoju językowego może ulec zmianie na koniec kolejnego roku szkolnego. ',
-          margin: [0, 5, 0, 0],
-          fontSize: 9,
-        },
-        {
-          text: '*Tryb nauki',
-          style: 'header',
+          text: '*Ścieżki egzaminacyjne',
+          style: 'subheader',
           margin: [0, 10, 0, 5],
         },
         {
-          text: 'Całoroczna praca ucznia, jego zaangażowanie i stopień opanowania materiału, wyniki testów bieżących oraz próbnych egzaminów diagnozujących są dla nas ważne i stanowią podstawę do kwalifikacji do grup o zbliżonych kompetencjach językowych w kolejnym roku szkolnym. Bierzemy też pod uwagę indywidualne zdolności oraz stopień motywacji ucznia w trakcie całego roku szkolnego.',
-          style: 'margins',
-          fontSize: 9,
+          text: [
+            {
+            text: 'Fast',
+            bold: true,
+            fontSize: 9,
+            },
+            {
+            text: ' — ścieżka egzaminacyjna przyspieszonego rozwoju językowego',
+            fontSize: 9,
+            },
+          ],
         },
         { text: '\n', fontSize: 5 },
         {
-          text: 'Staramy się maksymalnie wspierać potencjał językowy uczniów i łączyć dzieci według umiejętności. Gdy tylko jest to możliwe, tworzymy trzy rodzaje kursów:',
-          style: 'margins',
-          fontSize: 9,
+          text: [
+            {
+              text: 'Regular',
+              bold: true,
+              fontSize: 9,
+            },
+            {
+              text: ' — ścieżka egzaminacyjna standardowego rozwoju językowego',
+              fontSize: 9,
+            },
+          ],
+        },
+        { text: '\n', fontSize: 5 },
+        {
+          text: [
+            {
+              text: 'Steady',
+              bold: true,
+              fontSize: 9,
+            },         {
+              text: ' — ścieżka egzaminacyjna stabilnego rozwoju językowego',
+              fontSize: 9,
+            },
+          ]
         },
         { text: '\n', fontSize: 4 },
-        {
-          text: '1) BFT czyli BRITANNIA Fast Track – dla uczniów celujących i wzorowych, którzy mają wyniki od 90% wzwyż, wyróżniają się swobodą w komunikacji i aktywnie wykorzystują poznane treści, są otwarci i maksymalnie zaangażowani w naukę, regularnie i w szybszym tempie podchodzą do kolejnych egzaminów Cambridge. Często w tej grupie znajdują się dzieci, które w kolejnych latach startują w konkursach językowych lub wybierają dwujęzyczne profile w liceum. Grupy BFT zazwyczaj nie są grupami dowożonymi, są złożone z dzieci z różnych klas i szkół.',
-          fontSize: 9,
-        },
-        { text: '\n', fontSize: 4 },
-        {
-          text: '2) BRT czyli BRITANNIA Regular Track – dla uczniów, którzy opanowali materiał bardzo dobrze i dobrze, są zawsze przygotowani, oraz chętni i zmotywowani, by posługiwać się angielskim i osiągać jak najlepsze rezultaty; zależy im, by jak najlepiej poznać angielski. Uczniowie z tej grupy zazwyczaj regularnie podchodzą do kolejnych egzaminów Cambridge.',
-          fontSize: 9,
-        },
-        { text: '\n', fontSize: 4 },
-        {
-          text: '3) BST czyli BRITANNIA Support Track – dla uczniów osiągających wyniki poniżej 65% oraz tych, którzy potrzebują więcej wsparcia w opanowaniu materiału i z nieśmiałością podchodzą do aktywizacji mówienia i muszą bardziej otworzyć się na naukę.',
-          fontSize: 9,
-        },
         this.isAdditionalComment(),
         this.additionalComment(form),
         {
@@ -534,15 +559,18 @@ export class YearReportComponent implements OnInit {
     const formValue = form.getRawValue();
 
     const arrDetails: any[] = [];
-    arrDetails.push([
-      {
-        text: 'Ocena końcoworoczna',
-        style: 'tableHeader',
-      },
-      {
-        text: `${formValue.eofEvaluation ? formValue.eofEvaluation : '-'}`,
-      },
-    ]);
+
+    if (!formValue.eofEvaluationDelete) {
+      arrDetails.push([
+        {
+          text: 'Ocena końcoworoczna',
+          style: 'tableHeader',
+        },
+        {
+          text: `${formValue.eofEvaluation ? formValue.eofEvaluation : '-'}`,
+        },
+      ]);
+    }
 
     if (!formValue.frequencyDelete) {
       arrDetails.push([
@@ -559,7 +587,7 @@ export class YearReportComponent implements OnInit {
     if (!formValue.certificationPurposeOnThisYearDelete) {
       arrDetails.push([
         {
-          text: 'Cel certyfikacyjny na bieżący rok szkolny',
+          text: 'Stopień opanowania materiału kursowego',
           noWrap: true,
           style: 'tableHeader',
         },
@@ -567,6 +595,19 @@ export class YearReportComponent implements OnInit {
           text: `${formValue.certificationPurposeOnThisYear}`,
         },
       ]);
+    }
+
+    if (!formValue.readinessToContinueOnNextLevelDelete) {
+      arrDetails.push([
+        {
+          text: 'Gotowość do kontynuacji nauki na kolejnym poziomie',
+          noWrap: true,
+          style: 'tableHeader',
+        },
+        {
+          text: `${formValue.readinessToContinueOnNextLevel}`,
+        },
+      ])
     }
 
     if (!formValue.examRecommendationInTableDelete) {
@@ -595,16 +636,19 @@ export class YearReportComponent implements OnInit {
       ]);
     }
 
-    arrDetails.push([
-      {
-        text: 'Tryb nauki* rekomendowany na przyszły rok szkolny',
-        noWrap: true,
-        style: 'tableHeader',
-      },
-      {
-        text: `${formValue.recommendationInNextYear}`,
-      },
-    ]);
+    if (!formValue.recommendationInNextYearInTableDelete) {
+      arrDetails.push([
+        {
+          text: 'Prognozowana ścieżka egzaminacyjna* na przyszły rok szkolny',
+          noWrap: true,
+          style: 'tableHeader',
+        },
+        {
+          text: `${formValue.recommendationInNextYear}`,
+        },
+      ]);
+    }
+
 
     return arrDetails;
   }
@@ -637,6 +681,7 @@ export class YearReportComponent implements OnInit {
 
       eofEvaluation: new FormControl(null),
       frequency: new FormControl(null),
+      readinessToContinueOnNextLevel: new FormControl(null),
 
       // table with student development path
       developmentLanguageSkillsArray: new FormArray([]),
@@ -648,15 +693,18 @@ export class YearReportComponent implements OnInit {
       recommendationInNextYear: new FormControl(null),
 
       // checkbox in array - delete row
+      eofEvaluationDelete: new FormControl(false),
       frequencyDelete: new FormControl(false),
       certificationPurposeOnThisYearDelete: new FormControl(false),
       examRecommendationInTableDelete: new FormControl(false),
       parentDecisionDelete: new FormControl(false),
+      recommendationInNextYearInTableDelete: new FormControl(false),
+      readinessToContinueOnNextLevelDelete: new FormControl(false),
 
       comments: new FormArray([]),
 
       additionalComment: new FormControl(null),
-      signature: new FormControl(null, Validators.required),
+      signature: new FormControl(null),
     });
   }
 }

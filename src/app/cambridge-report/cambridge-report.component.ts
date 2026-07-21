@@ -67,7 +67,7 @@ export class CambridgeReportComponent implements OnInit {
 
   public form!: FormGroup;
 
-  public readonly classes: string[] = classes;
+  public readonly classes: { label: string; value: string }[] = classes;
   public readonly teachers: string[] = teachers;
   public readonly courses: string[] = courses;
   public readonly marks: Marks[] = marks;

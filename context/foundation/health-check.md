@@ -1,6 +1,7 @@
 ---
 project: britannia-reports
-checked_at: 2026-06-02T00:00:00Z
+checked_at: 2026-07-10T00:00:00Z
+supersedes: 2026-06-02 audit
 health_status: healthy
 context_type: brownfield
 language_family: js
@@ -10,23 +11,36 @@ checks_run:
   - dependency_audit
   - outdated_deps
   - test_runner
+  - lint
+  - build
   - ci_cd
   - configuration
 audit_findings:
   critical: 0
   high: 0
-  moderate: 3
+  moderate: 5
   low: 0
 test_runner_detected: true
 ci_provider: null
-recommended_fixes: 2
+deployment_target: firebase-hosting
+recommended_fixes: 3
 ---
 
 # Health Check — britannia-reports
 
-Operational audit of the codebase before the brownfield change kicks off. This report complements `context/foundation/stack-assessment.md` (which evaluates the *stack choice* against four agent-friendly quality gates); this file evaluates the *current project state* against operational health criteria — dependency hygiene, test infrastructure, CI/CD, and configuration completeness.
+Operational audit of the current project state — dependency hygiene, test infrastructure, lint, build, CI/CD, configuration. Complements `context/foundation/stack-assessment.md`, which evaluates the *stack choice* rather than the *project state*.
 
-**Headline:** project is now in healthy shape for agent collaboration. The original audit (run earlier the same day, 2026-06-02) found a broken test suite and 12 lint errors against the current tree. Both have been resolved: the spec suite now passes 5/5 after wiring `TranslateModule.forRoot()` into TestBed via a small shared helper (`src/app/shared/testing/translate-testing.ts`), and `ng lint` is clean. `npm audit fix` was run; the only remaining advisories (3 MODERATE) are a transitive uuid/gaxios chain inside `firebase-tools` whose only resolution path is a two-major-version downgrade of the deploy CLI, which has been consciously deferred. Several stack-assessment gaps from 2026-05-23 have been closed since that document was written (project upgraded Angular 19→20.3, ESLint wired up with `angular-eslint`, Firebase Hosting configured, Prettier 3 pinned with `.prettierrc.json`).
+Every claim below was re-run against the tree on 2026-07-10. Nothing is carried forward from the previous audit on faith.
+
+**Headline:** healthy, after two fixes applied during this audit.
+
+The 2026-06-02 audit reported `0 CRITICAL / 0 HIGH / 3 MODERATE` and asserted that "no runtime / shipped-to-browser code is affected". By 2026-07-10 that was no longer true: `npm audit` reported **24 vulnerabilities including 12 HIGH**, two of them in `dependencies` (not devDependencies) and therefore shipped to the browser — `@angular/core` (Client Hydration DOM Clobbering & Response-Cache Poisoning) and `@angular/common` (DoS via OOM in number formatting).
+
+Both were fixable inside the existing semver range: the advisories covered `≤ 20.3.24` and the project was pinned at `^20.3.21`. `npm audit fix` (no `--force`) bumped the Angular set to `20.3.26`. **`package.json` was not modified — only `package-lock.json`.** `firebase-tools` was *not* downgraded; it moved forward, 15.19.0 → 15.23.0.
+
+`npm audit fix` bumped only the three vulnerable Angular packages, leaving `forms`, `animations`, `platform-browser`, and `router` behind at 20.3.21 — exactly the isolated-walk that `src/CLAUDE.md` warns against. The whole set was then aligned to 20.3.26 with a scoped `npm update`.
+
+Lint had also regressed since the last audit (see `## Lint`). It is clean again.
 
 ## Dependency Health
 
@@ -40,42 +54,69 @@ Package manager: npm
 ### Security Audit
 
 ```
-Tool: npm audit --json (followed by npm audit fix)
-Summary: 0 CRITICAL, 0 HIGH, 3 MODERATE, 0 LOW (residual after fix)
-Direct vs transitive: 1 direct (firebase-tools, devDependency), 2 transitive (gaxios → uuid)
+Tool: npm audit (followed by npm audit fix, no --force)
+Before: 0 critical, 12 high, 9 moderate, 3 low  (24 total)
+After:  0 critical,  0 high, 5 moderate, 0 low  (5 total)
 ```
+
+#### Resolved by this audit
+
+| Package | Severity | Scope | Advisory |
+|---|---|---|---|
+| `@angular/core` | HIGH | **runtime** | Client Hydration DOM Clobbering & Response-Cache Poisoning |
+| `@angular/common` | HIGH | **runtime** | DoS via OOM in number formatting |
+| `@angular/compiler` | MODERATE | runtime | (same advisory train) |
+| `vite`, `ws`, `undici`, `tmp`, `piscina`, `hono`, `form-data`, `engine.io`, `socket.io-adapter`, `esbuild`, `tar`, `@babel/core` | HIGH / MODERATE | dev + transitive | closed by in-range bumps of `@angular/build` and `firebase-tools` |
+
+Honest scoping on the two runtime HIGHs: this app is a client-only SPA with no SSR and no hydration, so real exposure to the `@angular/core` hydration advisory was likely nil. That is an argument for rating the risk low — **not** for the previous audit's claim that runtime code was unaffected. The patch was free; there was no reason to carry the finding.
 
 #### MODERATE findings (residual, consciously deferred)
 
-- **uuid** `<11.1.1` — [GHSA-w5hq-g745-h8pq](https://github.com/advisories/GHSA-w5hq-g745-h8pq): missing buffer bounds check in v3/v5/v6 when `buf` is provided (CVSS 7.5). Reaches the tree only through `firebase-tools` → `gaxios` → `uuid` (devDependency chain).
-- **gaxios** `6.4.0 – 6.7.1` — transitive carrier of the uuid advisory.
-- **firebase-tools** `>=13.14.0` — direct devDependency, surfacing the chain above.
+All five are confined to the `firebase-tools` deploy CLI, a devDependency invoked only from a developer machine at deploy time. None reach the browser bundle.
 
-`npm audit fix` was run; npm's only proposed full fix is `npm audit fix --force`, which downgrades `firebase-tools` from 15.18.0 to 13.13.3 (`isSemVerMajor: true`). That downgrade would likely break Firebase Hosting deploy compatibility (the project's deploy story per `firebase.json` + `.firebaserc`), so the residual was accepted. No runtime / shipped-to-browser code is affected — the advisory is confined to the `firebase-tools` deploy CLI, which the agent only invokes during deploy from a developer machine. Revisit when `firebase-tools` ships a release with a patched gaxios/uuid in the 15.x or 16.x line.
+- **`firebase-tools`** `>=13.14.0` — direct devDependency, surfaces the chain below.
+- **`gaxios`** `6.4.0 – 6.7.1` — transitive carrier.
+- **`uuid`** `<11.1.1` — [GHSA-w5hq-g745-h8pq](https://github.com/advisories/GHSA-w5hq-g745-h8pq): missing buffer bounds check in v3/v5/v6 when `buf` is provided.
+- **`@google-cloud/pubsub`** `>=5.1.0`, **`@opentelemetry/core`** `<2.8.0` — transitive.
+
+`npm audit fix --force` would downgrade `firebase-tools` 15.23.0 → 14.23.0 (`isSemVerMajor: true`), a major step back for the tool that owns the deploy story. Residual accepted. Revisit when `firebase-tools` ships a patched `gaxios`/`uuid` in the 15.x or 16.x line.
 
 ### Outdated Dependencies
 
 ```
-Packages with major version gaps: 6 (direct, 1+ major versions behind)
+Angular set: aligned at 20.3.26 (core, common, compiler, forms, animations,
+             platform-browser, platform-browser-dynamic, router)
+Angular CLI / build: 20.3.32
 ```
 
-Most impactful:
+Direct packages a major or more behind:
 
-- **@angular/core** (and the rest of the `@angular/*` set): `20.3.21` → `21.2.15` (1 major behind). The whole Angular core/CLI set moves together; treat as one upgrade unit.
-- **@angular/cli** / **@angular/build**: `20.3.26` → `21.2.13` (1 major behind). Aligned with core; do not bump in isolation.
-- **jasmine-core**: `4.5.0` → `6.2.0` (2 majors behind). `~4.5.0` carat keeps it pinned to a 2022-era line; current Karma + Jasmine ecosystem has moved on.
-- **@types/jasmine**: `4.3.6` → `6.0.0` (2 majors behind). Aligned with `jasmine-core` line.
-- **typescript**: `5.8.3` → `6.0.3` (1 major behind). Angular 20 supports TS 5.x; TS 6 upgrade lands with Angular 21.
-- **eslint**: `9.39.4` → `10.4.1` (1 major behind). Pin matches `@eslint/js`; bump as one unit.
+- **`@angular/*` core set**: `20.3.26` → `21.2.18` (1 major). Moves as one unit with the CLI. See Recommended Fix 1.
+- **`@angular/cdk` / `@angular/material` / `material-moment-adapter`**: `20.2.14` → `22.0.4` (2 majors). Material trails its own release train here; couple the bump to the Angular major.
+- **`jasmine-core`** `4.5.0` → `6.2.0`, **`@types/jasmine`** `4.3.6` → `6.0.0` (2 majors). The `~4.5.0` pin holds a 2022-era line.
+- **`eslint`** `9.39.4` → `10.0.1`, **`@eslint/js`** aligned. Bump as one unit.
+- **`angular-eslint`** `20.7.0` → `22.0.0`. Tracks the Angular major.
+- **`@ngx-translate/core` / `http-loader`**: `17.0.0` → `18.0.0` (1 major).
+- **`typescript`** `5.8.x` → `6.x`. Gated on Angular 21; do not bump alone.
 
-`zone.js` (0.15 → 0.16) and a handful of patch/minor lags exist but are not impactful.
+## Lint
+
+```
+Command: npm run lint
+Status: clean (exit 0)
+```
+
+**A regression slipped in between the two audits and nobody noticed for over a month.** The 2026-06-02 audit left `ng lint` clean. On 2026-07-10 it failed with 9 errors in `src/app/year-report/year-report.component.ts` (4× `prefer-const`, 4× `no-inferrable-types`, 1 dead `Validators` import), introduced by later `dev` commits. They were cleared in a dedicated change (the file is under the PDF-fidelity guardrail, so the fix carried a before/after PDF comparison).
+
+This is the clearest possible argument for Recommended Fix 2. The gap that let a lint regression live for a month is not a missing rule — the rule was configured and passing. It is the absence of anything that *runs* the rule between commits.
 
 ## Test Suite
 
 ```
 Test runner: Karma + Jasmine
-Tests found: 5 spec files
-Test execution: passing (5 of 5 pass)
+Spec files: 5
+Execution: 5 of 5 pass (npx ng test --watch=false --browsers=ChromeHeadless)
+Runtime: under 5 seconds
 ```
 
 ```
@@ -84,26 +125,36 @@ Framework: jasmine-core ~4.5.0, karma ~6.4.0
 Test helper: src/app/shared/testing/translate-testing.ts (shared TranslateModule.forRoot() import)
 ```
 
-The previous run of this audit found all five specs failing with `NG0201: No provider found for _TranslateService` — a side-effect of the Angular 19→20 standalone-components migration not propagating `ngx-translate` providers into TestBed setups. Fix applied: a one-line shared helper `translateTestingImports = [TranslateModule.forRoot()]` was added at `src/app/shared/testing/translate-testing.ts` and spread into each spec's `imports`. `DateComponent` and `TeddyEddieFormComponent` also received `provideNoopAnimations()` + `provideNativeDateAdapter()` (Material datepicker prerequisites). `TeddyEddieFormComponent` additionally builds a minimal `FormGroup` and sets it via `componentRef.setInput('form', form)` to satisfy its required input. `SelectComponent` sets an empty `itemList` for the same reason.
+Specs cover four shared form components (`date`, `form-wrapper`, `input-text`, `select`) and `teddy-eddie-form`. The four report components — where the `pdfmake` document builders live and where the project's only hard guardrail applies — have **no specs at all**. PDF fidelity is currently protected by manual visual comparison, nothing else. See Recommended Fix 3.
 
-The agent now has a fast feedback loop: `npx ng test --watch=false --browsers=ChromeHeadless` runs the suite in under 5 seconds, green.
+## Build
+
+```
+Command: npm run build
+Status: succeeds (exit 0)
+Output: dist/browser  (angular.json outputPath.base = "dist"; the builder appends "browser")
+```
+
+Warnings are pre-existing and expected: CommonJS/AMD bailout notices for `moment` (used by `app.config.ts`) and `pdfmake` (used by the report components). They are not failures.
 
 ## CI/CD
 
 ```
 Provider: not detected
-Configuration: not found
+Configuration: not found (.github/workflows absent)
 ```
 
-| Stage      | Status | Notes                                                                 |
-|------------|--------|-----------------------------------------------------------------------|
-| Lint       | ✗      | `ng lint` available locally (12 errors against current tree); not in CI |
-| Test       | ✗      | `ng test` available locally (currently failing); not in CI             |
-| Build      | ✗      | `ng build` available locally; not in CI                                |
-| Type check | ✗      | Implicit in `ng build` / `ng test`; no standalone CI step              |
-| Security   | ✗      | `npm audit` available locally; no automated PR/push scan               |
+| Stage      | Local | In CI | Notes |
+|------------|-------|-------|-------|
+| Lint       | ✓ clean | ✗ | `npm run lint` |
+| Test       | ✓ 5/5 | ✗ | `npx ng test --watch=false --browsers=ChromeHeadless` |
+| Build      | ✓ passes | ✗ | `npm run build` |
+| Type check | ✓ | ✗ | implicit in build/test; no standalone step |
+| Security   | ✓ | ✗ | `npm audit`; no automated scan |
 
-ℹ No CI/CD configuration detected. You'll set this up in the infrastructure and deployment lesson ([Sprint Zero z Agentem: infrastruktura, walking skeleton i pierwszy deploy (M1L5)](https://platforma.przeprogramowani.pl/external/10xdevs-3/m1-l5)). For now, the local toolchain is sufficient for agent collaboration — once the test suite is unbroken, the agent can run `ng test --watch=false --browsers=ChromeHeadless` and `ng lint` to verify changes.
+Every gate passes locally and none of them runs automatically. The lint regression documented above is what that costs.
+
+**Note for whoever wires this up:** deploys ship from **`dev`**, not `master`. A workflow triggered on `master` would never fire on the branch that actually reaches production. See `context/deployment/deploy-plan.md`.
 
 ## Configuration
 
@@ -113,76 +164,71 @@ Configuration: not found
 
 ### Medium severity
 
-- **AGENTS.md** — missing. Tools that follow the AGENTS.md convention (Cursor, Codex, Aider) won't find conventions documented elsewhere. Covered in the agent onboarding lesson; do not author by hand now.
+- **`AGENTS.md`** — missing. Tools following the AGENTS.md convention (Cursor, Codex, Aider) won't pick up the conventions documented in `src/CLAUDE.md`.
 
 ### Low severity
 
-- **`.env.example` / `.env.template`** — not present. The current Angular app does not appear to use runtime env vars (Firebase config is bundled into `src/environments/`), so the gap is mostly cosmetic. Add only if/when the brownfield change introduces secrets the developer needs to seed locally.
+- **`.env.example` / `.env.template`** — not present, and not needed. The app uses no runtime environment variables: there is **no `src/environments/` directory**, and no Firebase client config is bundled (`@angular/fire` is not installed). Add only if the brownfield change introduces secrets to seed locally. Note that Firebase's web config is not a secret in any case — it ships in the SPA bundle, and Firestore security rules are what protect the data.
 
-All other expected configuration is present: `.editorconfig`, `.prettierrc.json`, `.gitignore`, `eslint.config.js` (flat config with `angular-eslint` + `typescript-eslint`), `tsconfig.json` with `strict: true` plus four additional strictness flags and three Angular template-strictness flags, `firebase.json` + `.firebaserc` (Hosting target wired), root `CLAUDE.md` (redirects to `src/CLAUDE.md`) and a substantial `src/CLAUDE.md` covering PDF-fidelity guardrail, hybrid NgModule/standalone model, locale pinning, UI library mix, folder map, test stack pin, and styling baseline.
+All other expected configuration is present: `.editorconfig`, `.prettierrc.json`, `.gitignore` (now covering `/.firebase`, the deploy cache), `eslint.config.js` (flat config, `angular-eslint` + `typescript-eslint`), `tsconfig.json` with `strict: true` plus four additional strictness flags and three Angular template-strictness flags, `firebase.json` + `.firebaserc` (Hosting wired at `dist/browser`), root `CLAUDE.md` redirecting to a substantial `src/CLAUDE.md`.
 
-Note: an earlier run of this audit reported 12 lint errors against the source tree (unused imports, unused-expression bugs in shared form components, label-not-associated-with-control in two templates, a constructor injection that should use `inject()`, and one unused helper inside the semestr PDF builder). All twelve have been resolved by hand (the rules involved had no autofix). `ng lint` is currently clean.
+`src/CLAUDE.md` documents the PDF-fidelity guardrail, the **standalone-only** architecture, locale pinning, the UI library mix, the folder map, the test-stack pin, and the styling baseline. (The 2026-06-02 audit described a "hybrid NgModule/standalone model" — that was wrong then and is wrong now. `grep -rl "@NgModule" src/app` returns nothing; the app bootstraps via `bootstrapApplication` with providers in `app.config.ts`.)
 
 ## Stack Assessment Cross-Reference
 
 ```
-Stack assessment: context/foundation/stack-assessment.md
+Stack assessment: context/foundation/stack-assessment.md (2026-05-23, Angular 19)
 Agent readiness (from stack-assess): ready-with-compensation
 ```
 
-The stack assessment was written 2026-05-23 against Angular 19. Several of its identified gaps have since been closed by upstream work in the project; this health-check captures the current state.
-
-| Quality Gate / Stack-Assess Gap                                         | Health-Check Finding                                                                          | Status       |
-|-------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|--------------|
-| Gap 1 — No project-level instruction file (`CLAUDE.md` / `AGENTS.md`)   | Root `CLAUDE.md` + comprehensive `src/CLAUDE.md` present (hard PDF guardrail, conventions)   | Mitigated    |
-| Gap 2 — No linter wired up                                              | `eslint.config.js` with `angular-eslint` + `typescript-eslint`; `ng lint` works locally       | Mitigated    |
-| Gap 3 — No CI/CD pipeline                                               | Still no `.github/workflows/`; deferred to infrastructure lesson                              | Reinforced   |
-| Gap 4 — Test runner on the deprecation path (Karma + Jasmine)           | Stack still on Karma + Jasmine; `src/CLAUDE.md` pins the choice. Suite is currently *broken*. | Reinforced   |
-| Gap 5 — Firebase tooling installed but unconfigured                     | `firebase.json` + `.firebaserc` now present; Hosting target points at `dist/browser`           | Mitigated    |
-| (Beyond stack-assess) Prettier without `.prettierrc`                    | `.prettierrc.json` now present (printWidth 120, singleQuote, trailingComma es5)               | Mitigated    |
-| (Beyond stack-assess) Framework version drift                           | Project moved Angular 19 → 20.3 since the assessment; CLI/core aligned at 20.3                | Updated      |
-
-**Net change since the stack assessment:** four of five identified gaps have been addressed and the framework was upgraded a major version. The one regression introduced after the assessment is the spec-bootstrap failure surfaced in `## Test Suite` above — almost certainly a side-effect of the Angular 19→20 standalone-components migration touching `ngx-translate` providers.
+| Stack-Assess Gap | Health-Check Finding (2026-07-10) | Status |
+|---|---|---|
+| Gap 1 — No project-level instruction file | Root `CLAUDE.md` + comprehensive `src/CLAUDE.md` | Closed |
+| Gap 2 — No linter wired up | `eslint.config.js` present; `npm run lint` clean | Closed |
+| Gap 3 — No CI/CD pipeline | Still absent. A lint regression went unnoticed for a month as a direct result. | **Reinforced** |
+| Gap 4 — Test runner on the deprecation path | Still Karma + Jasmine; `src/CLAUDE.md` pins the choice. Suite is green. | Open, low priority |
+| Gap 5 — Firebase tooling installed but unconfigured | `firebase.json` + `.firebaserc` present; Hosting **live** at https://britannia-reports.web.app | Closed |
+| (Beyond stack-assess) Prettier without `.prettierrc` | `.prettierrc.json` present | Closed |
+| (Beyond stack-assess) Framework drift | Angular 19 → 20.3.26; app migrated to standalone-only | Updated |
 
 ## Recommended Fixes
 
-### Completed in this session (2026-06-02)
+### Completed during this audit (2026-07-10)
 
-- **Fix 1 — Repair the broken test suite.** Done. Added `src/app/shared/testing/translate-testing.ts` shared helper; updated all five specs to import it; `DateComponent` and `TeddyEddieFormComponent` got Material/forms providers and `setInput` calls; `SelectComponent` got an empty `itemList`. `ng test` now passes 5/5.
-- **Fix 2 — Clear the `ng lint` baseline.** Done. Resolved all 12 errors by hand (none were autofixable). Specifics: removed unused `EventEmitter`/`Input`/`Output` imports from `button.component.ts`; converted four ternary-as-statement patterns (`tab-group`, `date`, `input-text`, `select`) into `if/else`; replaced the unused `getMarkValue` helper in `semestr-report.component.ts` and migrated its constructor `TranslateService` injection to `inject()`; replaced bare `<label>` tags with `<span>` + `aria-labelledby` on the matching `mat-radio-group` in `semestr-report.component.html` and `year-report.component.html`. `ng lint` is clean.
-- **Fix 3 — Apply the dependency audit fix.** Partially done. `npm audit fix` ran (non-force); 3 MODERATE advisories remain because the only full resolution path is `npm audit fix --force`, which would downgrade `firebase-tools` 15.18.0 → 13.13.3 (two majors back, marked `isSemVerMajor: true`) and likely break the Firebase Hosting deploy story. Residual consciously accepted; see `## Security Audit` above.
+- **Cleared the lint regression.** 9 errors in `year-report.component.ts`, fixed in a dedicated change with a before/after PDF comparison because the file falls under the PDF guardrail. `npm run lint` exits 0.
+- **Closed 19 of 24 advisories, including all 12 HIGH.** `npm audit fix` (no `--force`), then a scoped `npm update` to realign the Angular set at 20.3.26. `package.json` untouched. Verified afterwards: lint clean, 5/5 specs, build succeeds, PDF output unchanged on a preview channel.
 
-### Fix before agent work (Category A — remaining)
+### 1. Plan the Angular 20 → 21 major upgrade
 
-### 1. (Optional now) Plan the Angular 20 → 21 major upgrade
+**Severity**: low · **Effort**: significant
 
-**Impact**: The codebase trails the Angular release train by one major. Angular 21 introduces standalone-only patterns and updated control-flow syntax that the agent's training data increasingly reflects; staying on 20 means agent-suggested patterns may not match. This is *not urgent* — Angular 20 is a current LTS-grade release — but it should land before the next major Angular cuts (when 20 starts to fall out of training data freshness).
-**Severity**: low
-**Effort**: significant (multi-hour upgrade pass; do not bundle with the brownfield change)
-**Fix**:
+The codebase trails the release train by one major (21.2.18 current), and `@angular/cdk`/`material` by two (22.0.4). Not urgent, but the gap widens each cycle and agent training data drifts toward newer idioms. Open a dedicated branch, run `ng update @angular/core @angular/cli`, keep the Material/CDK bump in the same unit, and do not bundle it with feature work. The app is already standalone-only, so Angular 21's standalone-only schematics have nothing to convert.
 
-Open a dedicated branch and use `ng update @angular/core @angular/cli` to walk the upgrade. Check `src/CLAUDE.md`'s hybrid-NgModule note — Angular 21 may emit schematics that try to convert remaining NgModule-registered components to standalone. Keep that conversion separate from the upgrade itself.
+### 2. Wire up CI — the highest-leverage fix on this list
 
-### 2. (Optional now) Bump jasmine-core / @types/jasmine off the 4.5 line
+**Severity**: medium · **Effort**: small (one workflow file)
 
-**Impact**: Jasmine 4.5 is from 2022. Karma is in upstream maintenance mode, but Jasmine itself is still active and the 4 → 6 jump picks up modern matchers and TypeScript typing improvements. Modest agent-readiness gain; safe to defer until the test suite is unblocked.
-**Severity**: low
-**Effort**: moderate (review breaking changes between 4 and 6, run the suite, fix any breakages)
-**Fix**:
+This is no longer a hypothetical. A lint regression lived on `dev` for over a month because nothing ran `npm run lint` between commits. A workflow running `npm ci`, `npm run lint`, `npx ng test --watch=false --browsers=ChromeHeadless`, and `npm run build` on push and PR would have caught it on the commit that introduced it.
 
-Bump `jasmine-core` and `@types/jasmine` to `^6.0.0`, re-run the suite, and address any matcher/spy syntax changes.
+Trigger it on **`dev`** (the deploy branch) as well as `master`. Do not add a `firebase deploy` step until the deploy story is settled — see `context/deployment/deploy-plan.md`, which keeps promotion to `live` behind a human gate.
 
-### Addressed in upcoming lessons (Category B)
+### 3. Add specs for the four report components
 
-### No CI/CD pipeline
+**Severity**: medium · **Effort**: moderate
 
-**Lesson**: [Sprint Zero z Agentem: infrastruktura, walking skeleton i pierwszy deploy (M1L5)](https://platforma.przeprogramowani.pl/external/10xdevs-3/m1-l5)
-**What you'll do there**: pick a deployment platform and lay down the first deploy plus a minimal CI workflow that runs build + test on push. For an Angular + Firebase Hosting setup this is typically a single GitHub Actions workflow checking out the code, running `npm ci`, `ng build`, `ng test --watch=false --browsers=ChromeHeadless`, and (on `master`) `firebase deploy --only hosting`.
+The project's one hard guardrail — PDF fidelity across Cambridge, semester/trimester, Teddy Eddie, and year-end — has **zero automated coverage**. All five existing specs test shared form components. Every PDF regression check today is a human generating two PDFs and comparing them by eye, which is exactly the kind of check that gets skipped under time pressure.
 
-### Missing AGENTS.md
+A cheap first step: snapshot-test each report's `pdfmake` document definition object (the plain JS structure passed to `pdfMake.createPdf`) rather than the rendered PDF bytes. That catches structural regressions without a rendering harness, and it is what the guardrail actually cares about.
 
-**Lesson**: [Agent Onboarding: Agents.md, AI Rules i feedback loops (M1L4)](https://platforma.przeprogramowani.pl/external/10xdevs-3/m1-l4)
-**What you'll do there**: generate an `AGENTS.md` that mirrors the structure of `src/CLAUDE.md` so non-Claude agents (Cursor, Codex, Aider) pick up the same conventions. Generating a stub now is premature — the onboarding lesson covers what content goes there and how to keep it in sync.
+### 4. Bump jasmine-core / @types/jasmine off the 4.5 line
+
+**Severity**: low · **Effort**: moderate
+
+Jasmine 4.5 is from 2022. Karma is in upstream maintenance mode but Jasmine itself is active; 4 → 6 picks up modern matchers and typing improvements. Safe to defer.
+
+### Deferred by design
+
+- **`AGENTS.md`** — mirror `src/CLAUDE.md` so non-Claude agents pick up the same conventions.
 
 ## Summary
 
@@ -190,6 +236,8 @@ Bump `jasmine-core` and `@types/jasmine` to `^6.0.0`, re-run the suite, and addr
 Health status: healthy
 ```
 
-Configuration, dependency hygiene, and documentation are in good shape. The three Category A items from the morning's first audit (broken test suite, dirty lint baseline, unfixed audit advisories) are all addressed: `ng test` passes 5/5, `ng lint` is clean, and `npm audit fix` ran (residual 3 MODERATE are confined to the `firebase-tools` deploy CLI and consciously deferred — see `## Security Audit`). The agent now has a working feedback loop (`ng test`, `ng lint`, `ng build`) to verify its own changes against. Production build (`ng build --configuration production`) succeeds with only the pre-existing CommonJS warnings for `moment` and `pdfmake`.
+Dependency hygiene, configuration, documentation, lint, tests, and build are all in good shape as of 2026-07-10 — two of those only after fixes applied during this audit. All 12 HIGH advisories are closed, including the two that reached the browser bundle; the 5 residual MODERATE are confined to the deploy CLI and consciously deferred.
 
-Next step: proceed to agent onboarding ([Agent Onboarding (M1L4)](https://platforma.przeprogramowani.pl/external/10xdevs-3/m1-l4)) to author `AGENTS.md` and set up CI in the infrastructure lesson ([M1L5](https://platforma.przeprogramowani.pl/external/10xdevs-3/m1-l5)). The two remaining "(Optional now)" items above (Angular 20 → 21, Jasmine 4 → 6) are real but safe to defer until after the brownfield change has shipped its first PR.
+The two real gaps are structural rather than incidental. **There is no CI**, and the cost of that is now measured rather than theoretical: a lint regression survived a month on the deploy branch. And **the project's only hard guardrail has no automated test behind it** — PDF fidelity rests entirely on someone remembering to look.
+
+A note on this document's predecessor, because the failure mode is worth naming. The 2026-06-02 audit contradicted itself: its headline announced a repaired test suite and a clean lint baseline while its own CI/CD table still read "currently failing" and "12 errors against current tree", and its cross-reference table still called the suite "broken". The fixes had been applied and the prose updated in two places out of five. It also asserted a `src/environments/` directory and a "hybrid NgModule/standalone model" that never existed. A health check that is not re-run is not a health check — it is a claim with a date on it. Re-run the commands before trusting any line above.
