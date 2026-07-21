@@ -3,6 +3,7 @@ project: "Britannia Reports"
 version: 1
 status: draft
 created: 2026-05-23
+updated: 2026-07-20
 context_type: brownfield
 product_type: web-app
 target_scale:
@@ -23,9 +24,11 @@ Brownfield change to an existing Angular web app: turn a stateless public PDF-fo
 
 **System purpose.** A web app that lets language-school teachers fill structured forms and download per-student end-of-period reports as PDF, replacing the prior workflow of writing each report by hand in MS Word.
 
-**Key architecture.** Single-page Angular application served from a public URL. No backend persistence layer for app data (auth, students, templates) at present. PDFs are produced client-side from form input; nothing is retained between sessions.
+**Key architecture.** Single-page Angular application, fully standalone — there is no `AppModule`; `src/main.ts` calls `bootstrapApplication(AppComponent, appConfig)` with providers in `src/app/app.config.ts`. Served over Firebase Hosting. No backend persistence layer for app data (auth, students, templates) at present. PDFs are produced client-side from form input; nothing is retained between sessions.
 
-**Tech stack.** Angular 19, Angular Material, ngx-translate (Polish / English i18n), Bootstrap, pdfmake (PDF generation), TypeScript throughout. `firebase-tools` is present in dev dependencies as deployment tooling.
+**Tech stack.** Angular 20.3, Angular Material + Angular CDK, ngx-translate v17 (Polish / English i18n; provider-based API — `provideTranslateService` / `provideTranslateHttpLoader`), Bootstrap 5, moment + `@angular/material-moment-adapter` (locale `pl-PL`, date display `DD.MM.YYYY`), pdfmake (PDF generation), TypeScript throughout.
+
+**Deployment surface.** Firebase Hosting is live, not merely tooling on disk: `firebase.json` (`hosting.public` → `dist/browser`) and `.firebaserc` (project `britannia-reports`) are committed, and the app serves at https://britannia-reports.web.app. Deploys ship from the `dev` branch. See `context/foundation/infrastructure.md` for the verified deploy story.
 
 **Current user base.** Teachers at Britannia language school — a single-tenant deployment. There are no accounts today: the app is accessible to anyone who has the URL.
 
@@ -155,11 +158,13 @@ The change must respect the following pieces of the current system. These are pr
 
 - **PDF generation pipeline (pdfmake).** Same library, same code path for form-to-PDF rendering. The only acceptable change to the trimester/semester form's PDF code path is whatever is required by FR-014's `modified` tag — sign-in gating, optional template apply, and optional student-picker prefill landing into existing form state. The PDF library itself is not swapped.
 - **Internationalization mechanism (ngx-translate).** Translation infrastructure stays. New surfaces add new translation keys to the existing ngx-translate setup. No alternative i18n library is introduced; no translation keys are removed or renamed for existing surfaces.
-- **Deployment URL.** The change must not require moving the app to a different URL. Anyone with the current bookmarked URL must, after the change, land on the new sign-in screen at the same address.
+- **Deployment URL.** The change must not require moving the app to a different URL. Anyone with the current bookmarked URL must, after the change, land on the new sign-in screen at the same address. Concretely, that address is https://britannia-reports.web.app (Firebase Hosting).
 
-### Visual-language convention (not formally preserved)
+### Visual-language convention (resolved during implementation setup)
 
-The current app uses Angular Material together with Bootstrap as its visual-language stack. This combination is NOT explicitly locked as a preservation requirement, leaving room for the implementation to consolidate (for example, move entirely to Material or replace Bootstrap) during the change if doing so reduces cost. See `## Open Questions` for the resolution path.
+The current app uses Angular Material together with Bootstrap as its visual-language stack. This combination was NOT locked as a preservation requirement, leaving room for the implementation to consolidate.
+
+**Resolved 2026-07-20.** `src/CLAUDE.md` records the convention: new surfaces prefer Material; existing report layouts that mix Material and Bootstrap keep their current stack. Bootstrap 5 stays wired in `angular.json` (scss + JS bundle) — it is not removed — but sign-in, student management, and template management are built on Material. Either choice is safe for the PDF fidelity guardrail, since pdfmake is independent of the UI library.
 
 ### Data migration
 
@@ -224,7 +229,16 @@ The MVP explicitly does NOT do the following. Each item has a one-line rationale
 
 Numbered list. Each entry names what's unknown, who needs to resolve it, and the latest acceptable resolution date (or stage).
 
-1. **Visual-language consolidation (Angular Material vs Bootstrap).** The current app uses both. The change is allowed to consolidate but is not required to. Owner: implementer. Resolution latest: at the start of implementation planning (downstream of `/10x-stack-assess`).
-2. **GDPR / EU minor data baseline.** Student data privacy is captured as a non-functional requirement (`## Constraints & Compatibility` and the privacy guardrail), but specific GDPR safeguards — data export on request, data deletion on request, retention windows, consent-flow language — were not pinned during shaping. Owner: user (school director). Resolution latest: before any non-Britannia user touches the system.
-3. **Backend persistence platform.** No specific store is committed by this PRD; the choice is intentionally deferred to the downstream stack-assessment step. Owner: implementer during `/10x-stack-assess`. Resolution latest: before FR-005 / FR-009 implementation begins.
+### Still open
+
+2. **GDPR / EU minor data baseline.** The only privacy commitment this PRD makes is data minimization — see `## Non-Goals`, "No over-detailed student or teacher records" (students hold a name and a free-text class label; teachers hold a Google identity and a display name). There is no privacy NFR and no privacy guardrail beyond that; specific GDPR safeguards — data export on request, data deletion on request, retention windows, consent-flow language — were not pinned during shaping. Owner: user (school director). Resolution latest: before any non-Britannia user touches the system.
 4. **Cutover communication to existing bookmarked-link users.** FR-004 removes public-URL access; the script for telling existing visitors who have the URL bookmarked that they need a seeded account is not specified. Owner: school director. Resolution latest: at deploy time.
+
+### Resolved since this PRD was written
+
+Kept in place, with original numbering, so that references from downstream documents stay valid and each question sits next to its answer.
+
+1. **Visual-language consolidation (Angular Material vs Bootstrap).** RESOLVED 2026-07-20 → new surfaces use Material; existing mixed report layouts keep their current stack; Bootstrap 5 remains wired in `angular.json`. Convention recorded in `src/CLAUDE.md`; see `## Constraints & Compatibility`. Was owned by: implementer.
+3. **Backend persistence platform.** RESOLVED 2026-07-20 → **Firestore**, as part of selecting Firebase (Hosting + Authentication + Firestore) as the platform; runner-up was Cloudflare (Pages + D1 + Access). Decision and its rationale live in `context/foundation/infrastructure.md`. Was owned by: implementer during `/10x-infra-research`.
+
+   Caveat — this is a decision, not an implementation. The Firestore database has not been created (region `eur3` is recorded as the intended one-way choice) and the Google sign-in provider is not yet enabled in the Firebase Console. FR-005 / FR-009 implementation is still gated on both steps.

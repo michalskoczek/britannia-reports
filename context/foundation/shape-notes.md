@@ -2,7 +2,7 @@
 project: "Britannia Reports"
 context_type: brownfield
 created: 2026-05-23
-updated: 2026-05-23
+updated: 2026-07-20
 checkpoint:
   current_phase: 8
   phases_completed: [1, 2, 3, 4, 5, 6, 7]
@@ -56,9 +56,11 @@ Brownfield change to an existing Angular web app. Goal: turn a stateless public 
 
 **System purpose** — a web app that lets language-school teachers fill structured forms and download per-student end-of-period reports as PDF, replacing the prior workflow of writing each report by hand in MS Word.
 
-**Key architecture** — Single-page Angular application served from a public URL. No backend persistence layer for app data (auth, students, templates) at present. PDF is produced client-side from form input.
+**Key architecture** — Single-page Angular application, fully standalone (no NgModules; `bootstrapApplication` in `src/main.ts` + `appConfig` in `src/app/app.config.ts`), served from a public URL via Firebase Hosting. No backend persistence layer for app data (auth, students, templates) at present. PDF is produced client-side from form input.
 
-**Tech stack** — Angular 19, Angular Material, ngx-translate (PL/EN i18n), Bootstrap, pdfmake (PDF generation), firebase-tools (deployment tooling already in dev dependencies). TypeScript throughout.
+**Tech stack** — Angular 20.3, Angular Material + Angular CDK, ngx-translate v17 (PL/EN i18n; new provider API — `provideTranslateService` / `provideTranslateHttpLoader`, not `TranslateModule.forRoot()`), Bootstrap 5, moment + `@angular/material-moment-adapter` (locale `pl-PL`, date display `DD.MM.YYYY`), pdfmake (PDF generation), firebase-tools. TypeScript throughout.
+
+**Deployment surface** — Firebase Hosting is live, not merely implied by tooling: `firebase.json` (`hosting.public` → `dist/browser`) and `.firebaserc` (project `britannia-reports`) are committed, and the site serves at https://britannia-reports.web.app. See `context/foundation/infrastructure.md` for the verified state.
 
 **Current user base** — Teachers at Britannia language school. Single-tenant. No accounts today: the app is accessible to anyone who has the link.
 
@@ -219,11 +221,13 @@ The change must respect the following pieces of the current system. These are pr
 
 - **PDF generation pipeline (pdfmake)** — same library, same code path for form-to-PDF rendering. The only acceptable change to the trimester/semester form's PDF code path is whatever is required by FR-014's `modified` tag (sign-in gating, optional template apply, optional student-picker prefill landing into existing form state). No swap to a different PDF library.
 - **Internationalization mechanism (ngx-translate)** — translation infrastructure stays. New surfaces (sign-in, students, templates) add new translation keys to the existing ngx-translate setup. No new i18n library is introduced; no translation keys are removed or renamed for existing surfaces.
-- **Deployment URL** — the change must not require moving the app to a different URL. Anyone with the current bookmarked URL must, after the change, land on the new sign-in screen at the same address.
+- **Deployment URL** — the change must not require moving the app to a different URL. Anyone with the current bookmarked URL must, after the change, land on the new sign-in screen at the same address. Concretely, that URL is https://britannia-reports.web.app (Firebase Hosting, deployed from the `dev` branch).
 
-### Visual-language convention (not formally preserved)
+### Visual-language convention (resolved during implementation setup)
 
-The current app uses Angular Material + Bootstrap as its visual-language stack. This was NOT explicitly locked as a preservation requirement, leaving room for the implementation to consolidate (e.g., move entirely to Material, or replace Bootstrap) if the team finds value in doing so during the change. See `## Open Questions` for the resolution path.
+The current app uses Angular Material + Bootstrap as its visual-language stack. This was NOT explicitly locked as a preservation requirement, leaving room for the implementation to consolidate.
+
+**Resolved (2026-07-20).** `src/CLAUDE.md` records the convention: new surfaces prefer Material; existing report layouts that mix Material and Bootstrap retain their current stack. Bootstrap 5 stays wired in `angular.json` (scss + JS bundle) — no removal — but the direction for the new sign-in / students / templates surfaces is Material. Both remain safe for the PDF-fidelity guardrail since pdfmake is independent of the UI library.
 
 ### Data migration
 
@@ -265,11 +269,13 @@ Things this MVP explicitly does NOT do. Rationale on each so the line is preserv
 
 ## Forward: tech-stack
 
-Stack-shaped decisions that surfaced during shaping but are NOT part of the PRD. Captured here so the downstream `10x-stack-assess` step can pick them up. These are notes, not commitments.
+Stack-shaped decisions that surfaced during shaping but are NOT part of the PRD. These were open notes at shaping time; the platform choice has since been made downstream.
 
-- **OAuth provider** — Google sign-in is the chosen credential surface (FR-001, FR-002). The implementation needs an OAuth provider that can validate Google identity tokens; Firebase Auth is already implied by `firebase-tools` being in dev dependencies, but the choice between Firebase Auth, a hand-rolled OAuth verifier, or another auth provider (Auth0, Supabase Auth) is open.
-- **Backend persistence** — the change requires a backend store for users, students, and templates. Today the app has none. Firebase (Firestore / Firebase Auth / Firebase Hosting) is the implied candidate given `firebase-tools` is already in the project, but the choice is not locked. Alternatives include any serverless DB, a small Node/Express + Postgres backend, or a Supabase / Pocketbase BaaS.
-- **Visual-language consolidation** — the app currently uses Angular Material + Bootstrap. The MVP is allowed to consolidate (e.g., go Material-only) if doing so reduces cost. Not formally preserved (see `## Constraints & Compatibility`). Pick whichever stays cheapest; both are acceptable for the PDF-fidelity guardrail since pdfmake is independent of the UI library.
+**Platform decided (2026-07-20).** `context/foundation/infrastructure.md` records the selection: **Firebase — Hosting + Authentication + Firestore**, runner-up Cloudflare (Pages + D1 + Access). This closes both the OAuth-provider and the backend-persistence notes below. Note this is a *decision*, not an implementation: Firestore is not yet created (region `eur3` recorded as the intended one-way choice) and the Google sign-in provider is not yet enabled in the Firebase Console.
+
+- **OAuth provider** — RESOLVED → Firebase Authentication with the Google provider. Google sign-in is the credential surface (FR-001, FR-002); first-party, no glue code. Alternatives considered and dropped: hand-rolled OAuth verifier, Auth0, Supabase Auth.
+- **Backend persistence** — RESOLVED → Firestore. The change requires a store for users, students, and templates; the app has none today. Alternatives considered and dropped: serverless SQL, a small Node/Express + Postgres backend, Supabase / Pocketbase.
+- **Visual-language consolidation** — RESOLVED → Material for new surfaces, existing mixed layouts left as-is. See `## Constraints & Compatibility` for the recorded convention.
 
 ## Forward: technical-roadmap
 
@@ -286,10 +292,17 @@ v2 / post-MVP items deferred from this shaping session. Captured so the downstre
 
 Routed from this shaping session for resolution during PRD review, stack selection, or implementation planning.
 
-1. **Visual-language consolidation (Material vs Bootstrap)** — current app uses both; this change is allowed to consolidate but is not required to. Owner: implementer. Resolution latest: at the start of implementation planning.
-2. **GDPR / EU minor data baseline** — student data privacy is captured as an NFR but the specific GDPR safeguards (data export, data deletion on request, retention windows, consent flow language) were not pinned. Owner: user / school director. Resolution latest: before any non-Britannia user touches the system.
-3. **Backend persistence platform** — no specific store is committed (see `## Forward: tech-stack`). Owner: implementer during stack-assess. Resolution latest: before FR-005 / FR-009 implementation begins.
-4. **Direct cutover communication** — FR-004 removes public-URL access; the script for telling existing bookmarked-link users that they need to sign in is not specified. Owner: director. Resolution latest: at deploy time.
+### Still open
+
+1. **GDPR / EU minor data baseline** — student data privacy is captured as an NFR but the specific GDPR safeguards (data export, data deletion on request, retention windows, consent flow language) were not pinned. Owner: user / school director. Resolution latest: before any non-Britannia user touches the system.
+2. **Direct cutover communication** — FR-004 removes public-URL access; the script for telling existing bookmarked-link users that they need to sign in is not specified. Owner: director. Resolution latest: at deploy time.
+
+### Resolved since shaping
+
+Kept here (rather than deleted) so the original question and its answer stay traceable together.
+
+3. **Backend persistence platform** — RESOLVED 2026-07-20 → Firestore, as part of the Firebase platform selection. Decision lives in `context/foundation/infrastructure.md`; summary in `## Forward: tech-stack`. Was owned by: implementer during stack-assess. Caveat: the database itself is not yet created, so FR-005 / FR-009 implementation is still gated on `firebase init firestore` (region `eur3`).
+4. **Visual-language consolidation (Material vs Bootstrap)** — RESOLVED 2026-07-20 → new surfaces use Material; existing mixed report layouts keep their current stack; Bootstrap 5 stays wired in `angular.json`. Convention recorded in `src/CLAUDE.md`. Was owned by: implementer.
 
 ## Quality cross-check
 
@@ -303,3 +316,13 @@ Run on 2026-05-23. All six brownfield gate elements present; no gaps surfaced.
 - Preserved behavior: present (`## Constraints & Compatibility` names pdfmake, ngx-translate, deployment URL; `## Success Criteria > Guardrails` names four form types and PL/EN i18n).
 
 Result: `quality_check_status: accepted`. No warnings to mirror into `/10x-prd`'s Open Questions.
+
+### Refresh against the live code baseline — 2026-07-20
+
+Shaping decisions (scope, FRs, non-goals, personas) were re-read and stand unchanged: the codebase still has no auth, no student store, and no templates, so every `new` FR remains unimplemented and the four `preserved` / `modified` form types are intact (`src/app/shared/static-data/tab-data.ts`). Only the *current-system* description drifted. Corrected in this pass:
+
+- Angular version: 19 → **20.3** (`package.json`); added CDK, moment adapter, ngx-translate v17 provider API, and the standalone/no-NgModule architecture note.
+- Firebase: recorded as live Hosting (`firebase.json`, `.firebaserc`, https://britannia-reports.web.app) rather than a hint from devDependencies.
+- Open Questions 1 and 3 moved to a `### Resolved since shaping` subsection; `## Forward: tech-stack` notes marked RESOLVED.
+
+Sources of truth consulted: `package.json`, `angular.json`, `src/app/app.config.ts`, `src/CLAUDE.md`, `context/foundation/infrastructure.md`.
