@@ -26,6 +26,10 @@ service cloud.firestore {
 // field name are both S-01's to choose, and `ownerField` below is a deliberate
 // placeholder that will not match anything real.
 //
+// Placement: this block belongs INSIDE `match /databases/{database}/documents`,
+// alongside the deny-all rule above — not here, where it sits outside the
+// `service` block and cannot compile.
+//
 //   match /<collection>/{docId} {
 //     allow read, write: if request.auth != null
 //                        && request.auth.uid == resource.data.<ownerField>;
@@ -51,8 +55,8 @@ service cloud.firestore {
 //      That means adopting `@firebase/rules-unit-testing` plus the Firebase
 //      emulator suite — both deliberately deferred out of F-01, and both
 //      recorded as a hard S-01 prerequisite in the plan's Open Risks, not as
-//      a nice-to-have. Note the emulator needs a JDK, which is not currently
-//      installed on the development machine; budget that setup.
+//      a nice-to-have. The emulator carries its own runtime prerequisite;
+//      see that plan section for the current setup cost.
 //
 // Minimum coverage before any conditional rule is considered done:
 // teacher A can read and write only their own documents; teacher B is denied
