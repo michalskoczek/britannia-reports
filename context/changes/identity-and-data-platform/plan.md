@@ -384,12 +384,12 @@ Spark plan daily quotas (50K reads / 20K writes) are irrelevant in this change �
 
 #### Automated
 
-- [x] 1.2 `firebase.json` remains valid JSON and the `hosting` block is unchanged
-- [x] 1.3 Existing test suite still passes
+- [x] 1.2 `firebase.json` remains valid JSON and the `hosting` block is unchanged — 0afe6ce
+- [x] 1.3 Existing test suite still passes — 0afe6ce
 
 #### Manual
 
-- [x] 1.5 Commented ownership scaffold reads as illustrative, not live rule code
+- [x] 1.5 Commented ownership scaffold reads as illustrative, not live rule code — 0afe6ce
 
 ### Phase 2: Infrastructure Provisioning (human-gated)
 
