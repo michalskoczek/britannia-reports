@@ -395,17 +395,17 @@ Spark plan daily quotas (50K reads / 20K writes) are irrelevant in this change �
 
 #### Automated
 
-- [x] 2.1 Database exists with `locationId: eur3`
-- [x] 2.2 Rules deploy completes successfully
+- [x] 2.1 Database exists with `locationId: eur3` — 110979d
+- [x] 2.2 Rules deploy completes successfully — 110979d
 
 #### Manual
 
-- [x] 2.3 Console shows deny-all as the live ruleset
-- [x] 2.4 Google sign-in provider enabled
-- [x] 2.5 Authorized domains include production and localhost
-- [x] 2.6 App Check registered with reCAPTCHA v3, Firestore enforcement off
-- [x] 2.7 reCAPTCHA site key and six SDK config values captured
-- [x] 2.8 Firestore data browser shows zero collections
+- [x] 2.3 Console shows deny-all as the live ruleset — 110979d
+- [x] 2.4 Google sign-in provider enabled — 110979d
+- [x] 2.5 Authorized domains include production and localhost — 110979d
+- [x] 2.6 App Check registered with reCAPTCHA v3, Firestore enforcement off — 110979d
+- [x] 2.7 reCAPTCHA site key and six SDK config values captured — 110979d
+- [x] 2.8 Firestore data browser shows zero collections — 110979d
 
 ### Phase 3: Environments Scaffold and SDK Wiring
 
