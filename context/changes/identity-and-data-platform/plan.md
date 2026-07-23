@@ -429,11 +429,11 @@ Spark plan daily quotas (50K reads / 20K writes) are irrelevant in this change �
 
 #### Automated
 
-- [x] 4.1 No stale claims remain that Firestore is absent
-- [x] 4.2 Lint still passes
+- [x] 4.1 No stale claims remain that Firestore is absent — d2ebf68
+- [x] 4.2 Lint still passes — d2ebf68
 
 #### Manual
 
-- [x] 4.3 `infrastructure.md` Current State reads accurately against live CLI output
-- [x] 4.4 `src/CLAUDE.md` documents the environments convention clearly
-- [x] 4.5 Deferred emulator suite and rules-testing harness visible as an explicit `S-01` prerequisite
+- [x] 4.3 `infrastructure.md` Current State reads accurately against live CLI output — d2ebf68
+- [x] 4.4 `src/CLAUDE.md` documents the environments convention clearly — d2ebf68
+- [x] 4.5 Deferred emulator suite and rules-testing harness visible as an explicit `S-01` prerequisite — d2ebf68
