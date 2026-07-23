@@ -1,0 +1,64 @@
+rules_version = '2';
+
+// Britannia Reports — Firestore security rules
+//
+// Posture: deny everything, for everyone, authenticated or not.
+// F-01 provisions the store but ships zero collections, so there is nothing
+// legitimate to allow yet. Every collection is opened by the slice that
+// introduces it — never pre-emptively.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+  }
+}
+
+// ---------------------------------------------------------------------------
+// ILLUSTRATIVE ONLY — NOT LIVE RULE CODE. DO NOT UNCOMMENT AS-IS.
+// ---------------------------------------------------------------------------
+//
+// The shape below sketches the per-collection ownership pattern later slices
+// will need. It is a sketch, not a template: the collection name and the owner
+// field name are both S-01's to choose, and `ownerField` below is a deliberate
+// placeholder that will not match anything real.
+//
+// Placement: this block belongs INSIDE `match /databases/{database}/documents`,
+// alongside the deny-all rule above — not here, where it sits outside the
+// `service` block and cannot compile.
+//
+//   match /<collection>/{docId} {
+//     allow read, write: if request.auth != null
+//                        && request.auth.uid == resource.data.<ownerField>;
+//   }
+//
+// ⚠ READ THIS BEFORE UNCOMMENTING ANYTHING
+//
+// A single field-name typo in exactly this comparison is the most expensive
+// failure mode this project has modelled. The pre-mortem in
+// `context/foundation/infrastructure.md` describes it concretely: a rule
+// written against `teacherUid` while the documents actually carried
+// `teacherId`. The comparison silently evaluated against a missing field,
+// the rule silently over-permitted, and one teacher could read another
+// teacher's data for a month before anyone noticed. Over-permissive rules do
+// not fail loudly — that is the whole problem.
+//
+// Two consequences, both binding:
+//
+//   1. The owner field name here must be copied from the actual document
+//      schema, not from this comment and not from memory.
+//
+//   2. Whoever turns this sketch into a live rule writes rules tests FIRST.
+//      That means adopting `@firebase/rules-unit-testing` plus the Firebase
+//      emulator suite — both deliberately deferred out of F-01, and both
+//      recorded as a hard S-01 prerequisite in the plan's Open Risks, not as
+//      a nice-to-have. The emulator carries its own runtime prerequisite;
+//      see that plan section for the current setup cost.
+//
+// Minimum coverage before any conditional rule is considered done:
+// teacher A can read and write only their own documents; teacher B is denied
+// access to teacher A's documents; an unauthenticated caller is denied
+// everything.
