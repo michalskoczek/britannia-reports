@@ -303,6 +303,13 @@ Bring the load-bearing project documents into agreement with the world this chan
 
 Do **not** add emulator commands — the suite is not part of this change.
 
+**Scope note (added post-implementation, 2026-07-23).** Phase 4 shipped two edits beyond the three contracted above, both to keep the documents internally consistent rather than to add new material:
+
+- `infrastructure.md` **risk register** — the `eur3` row still prescribed `firebase init firestore`, the exact command this plan warns against; it was closed. The rules-leak row was restated as the top risk carried into `S-01`, and two rows were added (shared dev/prod project; unproven `localhost` attestation) for risks the plan's Open Risks already named but the register did not carry.
+- `src/CLAUDE.md` — a paragraph recording that no emulator suite exists and that local development therefore reads and writes the production Firebase project.
+
+Recorded as a recurring rule in `context/foundation/lessons.md` → "Updating a document includes the sections the new content contradicts."
+
 #### 3. Change identity
 
 **File**: `context/changes/identity-and-data-platform/change.md`
@@ -420,7 +427,7 @@ Spark plan daily quotas (50K reads / 20K writes) are irrelevant in this change �
 
 #### Manual
 
-- [x] 3.9 App Check debug token registered in Firebase Console — N/A: no token was needed or printed; reCAPTCHA v3 accepted `localhost`. Unverified until `S-01` makes the first real Firestore/Auth call (see `infrastructure.md`) — 0bb8c75
+- [x] 3.9 App Check debug token registered in Firebase Console — N/A at F-01: `@angular/fire` registers its providers lazily and nothing in `src/` injects them, so App Check never initializes and no token is ever generated or printed. Not "done" and not "not applicable" — untestable at this slice. First testable in `S-01`, on its first real Firestore/Auth call — 0bb8c75
 - [x] 3.6 App boots at `localhost:4200` with no Firebase console errors — 0bb8c75
 - [x] 3.7 Four report tabs render and PDF output is visually unchanged — 0bb8c75
 - [x] 3.10 PL/EN switching still works on existing screens — 0bb8c75
