@@ -7,9 +7,9 @@
 - **Commits**: `0afe6ce` (p1) → `b801497` → `5727895` → `110979d` (p2) → `0bb8c75` (p3) → `d2ebf68` (p4) → `fce516b` (epilogue)
 - **Verdict**: NEEDS ATTENTION
 - **Findings**: 0 critical, 2 warnings, 3 observations
-- **Triage** (2026-07-23): F2 fixed · F3 fixed + recorded as a rule · F1, F4, F5 skipped
+- **Triage** (2026-07-23): F1 fixed (Fix A, on a second pass) · F2 fixed · F3 fixed + recorded as a rule · F4, F5 skipped
 
-> **Carried forward unresolved.** F1 was skipped, so `context/foundation/infrastructure.md` still states that no App Check debug token appeared because "reCAPTCHA v3 accepted `localhost`". This review established that explanation is wrong — `@angular/fire` registers its providers lazily, nothing in `src/` injects them, and no Firebase initialization code runs in F-01 at all. Progress row 3.9 was corrected (F2) but that document was not, so **the plan and `infrastructure.md` now disagree on this point, and the plan is the accurate one.** `S-01` should not rely on the `infrastructure.md` sentence.
+> **All warnings resolved.** F1 was skipped on the first triage pass and fixed immediately afterwards at the user's request. `context/foundation/infrastructure.md` and `plan.md` row 3.9 now agree: no Firebase code executes in F-01 because `@angular/fire`'s providers are lazy and nothing injects them.
 
 > **Reviewer independence caveat.** Phases 3–4 were implemented by the same agent conducting this review. To compensate, every automated criterion was re-run from scratch at HEAD, and every claim below is grounded in the committed diff, installed `node_modules` source, or live CLI output rather than recollection. A fresh reviewer would still hold independence this review does not.
 
@@ -93,7 +93,7 @@ Manual rows 1.5, 2.3–2.8, 3.6, 3.7, 3.10, 4.3–4.5 were confirmed by the user
   - Tradeoff: Adds code F-01's own scope section excludes ("No auth session surface", "provideAuth() and nothing more"), and a Karma spec touching Firebase drags network/IndexedDB behavior into a suite that is currently hermetic and 0.2s.
   - Confidence: MEDIUM — the TestBed variant is straightforward, but forcing App Check init under Karma may need the debug-token hatch and could prove flaky.
   - Blind spot: Have not checked whether `initializeAppCheck` under ChromeHeadless works without a registered debug token.
-- **Decision**: SKIPPED (2026-07-23) — user judged the correction not worth making now. Consequence accepted: `infrastructure.md`'s App Check bullet retains the "reCAPTCHA v3 accepted `localhost`" explanation, which this review established is wrong, and the plan's Desired End State #5 still claims providers are "initialized". `S-01` should treat both as unverified and re-derive the behavior from `@angular/fire`'s lazy-provider registration.
+- **Decision**: FIXED via Fix A (2026-07-23) — skipped on the first triage pass, then fixed on request. The `infrastructure.md` App Check bullet now states the real reason (lazy providers, nothing injects them, so `initializeApp()` and `initializeAppCheck()` never run and reCAPTCHA is never reached) and spells out the two consequences for `S-01`: that "boots with no Firebase errors" does not validate any config value, and that the debug-token path — not reCAPTCHA — is what engages on `localhost`. The plan's Desired End State #5 still reads "providers initialized" and was left as-is; it is a historical planning artifact, and `plan.md` row 3.9 plus this document now carry the accurate account.
 
 ### F2 — Progress row 3.9 is marked `[x]` for work that was not performed, on a premise that does not hold
 
