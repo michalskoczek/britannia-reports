@@ -1,7 +1,7 @@
 ---
 change_id: identity-and-data-platform
 title: Identity and data platform foundation (roadmap F-01)
-status: implementing
+status: implemented
 created: 2026-07-21
 updated: 2026-07-23
 archived_at: null

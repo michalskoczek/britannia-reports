@@ -411,29 +411,29 @@ Spark plan daily quotas (50K reads / 20K writes) are irrelevant in this change �
 
 #### Automated
 
-- [x] 3.1 Production build succeeds with file replacement applied
-- [x] 3.2 Build output `dist/browser/index.html` exists
-- [x] 3.3 Lint passes clean
-- [x] 3.4 Existing test suite passes unchanged
-- [x] 3.5 No `@angular/*` version drift introduced by the install
-- [x] 3.11 Development build type-checks `environment.ts`
+- [x] 3.1 Production build succeeds with file replacement applied — 0bb8c75
+- [x] 3.2 Build output `dist/browser/index.html` exists — 0bb8c75
+- [x] 3.3 Lint passes clean — 0bb8c75
+- [x] 3.4 Existing test suite passes unchanged — 0bb8c75
+- [x] 3.5 No `@angular/*` version drift introduced by the install — 0bb8c75
+- [x] 3.11 Development build type-checks `environment.ts` — 0bb8c75
 
 #### Manual
 
-- [x] 3.9 App Check debug token registered in Firebase Console — N/A: no token was needed or printed; reCAPTCHA v3 accepted `localhost`. Unverified until `S-01` makes the first real Firestore/Auth call (see `infrastructure.md`)
-- [x] 3.6 App boots at `localhost:4200` with no Firebase console errors
-- [x] 3.7 Four report tabs render and PDF output is visually unchanged
-- [x] 3.10 PL/EN switching still works on existing screens
+- [x] 3.9 App Check debug token registered in Firebase Console — N/A: no token was needed or printed; reCAPTCHA v3 accepted `localhost`. Unverified until `S-01` makes the first real Firestore/Auth call (see `infrastructure.md`) — 0bb8c75
+- [x] 3.6 App boots at `localhost:4200` with no Firebase console errors — 0bb8c75
+- [x] 3.7 Four report tabs render and PDF output is visually unchanged — 0bb8c75
+- [x] 3.10 PL/EN switching still works on existing screens — 0bb8c75
 
 ### Phase 4: Documentation Sync
 
 #### Automated
 
-- [ ] 4.1 No stale claims remain that Firestore is absent
-- [ ] 4.2 Lint still passes
+- [x] 4.1 No stale claims remain that Firestore is absent
+- [x] 4.2 Lint still passes
 
 #### Manual
 
-- [ ] 4.3 `infrastructure.md` Current State reads accurately against live CLI output
-- [ ] 4.4 `src/CLAUDE.md` documents the environments convention clearly
-- [ ] 4.5 Deferred emulator suite and rules-testing harness visible as an explicit `S-01` prerequisite
+- [x] 4.3 `infrastructure.md` Current State reads accurately against live CLI output
+- [x] 4.4 `src/CLAUDE.md` documents the environments convention clearly
+- [x] 4.5 Deferred emulator suite and rules-testing harness visible as an explicit `S-01` prerequisite
