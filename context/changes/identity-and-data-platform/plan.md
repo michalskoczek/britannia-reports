@@ -411,19 +411,19 @@ Spark plan daily quotas (50K reads / 20K writes) are irrelevant in this change â
 
 #### Automated
 
-- [ ] 3.1 Production build succeeds with file replacement applied
-- [ ] 3.2 Build output `dist/browser/index.html` exists
-- [ ] 3.3 Lint passes clean
-- [ ] 3.4 Existing test suite passes unchanged
-- [ ] 3.5 No `@angular/*` version drift introduced by the install
-- [ ] 3.11 Development build type-checks `environment.ts`
+- [x] 3.1 Production build succeeds with file replacement applied
+- [x] 3.2 Build output `dist/browser/index.html` exists
+- [x] 3.3 Lint passes clean
+- [x] 3.4 Existing test suite passes unchanged
+- [x] 3.5 No `@angular/*` version drift introduced by the install
+- [x] 3.11 Development build type-checks `environment.ts`
 
 #### Manual
 
-- [ ] 3.9 App Check debug token registered in Firebase Console
-- [ ] 3.6 App boots at `localhost:4200` with no Firebase console errors
-- [ ] 3.7 Four report tabs render and PDF output is visually unchanged
-- [ ] 3.10 PL/EN switching still works on existing screens
+- [x] 3.9 App Check debug token registered in Firebase Console â€” N/A: no token was needed or printed; reCAPTCHA v3 accepted `localhost`. Unverified until `S-01` makes the first real Firestore/Auth call (see `infrastructure.md`)
+- [x] 3.6 App boots at `localhost:4200` with no Firebase console errors
+- [x] 3.7 Four report tabs render and PDF output is visually unchanged
+- [x] 3.10 PL/EN switching still works on existing screens
 
 ### Phase 4: Documentation Sync
 
