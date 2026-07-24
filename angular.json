@@ -137,7 +137,19 @@
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "exclude": [
+              "**/pdf-fidelity-capture.spec.ts"
+            ]
+          },
+          "configurations": {
+            "capture": {
+              "karmaConfig": "karma-capture.conf.js",
+              "include": [
+                "**/pdf-fidelity-capture.spec.ts"
+              ],
+              "exclude": []
+            }
           }
         },
         "lint": {

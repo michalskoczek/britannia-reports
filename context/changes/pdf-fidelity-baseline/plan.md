@@ -360,34 +360,34 @@ None. No persisted data, no schema, no deployed behavior changes in phases 1 and
 
 #### Automated
 
-- [x] 1.1 Linting passes: `npm run lint`
-- [x] 1.2 Full suite passes with eight new cases: `npm test -- --watch=false --browsers=ChromeHeadless`
-- [x] 1.3 Production build still compiles the new `src/` modules: `npm run build`
-- [x] 1.4 Dev-configuration build type-checks: `npm run build -- --configuration development`
+- [x] 1.1 Linting passes: `npm run lint` — 2fd5d1e
+- [x] 1.2 Full suite passes with eight new cases: `npm test -- --watch=false --browsers=ChromeHeadless` — 2fd5d1e
+- [x] 1.3 Production build still compiles the new `src/` modules: `npm run build` — 2fd5d1e
+- [x] 1.4 Dev-configuration build type-checks: `npm run build -- --configuration development` — 2fd5d1e
 
 #### Manual
 
-- [x] 1.5 Each maximal fixture demonstrably reaches its conditional branches
-- [x] 1.6 Each minimal fixture leaves the corresponding branches absent
-- [x] 1.7 No fixture constructs a `FormArray` row by hand
-- [x] 1.8 The trimester/semester fixtures leave all fourteen `FormArray`s empty
+- [x] 1.5 Each maximal fixture demonstrably reaches its conditional branches — 2fd5d1e
+- [x] 1.6 Each minimal fixture leaves the corresponding branches absent — 2fd5d1e
+- [x] 1.7 No fixture constructs a `FormArray` row by hand — 2fd5d1e
+- [x] 1.8 The trimester/semester fixtures leave all fourteen `FormArray`s empty — 2fd5d1e
 
 ### Phase 2: Capture harness, reference PDFs, and the written procedure
 
 #### Automated
 
-- [ ] 2.1 Default suite green with the capture spec excluded: `npm test -- --watch=false --browsers=ChromeHeadless`
-- [ ] 2.2 Capture produces eight PDFs: `npm run test:capture`
-- [ ] 2.3 Linting passes: `npm run lint`
-- [ ] 2.4 Production build passes: `npm run build`
+- [x] 2.1 Default suite green with the capture spec excluded: `npm test -- --watch=false --browsers=ChromeHeadless`
+- [x] 2.2 Capture produces eight PDFs: `npm run test:capture`
+- [x] 2.3 Linting passes: `npm run lint`
+- [x] 2.4 Production build passes: `npm run build`
 
 #### Manual
 
-- [ ] 2.5 All eight captured PDFs open without a viewer error and render their expected sections
-- [ ] 2.6 `semestr-minimal.pdf` and `semestr-maximal.pdf` are committed under `docs/pdf-fidelity/reference/`
-- [ ] 2.7 The maximal trimester/semester PDF contains the exam-recommendation table and additional-comment row; the minimal one contains neither
-- [ ] 2.8 A second reader can follow `docs/pdf-fidelity-check.md` end to end without asking a question
-- [ ] 2.9 `src/CLAUDE.md`'s hard rule points at the procedure and the folder map lists `testing/pdf-fidelity/`
+- [x] 2.5 All eight captured PDFs open without a viewer error and render their expected sections
+- [x] 2.6 `semestr-minimal.pdf` and `semestr-maximal.pdf` are committed under `docs/pdf-fidelity/reference/`
+- [x] 2.7 The maximal trimester/semester PDF contains the exam-recommendation table and additional-comment row; the minimal one contains neither
+- [x] 2.8 A second reader can follow `docs/pdf-fidelity-check.md` end to end without asking a question
+- [x] 2.9 `src/CLAUDE.md`'s hard rule points at the procedure and the folder map lists `testing/pdf-fidelity/`
 
 ### Phase 3: Explicit `pl-PL` date locale, validated through the procedure
 
