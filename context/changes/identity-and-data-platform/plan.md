@@ -303,6 +303,13 @@ Bring the load-bearing project documents into agreement with the world this chan
 
 Do **not** add emulator commands — the suite is not part of this change.
 
+**Scope note (added post-implementation, 2026-07-23).** Phase 4 shipped two edits beyond the three contracted above, both to keep the documents internally consistent rather than to add new material:
+
+- `infrastructure.md` **risk register** — the `eur3` row still prescribed `firebase init firestore`, the exact command this plan warns against; it was closed. The rules-leak row was restated as the top risk carried into `S-01`, and two rows were added (shared dev/prod project; unproven `localhost` attestation) for risks the plan's Open Risks already named but the register did not carry.
+- `src/CLAUDE.md` — a paragraph recording that no emulator suite exists and that local development therefore reads and writes the production Firebase project.
+
+Recorded as a recurring rule in `context/foundation/lessons.md` → "Updating a document includes the sections the new content contradicts."
+
 #### 3. Change identity
 
 **File**: `context/changes/identity-and-data-platform/change.md`
@@ -411,29 +418,29 @@ Spark plan daily quotas (50K reads / 20K writes) are irrelevant in this change �
 
 #### Automated
 
-- [ ] 3.1 Production build succeeds with file replacement applied
-- [ ] 3.2 Build output `dist/browser/index.html` exists
-- [ ] 3.3 Lint passes clean
-- [ ] 3.4 Existing test suite passes unchanged
-- [ ] 3.5 No `@angular/*` version drift introduced by the install
-- [ ] 3.11 Development build type-checks `environment.ts`
+- [x] 3.1 Production build succeeds with file replacement applied — 0bb8c75
+- [x] 3.2 Build output `dist/browser/index.html` exists — 0bb8c75
+- [x] 3.3 Lint passes clean — 0bb8c75
+- [x] 3.4 Existing test suite passes unchanged — 0bb8c75
+- [x] 3.5 No `@angular/*` version drift introduced by the install — 0bb8c75
+- [x] 3.11 Development build type-checks `environment.ts` — 0bb8c75
 
 #### Manual
 
-- [ ] 3.9 App Check debug token registered in Firebase Console
-- [ ] 3.6 App boots at `localhost:4200` with no Firebase console errors
-- [ ] 3.7 Four report tabs render and PDF output is visually unchanged
-- [ ] 3.10 PL/EN switching still works on existing screens
+- [x] 3.9 App Check debug token registered in Firebase Console — N/A at F-01: `@angular/fire` registers its providers lazily and nothing in `src/` injects them, so App Check never initializes and no token is ever generated or printed. Not "done" and not "not applicable" — untestable at this slice. First testable in `S-01`, on its first real Firestore/Auth call — 0bb8c75
+- [x] 3.6 App boots at `localhost:4200` with no Firebase console errors — 0bb8c75
+- [x] 3.7 Four report tabs render and PDF output is visually unchanged — 0bb8c75
+- [x] 3.10 PL/EN switching still works on existing screens — 0bb8c75
 
 ### Phase 4: Documentation Sync
 
 #### Automated
 
-- [ ] 4.1 No stale claims remain that Firestore is absent
-- [ ] 4.2 Lint still passes
+- [x] 4.1 No stale claims remain that Firestore is absent — d2ebf68
+- [x] 4.2 Lint still passes — d2ebf68
 
 #### Manual
 
-- [ ] 4.3 `infrastructure.md` Current State reads accurately against live CLI output
-- [ ] 4.4 `src/CLAUDE.md` documents the environments convention clearly
-- [ ] 4.5 Deferred emulator suite and rules-testing harness visible as an explicit `S-01` prerequisite
+- [x] 4.3 `infrastructure.md` Current State reads accurately against live CLI output — d2ebf68
+- [x] 4.4 `src/CLAUDE.md` documents the environments convention clearly — d2ebf68
+- [x] 4.5 Deferred emulator suite and rules-testing harness visible as an explicit `S-01` prerequisite — d2ebf68
