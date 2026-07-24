@@ -205,7 +205,7 @@ export class TeddyEddieReportComponent {
   }
 
   public generatePDF(form: FormGroup): any {
-    const date: string = new Date(form.value.date).toLocaleDateString();
+    const date: string = new Date(form.value.date).toLocaleDateString('pl-PL');
 
     const docDefinition = {
       content: [

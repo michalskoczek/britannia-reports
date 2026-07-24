@@ -59,6 +59,19 @@ otherwise the barrier does not cover the thing you built.
 captured from unmodified code and are the "before" side for that report type. Do not regenerate them as
 part of a routine check; replacing a reference is a deliberate act (see §8).
 
+### If you already captured before you started editing
+
+`npm run test:capture` **overwrites** `docs/pdf-fidelity/captured/` in place. If that directory already
+holds PDFs produced before your change, copy it somewhere outside the repository *before* you capture
+again:
+
+```bash
+cp -r docs/pdf-fidelity/captured ../br-before-pdfs
+```
+
+That is a complete "before" set for all four report types, and it costs nothing compared to the worktree
+rebuild below. Losing it to an overwrite is the easiest mistake to make in this procedure.
+
 ### The other three report types — rebuild from history
 
 Only the trimester/semester references are committed, so for `year`, `cambridge`, and `teddy-eddie` you
@@ -115,11 +128,27 @@ Any difference that a teacher would notice is a regression, whether or not it lo
 An intentional visual change must be stated as such in the change's plan and approved there — it is not
 something this procedure can bless on its own.
 
-## 7. Byte and hash comparison do not work
+## 7. Whole-file byte and hash comparison do not work
 
-`pdfkit` stamps a fresh `CreationDate` into every document, so two PDFs generated from identical inputs
-one second apart differ in bytes and in every hash. `diff`, `cmp`, `sha256sum`, and `git diff` are all
-useless here. **Only visual comparison is meaningful.**
+`pdfkit` stamps a fresh `CreationDate` and a fresh file `/ID` into every document, so two PDFs generated
+from identical inputs one second apart differ in bytes and in every hash. `diff`, `cmp`, `sha256sum`, and
+`git diff` over the whole file are all useless here. **§6 is the authority.**
+
+Those two stamps are, however, the *only* non-deterministic bytes, and they sit in two narrow regions:
+five digits inside the `/CreationDate (D:...)` string, and the two hex strings in the trailer's
+`/ID [<…> <…>]`, within the last ~100 bytes. So for a before/after pair captured on the **same machine
+with the same dependencies**, `cmp -l` is a useful *supporting* signal:
+
+```bash
+cmp -l ../br-before-pdfs/semestr-maximal.pdf docs/pdf-fidelity/captured/semestr-maximal.pdf
+```
+
+- Identical file size, and every differing offset inside those two regions ⇒ all content streams are
+  byte-identical and the visual check is a formality.
+- Anything else ⇒ something rendered differently. Go find it with the §6 checklist.
+
+This does not replace §6. It says nothing about a pair that came from different machines, a different
+dependency set, or a worktree rebuild, and it never tells you *what* changed.
 
 ## 8. Record the outcome
 

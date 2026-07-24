@@ -376,32 +376,60 @@ None. No persisted data, no schema, no deployed behavior changes in phases 1 and
 
 #### Automated
 
-- [x] 2.1 Default suite green with the capture spec excluded: `npm test -- --watch=false --browsers=ChromeHeadless`
-- [x] 2.2 Capture produces eight PDFs: `npm run test:capture`
-- [x] 2.3 Linting passes: `npm run lint`
-- [x] 2.4 Production build passes: `npm run build`
+- [x] 2.1 Default suite green with the capture spec excluded: `npm test -- --watch=false --browsers=ChromeHeadless` — a582683
+- [x] 2.2 Capture produces eight PDFs: `npm run test:capture` — a582683
+- [x] 2.3 Linting passes: `npm run lint` — a582683
+- [x] 2.4 Production build passes: `npm run build` — a582683
 
 #### Manual
 
-- [x] 2.5 All eight captured PDFs open without a viewer error and render their expected sections
-- [x] 2.6 `semestr-minimal.pdf` and `semestr-maximal.pdf` are committed under `docs/pdf-fidelity/reference/`
-- [x] 2.7 The maximal trimester/semester PDF contains the exam-recommendation table and additional-comment row; the minimal one contains neither
-- [x] 2.8 A second reader can follow `docs/pdf-fidelity-check.md` end to end without asking a question
-- [x] 2.9 `src/CLAUDE.md`'s hard rule points at the procedure and the folder map lists `testing/pdf-fidelity/`
+- [x] 2.5 All eight captured PDFs open without a viewer error and render their expected sections — a582683
+- [x] 2.6 `semestr-minimal.pdf` and `semestr-maximal.pdf` are committed under `docs/pdf-fidelity/reference/` — a582683
+- [x] 2.7 The maximal trimester/semester PDF contains the exam-recommendation table and additional-comment row; the minimal one contains neither — a582683
+- [x] 2.8 A second reader can follow `docs/pdf-fidelity-check.md` end to end without asking a question — a582683
+- [x] 2.9 `src/CLAUDE.md`'s hard rule points at the procedure and the folder map lists `testing/pdf-fidelity/` — a582683
 
 ### Phase 3: Explicit `pl-PL` date locale, validated through the procedure
 
 #### Automated
 
-- [ ] 3.1 Linting passes: `npm run lint`
-- [ ] 3.2 Full suite passes: `npm test -- --watch=false --browsers=ChromeHeadless`
-- [ ] 3.3 Production build passes: `npm run build`
-- [ ] 3.4 Dev-configuration build type-checks: `npm run build -- --configuration development`
-- [ ] 3.5 Capture reruns cleanly after the change: `npm run test:capture`
+- [x] 3.1 Linting passes: `npm run lint`
+- [x] 3.2 Full suite passes: `npm test -- --watch=false --browsers=ChromeHeadless`
+- [x] 3.3 Production build passes: `npm run build`
+- [x] 3.4 Dev-configuration build type-checks: `npm run build -- --configuration development`
+- [x] 3.5 Capture reruns cleanly after the change: `npm run test:capture`
 
 #### Manual
 
-- [ ] 3.6 Post-change trimester/semester PDFs are visually identical to the committed references
-- [ ] 3.7 Exactly five expressions changed; no other edit in the four components or the Cambridge helper
-- [ ] 3.8 The committed reference PDFs are left as-is, not regenerated
-- [ ] 3.9 Any ambiguous step discovered while executing the procedure is corrected in `docs/pdf-fidelity-check.md`
+- [x] 3.6 Post-change trimester/semester PDFs are visually identical to the committed references
+- [x] 3.7 Exactly five expressions changed; no other edit in the four components or the Cambridge helper
+- [x] 3.8 The committed reference PDFs are left as-is, not regenerated
+- [x] 3.9 Any ambiguous step discovered while executing the procedure is corrected in `docs/pdf-fidelity-check.md`
+
+### PDF fidelity check
+
+- **Date**: 2026-07-24
+- **Change under check**: phase 3 — explicit `pl-PL` argument on the five `toLocaleDateString` call sites
+- **Report types compared**: all four, both fixtures each (eight pairs)
+- **Before**: `docs/pdf-fidelity/captured/` as produced by the phase 2 capture (commit `a582683`, unmodified
+  code), copied aside before re-running the harness
+- **After**: `npm run test:capture` on the modified working tree, headed Chrome, `Get-Culture` = `pl-PL`
+- **Verdict**: no visible differences.
+
+  All eight pairs are byte-identical in size. Per the procedure's §7 supporting check, every differing
+  byte in every pair falls in exactly two regions — five digits of the `/CreationDate` timestamp and the
+  two trailer `/ID` hex strings — so all content streams are byte-identical, not merely visually
+  equivalent. The committed references under `docs/pdf-fidelity/reference/` were left untouched and
+  remain valid, as the phase contract predicted for a machine already running a `pl-PL` locale.
+
+- **Procedure corrections made**: two, both from executing it (step 3.9).
+  1. §4 gained a warning that `npm run test:capture` overwrites `docs/pdf-fidelity/captured/` in place,
+     with the one-line copy that preserves a pre-change capture. Hit directly: the phase 2 artifacts were
+     a complete "before" set for all four types and would have been destroyed, forcing an unnecessary
+     `git worktree` rebuild.
+  2. §7 was narrowed from "byte and hash comparison do not work" to "whole-file byte and hash comparison
+     do not work", and now documents the two non-deterministic regions plus the `cmp -l` supporting check.
+     The original blanket claim would have led a reader to skip the check that produced this verdict.
+     *Disclosed*: this softens the plan's "no byte or hash comparison" boundary. That boundary rules out
+     building comparison tooling, and none was built — this is a documented manual check that supplements
+     §6 and does not replace it.

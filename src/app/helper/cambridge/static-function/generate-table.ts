@@ -9,7 +9,7 @@ export abstract class GenerateTable {
   }
 
   protected static formatDate(date: any): string {
-    return date ? new Date(date).toLocaleDateString() : '-';
+    return date ? new Date(date).toLocaleDateString('pl-PL') : '-';
   }
 
   protected static formatScore(score: any): string {
