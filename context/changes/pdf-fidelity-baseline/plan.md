@@ -393,18 +393,18 @@ None. No persisted data, no schema, no deployed behavior changes in phases 1 and
 
 #### Automated
 
-- [x] 3.1 Linting passes: `npm run lint`
-- [x] 3.2 Full suite passes: `npm test -- --watch=false --browsers=ChromeHeadless`
-- [x] 3.3 Production build passes: `npm run build`
-- [x] 3.4 Dev-configuration build type-checks: `npm run build -- --configuration development`
-- [x] 3.5 Capture reruns cleanly after the change: `npm run test:capture`
+- [x] 3.1 Linting passes: `npm run lint` — 6046db6
+- [x] 3.2 Full suite passes: `npm test -- --watch=false --browsers=ChromeHeadless` — 6046db6
+- [x] 3.3 Production build passes: `npm run build` — 6046db6
+- [x] 3.4 Dev-configuration build type-checks: `npm run build -- --configuration development` — 6046db6
+- [x] 3.5 Capture reruns cleanly after the change: `npm run test:capture` — 6046db6
 
 #### Manual
 
-- [x] 3.6 Post-change trimester/semester PDFs are visually identical to the committed references
-- [x] 3.7 Exactly five expressions changed; no other edit in the four components or the Cambridge helper
-- [x] 3.8 The committed reference PDFs are left as-is, not regenerated
-- [x] 3.9 Any ambiguous step discovered while executing the procedure is corrected in `docs/pdf-fidelity-check.md`
+- [x] 3.6 Post-change trimester/semester PDFs are visually identical to the committed references — 6046db6
+- [x] 3.7 Exactly five expressions changed; no other edit in the four components or the Cambridge helper — 6046db6
+- [x] 3.8 The committed reference PDFs are left as-is, not regenerated — 6046db6
+- [x] 3.9 Any ambiguous step discovered while executing the procedure is corrected in `docs/pdf-fidelity-check.md` — 6046db6
 
 ### PDF fidelity check
 
