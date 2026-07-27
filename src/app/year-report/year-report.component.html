@@ -448,9 +448,11 @@
       <mat-form-field class="col-12">
         <mat-label>{{ "teacher" | translate }}</mat-label>
         <mat-select formControlName="signature">
-          <mat-option *ngFor="let teacher of teachers" [value]="teacher">
-            {{ teacher }}
-          </mat-option>
+          @for (teacher of teachers; track teacher) {
+            <mat-option [value]="teacher">
+              {{ teacher }}
+            </mat-option>
+          }
         </mat-select>
       </mat-form-field>
     </div>

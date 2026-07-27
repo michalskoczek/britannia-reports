@@ -273,7 +273,7 @@ export class YearReportComponent implements OnInit {
   }
 
   public generatePDF(form: FormGroup): any {
-    const date: string = new Date(form.value.date).toLocaleDateString();
+    const date: string = new Date(form.value.date).toLocaleDateString('pl-PL');
 
     const addSpaceAfterTeacher = (teachers: string[]) => {
       if (!teachers) return;

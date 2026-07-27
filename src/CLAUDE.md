@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Hard rules
 
-**PDF fidelity is a hard guardrail.** The four existing report types must produce visually identical PDFs before and after any change. When touching a `*-report.component.ts` file, do not modify the `pdfmake` document definition or its inputs unless the task explicitly requires it. When in doubt, generate a PDF before and after with identical form inputs and compare visually.
+**PDF fidelity is a hard guardrail.** The four existing report types must produce visually identical PDFs before and after any change. When touching a `*-report.component.ts` file, do not modify the `pdfmake` document definition or its inputs unless the task explicitly requires it. When the task does require it, follow `docs/pdf-fidelity-check.md` — it names the recorded form inputs, the capture command, and the comparison checklist. `npm test` smoke-covers that every report type still renders a PDF; it asserts nothing about layout, so a green suite is not evidence of fidelity.
 
 ## Project
 
@@ -18,6 +18,7 @@ npm run build                                              # production build �
 npm run watch                                              # dev build with --watch
 npm test                                                   # Karma + Jasmine, interactive (launches Chrome)
 npm test -- --watch=false --browsers=ChromeHeadless        # headless single-run (use in CI / for verification)
+npm run test:capture                                       # PDF-fidelity capture → docs/pdf-fidelity/captured/ (headed Chrome only)
 npm run lint                                               # ESLint over **/*.ts and **/*.html
 npm run lint -- --fix                                      # auto-fix what is auto-fixable
 npx firebase deploy --only hosting                         # deploy (requires `npm run build` first; public = dist/browser)
@@ -49,7 +50,7 @@ The App Check debug-token assignment at the top of `app.config.ts` (`FIREBASE_AP
 
 - `src/app/<feature>-report/` — feature folders per report type: `cambridge-report/`, `semestr-report/` (Polish spelling is intentional, do not "fix"), `teddy-eddie-report/`, `year-report/`. Each owns its standalone component + `pdfmake` builder.
 - `src/app/rating-scale/` — `RatingScaleComponent` and a nested `SpecialMarksComponent`, both standalone. The rating-scale surface is reused across report types via direct `imports` in the consuming report component.
-- `src/app/shared/` — Angular constructs reused across features: standalone components under `components/` (`button/`, `header/`, `form/`, `UI/tab-group`, `UI/section-title`), reusable form scaffolding under `forms/template/`, static data tables (`exams.ts`, `marks.ts`, `select-values.ts`, `development-path.ts`), `static-data/tab-data.ts` (the tab registry that drives `AppComponent`), `testing/translate-testing.ts` (shared spec helper, see below), and the base64 image blobs.
+- `src/app/shared/` — Angular constructs reused across features: standalone components under `components/` (`button/`, `header/`, `form/`, `UI/tab-group`, `UI/section-title`), reusable form scaffolding under `forms/template/`, static data tables (`exams.ts`, `marks.ts`, `select-values.ts`, `development-path.ts`), `static-data/tab-data.ts` (the tab registry that drives `AppComponent`), `testing/translate-testing.ts` (shared spec helper, see below), `testing/pdf-fidelity/` (fixtures, the pdfmake interception helper, and the capture harness behind `docs/pdf-fidelity-check.md`), and the base64 image blobs.
 - `src/app/helper/` — pure-TypeScript helpers, no Angular decorators. Currently only `cambridge/` lives here; new pure helpers go here, not in `shared/`.
 - `src/app/model/` — TypeScript interfaces and types only. No runtime code (`development-path-in-school.ts`, `development-path-teddy-eddie.ts`, `tab.interface.ts`).
 

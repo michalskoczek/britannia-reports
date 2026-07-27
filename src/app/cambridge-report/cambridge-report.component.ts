@@ -189,7 +189,7 @@ export class CambridgeReportComponent implements OnInit {
   }
 
   public generatePDF(form: FormGroup): void {
-    const date: string = new Date(form.value.date).toLocaleDateString();
+    const date: string = new Date(form.value.date).toLocaleDateString('pl-PL');
 
     const commentsArray: string[] = [];
     form.value.comments.forEach((comment: string) => commentsArray.push(comment));
