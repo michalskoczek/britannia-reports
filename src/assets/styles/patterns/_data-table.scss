@@ -1,0 +1,93 @@
+@use "../utils/index" as ds;
+
+// Material table styling shared by the Teddy Eddie immersion table and the
+// Cambridge path table.
+//
+// MUST be included inside a selector that scopes it — never at the root of a
+// stylesheet. The `::ng-deep` block below escapes Angular's component
+// encapsulation, so at root it compiles to a bare `.mat-mdc-cell` and overrides
+// every Material table in the app. `semestr-report.component.scss` already does
+// this by accident with `::ng-deep .mat-mdc-row`, which is why the Teddy Eddie
+// tables inherit a row height from an unrelated component.
+@mixin data-table-cells {
+  ::ng-deep {
+    .mat-mdc-header-row {
+      background-color: ds.$britannia-light-blue;
+    }
+
+    .mat-mdc-header-cell {
+      background-color: ds.$britannia-light-blue;
+      color: ds.$britannia-blue;
+      font-weight: 600;
+      font-size: 13px;
+      font-family: ds.$font;
+      border-right: 1px solid ds.$black-08;
+
+      &:last-of-type {
+        border-right: none;
+      }
+    }
+
+    .mat-mdc-row {
+      background-color: ds.$white;
+    }
+
+    .mat-mdc-cell {
+      padding: 8px 4px;
+      border-right: 1px solid ds.$black-06;
+
+      &:last-of-type {
+        border-right: none;
+      }
+    }
+
+    .cell-field {
+      width: 100%;
+
+      .mat-mdc-form-field-subscript-wrapper {
+        display: none;
+      }
+
+      .mat-mdc-text-field-wrapper {
+        padding: 0 8px;
+        background-color: transparent;
+      }
+
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        border-color: transparent !important;
+      }
+    }
+
+    .mat-mdc-form-field-disabled,
+    .mdc-text-field--disabled {
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        border-color: transparent !important;
+      }
+    }
+
+    .mdc-text-field--disabled {
+      input.mat-mdc-input-element,
+      .mat-mdc-select-value-text,
+      .mat-mdc-select-min-line,
+      .mdc-text-field__input {
+        color: ds.$black-87 !important;
+        -webkit-text-fill-color: ds.$black-87 !important;
+      }
+    }
+  }
+}
+
+// Declarations only, no selector of its own. The two consumers nest their
+// `.no-data-row .mat-cell` at different depths; emitting the selector here would
+// change specificity in one of them.
+@mixin data-table-empty-cell {
+  padding: 24px 16px;
+  text-align: center;
+  color: ds.$britannia-blue;
+  font-style: italic;
+  background-color: ds.$white;
+}
