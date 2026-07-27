@@ -565,34 +565,34 @@ pattern layer rather than moving members out of reach.
 
 #### Automated
 
-- [x] 1.1 Build succeeds: `npm run build`
-- [x] 1.2 Linting passes: `npm run lint`
-- [x] 1.3 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
-- [x] 1.4 `_radius.scss` and `_elevation.scss` exist and are reachable through `utils/index.scss`
+- [x] 1.1 Build succeeds: `npm run build` — 7326ae0
+- [x] 1.2 Linting passes: `npm run lint` — 7326ae0
+- [x] 1.3 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless` — 7326ae0
+- [x] 1.4 `_radius.scss` and `_elevation.scss` exist and are reachable through `utils/index.scss` — 7326ae0
 
 #### Manual
 
-- [x] 1.5 Human confirms the four report tabs look unchanged
+- [x] 1.5 Human confirms the four report tabs look unchanged — 7326ae0
 
 ### Phase 2: Pattern layer and repoint
 
 #### Automated
 
-- [ ] 2.1 Build succeeds: `npm run build`
-- [ ] 2.2 Linting passes: `npm run lint`
-- [ ] 2.3 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
-- [ ] 2.4 Elevation shadow triple absent outside `_elevation.scss`, except `tab-group.component.scss`
-- [ ] 2.5 `#eef0fa` absent outside `_colors.scss`
-- [ ] 2.6 Both table stylesheets at least 40 lines shorter
+- [x] 2.1 Build succeeds: `npm run build`
+- [x] 2.2 Linting passes: `npm run lint`
+- [x] 2.3 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
+- [x] 2.4 Elevation shadow triple absent outside `_elevation.scss`, except `tab-group.component.scss`
+- [x] 2.5 `#eef0fa` absent outside `_colors.scss`
+- [x] 2.6 Both table stylesheets at least 40 lines shorter
 
 #### Manual
 
-- [ ] 2.7 Teddy Eddie tab checked with both tables populated, not in the default empty state
-- [ ] 2.8 Human confirms no visible change across the listed properties
-- [ ] 2.9 The three non-Teddy-Eddie tabs unchanged
-- [ ] 2.10 Empty-state behaviour intact — no age selected hides both tables' header rows
-- [ ] 2.11 Each of the three repoints built, spot-checked, and committed separately
-- [ ] 2.12 Reset-rule position in compiled output verified for `section-title` and `form-wrapper`
+- [x] 2.7 Teddy Eddie tab checked with both tables populated, not in the default empty state
+- [x] 2.8 Human confirms no visible change across the listed properties
+- [x] 2.9 The three non-Teddy-Eddie tabs unchanged
+- [x] 2.10 Empty-state behaviour intact — no age selected hides both tables' header rows
+- [x] 2.11 Each of the three repoints built, spot-checked, and committed separately
+- [x] 2.12 Reset-rule position in compiled output verified for `section-title` and `form-wrapper`
 
 ### Phase 3: Document the language and repair stale conventions
 
