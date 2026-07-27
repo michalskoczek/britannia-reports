@@ -578,35 +578,54 @@ pattern layer rather than moving members out of reach.
 
 #### Automated
 
-- [x] 2.1 Build succeeds: `npm run build`
-- [x] 2.2 Linting passes: `npm run lint`
-- [x] 2.3 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
-- [x] 2.4 Elevation shadow triple absent outside `_elevation.scss`, except `tab-group.component.scss`
-- [x] 2.5 `#eef0fa` absent outside `_colors.scss`
-- [x] 2.6 Both table stylesheets at least 40 lines shorter
+- [x] 2.1 Build succeeds: `npm run build` — 675444a
+- [x] 2.2 Linting passes: `npm run lint` — 675444a
+- [x] 2.3 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless` — 675444a
+- [x] 2.4 Elevation shadow triple absent outside `_elevation.scss`, except `tab-group.component.scss` — 675444a
+- [x] 2.5 `#eef0fa` absent outside `_colors.scss` — 675444a
+- [x] 2.6 Both table stylesheets at least 40 lines shorter — 675444a
 
 #### Manual
 
-- [x] 2.7 Teddy Eddie tab checked with both tables populated, not in the default empty state
-- [x] 2.8 Human confirms no visible change across the listed properties
-- [x] 2.9 The three non-Teddy-Eddie tabs unchanged
-- [x] 2.10 Empty-state behaviour intact — no age selected hides both tables' header rows
-- [x] 2.11 Each of the three repoints built, spot-checked, and committed separately
-- [x] 2.12 Reset-rule position in compiled output verified for `section-title` and `form-wrapper`
+- [x] 2.7 Teddy Eddie tab checked with both tables populated, not in the default empty state — 675444a
+- [x] 2.8 Human confirms no visible change across the listed properties — 675444a
+- [x] 2.9 The three non-Teddy-Eddie tabs unchanged — 675444a
+- [x] 2.10 Empty-state behaviour intact — no age selected hides both tables' header rows — 675444a
+- [x] 2.11 Each of the three repoints built, spot-checked, and committed separately — 675444a
+- [x] 2.12 Reset-rule position in compiled output verified for `section-title` and `form-wrapper` — 675444a
 
 ### Phase 3: Document the language and repair stale conventions
 
 #### Automated
 
-- [ ] 3.1 `docs/design-language.md` exists
-- [ ] 3.2 Build succeeds: `npm run build`
-- [ ] 3.3 Linting passes: `npm run lint`
-- [ ] 3.4 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
+- [x] 3.1 `docs/design-language.md` exists
+- [x] 3.2 Build succeeds: `npm run build`
+- [x] 3.3 Linting passes: `npm run lint`
+- [x] 3.4 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
 
 #### Manual
 
-- [ ] 3.5 Every token, mixin, and call site the document cites exists
-- [ ] 3.6 The "not the language" section names the four deliberate exclusions
-- [ ] 3.7 `src/CLAUDE.md` consistent with the new layout and its pointer resolves
-- [ ] 3.8 Document is self-sufficient for a reader who was not part of this change
-- [ ] 3.9 Composition section complete with resolving call sites; `data-table-cells` scoping constraint recorded
+- [x] 3.5 Every token, mixin, and call site the document cites exists
+- [x] 3.6 The "not the language" section names the four deliberate exclusions
+- [x] 3.7 `src/CLAUDE.md` consistent with the new layout and its pointer resolves
+- [x] 3.8 Document is self-sufficient for a reader who was not part of this change
+- [x] 3.9 Composition section complete with resolving call sites; `data-table-cells` scoping constraint recorded
+
+### Visual no-op check
+
+- **Date**: 2026-07-27
+- **Tabs compared**: all four — semester/trimester, end-of-year, Cambridge, Teddy Eddie. Teddy Eddie
+  checked with an age selected and a row added to both tables, so the header rows `.is-empty` normally
+  hides were on screen.
+- **Before**: working tree at `7326ae0` (Phase 1 close — token layer only, no stylesheet repointed).
+- **Method**: human inspection of the running app, plus a compiled-CSS diff of both table stylesheets.
+  The pre-change source was recovered with `git show`, compiled beside the current source, and the
+  generated CSS diffed.
+- **Verdict**: no visible differences. The compiled-CSS diff is three lines per table stylesheet — the
+  three `card-surface` declarations moving to the head of the `.wrapper` rule, where no property
+  collides, and `background-color: white` becoming `#ffffff`. Every selector and every other declaration
+  is byte-identical, so the specificity drift this phase was sequenced around did not occur.
+- **PDF fidelity procedure**: **not applicable.** `docs/pdf-fidelity-check.md` §1 lists its triggers —
+  the `pdfmake` builders, the base64 assets, the Cambridge helper, and the `pdfmake` version. This change
+  touches none of them, and pdfmake never reads the DOM or a stylesheet. `npm run test:capture` was
+  deliberately not run.

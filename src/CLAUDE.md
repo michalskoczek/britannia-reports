@@ -70,7 +70,16 @@ As of 2026-07-10, `dev` does **not** satisfy this: 9 errors in `src/app/year-rep
 
 **For subscription cleanup, use `takeUntil`, `async` pipe, or `destroyRef` — pick one per file.** Material modules and `ngx-translate` observables are the usual culprits.
 
-**Design tokens live in `src/assets/styles/utils/`** (`_colors.scss`, `_typography.scss`, `_spacing.scss`, `_breakpoints.scss`, barrelled via `index.scss`; plus `src/assets/styles/mixins.scss`). New component SCSS must `@use` these tokens (see `src/app/teddy-eddie-report/teddy-eddie-form/teddy-eddie-form.component.scss` for the pattern) — do not hardcode hex colours, px font sizes, or breakpoint widths. The Teddy Eddie report is the styling reference for which tokens get used together; the older report types (Cambridge, semester/trimester, year-end) reflect earlier visual iterations and are not the reference, so do not copy their styling into new work.
+**The style layer has two halves, and `docs/design-language.md` is the authority on both.** Read it before adding any component SCSS.
+
+- `src/assets/styles/utils/` holds **tokens** — `_colors.scss`, `_typography.scss`, `_spacing.scss`, `_breakpoints.scss`, `_radius.scss`, `_elevation.scss`, plus the global `_reset.scss`, all barrelled via `index.scss`. Reach them with `@use ".../assets/styles/utils/index" as ds`.
+- `src/assets/styles/patterns/` holds **composite mixins** — `card-surface`, `data-table-cells`, `data-table-empty-cell`, `section-tile`. Do not `@use` that directory directly: `src/assets/styles/mixins.scss` forwards it, so every existing `@use ".../assets/styles/mixins"` path keeps resolving. There is no `patterns/index.scss`.
+
+New component SCSS must `@use` these instead of hardcoding hex colours, px font sizes, breakpoint widths, corner radii, or box-shadows — tokens now exist for all six. `src/app/teddy-eddie-report/tables/teddy-eddie-table/teddy-eddie-table.component.scss` is the compact example of consuming both halves.
+
+**`data-table-cells` must be included inside a scoping selector, never at stylesheet root.** It emits an `::ng-deep` block, which at root escapes component encapsulation and overrides every Material table in the app. `semestr-report.component.scss:21` and `year-report.component.scss:98` already do this by accident — that is where the Teddy Eddie tables' row height actually comes from.
+
+The Teddy Eddie report is the styling reference for which tokens get used together; the older report types (Cambridge, semester/trimester, year-end) reflect earlier visual iterations and are not the reference, so do not copy their styling into new work.
 
 **Configuration lives in `src/environments/`, and the three files there have distinct jobs.** `environment.ts` (dev, `production: false`) and `environment.prod.ts` (`production: true`) each export a const named `environment`; both hold the Firebase SDK config and the reCAPTCHA site key. `environment.model.ts` exports the `Environment` interface that both files type themselves against.
 
