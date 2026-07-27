@@ -70,9 +70,51 @@ Verification: `npm test -- --watch=false --browsers=ChromeHeadless` is green wit
 - **No pixel-diff harness, no PDF text extraction, no byte or hash comparison.** The roadmap names pixel-diff as the scope trap for this item; byte comparison is impossible regardless because pdfkit stamps a fresh `CreationDate` into every document.
 - **No dev-only fixture loader in the application.** Replay lives entirely in specs; no code is added to any component under the hard rule.
 - **No baseline for the rating-scale PDF** (`src/app/rating-scale/special-marks/special-marks.component.ts:253`, which calls `.open()`). Scope is the four report types named by F-02 and FR-015–FR-017.
-- **No lint cleanup in `year-report.component.ts`.** The nine errors noted in `src/CLAUDE.md` concern the `dev` branch; lint is clean here. Phase 3 changes exactly one expression in that file.
+- **No lint cleanup in `year-report.component.ts`.** The nine errors noted in `src/CLAUDE.md` concern the `dev` branch; lint is clean here. Phase 3 changes exactly one expression in that file. The component's **template** did receive one out-of-plan production fix during phase 1 — see "Adaptations" below.
 - **No fix for the unhandled `download()` rejection.** The smoke layer surfaces the failure mode; wiring error handling into the components is a behavior change and belongs to whichever slice owns it.
 - **No CI gate.** `.github/` does not exist and the roadmap parks CI/CD deliberately.
+
+## Adaptations
+
+Changes made during implementation that fall outside the "Changes Required" contracts above. Each was
+disclosed in its commit body and approved at the time; recorded here so the plan stays an accurate
+record of what was touched.
+
+**1. `src/app/year-report/year-report.component.html` — `*ngFor` → `@for` on the signature select** (commit `2fd5d1e`, phase 1)
+
+The very first smoke spec failed with `NG0303: Can't bind to 'ngForOf' since it isn't a known property of
+'mat-option'`. The teacher `mat-select` used `*ngFor` while `NgFor` was never in the standalone
+component's `imports` array, so the dropdown rendered **no options at all** in production — a teacher
+could not pick a signature. AOT (`npm run build`) passes on the broken template; only rendering the
+component under TestBed surfaces it. Converted to the `@for` control-flow block, which needs no import.
+This is a production template change, not a test-only one, and it is exactly the class of defect this
+change was funded to catch.
+
+**2. `karma-capture.conf.js` — new 72-line Karma config for the capture run** (commit `a582683`, phase 2)
+
+Phase 2's contract named only `angular.json` and `package.json`. Chrome permits only the first automatic
+download per page, so seven of the eight reference PDFs were silently dropped. The added config seeds a
+Chrome profile granting `automatic_downloads` and pins the download directory. Because setting
+`karmaConfig` makes `@angular/build:karma` stop supplying its own frameworks/plugins/reporters block, the
+file reproduces that block verbatim — commented in-file. **Maintenance note:** an Angular upgrade can
+drift the capture run away from the default run silently; re-check this file when upgrading
+`@angular/build`.
+
+**3. `src/app/shared/testing/pdf-fidelity/render-pdf.ts` — manual save/restore instead of `spyOn`** (commit `2fd5d1e`, phase 1)
+
+Phase 1 prescribed `spyOn(pdfMake, 'createPdf')` and called it "the one non-obvious part of this change".
+The implementation instead captures the original at module load and saves/restores it inside
+`try/finally`. This restores correctly when `generate()` throws — a Jasmine spy restores only at spec
+teardown — and keeps the helper usable outside a spy-managed context. It also exports a third symbol,
+`downloadDefinition`, which the phase-2 contract implied but never named. Deliberate improvement on the
+plan; do not "correct" it back.
+
+**4. Year fixture calls `setClasses`, not `initClassesFromFirstSelectedClass`** (commit `2fd5d1e`, phase 1)
+
+Phase 1 named `initClassesFromFirstSelectedClass`. The fixture calls `setClasses`, which is what the
+template's `(click)` handler actually invokes (`year-report.component.html:34`) and which delegates to
+`initClassesFromFirstSelectedClass` at `:194`. This is *more* faithful to the "fixtures must drive the
+component, not construct controls" rule than the plan's own instruction was. Deliberate; do not revert.
 
 ## Implementation Approach
 

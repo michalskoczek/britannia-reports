@@ -87,7 +87,8 @@ of defect F-02 was funded to catch, found before the barrier was even finished.
   - Tradeoff: None material — a documentation edit to an already-closed change.
   - Confidence: HIGH — both adaptations are fully evidenced in commit bodies and reproducible.
   - Blind spot: None significant.
-- **Decision**: PENDING
+- **Decision**: FIXED — `## Adaptations` section added to `plan.md` (entries 1–2) and the
+  `year-report` bullet in "What We're NOT Doing" now points at it.
 
 ### F2 — `FormArray` fixtures can silently truncate if the underlying static data shrinks
 
@@ -122,7 +123,8 @@ of defect F-02 was funded to catch, found before the barrier was even finished.
   - Confidence: HIGH — `FormArray.patchValue`'s skip-if-absent behaviour is verified in Angular's source
     and directly reachable from these two call sites.
   - Blind spot: Have not audited whether other static-data tables feed row counts indirectly.
-- **Decision**: PENDING
+- **Decision**: SKIPPED — consistent with the plan's deliberate smoke-only scope. The silent-truncation
+  path stays a known, accepted risk of the fixtures.
 
 ### F3 — Interception helper and year fixture deviate from the shapes the plan prescribed
 
@@ -148,7 +150,8 @@ of defect F-02 was funded to catch, found before the barrier was even finished.
   Neither is a defect. They are flagged because the plan's prescribed shapes are now wrong, and a future
   reader comparing plan to code may "correct" the better implementation back to the worse one.
 - **Fix**: Note both deviations in the same plan "Adaptations" subsection F1 creates.
-- **Decision**: PENDING
+- **Decision**: FIXED — recorded as entries 3–4 of `## Adaptations` in `plan.md`, both marked
+  "deliberate; do not revert".
 
 ### F4 — Dead `indexClass` assignment in `setClasses` (pre-existing, surfaced by review)
 
@@ -167,4 +170,5 @@ of defect F-02 was funded to catch, found before the barrier was even finished.
   — `S-01` or the deferred lint cleanup — does not have to rediscover it.
 - **Fix**: No action in this change. Carry into the year-report cleanup change, where the PDF-fidelity
   procedure will already be running.
-- **Decision**: PENDING
+- **Decision**: SKIPPED — carried forward. Pre-existing and inert; this report is the record for the
+  next change that touches `year-report.component.ts` (`S-01` or the deferred lint cleanup).
