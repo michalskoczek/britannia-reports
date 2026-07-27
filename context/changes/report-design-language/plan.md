@@ -598,18 +598,18 @@ pattern layer rather than moving members out of reach.
 
 #### Automated
 
-- [x] 3.1 `docs/design-language.md` exists
-- [x] 3.2 Build succeeds: `npm run build`
-- [x] 3.3 Linting passes: `npm run lint`
-- [x] 3.4 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
+- [x] 3.1 `docs/design-language.md` exists — f34ffd1
+- [x] 3.2 Build succeeds: `npm run build` — f34ffd1
+- [x] 3.3 Linting passes: `npm run lint` — f34ffd1
+- [x] 3.4 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless` — f34ffd1
 
 #### Manual
 
-- [x] 3.5 Every token, mixin, and call site the document cites exists
-- [x] 3.6 The "not the language" section names the four deliberate exclusions
-- [x] 3.7 `src/CLAUDE.md` consistent with the new layout and its pointer resolves
-- [x] 3.8 Document is self-sufficient for a reader who was not part of this change
-- [x] 3.9 Composition section complete with resolving call sites; `data-table-cells` scoping constraint recorded
+- [x] 3.5 Every token, mixin, and call site the document cites exists — f34ffd1
+- [x] 3.6 The "not the language" section names the four deliberate exclusions — f34ffd1
+- [x] 3.7 `src/CLAUDE.md` consistent with the new layout and its pointer resolves — f34ffd1
+- [x] 3.8 Document is self-sufficient for a reader who was not part of this change — f34ffd1
+- [x] 3.9 Composition section complete with resolving call sites; `data-table-cells` scoping constraint recorded — f34ffd1
 
 ### Visual no-op check
 
