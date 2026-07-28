@@ -1,3 +1,30 @@
 mat-form-field {
   width: 100%;
 }
+
+// A textarea has to grow with its `rows`; single-line controls do not. Two global rules assume the
+// single-line case and one of them is a hard `height`:
+//
+//   - `styles.scss` sets `container-height: 36px`, which reaches the infix as a `min-height` — that one
+//     is harmless, a taller control simply exceeds it.
+//   - `date.component.scss` declares `::ng-deep .mat-mdc-form-field-flex { height: 36px }` at
+//     stylesheet root, so it escapes that component and pins *every* form field in the app to exactly
+//     36px. Left alone, the outline is drawn one line high while the textarea spills out below it.
+//
+// Overriding it here rather than scoping the leak at its source keeps this change from touching the
+// height of every other field in the app, which is explicitly out of scope for this slice. The leak
+// itself is recorded in `docs/design-language.md`.
+:host ::ng-deep {
+  .mat-mdc-form-field-flex {
+    height: auto;
+    align-items: flex-start;
+  }
+
+  .mat-mdc-form-field-infix {
+    min-height: auto;
+  }
+
+  textarea.mat-mdc-input-element {
+    resize: vertical;
+  }
+}

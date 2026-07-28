@@ -23,9 +23,9 @@ import {
   parentDecisionValues, readinessToContinueOnNextLevelOptions,
   recommendationsInNextYear,
 } from '../shared/year-report/year-report-static-data';
-import { MatFormField, MatHint, MatInput, MatLabel } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from '@angular/material/datepicker';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 
 import { MatOption, MatSelect } from '@angular/material/select';
 import {
@@ -35,7 +35,6 @@ import {
   MatExpansionPanelTitle,
 } from '@angular/material/expansion';
 import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
-import { MatButton } from '@angular/material/button';
 import {
   MatCell,
   MatCellDef,
@@ -49,6 +48,14 @@ import {
   MatTable,
 } from '@angular/material/table';
 import { MatCheckbox } from '@angular/material/checkbox';
+import { FormWrapperComponent } from '../shared/components/form/form-wrapper/form-wrapper.component';
+import { SectionTitleComponent } from '../shared/components/UI/section-title/section-title.component';
+import { InputTextComponent } from '../shared/components/form/input-text/input-text.component';
+import { SelectComponent } from '../shared/components/form/select/select.component';
+import { DateComponent } from '../shared/components/form/date/date.component';
+import { TextareaComponent } from '../shared/components/form/textarea/textarea.component';
+import { ButtonComponent } from '../shared/components/button/button.component';
+import { SelectOptions } from '../shared/components/form/select/select-options';
 
 pdfMake.vfs = pdfFonts.vfs;
 
@@ -59,14 +66,9 @@ pdfMake.vfs = pdfFonts.vfs;
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    MatFormField,
-    MatLabel,
     TranslateModule,
-    MatDatepickerInput,
-    MatHint,
-    MatDatepickerToggle,
+    MatFormField,
     MatInput,
-    MatDatepicker,
     MatSelect,
     MatOption,
     MatAccordion,
@@ -75,7 +77,6 @@ pdfMake.vfs = pdfFonts.vfs;
     MatExpansionPanelTitle,
     MatRadioGroup,
     MatRadioButton,
-    MatButton,
     MatTable,
     MatColumnDef,
     MatCell,
@@ -87,6 +88,13 @@ pdfMake.vfs = pdfFonts.vfs;
     MatCellDef,
     MatHeaderRowDef,
     MatRowDef,
+    FormWrapperComponent,
+    SectionTitleComponent,
+    InputTextComponent,
+    SelectComponent,
+    DateComponent,
+    TextareaComponent,
+    ButtonComponent,
   ],
 })
 export class YearReportComponent implements OnInit {
@@ -121,6 +129,90 @@ export class YearReportComponent implements OnInit {
   public isCheckedOwnTitle = false;
 
   public indexClass = 0;
+
+  /**
+   * The class control holds the whole `{ label, value }` object — the PDF builder reads
+   * `form.value.class.value`, and `year-report.fixture.ts` records that. `app-select` binds
+   * `item.value`, so the option's value here is the object itself, not its `value` field.
+   */
+  protected readonly classOptions: SelectOptions<{ label: string; value: string }>[] = classes.map(
+    (classItem) => ({ label: classItem.label, value: classItem })
+  );
+
+  protected readonly detailColumns: string[] = ['topic', 'toChoose', 'deleteLine'];
+
+  protected readonly pathColumns: string[] = [
+    'schoolYear',
+    'classInSchool',
+    'courseLevel',
+    'certificationPurpose',
+    'schoolExam',
+    'shouldDeleteRow',
+  ];
+
+  /**
+   * Row descriptors for the year-end detail table. The table used to be seven hand-written div rows;
+   * as a `mat-table` it needs a data source, and the rows differ only in their label, their control,
+   * and whether that control is a select or a free-text input.
+   *
+   * Control names are quoted from the form model and must stay in step with it — the contract spec in
+   * `year-report.component.spec.ts` is what holds that.
+   */
+  protected readonly detailRows: {
+    labelKey: string;
+    controlName: string;
+    deleteControlName: string;
+    options: { label: string; value: string }[] | null;
+  }[] = [
+    {
+      labelKey: 'endOfYearEvaluation',
+      controlName: 'eofEvaluation',
+      deleteControlName: 'eofEvaluationDelete',
+      options: markEvaluations,
+    },
+    {
+      labelKey: 'frequency',
+      controlName: 'frequency',
+      deleteControlName: 'frequencyDelete',
+      options: null,
+    },
+    {
+      labelKey: 'degreeOfCourseMaterialMastery',
+      controlName: 'certificationPurposeOnThisYear',
+      deleteControlName: 'certificationPurposeOnThisYearDelete',
+      options: certificationPurposeOnThisYear,
+    },
+    {
+      labelKey: 'readinessToContinueOnNextLevel',
+      controlName: 'readinessToContinueOnNextLevel',
+      deleteControlName: 'readinessToContinueOnNextLevelDelete',
+      options: readinessToContinueOnNextLevelOptions,
+    },
+    {
+      labelKey: 'cambridgeExamRecommendedAfterCurrentYear',
+      controlName: 'examRecommendationInTable',
+      deleteControlName: 'examRecommendationInTableDelete',
+      options: examsRecommendationsInTable,
+    },
+    {
+      labelKey: 'parentDecisionOnCambridgeExam',
+      controlName: 'parentDecision',
+      deleteControlName: 'parentDecisionDelete',
+      options: parentDecisionValues,
+    },
+    {
+      labelKey: 'predictedExamPathNextYear',
+      controlName: 'recommendationInNextYear',
+      deleteControlName: 'recommendationInNextYearInTableDelete',
+      options: recommendationsInNextYear,
+    },
+  ];
+
+  public getPathRowGroup(index: number): FormGroup {
+    return this.developmentLanguageSkillsArray.at(index) as FormGroup;
+  }
+
+  public trackByIndex = (index: number): number => index;
 
   private readonly banerLogo: string = baner;
 

@@ -6,6 +6,7 @@
     [required]="required()"
     [multiple]="multiple()"
     [errorStateMatcher]="errorStateMatcher"
+    (selectionChange)="selectionChange.emit($event.value)"
     (closed)="onClosed()"
   >
     @for (item of options(); track item.value) {

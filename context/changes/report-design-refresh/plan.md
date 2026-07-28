@@ -763,44 +763,44 @@ coordinate before Phase 1 and again before Phase 5.
 
 #### Automated
 
-- [x] 1.1 Build succeeds: `npm run build`
-- [x] 1.2 Development build type-checks: `npm run build -- --configuration development`
-- [x] 1.3 Linting passes: `npm run lint`
-- [x] 1.4 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
-- [x] 1.5 Three form-model contract specs present and green before any template edit
-- [x] 1.6 `patterns/_form-row.scss` resolves through `mixins.scss`
+- [x] 1.1 Build succeeds: `npm run build` — e1e2433
+- [x] 1.2 Development build type-checks: `npm run build -- --configuration development` — e1e2433
+- [x] 1.3 Linting passes: `npm run lint` — e1e2433
+- [x] 1.4 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless` — e1e2433
+- [x] 1.5 Three form-model contract specs present and green before any template edit — e1e2433
+- [x] 1.6 `patterns/_form-row.scss` resolves through `mixins.scss` — e1e2433
 
 #### Manual
 
-- [x] 1.7 All four report tabs look unchanged
-- [x] 1.8 The Teddy Eddie form's three controls are unchanged
+- [x] 1.7 All four report tabs look unchanged — e1e2433
+- [x] 1.8 The Teddy Eddie form's three controls are unchanged — e1e2433
 
 ### Phase 2: Semester/trimester and year-end forms
 
 #### Automated
 
-- [ ] 2.1 Build succeeds: `npm run build`
-- [ ] 2.2 Linting passes: `npm run lint`
-- [ ] 2.3 Tests pass, both contract specs unmodified
-- [ ] 2.4 No raw `<mat-form-field>` remains in either form's template
-- [ ] 2.5 Both components' `.ts` diffs limited to `imports` and option-list getters
-- [ ] 2.6 No literal `1px solid black` remains in `year-report.component.scss`
-- [ ] 2.7 Every `app-section-title` key resolves in both i18n bundles
-- [ ] 2.8 Semester and year-end landed as two separate commits
+- [x] 2.1 Build succeeds: `npm run build`
+- [x] 2.2 Linting passes: `npm run lint`
+- [x] 2.3 Tests pass, both contract specs unmodified
+- [x] 2.4 No raw `<mat-form-field>` remains in either form's template
+- [x] 2.5 Both components' `.ts` diffs limited to `imports` and option-list getters
+- [x] 2.6 No literal `1px solid black` remains in `year-report.component.scss`
+- [x] 2.7 Every `app-section-title` key resolves in both i18n bundles
+- [x] 2.8 Semester and year-end landed as two separate commits
 
 #### Manual
 
-- [ ] 2.9 Both tabs match the Teddy Eddie language
-- [ ] 2.10 Controls outlined, uniform height, validation messages visible
-- [ ] 2.11 Teachers multiple-select behaves as before
-- [ ] 2.12 PL/EN switch changes every heading on both tabs
-- [ ] 2.13 Semester: changing `sex` after picking marks behaves as today
-- [ ] 2.14 Semester: submit disabled while invalid, enabled when valid
-- [ ] 2.15 Year-end: development-path rows and their delete checkboxes still work
-- [ ] 2.16 Year-end: detail-table controls still write to the same controls; both hand-rolled tables read
+- [x] 2.9 Both tabs match the Teddy Eddie language
+- [x] 2.10 Controls outlined, uniform height, validation messages visible
+- [x] 2.11 Teachers multiple-select behaves as before
+- [x] 2.12 PL/EN switch changes every heading on both tabs
+- [x] 2.13 Semester: changing `sex` after picking marks behaves as today
+- [x] 2.14 Semester: submit disabled while invalid, enabled when valid
+- [x] 2.15 Year-end: development-path rows and their delete checkboxes still work
+- [x] 2.16 Year-end: detail-table controls still write to the same controls; both hand-rolled tables read
       as the same family as the Teddy Eddie tables
-- [ ] 2.17 A PDF downloads and looks right from each form, minimal and fully filled
-- [ ] 2.18 Teddy Eddie tab unchanged, tables populated
+- [x] 2.17 A PDF downloads and looks right from each form, minimal and fully filled
+- [x] 2.18 Teddy Eddie tab unchanged, tables populated
 
 ### Phase 3: Cambridge — extract the exam-term row component
 
