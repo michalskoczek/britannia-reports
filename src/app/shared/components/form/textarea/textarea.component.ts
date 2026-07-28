@@ -1,11 +1,10 @@
-import { Component, computed, inject, input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatOption, ErrorStateMatcher } from '@angular/material/core';
-import { MatSelect } from '@angular/material/select';
-import { TranslateModule } from '@ngx-translate/core';
+import { MatInput } from '@angular/material/input';
 import { ControlValueAccessor, FormControl, NgControl, ReactiveFormsModule } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
-import { SelectOptions } from './select-options';
 
 class ParentErrorStateMatcher implements ErrorStateMatcher {
   constructor(private readonly ngControlRef: () => NgControl | null) {}
@@ -17,28 +16,17 @@ class ParentErrorStateMatcher implements ErrorStateMatcher {
 }
 
 @Component({
-  selector: 'app-select',
-  imports: [MatFormField, MatError, MatLabel, MatOption, MatSelect, TranslateModule, ReactiveFormsModule],
-  templateUrl: './select.component.html',
-  styleUrl: './select.component.scss',
+  selector: 'app-textarea',
+  imports: [MatFormField, MatLabel, MatInput, ReactiveFormsModule, TranslateModule, MatError],
+  templateUrl: './textarea.component.html',
+  styleUrl: './textarea.component.scss',
 })
-export class SelectComponent implements ControlValueAccessor, OnInit, OnDestroy {
+export class TextareaComponent implements ControlValueAccessor, OnInit, OnDestroy {
+  placeholder = input<string>('typeValue');
   label = input<string>('set label');
-  placeholder = input<string>('selectValue');
   required = input<boolean>(false);
   errorMessage = input<string>('error.fieldIsRequired');
-  multiple = input<boolean>(false);
-
-  /**
-   * Accepts either `{ label, value }` options or a flat list of strings. The three older report forms
-   * carry plain `string[]` lists (teachers, courses, books, exam types); normalizing here keeps them
-   * from having to map in every consumer.
-   */
-  itemList = input.required<SelectOptions<any>[] | string[]>();
-
-  protected readonly options = computed<SelectOptions<any>[]>(() =>
-    this.itemList().map((item) => (typeof item === 'string' ? { label: item, value: item } : item))
-  );
+  rows = input<number>(3);
 
   public readonly ngControl = inject(NgControl, { self: true, optional: true });
 
@@ -85,7 +73,7 @@ export class SelectComponent implements ControlValueAccessor, OnInit, OnDestroy 
     }
   }
 
-  protected onClosed(): void {
+  protected onBlur(): void {
     this.onTouched();
   }
 }

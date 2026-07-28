@@ -5,12 +5,18 @@
     [formControl]="control"
     [matDatepicker]="picker"
     [required]="required()"
+    [readonly]="readonly()"
     [placeholder]="placeholder() | translate"
     [errorStateMatcher]="errorStateMatcher"
+    (click)="onClick(picker)"
     (blur)="onBlur()"
   />
 
   <mat-error>{{ errorMessage() | translate }}</mat-error>
+
+  @if (hint()) {
+    <mat-hint>{{ hint() | translate }}</mat-hint>
+  }
 
   <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
   <mat-datepicker #picker></mat-datepicker>

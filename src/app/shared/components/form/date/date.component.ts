@@ -46,6 +46,12 @@ export class DateComponent implements ControlValueAccessor, OnInit, OnDestroy {
   required = input<boolean>(false);
   errorMessage = input<string>('error.fieldIsRequired');
 
+  /** Rendered as `<mat-hint>` only when non-empty. Passed through the translate pipe. */
+  hint = input<string>('');
+
+  /** Blocks typed input and opens the picker on click, the way the Cambridge date field behaves. */
+  readonly = input<boolean>(false);
+
   public readonly ngControl = inject(NgControl, { self: true, optional: true });
 
   protected readonly control = new FormControl<Date | null>(null);
@@ -93,5 +99,11 @@ export class DateComponent implements ControlValueAccessor, OnInit, OnDestroy {
 
   protected onBlur(): void {
     this.onTouched();
+  }
+
+  protected onClick(picker: MatDatepicker<Date>): void {
+    if (this.readonly()) {
+      picker.open();
+    }
   }
 }
