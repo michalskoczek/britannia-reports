@@ -3,7 +3,7 @@ project: "Britannia Reports"
 version: 1
 status: draft
 created: 2026-07-10
-updated: 2026-07-10
+updated: 2026-07-27
 prd_version: 1
 main_goal: low-complexity
 top_blocker: time
@@ -36,6 +36,8 @@ The change turns a stateless public tool into a stateful, signed-in product. The
 | ---- | ----------------------------- | ----------------------------------------------------------------------------- | ------------- | ------------------------------------------------- | -------- |
 | F-01 | `identity-and-data-platform`  | (foundation) an identity provider and a persistent store exist, and deny by default | —             | §Access Control Changes, FR-001, FR-002, OQ-3     | ready    |
 | F-02 | `pdf-fidelity-baseline`       | (foundation) a repeatable before/after PDF comparison exists for all four report types | —             | §Success Criteria (Guardrails), FR-015, FR-016, FR-017 | ready    |
+| S-05a | `report-design-language`     | (enabling) the visual language is extracted from the Teddy Eddie form into tokens, mixins, and shared patterns, and written down | F-01, F-02    | OQ-1                                              | planned  |
+| S-05b | `report-design-refresh`      | fill the semester, year-end, and Cambridge **forms** in that same visual language | S-05a         | OQ-1, FR-014, FR-015, FR-016, FR-017              | planned  |
 | S-01 | `google-sign-in-gate`         | sign in with Google and reach the four existing report forms; unauthenticated visitors cannot | F-01, F-02    | FR-001, FR-002, FR-003, FR-004, FR-014, FR-015, FR-016, FR-017, FR-018 | proposed |
 | S-02 | `trimester-report-templates`  | save a trimester/semester report as a named template, list, apply, and delete templates | S-01          | US-01, FR-009, FR-010, FR-011, FR-012, FR-014, FR-018 | proposed |
 | S-03 | `student-roster`              | add, view, edit, and delete students on their own roster                       | S-01          | FR-005, FR-006, FR-007, FR-008, FR-018            | proposed |
@@ -53,6 +55,7 @@ Navigation aid — groups items that share a Prerequisites chain. Canonical orde
 | B      | Regression barrier   | `F-02`                       | Joins Stream A at `S-01`; also guards `S-02`. Runs parallel with `F-01`.                    |
 | C      | The template lever   | `S-02` → `S-04`              | Carries the north star. Under `main_goal: low-complexity` this chain gets priority on ties. |
 | D      | Roster               | `S-03`                       | Parallel with `S-02`; joins Stream C at `S-04`.                                             |
+| E      | Visual consistency   | `S-05a` → `S-05b`            | Runs first among slices. `S-05a` is the gate: once it merges, Stream A's `S-01` can run in parallel with `S-05b`. |
 
 ## Baseline
 
@@ -101,18 +104,49 @@ Two decisions already recorded upstream and treated as settled by this roadmap:
 
 ## Slices
 
+> **S-05 was split into `S-05a` + `S-05b` on 2026-07-27.** The split exists to unblock parallelism: a conflict assessment of `S-05` against `S-01` found exactly one serious collision — the shared style tokens under `src/assets/styles/utils/`, which twelve component stylesheets already `@use`. `S-05` would reorganise them; `S-01` needs them to build its new sign-in surface. Landing the token/pattern layer as its own small change (`S-05a`) removes that collision, after which the bulk of the restyle (`S-05b`) and the sign-in gate touch disjoint files and can run at the same time.
+
+### S-05a: Visual language extraction — **first slice to build**
+
+- **Outcome:** (enabling) The visual language the Teddy Eddie form already embodies exists as a named, documented set of design tokens, mixins, and shared component patterns that any surface can `@use` — instead of living implicitly in one feature folder. No user-visible change.
+- **Change ID:** `report-design-language`
+- **PRD refs:** PRD Open Question #1 (visual-language consolidation, extended 2026-07-27)
+- **Prerequisites:** F-01, F-02 — both `impl_reviewed` as of 2026-07-27, so this slice is unblocked today
+- **Parallel with:** —
+- **Blockers:** —
+- **Unknowns:**
+  - The Teddy Eddie form is the reference design, but it was never written down as one — which parts are the intended language and which are incidental to that form is unrecorded. Deciding that boundary *is* this slice's work. — Owner: implementer. Block: no.
+- **Risk:** This slice exists because of a contract, not a feature. `src/assets/styles/utils/` currently holds six flat colour variables and is `@use`d by twelve component stylesheets; `src/CLAUDE.md` already names Teddy Eddie the styling reference and the older three "not the reference". Extracting that into a stable, additive token set is what lets `S-05b` and `S-01` proceed without fighting over the same files. **The token names it publishes are a contract** — once `S-01` compiles against them, renaming one is a breaking change, so prefer additive extension afterwards. Keep it genuinely small: this is extraction and naming, not a design system. If it grows past the shared style layer and the shared form/UI components, it has absorbed `S-05b`'s work and the split has stopped paying for itself.
+- **Status:** planned
+
+### S-05b: UI improvements — apply the language to the three forms
+
+- **Outcome:** A teacher filling the semester, year-end, or Cambridge **form** sees the same visual language the Teddy Eddie form already uses — colours, component styling, table styling — instead of the older design those three forms still carry. The generated PDFs are visually identical to today's: this slice changes the forms used to produce PDFs, never the PDFs themselves.
+- **Change ID:** `report-design-refresh`
+- **PRD refs:** PRD Open Question #1 (visual-language consolidation, extended 2026-07-27); FR-014, FR-015, FR-016 (each names the `S-05` on-screen refresh as a licensed delta); FR-017 (the reference design — takes no delta)
+- **Prerequisites:** S-05a
+- **Parallel with:** S-01
+- **Blockers:** —
+- **Unknowns:**
+  - Whether the three forms can adopt the shared form components without touching their component classes is unproven; the answer decides how close this slice gets to the form-model boundary below. — Owner: implementer. Block: no.
+- **Risk:** The bulk of the work — 2,079 lines of template across the three forms, carrying Bootstrap grid markup with Material form fields dropped into it. **Sequenced early among slices deliberately:** every later slice adds surface to these same forms (`S-01` gates them, `S-02` writes templates into the trimester/semester form, `S-04` adds a picker to it), so restyling first means that surface is built once against the final visual language rather than rebuilt.
+  The hard boundary is the PDF: FR-015–FR-017 were amended on 2026-07-27 to make "unchanged" an explicitly *visual* guardrail, and this slice is carved out of the **on-screen half only**. If the refresh appears to require pdfmake changes, that is a PRD question, not an implementation call.
+  **The subtle hazard is `F-02`, and it does not announce itself.** The fidelity fixtures never drive the DOM — they call the component's own API (`form.patchValue` plus the array-building methods) — so template changes cannot break the check. But the fixtures *encode template facts in prose*: `semestr-report.fixture.ts` records that `class` holds a plain string because the template binds `[value]="classItem.value"`, and that all fourteen `FormArray`s stay empty because the template binds no `formArrayName`. Change either and the fixture describes a state the UI no longer produces — the reference PDF still matches, the check still passes, and it is now wrong. `F-02` stays as it is; keeping the form model and control names frozen is what makes that true.
+- **Status:** planned
+
 ### S-01: Google sign-in gate
 
 - **Outcome:** A teacher signs in with a Google account and reaches the four existing report forms; a visitor who is not signed in lands on a sign-in screen and cannot reach any form.
 - **Change ID:** `google-sign-in-gate`
 - **PRD refs:** FR-001, FR-002, FR-003, FR-004, FR-014 (sign-in gating portion), FR-015, FR-016, FR-017, FR-018
-- **Prerequisites:** F-01, F-02
-- **Parallel with:** —
+- **Prerequisites:** F-01, F-02 (hard); `S-05a` (soft — see below)
+- **Parallel with:** S-05b, once `S-05a` has merged
 - **Blockers:** —
 - **Unknowns:**
   - The app has no navigation layer at all — the sign-in gate needs either a real navigation surface or a shell-level conditional above the tab registry. Which one is cheaper here is not something the PRD can answer. — Owner: implementer. Block: no.
   - FR-003 says the developer seeds teacher Google identifiers into the backing store, but the shape of that seed (a document per teacher? a static allowlist? who runs it?) is unspecified. — Owner: implementer. Block: no.
-- **Risk:** This is the slice that carries the change's only deliberate regression — the public URL stops working for anyone not on file. It also touches all four report forms, which is precisely where the PDF fidelity guardrail bites, hence `F-02` as a prerequisite rather than an afterthought. Sequenced first among slices because both the north star and the roster need an identity to scope "their own" data against; there is no cheaper ordering. The three preserved form types (`FR-015`–`FR-017`) must come out of this slice behaviourally untouched — gating wraps them, it does not enter them.
+- **Parallelism with Stream E** (assessed 2026-07-27): the two slices work on different layers and can run concurrently. `S-01` works *above* the report components — `AppComponent` mounts them through `NgComponentOutlet` against `TabData.tabs`, so the gate can sit in the shell without editing a single report template. `S-05b` works *inside* three of those templates. `S-05a` is a soft prerequisite rather than a hard one: `S-01` builds a new sign-in surface that must `@use` the shared style tokens, and starting before `S-05a` publishes them means either a merge-time build break or a sign-in screen in the old visual language — the exact rework the Stream E ordering exists to avoid. Remaining contested files after `S-05a` lands, all minor: `src/assets/i18n/{en,pl}.json` (both slices append keys) and `src/app/shared/components/UI/header/` (`S-01` wants sign-out there). Coordinate those two; everything else is disjoint.
+- **Risk:** This is the slice that carries the change's only deliberate regression — the public URL stops working for anyone not on file. It also touches all four report forms, which is precisely where the PDF fidelity guardrail bites, hence `F-02` as a prerequisite rather than an afterthought. Sequenced first among slices because both the north star and the roster need an identity to scope "their own" data against; there is no cheaper ordering. The three preserved form types (`FR-015`–`FR-017`) must come out of this slice behaviourally untouched — gating wraps them, it does not enter them. One cost the entry above understates: `src/CLAUDE.md` records that the first change adding a real collection must stand up the Firebase emulator suite and a rules-testing harness first. `FR-003`'s teacher allowlist is that collection, so this slice owns that work and is larger than it looks — which is also what makes the parallel window for `S-05b` comfortable.
 - **Status:** proposed
 
 ### S-02: Trimester/semester report templates — **north star**
@@ -159,7 +193,9 @@ Two decisions already recorded upstream and treated as settled by this roadmap:
 | ---------- | ---------------------------- | -------------------------------------------------------------------- | --------------------- | -------------------------------------------------------------- |
 | F-01       | `identity-and-data-platform` | Enable Google auth provider and create the Firestore store in `eur3`  | yes                   | Run `/10x-plan identity-and-data-platform`. One-way region choice. |
 | F-02       | `pdf-fidelity-baseline`      | Capture reference PDFs and a before/after comparison procedure        | yes                   | Parallel with F-01. Run `/10x-plan pdf-fidelity-baseline`.     |
-| S-01       | `google-sign-in-gate`        | Gate the four report forms behind Google sign-in                      | no                    | Needs F-01 and F-02.                                            |
+| S-05a      | `report-design-language`     | Extract the Teddy Eddie visual language into shared tokens, mixins, and patterns | yes           | First slice. F-01 and F-02 are `impl_reviewed`. Run `/10x-plan report-design-language`. Small and enabling; unblocks S-01 and S-05b in parallel. |
+| S-05b      | `report-design-refresh`      | Align the semester, year-end, and Cambridge forms with the Teddy Eddie design | no                    | Needs S-05a. Then parallel with S-01. Forms only — PDF output unchanged. |
+| S-01       | `google-sign-in-gate`        | Gate the four report forms behind Google sign-in                      | no                    | Needs F-01 and F-02; start after S-05a merges. Then parallel with S-05b. |
 | S-02       | `trimester-report-templates` | Save, list, apply, and delete trimester/semester templates            | no                    | North star. Needs S-01.                                         |
 | S-03       | `student-roster`             | Teacher-scoped student roster with add / view / edit / delete         | no                    | Needs S-01. Parallel with S-02.                                 |
 | S-04       | `student-picker-in-report`   | Pre-fill student-identity fields from the roster in the report form   | no                    | Needs S-02 and S-03.                                            |
@@ -169,7 +205,7 @@ Two decisions already recorded upstream and treated as settled by this roadmap:
 1. **GDPR baseline for minors' data.** Student records — names of children — become persistent for the first time in `S-03`. Export on request, deletion on request, retention windows, and consent-flow language were never pinned. Owner: school director. Block: nothing in MVP (Britannia is the only tenant, and FR-008 provides a deletion path), but it gates any use beyond Britannia. Carried verbatim from PRD Open Question #2.
 2. **Cutover communication to bookmarked-link users.** FR-004 removes public-URL access; the message telling existing visitors that they now need a seeded account does not exist. Owner: school director. Block: nothing before deploy; gates the deploy of `S-01`. Carried from PRD Open Question #4.
 3. **Backend persistence platform (PRD Open Question #3) — effectively resolved, PRD not yet updated.** `infrastructure.md` selects Firebase and records `eur3` as the Firestore location. The PRD still lists this as open. Owner: implementer. Block: nothing — `F-01` proceeds on the `infrastructure.md` decision. Worth closing in the PRD so the two documents stop disagreeing.
-4. **Visual-language consolidation (PRD Open Question #1) — effectively resolved for new work.** `src/CLAUDE.md` already directs new surfaces to Angular Material and leaves existing report layouts alone. No consolidation project is needed for anything in this roadmap. Owner: implementer. Block: none.
+4. **Visual-language consolidation (PRD Open Question #1) — now owned by `S-05a` + `S-05b`.** `src/CLAUDE.md` directs new surfaces to Angular Material, which covers new work. What it does not cover is the drift found during `F-01`/`F-02`: the semester, year-end, and Cambridge *forms* still carry an older design while the Teddy Eddie form carries the newest. `S-05a` names and extracts that language, `S-05b` applies it; generated PDFs are out of scope for both. Owner: implementer. Block: none.
 
 ## Parked
 

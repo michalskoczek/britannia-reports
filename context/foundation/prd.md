@@ -3,7 +3,7 @@ project: "Britannia Reports"
 version: 1
 status: draft
 created: 2026-05-23
-updated: 2026-07-20
+updated: 2026-07-27
 context_type: brownfield
 product_type: web-app
 target_scale:
@@ -70,7 +70,8 @@ A new role introduced by this change. Before: not a user of the current app at a
 
 - **PDF output fidelity preserved.** All four existing form types (trimester/semester, end-of-school-year, Cambridge, Teddy Eddie) continue to produce PDFs that a reader would consider visually equivalent to today's output. Templates layered onto the trimester/semester form must not subtly alter the rendered PDF for fields the template did not touch.
 - **Bilingual UI preserved and extended.** Polish / English switching continues to work across the four existing form types and is extended (with translations shipped from day one) to every new surface: sign-in, student management, template management.
-- **Three non-templated form types unchanged.** End-of-school-year, Cambridge, and Teddy Eddie forms behave exactly as today — fields, validation, layout, and PDF output. They are only gated behind sign-in; their internal behavior is untouched.
+- **Three non-templated form types unchanged — behaviourally and visually.** End-of-school-year, Cambridge, and Teddy Eddie forms behave *and look* exactly as today — fields, validation, layout, on-screen presentation (colours, component styling, table styling), and PDF output. "Unchanged" here is a visual guardrail as well as a behavioural one: an incidental restyle counts as a regression, not as polish.
+  - **One carve-out, added 2026-07-27.** The end-of-school-year and Cambridge forms are exempt from the *on-screen* half of this guardrail for exactly one deliberate change: the design refresh in roadmap slice `S-05` — split on 2026-07-27 into `S-05a` (`report-design-language`, extraction) and `S-05b` (`report-design-refresh`, application), which together bring them onto the Teddy Eddie form's visual language. Everything else stays in force for them — fields, validation, and PDF output are untouched, and no other visual change is licensed. The Teddy Eddie form is the reference design and stays under the full guardrail, visual half included.
 
 ## User Stories
 
@@ -132,14 +133,18 @@ Each item below is tagged `[new]`, `[modified]`, `[preserved]`, or `[removed]`. 
 
 - [new] **FR-013** — Teacher can pick a student from their roster when starting a trimester/semester report; the student-identity fields (name, free-text class label) pre-fill from the picked student. The picker owns student-identity fields; templates (FR-011) own boilerplate fields — disjoint domains. Usual flow is picker-first then template, but the order is not enforced. Priority: must-have.
   > Socrates: Counter-argument considered: "Picker overlaps with template-apply — two pre-fill mechanisms hitting the same form risk order-dependent confusion." Resolution: revised; explicit disjoint-domain rule now baked into the FR — picker → student fields, template → boilerplate, no field overlap.
-- [modified] **FR-014** — Teacher can fill a trimester/semester report and download it as PDF. Was: any visitor on the public URL could do this. Now: sign-in-gated, with an optional student picker (FR-013) and optional template apply (FR-011) layered on top of the existing form-fill-then-PDF path. Priority: must-have.
+- [modified] **FR-014** — Teacher can fill a trimester/semester report and download it as PDF. Was: any visitor on the public URL could do this. Now: sign-in-gated, with an optional student picker (FR-013) and optional template apply (FR-011) layered on top of the existing form-fill-then-PDF path. This form is also in scope for the `S-05` on-screen design refresh onto the Teddy Eddie visual language; the refresh does not reach the PDF. Priority: must-have.
   > Socrates: No counter-argument; stands as written.
-- [preserved] **FR-015** — Teacher can fill an end-of-school-year report and download it as PDF. The form's fields, validation, layout, and PDF output are untouched; the only delta is sign-in gating. Priority: must-have.
+  > Amended 2026-07-27: `S-05` design refresh named as an additional on-screen delta.
+- [preserved] **FR-015** — Teacher can fill an end-of-school-year report and download it as PDF. The form's fields, validation, layout, and PDF output are untouched — visually as well as behaviourally. Two deltas only: sign-in gating, and the `S-05` design refresh of the form's on-screen presentation (colours, component styling, table styling) onto the Teddy Eddie visual language. The refresh does not reach the PDF. Priority: must-have.
   > Socrates: No counter-argument; preservation as defensive FR is correct.
-- [preserved] **FR-016** — Teacher can fill a Cambridge exam report and download it as PDF. Same delta as FR-015. Priority: must-have.
+  > Amended 2026-07-27: guardrail made explicitly visual, with the `S-05` on-screen refresh named as the single licensed exception.
+- [preserved] **FR-016** — Teacher can fill a Cambridge exam report and download it as PDF. Same two deltas as FR-015. Priority: must-have.
   > Socrates: No counter-argument; preservation as defensive FR is correct.
-- [preserved] **FR-017** — Teacher can fill a Teddy Eddie report and download it as PDF. Same delta as FR-015. Priority: must-have.
+  > Amended 2026-07-27: see FR-015.
+- [preserved] **FR-017** — Teacher can fill a Teddy Eddie report and download it as PDF. Fields, validation, layout, on-screen presentation, and PDF output are untouched; the only delta is sign-in gating. This form carries the reference visual language that `S-05` aligns the others to, so it takes no design delta of its own — changing it would move the target the other forms are being matched against. Priority: must-have.
   > Socrates: No counter-argument; preservation as defensive FR is correct.
+  > Amended 2026-07-27: guardrail made explicitly visual; recorded as the reference design for `S-05`, and therefore the strictest of the three.
 
 ### Internationalization
 
@@ -165,6 +170,8 @@ The change must respect the following pieces of the current system. These are pr
 The current app uses Angular Material together with Bootstrap as its visual-language stack. This combination was NOT locked as a preservation requirement, leaving room for the implementation to consolidate.
 
 **Resolved 2026-07-20.** `src/CLAUDE.md` records the convention: new surfaces prefer Material; existing report layouts that mix Material and Bootstrap keep their current stack. Bootstrap 5 stays wired in `angular.json` (scss + JS bundle) — it is not removed — but sign-in, student management, and template management are built on Material. Either choice is safe for the PDF fidelity guardrail, since pdfmake is independent of the UI library.
+
+**Amended 2026-07-27.** The rule above covers *new* surfaces. Work on the `identity-and-data-platform` and `pdf-fidelity-baseline` foundations surfaced a gap it does not cover: among the four existing report forms, the Teddy Eddie form already carries the newest design while the trimester/semester, end-of-school-year, and Cambridge forms carry an older one (colours, component styling, table styling). "Existing report layouts keep their current stack" was written to prevent an unplanned rewrite, not to freeze that drift permanently. Roadmap slice `S-05` closes it as a deliberate, scoped change, with Teddy Eddie as the reference; it is delivered in two steps, `S-05a` (`report-design-language`) then `S-05b` (`report-design-refresh`). This applies to on-screen presentation only — the PDF fidelity guardrail is untouched, and pdfmake output is out of `S-05`'s scope.
 
 ### Data migration
 
@@ -239,6 +246,8 @@ Numbered list. Each entry names what's unknown, who needs to resolve it, and the
 Kept in place, with original numbering, so that references from downstream documents stay valid and each question sits next to its answer.
 
 1. **Visual-language consolidation (Angular Material vs Bootstrap).** RESOLVED 2026-07-20 → new surfaces use Material; existing mixed report layouts keep their current stack; Bootstrap 5 remains wired in `angular.json`. Convention recorded in `src/CLAUDE.md`; see `## Constraints & Compatibility`. Was owned by: implementer.
+
+   Extended 2026-07-27 — the resolution above covers new surfaces only. Existing-surface drift (three of the four report forms carry an older design than Teddy Eddie) is now owned by roadmap slice `S-05`, on-screen presentation only. See `## Constraints & Compatibility` → Visual-language convention.
 3. **Backend persistence platform.** RESOLVED 2026-07-20 → **Firestore**, as part of selecting Firebase (Hosting + Authentication + Firestore) as the platform; runner-up was Cloudflare (Pages + D1 + Access). Decision and its rationale live in `context/foundation/infrastructure.md`. Was owned by: implementer during `/10x-infra-research`.
 
    Caveat — this is a decision, not an implementation. The Firestore database has not been created (region `eur3` is recorded as the intended one-way choice) and the Google sign-in provider is not yet enabled in the Firebase Console. FR-005 / FR-009 implementation is still gated on both steps.
