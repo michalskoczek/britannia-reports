@@ -18,7 +18,15 @@
   }
 
   .button-wrapper {
+    display: flex;
+    align-items: center;
+    gap: ds.$distance-8;
     margin: 0 0 0 auto;
+  }
+
+  .account-email {
+    color: ds.$britannia-blue;
+    font: 400 13px/1 ds.$font;
   }
 }
 

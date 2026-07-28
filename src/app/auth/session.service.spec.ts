@@ -145,6 +145,33 @@ describe('SessionService', () => {
     expect(service.state()).toEqual({ status: 'denied', reason: 'not-allowlisted' });
   }));
 
+  it('does not finish signing out until the state stops saying authorized', fakeAsync(() => {
+    allowlistGateway.lookup.and.resolveTo({ role: 'teacher' });
+    // Firebase resolves its own promise without waiting for the auth stream,
+    // so this fake deliberately does not push the follow-up emission.
+    authGateway.signOut.and.resolveTo();
+
+    const service: SessionService = createService();
+
+    authGateway.user$.next(allowlistedUser);
+    tick();
+    expect(service.state().status).toBe('authorized');
+
+    let finished = false;
+    void service.signOut().then(() => (finished = true));
+    tick();
+
+    // Navigating here would hand signInGuard a stale "authorized" and bounce
+    // the user back into the shell they are leaving.
+    expect(finished).toBeFalse();
+
+    authGateway.user$.next(null);
+    tick();
+
+    expect(finished).toBeTrue();
+    expect(service.state()).toEqual({ status: 'anonymous' });
+  }));
+
   it('clears the denial reason when a new sign-in attempt starts', fakeAsync(() => {
     allowlistGateway.lookup.and.resolveTo(null);
 

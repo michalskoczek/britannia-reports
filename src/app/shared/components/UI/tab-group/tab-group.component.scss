@@ -12,8 +12,10 @@
   isolation: isolate;
   background-color: white;
   border-radius: 20px;
-  box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2),
-    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+  // Was a fifth hand-written copy of the elevation triple; docs/design-language.md
+  // §5 assigns absorbing it to S-01. The full 20px radius stays as it is — that
+  // is app shell, not the card's bottom-only radius.
+  box-shadow: ds.$shadow-1;
 
   .tab {
     @include mixins.default-button;

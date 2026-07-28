@@ -681,38 +681,38 @@ preserve. Nothing is deployed to hosting, so the live site is unaffected by this
 
 #### Automated
 
-- [x] 3.1 Lint passes: `npm run lint`
-- [x] 3.2 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
-- [x] 3.3 Production build type-checks: `npm run build`
-- [x] 3.4 Dev build type-checks: `npm run build -- --configuration development`
+- [x] 3.1 Lint passes: `npm run lint` — 8f5940f
+- [x] 3.2 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless` — 8f5940f
+- [x] 3.3 Production build type-checks: `npm run build` — 8f5940f
+- [x] 3.4 Dev build type-checks: `npm run build -- --configuration development` — 8f5940f
 
 #### Manual
 
-- [x] 3.5 App Check debug token registered in the console
-- [x] 3.6 Signed out: loading indicator → sign-in screen, no flash of tabs
-- [x] 3.7 Seeded account reaches the four tabs; header shows the address
-- [x] 3.8 Reload while signed in goes straight to the tabs, no flash of sign-in
-- [x] 3.9 Non-allowlisted account gets the no-access message and leaves no session
-- [x] 3.10 `/sign-in` while signed in, and a nonsense path, both land on the tabs
-- [x] 3.11 Sign-out from the header returns to the sign-in screen
-- [x] 3.12 Language toggle works on the sign-in screen and on the report tabs
-- [x] 3.13 All four report tabs still download a PDF that looks unchanged
+- [x] 3.5 App Check debug token registered in the console — 8f5940f
+- [x] 3.6 Signed out: loading indicator → sign-in screen, no flash of tabs — 8f5940f
+- [x] 3.7 Seeded account reaches the four tabs; header shows the address — 8f5940f
+- [x] 3.8 Reload while signed in goes straight to the tabs, no flash of sign-in — 8f5940f
+- [x] 3.9 Non-allowlisted account gets the no-access message and leaves no session — 8f5940f
+- [x] 3.10 `/sign-in` while signed in, and a nonsense path, both land on the tabs — 8f5940f
+- [x] 3.11 Sign-out from the header returns to the sign-in screen — 8f5940f
+- [x] 3.12 Language toggle works on the sign-in screen and on the report tabs — 8f5940f
+- [x] 3.13 All four report tabs still download a PDF that looks unchanged — 8f5940f
 
 ### Phase 4: Visual language pass
 
 #### Automated
 
-- [ ] 4.1 Lint passes: `npm run lint`
-- [ ] 4.2 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
-- [ ] 4.3 Production build type-checks: `npm run build`
-- [ ] 4.4 `tab-group.component.scss` compiles to identical CSS before and after (design-language §7.4)
+- [x] 4.1 Lint passes: `npm run lint`
+- [x] 4.2 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
+- [x] 4.3 Production build type-checks: `npm run build`
+- [x] 4.4 `tab-group.component.scss` compiles to identical CSS before and after (design-language §7.4)
 
 #### Manual
 
-- [ ] 4.5 Sign-in screen reads as the Teddy Eddie visual language
-- [ ] 4.6 Denial message is legible and clearly an error state
-- [ ] 4.7 Header layout intact above and below 768px, signed in and signed out
-- [ ] 4.8 Tab bar looks unchanged
+- [x] 4.5 Sign-in screen reads as the Teddy Eddie visual language
+- [x] 4.6 Denial message is legible and clearly an error state
+- [x] 4.7 Header layout intact above and below 768px, signed in and signed out
+- [x] 4.8 Tab bar looks unchanged
 
 ### Phase 5: Documentation sync
 

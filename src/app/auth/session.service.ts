@@ -1,7 +1,7 @@
-import { computed, inject, Injectable, Signal, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { computed, inject, Injectable, Injector, Signal, signal } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { User } from '@angular/fire/auth';
-import { concat, from, of, switchMap } from 'rxjs';
+import { concat, filter, firstValueFrom, from, of, switchMap } from 'rxjs';
 import { AllowlistEntry, DenialReason, SessionState, UserRole } from '../model/auth.interface';
 import { AllowlistGateway } from './allowlist.gateway';
 import { AuthGateway } from './auth.gateway';
@@ -21,6 +21,7 @@ interface AuthorizedAccount {
 export class SessionService {
   private readonly authGateway: AuthGateway = inject(AuthGateway);
   private readonly allowlistGateway: AllowlistGateway = inject(AllowlistGateway);
+  private readonly injector: Injector = inject(Injector);
 
   /**
    * Why the last sign-in attempt was refused.
@@ -76,12 +77,30 @@ export class SessionService {
     this.denial.set(null);
 
     await this.authGateway.signInWithGoogle();
+    await this.settledOnce((state: SessionState) => state.status !== 'anonymous');
   }
 
   public async signOut(): Promise<void> {
     this.denial.set(null);
 
     await this.authGateway.signOut();
+    await this.settledOnce((state: SessionState) => state.status !== 'authorized');
+  }
+
+  /**
+   * Resolves once the state stops describing the session we just left.
+   *
+   * Firebase resolves `signInWithPopup` and `signOut` independently of the auth
+   * stream's emission, so for a moment afterwards this signal still reports the
+   * previous session. A caller that navigates in that window hands the guards a
+   * stale answer and they undo the transition — `signInGuard` reading a stale
+   * "authorized" after a sign-out sends the user straight back to the shell
+   * they were leaving. Sign-in has the same race and merely tends to win it.
+   */
+  private async settledOnce(isSettled: (state: SessionState) => boolean): Promise<void> {
+    await firstValueFrom(
+      toObservable(this.state, { injector: this.injector }).pipe(filter(isSettled)),
+    );
   }
 
   private async resolveAccount(user: User | null): Promise<AuthorizedAccount | null> {
