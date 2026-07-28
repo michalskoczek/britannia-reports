@@ -718,12 +718,12 @@ preserve. Nothing is deployed to hosting, so the live site is unaffected by this
 
 #### Automated
 
-- [x] 5.1 Lint passes: `npm run lint`
-- [x] 5.2 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
-- [x] 5.3 Production build succeeds: `npm run build`
+- [x] 5.1 Lint passes: `npm run lint` — 4e936b4
+- [x] 5.2 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless` — 4e936b4
+- [x] 5.3 Production build succeeds: `npm run build` — 4e936b4
 
 #### Manual
 
-- [x] 5.4 No foundation document still describes the app as router-less or Firestore as empty
-- [x] 5.5 The emulator deferral is findable from all three documents with consistent reasoning
-- [x] 5.6 A reader starting `S-02` learns about the inherited harness debt without reading this plan
+- [x] 5.4 No foundation document still describes the app as router-less or Firestore as empty — 4e936b4
+- [x] 5.5 The emulator deferral is findable from all three documents with consistent reasoning — 4e936b4
+- [x] 5.6 A reader starting `S-02` learns about the inherited harness debt without reading this plan — 4e936b4
