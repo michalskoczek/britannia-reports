@@ -1,0 +1,46 @@
+<div class="row">
+  <p style="font-weight: 600" class="col-12 mt-3">{{ heading() | translate }}</p>
+  <div [formArrayName]="arrayName()" class="col-12">
+    <button type="button" mat-raised-button color="primary" aria-label="Add" class="mb-3" (click)="addTerm.emit()">
+      {{ "Dodaj test" | translate }}
+    </button>
+    @for (exam of rows.controls; track exam; let i = $index) {
+      <div [formGroupName]="i" class="row">
+        <mat-form-field class="col-3">
+          <mat-label>{{ "Data" | translate }}</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="date" />
+          <mat-hint>DD.M.RRRR</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field class="col-3">
+          <mat-label>{{ "Wynik testu nr" | translate }} {{ i + 1 }} {{ "w %" | translate }}</mat-label>
+          <input matInput type="number" formControlName="score" />
+        </mat-form-field>
+
+        <mat-form-field class="col-3">
+          <mat-label>{{ "Decyzja" | translate }}</mat-label>
+          <mat-select formControlName="result">
+            @for (result of resultOfExam; track result) {
+              <mat-option [value]="result">
+                {{ result | translate }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <button
+          style="height: 54px"
+          type="button"
+          mat-button
+          color="warn"
+          class="col-1"
+          (click)="removeTerm.emit(i)"
+        >
+          {{ "Usuń" | translate }}
+        </button>
+      </div>
+    }
+  </div>
+</div>

@@ -119,780 +119,92 @@
       selectedTypeOfExam === 'Cambridge STARTERS' ||
       selectedTypeOfExam === 'Cambridge MOVERS' ||
       selectedTypeOfExam === 'Cambridge FLYERS'
-      ) {
-      <div class="row">
-        <p style="font-weight: 600" class="col-12 mt-3">
-          {{ "Słuchanie" | translate }}
-        </p>
-        <div formArrayName="listeningA1Array" class="col-12">
-          <button
-            type="button"
-            mat-raised-button
-            color="primary"
-            aria-label="Add"
-            class="mb-3"
-            (click)="addNextExamTerm('listeningA1Array')"
-            >
-            {{ "Dodaj test" | translate }}
-          </button>
-          @for (exam of listeningA1Array.controls; track exam; let i = $index) {
-            <div [formGroupName]="i" class="row">
-              <mat-form-field class="col-3">
-                <mat-label>{{ "Data" | translate }}</mat-label>
-                <input
-                  matInput
-                  [matDatepicker]="picker"
-                  formControlName="date"
-                  />
-                <mat-hint>DD.M.RRRR</mat-hint>
-                <mat-datepicker-toggle
-                  matIconSuffix
-                  [for]="picker"
-                ></mat-datepicker-toggle>
-                <mat-datepicker #picker></mat-datepicker>
-              </mat-form-field>
-              <mat-form-field class="col-3">
-                <mat-label
-                  >{{ "Wynik testu nr" | translate }} {{ i + 1 }}
-                  {{ "w %" | translate }}</mat-label
-                  >
-                  <input matInput type="number" formControlName="score" />
-                </mat-form-field>
-                <mat-form-field class="col-3">
-                  <mat-label>{{ "Decyzja" | translate }}</mat-label>
-                  <mat-select formControlName="result">
-                    @for (result of resultOfExam; track result) {
-                      <mat-option
-                        [value]="result"
-                        >
-                        {{ result | translate }}
-                      </mat-option>
-                    }
-                  </mat-select>
-                </mat-form-field>
-                <button
-                  style="height: 54px"
-                  type="button"
-                  mat-button
-                  color="warn"
-                  class="col-1"
-                  (click)="onRemoveExamTerm(i, 'listeningA1Array')"
-                  >
-                  {{ "Usuń" | translate }}
-                </button>
-              </div>
-            }
-          </div>
-        </div>
-        <div class="row">
-          <p style="font-weight: 600" class="col-12 mt-3">
-            {{ "Czytanie i Pisanie" | translate }}
-          </p>
-          <div formArrayName="writingAndReadingA1Array" class="col-12">
-            <button
-              type="button"
-              mat-raised-button
-              color="primary"
-              aria-label="Add"
-              class="mb-3"
-              (click)="addNextExamTerm('writingAndReadingA1Array')"
-              >
-              {{ "Dodaj test" | translate }}
-            </button>
-            @for (
-              exam of writingAndReadingA1Array.controls; track
-              exam; let i = $index) {
-              <div [formGroupName]="i" class="row">
-                <mat-form-field class="col-3">
-                  <mat-label>{{ "Data" | translate }}</mat-label>
-                  <input
-                    matInput
-                    [matDatepicker]="picker"
-                    formControlName="date"
-                    />
-                  <mat-hint>DD.M.RRRR</mat-hint>
-                  <mat-datepicker-toggle
-                    matIconSuffix
-                    [for]="picker"
-                  ></mat-datepicker-toggle>
-                  <mat-datepicker #picker></mat-datepicker>
-                </mat-form-field>
-                <mat-form-field class="col-3">
-                  <mat-label
-                    >{{ "Wynik testu nr" | translate }} {{ i + 1 }}
-                    {{ "w %" | translate }}</mat-label
-                    >
-                    <input matInput type="number" formControlName="score" />
-                  </mat-form-field>
-                  <mat-form-field class="col-3">
-                    <mat-label>{{ "Decyzja" | translate }}</mat-label>
-                    <mat-select formControlName="result">
-                      @for (result of resultOfExam; track result) {
-                        <mat-option
-                          [value]="result"
-                          >
-                          {{ result | translate }}
-                        </mat-option>
-                      }
-                    </mat-select>
-                  </mat-form-field>
-                  <button
-                    style="height: 54px"
-                    type="button"
-                    mat-button
-                    color="warn"
-                    class="col-1"
-                    (click)="onRemoveExamTerm(i, 'writingAndReadingA1Array')"
-                    >
-                    {{ "Usuń" | translate }}
-                  </button>
-                </div>
-              }
-            </div>
-          </div>
-          <div class="row">
-            <p style="font-weight: 600" class="col-12 mt-3">
-              {{ "Mówienie" | translate }}
-            </p>
-            <div formArrayName="speakingA1Array" class="col-12">
-              <button
-                type="button"
-                mat-raised-button
-                color="primary"
-                aria-label="Add"
-                class="mb-3"
-                (click)="addNextExamTerm('speakingA1Array')"
-                >
-                {{ "Dodaj test" | translate }}
-              </button>
-              @for (exam of speakingA1Array.controls; track exam; let i = $index) {
-                <div [formGroupName]="i" class="row">
-                  <mat-form-field class="col-3">
-                    <mat-label>{{ "Data" | translate }}</mat-label>
-                    <input
-                      matInput
-                      [matDatepicker]="picker"
-                      formControlName="date"
-                      />
-                    <mat-hint>DD.M.RRRR</mat-hint>
-                    <mat-datepicker-toggle
-                      matIconSuffix
-                      [for]="picker"
-                    ></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
-                  </mat-form-field>
-                  <mat-form-field class="col-3">
-                    <mat-label
-                      >{{ "Wynik testu nr" | translate }} {{ i + 1 }}
-                      {{ "w %" | translate }}</mat-label
-                      >
-                      <input matInput type="number" formControlName="score" />
-                    </mat-form-field>
-                    <mat-form-field class="col-3">
-                      <mat-label>{{ "Decyzja" | translate }}</mat-label>
-                      <mat-select formControlName="result">
-                        @for (result of resultOfExam; track result) {
-                          <mat-option
-                            [value]="result"
-                            >
-                            {{ result | translate }}
-                          </mat-option>
-                        }
-                      </mat-select>
-                    </mat-form-field>
-                    <button
-                      style="height: 54px"
-                      type="button"
-                      mat-button
-                      color="warn"
-                      class="col-1"
-                      (click)="onRemoveExamTerm(i, 'speakingA1Array')"
-                      >
-                      {{ "Usuń" | translate }}
-                    </button>
-                  </div>
-                }
-              </div>
-            </div>
-          }
+    ) {
+      <app-exam-term-rows
+        arrayName="listeningA1Array"
+        heading="Słuchanie"
+        (addTerm)="addNextExamTerm('listeningA1Array')"
+        (removeTerm)="onRemoveExamTerm($event, 'listeningA1Array')"
+      />
+      <app-exam-term-rows
+        arrayName="writingAndReadingA1Array"
+        heading="Czytanie i Pisanie"
+        (addTerm)="addNextExamTerm('writingAndReadingA1Array')"
+        (removeTerm)="onRemoveExamTerm($event, 'writingAndReadingA1Array')"
+      />
+      <app-exam-term-rows
+        arrayName="speakingA1Array"
+        heading="Mówienie"
+        (addTerm)="addNextExamTerm('speakingA1Array')"
+        (removeTerm)="onRemoveExamTerm($event, 'speakingA1Array')"
+      />
+    }
 
-          @if (
-            selectedTypeOfExam === 'Cambridge A2 Key for Schools' ||
-            selectedTypeOfExam === 'Cambridge B1 Preliminary for Schools'
-            ) {
-            <div class="row">
-              <p style="font-weight: 600" class="col-12 mt-3">
-                {{ "Słuchanie" | translate }}
-              </p>
-              <div formArrayName="listeningA2B1Array" class="col-12">
-                <button
-                  type="button"
-                  mat-raised-button
-                  color="primary"
-                  aria-label="Add"
-                  class="mb-3"
-                  (click)="addNextExamTerm('listeningA2B1Array')"
-                  >
-                  {{ "Dodaj test" | translate }}
-                </button>
-                @for (exam of listeningA2B1Array.controls; track exam; let i = $index) {
-                  <div [formGroupName]="i" class="row">
-                    <mat-form-field class="col-3">
-                      <mat-label>{{ "Data" | translate }}</mat-label>
-                      <input
-                        matInput
-                        [matDatepicker]="picker"
-                        formControlName="date"
-                        />
-                      <mat-hint>DD.M.RRRR</mat-hint>
-                      <mat-datepicker-toggle
-                        matIconSuffix
-                        [for]="picker"
-                      ></mat-datepicker-toggle>
-                      <mat-datepicker #picker></mat-datepicker>
-                    </mat-form-field>
-                    <mat-form-field class="col-3">
-                      <mat-label
-                        >{{ "Wynik testu nr" | translate }} {{ i + 1 }}
-                        {{ "w %" | translate }}</mat-label
-                        >
-                        <input matInput type="number" formControlName="score" />
-                      </mat-form-field>
-                      <mat-form-field class="col-3">
-                        <mat-label>{{ "Decyzja" | translate }}</mat-label>
-                        <mat-select formControlName="result">
-                          @for (result of resultOfExam; track result) {
-                            <mat-option
-                              [value]="result"
-                              >
-                              {{ result | translate }}
-                            </mat-option>
-                          }
-                        </mat-select>
-                      </mat-form-field>
-                      <button
-                        style="height: 54px"
-                        type="button"
-                        mat-button
-                        color="warn"
-                        class="col-1"
-                        (click)="onRemoveExamTerm(i, 'listeningA2B1Array')"
-                        >
-                        {{ "Usuń" | translate }}
-                      </button>
-                    </div>
-                  }
-                </div>
-              </div>
-              <div class="row">
-                <p style="font-weight: 600" class="col-12 mt-3">
-                  {{ "Czytanie" | translate }}
-                </p>
-                <div formArrayName="readingA2B1Array" class="col-12">
-                  <button
-                    type="button"
-                    mat-raised-button
-                    color="primary"
-                    aria-label="Add"
-                    class="mb-3"
-                    (click)="addNextExamTerm('readingA2B1Array')"
-                    >
-                    {{ "Dodaj test" | translate }}
-                  </button>
-                  @for (exam of readingA2B1Array.controls; track exam; let i = $index) {
-                    <div [formGroupName]="i" class="row">
-                      <mat-form-field class="col-3">
-                        <mat-label>{{ "Data" | translate }}</mat-label>
-                        <input
-                          matInput
-                          [matDatepicker]="picker"
-                          formControlName="date"
-                          />
-                        <mat-hint>DD.M.RRRR</mat-hint>
-                        <mat-datepicker-toggle
-                          matIconSuffix
-                          [for]="picker"
-                        ></mat-datepicker-toggle>
-                        <mat-datepicker #picker></mat-datepicker>
-                      </mat-form-field>
-                      <mat-form-field class="col-3">
-                        <mat-label
-                          >{{ "Wynik testu nr" | translate }} {{ i + 1 }}
-                          {{ "w %" | translate }}</mat-label
-                          >
-                          <input matInput type="number" formControlName="score" />
-                        </mat-form-field>
-                        <mat-form-field class="col-3">
-                          <mat-label>{{ "Decyzja" | translate }}</mat-label>
-                          <mat-select formControlName="result">
-                            @for (result of resultOfExam; track result) {
-                              <mat-option
-                                [value]="result"
-                                >
-                                {{ result | translate }}
-                              </mat-option>
-                            }
-                          </mat-select>
-                        </mat-form-field>
-                        <button
-                          style="height: 54px"
-                          type="button"
-                          mat-button
-                          color="warn"
-                          class="col-1"
-                          (click)="onRemoveExamTerm(i, 'readingA2B1Array')"
-                          >
-                          {{ "Usuń" | translate }}
-                        </button>
-                      </div>
-                    }
-                  </div>
-                </div>
-                <div class="row">
-                  <p style="font-weight: 600" class="col-12 mt-3">
-                    {{ "Pisanie" | translate }}
-                  </p>
-                  <div formArrayName="writingA2B1Array" class="col-12">
-                    <button
-                      type="button"
-                      mat-raised-button
-                      color="primary"
-                      aria-label="Add"
-                      class="mb-3"
-                      (click)="addNextExamTerm('writingA2B1Array')"
-                      >
-                      {{ "Dodaj test" | translate }}
-                    </button>
-                    @for (exam of writingA2B1Array.controls; track exam; let i = $index) {
-                      <div [formGroupName]="i" class="row">
-                        <mat-form-field class="col-3">
-                          <mat-label>{{ "Data" | translate }}</mat-label>
-                          <input
-                            matInput
-                            [matDatepicker]="picker"
-                            formControlName="date"
-                            />
-                          <mat-hint>DD.M.RRRR</mat-hint>
-                          <mat-datepicker-toggle
-                            matIconSuffix
-                            [for]="picker"
-                          ></mat-datepicker-toggle>
-                          <mat-datepicker #picker></mat-datepicker>
-                        </mat-form-field>
-                        <mat-form-field class="col-3">
-                          <mat-label
-                            >{{ "Wynik testu nr" | translate }} {{ i + 1 }}
-                            {{ "w %" | translate }}</mat-label
-                            >
-                            <input matInput type="number" formControlName="score" />
-                          </mat-form-field>
-                          <mat-form-field class="col-3">
-                            <mat-label>{{ "Decyzja" | translate }}</mat-label>
-                            <mat-select formControlName="result">
-                              @for (result of resultOfExam; track result) {
-                                <mat-option
-                                  [value]="result"
-                                  >
-                                  {{ result | translate }}
-                                </mat-option>
-                              }
-                            </mat-select>
-                          </mat-form-field>
-                          <button
-                            style="height: 54px"
-                            type="button"
-                            mat-button
-                            color="warn"
-                            class="col-1"
-                            (click)="onRemoveExamTerm(i, 'writingA2B1Array')"
-                            >
-                            {{ "Usuń" | translate }}
-                          </button>
-                        </div>
-                      }
-                    </div>
-                  </div>
-                  <div class="row">
-                    <p style="font-weight: 600" class="col-12 mt-3">
-                      {{ "Mówienie" | translate }}
-                    </p>
-                    <div formArrayName="speakingA2B1Array" class="col-12">
-                      <button
-                        type="button"
-                        mat-raised-button
-                        color="primary"
-                        aria-label="Add"
-                        class="mb-3"
-                        (click)="addNextExamTerm('speakingA2B1Array')"
-                        >
-                        {{ "Dodaj test" | translate }}
-                      </button>
-                      @for (exam of speakingA2B1Array.controls; track exam; let i = $index) {
-                        <div [formGroupName]="i" class="row">
-                          <mat-form-field class="col-3">
-                            <mat-label>{{ "Data" | translate }}</mat-label>
-                            <input
-                              matInput
-                              [matDatepicker]="picker"
-                              formControlName="date"
-                              />
-                            <mat-hint>DD.M.RRRR</mat-hint>
-                            <mat-datepicker-toggle
-                              matIconSuffix
-                              [for]="picker"
-                            ></mat-datepicker-toggle>
-                            <mat-datepicker #picker></mat-datepicker>
-                          </mat-form-field>
-                          <mat-form-field class="col-3">
-                            <mat-label
-                              >{{ "Wynik testu nr" | translate }} {{ i + 1 }}
-                              {{ "w %" | translate }}</mat-label
-                              >
-                              <input matInput type="number" formControlName="score" />
-                            </mat-form-field>
-                            <mat-form-field class="col-3">
-                              <mat-label>{{ "Decyzja" | translate }}</mat-label>
-                              <mat-select formControlName="result">
-                                @for (result of resultOfExam; track result) {
-                                  <mat-option
-                                    [value]="result"
-                                    >
-                                    {{ result | translate }}
-                                  </mat-option>
-                                }
-                              </mat-select>
-                            </mat-form-field>
-                            <button
-                              style="height: 54px"
-                              type="button"
-                              mat-button
-                              color="warn"
-                              class="col-1"
-                              (click)="onRemoveExamTerm(i, 'speakingA2B1Array')"
-                              >
-                              {{ "Usuń" | translate }}
-                            </button>
-                          </div>
-                        }
-                      </div>
-                    </div>
-                  }
+    @if (
+      selectedTypeOfExam === 'Cambridge A2 Key for Schools' ||
+      selectedTypeOfExam === 'Cambridge B1 Preliminary for Schools'
+    ) {
+      <app-exam-term-rows
+        arrayName="listeningA2B1Array"
+        heading="Słuchanie"
+        (addTerm)="addNextExamTerm('listeningA2B1Array')"
+        (removeTerm)="onRemoveExamTerm($event, 'listeningA2B1Array')"
+      />
+      <app-exam-term-rows
+        arrayName="readingA2B1Array"
+        heading="Czytanie"
+        (addTerm)="addNextExamTerm('readingA2B1Array')"
+        (removeTerm)="onRemoveExamTerm($event, 'readingA2B1Array')"
+      />
+      <app-exam-term-rows
+        arrayName="writingA2B1Array"
+        heading="Pisanie"
+        (addTerm)="addNextExamTerm('writingA2B1Array')"
+        (removeTerm)="onRemoveExamTerm($event, 'writingA2B1Array')"
+      />
+      <app-exam-term-rows
+        arrayName="speakingA2B1Array"
+        heading="Mówienie"
+        (addTerm)="addNextExamTerm('speakingA2B1Array')"
+        (removeTerm)="onRemoveExamTerm($event, 'speakingA2B1Array')"
+      />
+    }
 
-                  @if (
-                    selectedTypeOfExam === 'Cambridge B2 First for Schools' ||
-                    selectedTypeOfExam === 'Cambridge C1 Advanced'
-                    ) {
-                    <div class="row">
-                      <p style="font-weight: 600" class="col-12 mt-3">Listening</p>
-                      <div formArrayName="listeningB2C1Array" class="col-12">
-                        <button
-                          type="button"
-                          mat-raised-button
-                          color="primary"
-                          aria-label="Add"
-                          class="mb-3"
-                          (click)="addNextExamTerm('listeningB2C1Array')"
-                          >
-                          {{ "Dodaj test" | translate }}
-                        </button>
-                        @for (exam of listeningB2C1Array.controls; track exam; let i = $index) {
-                          <div [formGroupName]="i" class="row">
-                            <mat-form-field class="col-3">
-                              <mat-label>{{ "Data" | translate }}</mat-label>
-                              <input
-                                matInput
-                                [matDatepicker]="picker"
-                                formControlName="date"
-                                />
-                              <mat-hint>DD.M.RRRR</mat-hint>
-                              <mat-datepicker-toggle
-                                matIconSuffix
-                                [for]="picker"
-                              ></mat-datepicker-toggle>
-                              <mat-datepicker #picker></mat-datepicker>
-                            </mat-form-field>
-                            <mat-form-field class="col-3">
-                              <mat-label
-                                >{{ "Wynik testu nr" | translate }} {{ i + 1 }}
-                                {{ "w %" | translate }}</mat-label
-                                >
-                                <input matInput type="number" formControlName="score" />
-                              </mat-form-field>
-                              <mat-form-field class="col-3">
-                                <mat-label>{{ "Decyzja" | translate }}</mat-label>
-                                <mat-select formControlName="result">
-                                  @for (result of resultOfExam; track result) {
-                                    <mat-option
-                                      [value]="result"
-                                      >
-                                      {{ result | translate }}
-                                    </mat-option>
-                                  }
-                                </mat-select>
-                              </mat-form-field>
-                              <button
-                                style="height: 54px"
-                                type="button"
-                                mat-button
-                                color="warn"
-                                class="col-1"
-                                (click)="onRemoveExamTerm(i, 'listeningB2C1Array')"
-                                >
-                                {{ "Usuń" | translate }}
-                              </button>
-                            </div>
-                          }
-                        </div>
-                      </div>
-                      <div class="row">
-                        <p style="font-weight: 600" class="col-12 mt-3">Reading</p>
-                        <div formArrayName="readingB2C1Array" class="col-12">
-                          <button
-                            type="button"
-                            mat-raised-button
-                            color="primary"
-                            aria-label="Add"
-                            class="mb-3"
-                            (click)="addNextExamTerm('readingB2C1Array')"
-                            >
-                            {{ "Dodaj test" | translate }}
-                          </button>
-                          @for (exam of readingB2C1Array.controls; track exam; let i = $index) {
-                            <div [formGroupName]="i" class="row">
-                              <mat-form-field class="col-3">
-                                <mat-label>{{ "Data" | translate }}</mat-label>
-                                <input
-                                  matInput
-                                  [matDatepicker]="picker"
-                                  formControlName="date"
-                                  />
-                                <mat-hint>DD.M.RRRR</mat-hint>
-                                <mat-datepicker-toggle
-                                  matIconSuffix
-                                  [for]="picker"
-                                ></mat-datepicker-toggle>
-                                <mat-datepicker #picker></mat-datepicker>
-                              </mat-form-field>
-                              <mat-form-field class="col-3">
-                                <mat-label
-                                  >{{ "Wynik testu nr" | translate }} {{ i + 1 }}
-                                  {{ "w %" | translate }}</mat-label
-                                  >
-                                  <input matInput type="number" formControlName="score" />
-                                </mat-form-field>
-                                <mat-form-field class="col-3">
-                                  <mat-label>{{ "Decyzja" | translate }}</mat-label>
-                                  <mat-select formControlName="result">
-                                    @for (result of resultOfExam; track result) {
-                                      <mat-option
-                                        [value]="result"
-                                        >
-                                        {{ result | translate }}
-                                      </mat-option>
-                                    }
-                                  </mat-select>
-                                </mat-form-field>
-                                <button
-                                  style="height: 54px"
-                                  type="button"
-                                  mat-button
-                                  color="warn"
-                                  class="col-1"
-                                  (click)="onRemoveExamTerm(i, 'readingB2C1Array')"
-                                  >
-                                  {{ "Usuń" | translate }}
-                                </button>
-                              </div>
-                            }
-                          </div>
-                        </div>
-                        <div class="row">
-                          <p style="font-weight: 600" class="col-12 mt-3">Use of English</p>
-                          <div formArrayName="useOfEnglishB2C1Array" class="col-12">
-                            <button
-                              type="button"
-                              mat-raised-button
-                              color="primary"
-                              aria-label="Add"
-                              class="mb-3"
-                              (click)="addNextExamTerm('useOfEnglishB2C1Array')"
-                              >
-                              {{ "Dodaj test" | translate }}
-                            </button>
-                            @for (exam of useOfEnglishB2C1Array.controls; track exam; let i = $index) {
-                              <div [formGroupName]="i" class="row">
-                                <mat-form-field class="col-3">
-                                  <mat-label>{{ "Data" | translate }}</mat-label>
-                                  <input
-                                    matInput
-                                    [matDatepicker]="picker"
-                                    formControlName="date"
-                                    />
-                                  <mat-hint>DD.M.RRRR</mat-hint>
-                                  <mat-datepicker-toggle
-                                    matIconSuffix
-                                    [for]="picker"
-                                  ></mat-datepicker-toggle>
-                                  <mat-datepicker #picker></mat-datepicker>
-                                </mat-form-field>
-                                <mat-form-field class="col-3">
-                                  <mat-label
-                                    >{{ "Wynik testu nr" | translate }} {{ i + 1 }}
-                                    {{ "w %" | translate }}</mat-label
-                                    >
-                                    <input matInput type="number" formControlName="score" />
-                                  </mat-form-field>
-                                  <mat-form-field class="col-3">
-                                    <mat-label>{{ "Decyzja" | translate }}</mat-label>
-                                    <mat-select formControlName="result">
-                                      @for (result of resultOfExam; track result) {
-                                        <mat-option
-                                          [value]="result"
-                                          >
-                                          {{ result | translate }}
-                                        </mat-option>
-                                      }
-                                    </mat-select>
-                                  </mat-form-field>
-                                  <button
-                                    style="height: 54px"
-                                    type="button"
-                                    mat-button
-                                    color="warn"
-                                    class="col-1"
-                                    (click)="onRemoveExamTerm(i, 'useOfEnglishB2C1Array')"
-                                    >
-                                    {{ "Usuń" | translate }}
-                                  </button>
-                                </div>
-                              }
-                            </div>
-                          </div>
-                          <div class="row">
-                            <p style="font-weight: 600" class="col-12 mt-3">Writing</p>
-                            <div formArrayName="writingB2C1Array" class="col-12">
-                              <button
-                                type="button"
-                                mat-raised-button
-                                color="primary"
-                                aria-label="Add"
-                                class="mb-3"
-                                (click)="addNextExamTerm('writingB2C1Array')"
-                                >
-                                {{ "Dodaj test" | translate }}
-                              </button>
-                              @for (exam of writingB2C1Array.controls; track exam; let i = $index) {
-                                <div [formGroupName]="i" class="row">
-                                  <mat-form-field class="col-3">
-                                    <mat-label>{{ "Data" | translate }}</mat-label>
-                                    <input
-                                      matInput
-                                      [matDatepicker]="picker"
-                                      formControlName="date"
-                                      />
-                                    <mat-hint>DD.M.RRRR</mat-hint>
-                                    <mat-datepicker-toggle
-                                      matIconSuffix
-                                      [for]="picker"
-                                    ></mat-datepicker-toggle>
-                                    <mat-datepicker #picker></mat-datepicker>
-                                  </mat-form-field>
-                                  <mat-form-field class="col-3">
-                                    <mat-label
-                                      >{{ "Wynik testu nr" | translate }} {{ i + 1 }}
-                                      {{ "w %" | translate }}</mat-label
-                                      >
-                                      <input matInput type="number" formControlName="score" />
-                                    </mat-form-field>
-                                    <mat-form-field class="col-3">
-                                      <mat-label>{{ "Decyzja" | translate }}</mat-label>
-                                      <mat-select formControlName="result">
-                                        @for (result of resultOfExam; track result) {
-                                          <mat-option
-                                            [value]="result"
-                                            >
-                                            {{ result | translate }}
-                                          </mat-option>
-                                        }
-                                      </mat-select>
-                                    </mat-form-field>
-                                    <button
-                                      style="height: 54px"
-                                      type="button"
-                                      mat-button
-                                      color="warn"
-                                      class="col-1"
-                                      (click)="onRemoveExamTerm(i, 'writingB2C1Array')"
-                                      >
-                                      {{ "Usuń" | translate }}
-                                    </button>
-                                  </div>
-                                }
-                              </div>
-                            </div>
-                            <div class="row">
-                              <p style="font-weight: 600" class="col-12 mt-3">Speaking</p>
-                              <div formArrayName="speakingB2C1Array" class="col-12">
-                                <button
-                                  type="button"
-                                  mat-raised-button
-                                  color="primary"
-                                  aria-label="Add"
-                                  class="mb-3"
-                                  (click)="addNextExamTerm('speakingB2C1Array')"
-                                  >
-                                  {{ "Dodaj test" | translate }}
-                                </button>
-                                @for (exam of speakingB2C1Array.controls; track exam; let i = $index) {
-                                  <div [formGroupName]="i" class="row">
-                                    <mat-form-field class="col-3">
-                                      <mat-label>{{ "Data" | translate }}</mat-label>
-                                      <input
-                                        matInput
-                                        [matDatepicker]="picker"
-                                        formControlName="date"
-                                        />
-                                      <mat-hint>DD.M.RRRR</mat-hint>
-                                      <mat-datepicker-toggle
-                                        matIconSuffix
-                                        [for]="picker"
-                                      ></mat-datepicker-toggle>
-                                      <mat-datepicker #picker></mat-datepicker>
-                                    </mat-form-field>
-                                    <mat-form-field class="col-3">
-                                      <mat-label
-                                        >{{ "Wynik testu nr" | translate }} {{ i + 1 }}
-                                        {{ "w %" | translate }}</mat-label
-                                        >
-                                        <input matInput type="number" formControlName="score" />
-                                      </mat-form-field>
-                                      <mat-form-field class="col-3">
-                                        <mat-label>{{ "Decyzja" | translate }}</mat-label>
-                                        <mat-select formControlName="result">
-                                          @for (result of resultOfExam; track result) {
-                                            <mat-option
-                                              [value]="result"
-                                              >
-                                              {{ result | translate }}
-                                            </mat-option>
-                                          }
-                                        </mat-select>
-                                      </mat-form-field>
-                                      <button
-                                        style="height: 54px"
-                                        type="button"
-                                        mat-button
-                                        color="warn"
-                                        class="col-1"
-                                        (click)="onRemoveExamTerm(i, 'speakingB2C1Array')"
-                                        >
-                                        {{ "Usuń" | translate }}
-                                      </button>
-                                    </div>
-                                  }
-                                </div>
-                              </div>
-                            }
+    @if (
+      selectedTypeOfExam === 'Cambridge B2 First for Schools' ||
+      selectedTypeOfExam === 'Cambridge C1 Advanced'
+    ) {
+      <app-exam-term-rows
+        arrayName="listeningB2C1Array"
+        heading="Listening"
+        (addTerm)="addNextExamTerm('listeningB2C1Array')"
+        (removeTerm)="onRemoveExamTerm($event, 'listeningB2C1Array')"
+      />
+      <app-exam-term-rows
+        arrayName="readingB2C1Array"
+        heading="Reading"
+        (addTerm)="addNextExamTerm('readingB2C1Array')"
+        (removeTerm)="onRemoveExamTerm($event, 'readingB2C1Array')"
+      />
+      <app-exam-term-rows
+        arrayName="useOfEnglishB2C1Array"
+        heading="Use of English"
+        (addTerm)="addNextExamTerm('useOfEnglishB2C1Array')"
+        (removeTerm)="onRemoveExamTerm($event, 'useOfEnglishB2C1Array')"
+      />
+      <app-exam-term-rows
+        arrayName="writingB2C1Array"
+        heading="Writing"
+        (addTerm)="addNextExamTerm('writingB2C1Array')"
+        (removeTerm)="onRemoveExamTerm($event, 'writingB2C1Array')"
+      />
+      <app-exam-term-rows
+        arrayName="speakingB2C1Array"
+        heading="Speaking"
+        (addTerm)="addNextExamTerm('speakingB2C1Array')"
+        (removeTerm)="onRemoveExamTerm($event, 'speakingB2C1Array')"
+      />
+    }
 
                             <div class="row mt-3">
                               <div class="col-12">

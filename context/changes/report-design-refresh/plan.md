@@ -779,46 +779,46 @@ coordinate before Phase 1 and again before Phase 5.
 
 #### Automated
 
-- [x] 2.1 Build succeeds: `npm run build`
-- [x] 2.2 Linting passes: `npm run lint`
-- [x] 2.3 Tests pass, both contract specs unmodified
-- [x] 2.4 No raw `<mat-form-field>` remains in either form's template
-- [x] 2.5 Both components' `.ts` diffs limited to `imports` and option-list getters
-- [x] 2.6 No literal `1px solid black` remains in `year-report.component.scss`
-- [x] 2.7 Every `app-section-title` key resolves in both i18n bundles
-- [x] 2.8 Semester and year-end landed as two separate commits
+- [x] 2.1 Build succeeds: `npm run build` — 84b6130
+- [x] 2.2 Linting passes: `npm run lint` — 84b6130
+- [x] 2.3 Tests pass, both contract specs unmodified — 84b6130
+- [x] 2.4 No raw `<mat-form-field>` remains in either form's template — 84b6130
+- [x] 2.5 Both components' `.ts` diffs limited to `imports` and option-list getters — 84b6130
+- [x] 2.6 No literal `1px solid black` remains in `year-report.component.scss` — 84b6130
+- [x] 2.7 Every `app-section-title` key resolves in both i18n bundles — 84b6130
+- [x] 2.8 Semester and year-end landed as two separate commits — 968ce3d, 84b6130
 
 #### Manual
 
-- [x] 2.9 Both tabs match the Teddy Eddie language
-- [x] 2.10 Controls outlined, uniform height, validation messages visible
-- [x] 2.11 Teachers multiple-select behaves as before
-- [x] 2.12 PL/EN switch changes every heading on both tabs
-- [x] 2.13 Semester: changing `sex` after picking marks behaves as today
-- [x] 2.14 Semester: submit disabled while invalid, enabled when valid
-- [x] 2.15 Year-end: development-path rows and their delete checkboxes still work
+- [x] 2.9 Both tabs match the Teddy Eddie language — 84b6130
+- [x] 2.10 Controls outlined, uniform height, validation messages visible — 84b6130
+- [x] 2.11 Teachers multiple-select behaves as before — 84b6130
+- [x] 2.12 PL/EN switch changes every heading on both tabs — 84b6130
+- [x] 2.13 Semester: changing `sex` after picking marks behaves as today — 84b6130
+- [x] 2.14 Semester: submit disabled while invalid, enabled when valid — 84b6130
+- [x] 2.15 Year-end: development-path rows and their delete checkboxes still work — 84b6130
 - [x] 2.16 Year-end: detail-table controls still write to the same controls; both hand-rolled tables read
-      as the same family as the Teddy Eddie tables
-- [x] 2.17 A PDF downloads and looks right from each form, minimal and fully filled
-- [x] 2.18 Teddy Eddie tab unchanged, tables populated
+      as the same family as the Teddy Eddie tables — 84b6130
+- [x] 2.17 A PDF downloads and looks right from each form, minimal and fully filled — 84b6130
+- [x] 2.18 Teddy Eddie tab unchanged, tables populated — 84b6130
 
 ### Phase 3: Cambridge — extract the exam-term row component
 
 #### Automated
 
-- [ ] 3.1 Build succeeds: `npm run build`
-- [ ] 3.2 Linting passes: `npm run lint`
-- [ ] 3.3 Tests pass, Cambridge smoke and contract specs unmodified
-- [ ] 3.4 `cambridge-report.component.html` at least 500 lines shorter
-- [ ] 3.5 `cambridge-report.component.ts` diff limited to `imports`
+- [x] 3.1 Build succeeds: `npm run build`
+- [x] 3.2 Linting passes: `npm run lint`
+- [x] 3.3 Tests pass, Cambridge smoke and contract specs unmodified
+- [x] 3.4 `cambridge-report.component.html` at least 500 lines shorter
+- [x] 3.5 `cambridge-report.component.ts` diff limited to `imports`
 
 #### Manual
 
-- [ ] 3.6 Cambridge tab visually identical to before this phase
-- [ ] 3.7 Each exam type reveals the same skill sections in the same order
-- [ ] 3.8 Add and remove target the correct array in every section
-- [ ] 3.9 Entered values round-trip into the PDF results table
-- [ ] 3.10 Rows added in two sections do not cross-write
+- [x] 3.6 Cambridge tab visually identical to before this phase
+- [x] 3.7 Each exam type reveals the same skill sections in the same order
+- [x] 3.8 Add and remove target the correct array in every section
+- [x] 3.9 Entered values round-trip into the PDF results table
+- [x] 3.10 Rows added in two sections do not cross-write
 
 ### Phase 4: Cambridge — compose and restyle
 

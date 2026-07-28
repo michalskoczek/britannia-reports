@@ -1,0 +1,5 @@
+// The extracted markup used to sit directly inside the form, so the host element must not introduce
+// an inline box between the form and the row's `.row` wrapper. Styling proper arrives with S-05b Phase 4.
+:host {
+  display: block;
+}

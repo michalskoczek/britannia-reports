@@ -31,6 +31,7 @@ import {
 } from '@angular/material/expansion';
 import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
 import { MatButton } from '@angular/material/button';
+import { ExamTermRowsComponent } from './exam-term-rows/exam-term-rows.component';
 
 pdfMake.vfs = pdfFonts.vfs;
 
@@ -59,6 +60,7 @@ pdfMake.vfs = pdfFonts.vfs;
     MatRadioGroup,
     MatRadioButton,
     MatButton,
+    ExamTermRowsComponent,
   ],
 })
 export class CambridgeReportComponent implements OnInit {
