@@ -702,28 +702,28 @@ preserve. Nothing is deployed to hosting, so the live site is unaffected by this
 
 #### Automated
 
-- [x] 4.1 Lint passes: `npm run lint`
-- [x] 4.2 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
-- [x] 4.3 Production build type-checks: `npm run build`
-- [x] 4.4 `tab-group.component.scss` compiles to identical CSS before and after (design-language §7.4)
+- [x] 4.1 Lint passes: `npm run lint` — 3efa55c
+- [x] 4.2 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless` — 3efa55c
+- [x] 4.3 Production build type-checks: `npm run build` — 3efa55c
+- [x] 4.4 `tab-group.component.scss` compiles to identical CSS before and after (design-language §7.4) — 3efa55c
 
 #### Manual
 
-- [x] 4.5 Sign-in screen reads as the Teddy Eddie visual language
-- [x] 4.6 Denial message is legible and clearly an error state
-- [x] 4.7 Header layout intact above and below 768px, signed in and signed out
-- [x] 4.8 Tab bar looks unchanged
+- [x] 4.5 Sign-in screen reads as the Teddy Eddie visual language — 3efa55c
+- [x] 4.6 Denial message is legible and clearly an error state — 3efa55c
+- [x] 4.7 Header layout intact above and below 768px, signed in and signed out — 3efa55c
+- [x] 4.8 Tab bar looks unchanged — 3efa55c
 
 ### Phase 5: Documentation sync
 
 #### Automated
 
-- [ ] 5.1 Lint passes: `npm run lint`
-- [ ] 5.2 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
-- [ ] 5.3 Production build succeeds: `npm run build`
+- [x] 5.1 Lint passes: `npm run lint`
+- [x] 5.2 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
+- [x] 5.3 Production build succeeds: `npm run build`
 
 #### Manual
 
-- [ ] 5.4 No foundation document still describes the app as router-less or Firestore as empty
-- [ ] 5.5 The emulator deferral is findable from all three documents with consistent reasoning
-- [ ] 5.6 A reader starting `S-02` learns about the inherited harness debt without reading this plan
+- [x] 5.4 No foundation document still describes the app as router-less or Firestore as empty
+- [x] 5.5 The emulator deferral is findable from all three documents with consistent reasoning
+- [x] 5.6 A reader starting `S-02` learns about the inherited harness debt without reading this plan

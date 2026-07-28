@@ -43,7 +43,7 @@ All tokens are reachable through a single entry point:
 | `$black-87` | `rgba(0, 0, 0, 0.87)` | Disabled-cell text, kept legible | `patterns/_data-table.scss:77` |
 | `$black-08` | `rgba(0, 0, 0, 0.08)` | Header-cell divider | `patterns/_data-table.scss:24` |
 | `$black-06` | `rgba(0, 0, 0, 0.06)` | Body-cell divider | `patterns/_data-table.scss:37` |
-| `$britannia-red` | `#d4162f` | **No consumer** — see §6 | — |
+| `$britannia-red` | `#d4162f` | Sign-in denial and error messages | `sign-in.component.scss` |
 
 ### Typography — `utils/_typography.scss`
 
@@ -62,8 +62,8 @@ two-consumer test — a scale would have been invented, not extracted.
 | `$distance-8` | `8px` | `patterns/_section-title.scss:14`, `tab-group.component.scss:9` |
 | `$distance-16` | `16px` | `patterns/_section-title.scss:14`, `header.component.scss:7` |
 | `$distance-24` | `24px` | `styles.scss:20` |
-| `$distance-32` | `32px` | **No consumer** — see §6 |
-| `$distance-40` | `40px` | **No consumer** — see §6 |
+| `$distance-32` | `32px` | `sign-in.component.scss` (card padding) |
+| `$distance-40` | `40px` | `sign-in.component.scss` (card top margin), `app.component.scss` (boot indicator) |
 
 ### Radius — `utils/_radius.scss`
 
@@ -159,8 +159,10 @@ The language is not only values. A surface built from correct tokens but the wro
 will not look like the rest of the app. These are the components the Teddy Eddie report composes, and
 composing them the same way is how a new screen lands in the same language.
 
-Each has exactly one consumer today, so none of them passed the two-consumer test as a *token* — they are
-listed here because a new screen needs them more than it needs any variable.
+Each had exactly one consumer when this was written, so none passed the two-consumer test as a *token* —
+they are listed here because a new screen needs them more than it needs any variable. `S-01` bore that
+out: the sign-in screen it added is built from `app-button` and the published tokens, and needed no new
+pattern.
 
 | Component | Inputs as used today | Call site |
 | --- | --- | --- |
@@ -169,7 +171,7 @@ listed here because a new screen needs them more than it needs any variable.
 | `app-input-text` | `formControlName`, `[label]`, `[required]`, `[errorMessage]` | `teddy-eddie-form.component.html:2` |
 | `app-select` | the above plus `[itemList]` | `teddy-eddie-form.component.html:9` |
 | `app-date` | `formControlName`, `[label]`, `[required]`, `[errorMessage]` | `teddy-eddie-form.component.html:17` |
-| `app-button` | `[translateKey]`, `[icon]`, `(clicked)`, label projected | `teddy-eddie-report.component.html:38` |
+| `app-button` | `[translateKey]`, `[icon]`, `(clicked)`, label projected | `teddy-eddie-report.component.html:38`, `sign-in.component.html`, `header.component.html` |
 
 Two things worth copying from `teddy-eddie-report.component.html`:
 
@@ -190,7 +192,7 @@ re-litigated every time someone notices the duplication.
 | `.subtitle { font: 600 22px/1 $font }` | `semestr-report.component.scss:3`, `cambridge-report.component.scss:3`, `year-report.component.scss:4`; `rating-scale.component.scss:3` uses `600 20px/24px` | It belongs to the older design that `S-05b` replaces with `section-tile`. Tokenizing it would enshrine what is being removed — and the four sites do not even agree on a value. |
 | Fixed generate-button offsets | `app.component.scss:6`, `teddy-eddie-report.component.scss:8`, `semestr-report.component.scss:7`, `year-report.component.scss:8` use `bottom: 30px`; `cambridge-report.component.scss:8` uses `bottom: 10px` | Repeated by coincidence, not by intent, and already inconsistent. A token would freeze the inconsistency and imply a decision nobody made. |
 | `height: 250px !important` on signature textareas | `semestr-report.component.scss:13`, `cambridge-report.component.scss:13`, `year-report.component.scss:94` | Same shape of accident. Also `!important` — a token would dress up a workaround as a design decision. |
-| The tab bar's copy of the elevation shadow | `tab-group.component.scss:15` | Left alone on purpose: it is app shell rather than report layer, and it uses a full `20px` radius, not the card's bottom-only radius. `S-01` should absorb it when it builds the sign-in surface. |
+| ~~The tab bar's copy of the elevation shadow~~ — **absorbed by `S-01`, 2026-07-28** | `tab-group.component.scss` | It now uses `ds.$shadow-1`. Verified a visual no-op by the §7.4 CSS diff, which came back empty. The full `20px` radius stays as it was — that is app shell, not the card's bottom-only radius, and it is still not part of the language. |
 
 ## 6. Known costs
 
@@ -200,10 +202,11 @@ Recorded rather than hidden, so nobody rediscovers them as surprises.
   `S-05b` changes the corner radius to something else, the name will misdescribe its own value. This was a
   deliberate choice for consistency with `$distance-8` and friends; the alternative was a semantic layer
   alongside the existing brand names.
-- **Three tokens have no consumer**: `$britannia-red`, `$distance-32`, `$distance-40`. They were kept
-  rather than deleted because `S-01` may want the brand red for sign-in error states, and deleting names
-  from a layer meant to be a stable contract is the wrong default.
-- **`tab-group.component.scss` still holds a fifth copy of the elevation shadow** — see §5.
+- ~~**Three tokens have no consumer**~~ — **all three found one in `S-01`, 2026-07-28.** `$britannia-red`
+  is the sign-in screen's denial message, exactly the use this section speculated about; `$distance-32`
+  and `$distance-40` are its padding and top margin. Keeping names in a layer meant to be a stable
+  contract, rather than deleting them for want of a call site, paid off within one slice.
+- ~~**`tab-group.component.scss` still holds a fifth copy of the elevation shadow**~~ — absorbed, see §5.
 - **Nothing enforces any of this.** There is no stylelint config and no visual-regression harness. The
   build fails on a missing SCSS member and that is the whole automated safety net.
 
