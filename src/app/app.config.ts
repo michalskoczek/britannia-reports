@@ -5,6 +5,8 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
+import { provideRouter } from '@angular/router';
+import { routes } from './app.routes';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { ReCaptchaV3Provider, provideAppCheck, initializeAppCheck } from '@angular/fire/app-check';
 import { getAuth, provideAuth } from '@angular/fire/auth';
@@ -51,6 +53,7 @@ export const appConfig: ApplicationConfig = {
     { provide: MAT_DATE_LOCALE, useValue: 'pl-PL' },
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { floatLabel: 'always' } },
     provideMomentDateAdapter(MY_FORMATS),
+    provideRouter(routes),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAppCheck(() =>
       initializeAppCheck(undefined, {

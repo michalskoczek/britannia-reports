@@ -668,35 +668,35 @@ preserve. Nothing is deployed to hosting, so the live site is unaffected by this
 
 #### Automated
 
-- [x] 2.1 Lint passes: `npm run lint`
-- [x] 2.2 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
-- [x] 2.3 Production build type-checks: `npm run build`
-- [x] 2.4 Dev build type-checks: `npm run build -- --configuration development`
+- [x] 2.1 Lint passes: `npm run lint` — b29afa0
+- [x] 2.2 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless` — b29afa0
+- [x] 2.3 Production build type-checks: `npm run build` — b29afa0
+- [x] 2.4 Dev build type-checks: `npm run build -- --configuration development` — b29afa0
 
 #### Manual
 
-- [x] 2.5 The four report tabs still render and download PDFs
+- [x] 2.5 The four report tabs still render and download PDFs — b29afa0
 
 ### Phase 3: Routing, shell extraction, guard, and sign-in screen
 
 #### Automated
 
-- [ ] 3.1 Lint passes: `npm run lint`
-- [ ] 3.2 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
-- [ ] 3.3 Production build type-checks: `npm run build`
-- [ ] 3.4 Dev build type-checks: `npm run build -- --configuration development`
+- [x] 3.1 Lint passes: `npm run lint`
+- [x] 3.2 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
+- [x] 3.3 Production build type-checks: `npm run build`
+- [x] 3.4 Dev build type-checks: `npm run build -- --configuration development`
 
 #### Manual
 
-- [ ] 3.5 App Check debug token registered in the console
-- [ ] 3.6 Signed out: loading indicator → sign-in screen, no flash of tabs
-- [ ] 3.7 Seeded account reaches the four tabs; header shows the address
-- [ ] 3.8 Reload while signed in goes straight to the tabs, no flash of sign-in
-- [ ] 3.9 Non-allowlisted account gets the no-access message and leaves no session
-- [ ] 3.10 `/sign-in` while signed in, and a nonsense path, both land on the tabs
-- [ ] 3.11 Sign-out from the header returns to the sign-in screen
-- [ ] 3.12 Language toggle works on the sign-in screen and on the report tabs
-- [ ] 3.13 All four report tabs still download a PDF that looks unchanged
+- [x] 3.5 App Check debug token registered in the console
+- [x] 3.6 Signed out: loading indicator → sign-in screen, no flash of tabs
+- [x] 3.7 Seeded account reaches the four tabs; header shows the address
+- [x] 3.8 Reload while signed in goes straight to the tabs, no flash of sign-in
+- [x] 3.9 Non-allowlisted account gets the no-access message and leaves no session
+- [x] 3.10 `/sign-in` while signed in, and a nonsense path, both land on the tabs
+- [x] 3.11 Sign-out from the header returns to the sign-in screen
+- [x] 3.12 Language toggle works on the sign-in screen and on the report tabs
+- [x] 3.13 All four report tabs still download a PDF that looks unchanged
 
 ### Phase 4: Visual language pass
 

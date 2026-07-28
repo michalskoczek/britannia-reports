@@ -1,6 +1,6 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { User } from '@angular/fire/auth';
-import { BehaviorSubject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { AllowlistEntry } from '../model/auth.interface';
 import { AllowlistGateway } from './allowlist.gateway';
 import { AuthGateway } from './auth.gateway';
@@ -21,7 +21,7 @@ describe('SessionService', () => {
   const email: string = allowlistedUser.email!;
 
   let authGateway: {
-    user$: BehaviorSubject<User | null>;
+    user$: Subject<User | null>;
     signInWithGoogle: jasmine.Spy;
     signOut: jasmine.Spy;
   };
@@ -31,8 +31,12 @@ describe('SessionService', () => {
 
   beforeEach(() => {
     authGateway = {
-      user$: new BehaviorSubject<User | null>(null),
+      user$: new Subject<User | null>(),
       signInWithGoogle: jasmine.createSpy('signInWithGoogle').and.resolveTo(),
+      // A plain Subject, not a BehaviorSubject: the real `authState` emits
+      // nothing until Firebase has restored (or failed to restore) a session,
+      // and that gap is the whole reason the service starts out resolving.
+      //
       // The real sign-out ends the session, so the fake must push the stream
       // back to null — the denial cases depend on that follow-up emission.
       signOut: jasmine.createSpy('signOut').and.callFake(async () => {
@@ -52,7 +56,7 @@ describe('SessionService', () => {
     });
   });
 
-  it('starts out resolving, before the first auth emission is processed', () => {
+  it('starts out resolving, before the first auth emission arrives', () => {
     const service: SessionService = createService();
 
     expect(service.state()).toEqual({ status: 'resolving' });
@@ -61,10 +65,31 @@ describe('SessionService', () => {
   it('resolves to anonymous when nobody is signed in', fakeAsync(() => {
     const service: SessionService = createService();
 
+    authGateway.user$.next(null);
     tick();
 
     expect(service.state()).toEqual({ status: 'anonymous' });
     expect(allowlistGateway.lookup).not.toHaveBeenCalled();
+  }));
+
+  it('goes back to resolving while the allowlist lookup is in flight', fakeAsync(() => {
+    allowlistGateway.lookup.and.resolveTo({ role: 'teacher' });
+
+    const service: SessionService = createService();
+
+    authGateway.user$.next(null);
+    tick();
+    expect(service.state()).toEqual({ status: 'anonymous' });
+
+    authGateway.user$.next(allowlistedUser);
+
+    // A guard consulted here must not be told "anonymous" — the lookup has not
+    // answered yet, and a stale answer sends the user back to the sign-in
+    // screen with nothing left to bring them off it.
+    expect(service.state()).toEqual({ status: 'resolving' });
+
+    tick();
+    expect(service.state().status).toBe('authorized');
   }));
 
   it('resolves to authorized, carrying the email and the role, for an allowlisted account', fakeAsync(() => {

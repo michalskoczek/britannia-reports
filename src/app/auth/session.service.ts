@@ -1,7 +1,7 @@
 import { computed, inject, Injectable, Signal, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { User } from '@angular/fire/auth';
-import { from, switchMap } from 'rxjs';
+import { concat, from, of, switchMap } from 'rxjs';
 import { AllowlistEntry, DenialReason, SessionState, UserRole } from '../model/auth.interface';
 import { AllowlistGateway } from './allowlist.gateway';
 import { AuthGateway } from './auth.gateway';
@@ -33,9 +33,21 @@ export class SessionService {
    */
   private readonly denial = signal<DenialReason | null>(null);
 
-  /** `undefined` while the first auth emission is still being resolved. */
+  /**
+   * `undefined` means "not known yet" — before the first auth emission, and
+   * again for as long as an allowlist lookup is in flight.
+   *
+   * Re-emitting `undefined` when a user appears is what keeps the guards
+   * honest. Without it the signal would hold the previous `null` for the whole
+   * duration of the lookup, so a guard consulted in that window would read a
+   * stale "anonymous", redirect to the sign-in screen, and never be asked
+   * again once the answer arrived.
+   */
   private readonly account = toSignal(
-    this.authGateway.user$.pipe(switchMap((user: User | null) => from(this.resolveAccount(user)))),
+    this.authGateway.user$.pipe(
+      switchMap((user: User | null) =>
+        user === null ? of(null) : concat(of(undefined), from(this.resolveAccount(user)))),
+    ),
     { initialValue: undefined },
   );
 

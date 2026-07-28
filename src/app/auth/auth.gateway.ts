@@ -2,9 +2,7 @@ import { inject, Injectable, Injector, runInInjectionContext } from '@angular/co
 import {
   Auth,
   authState,
-  browserLocalPersistence,
   GoogleAuthProvider,
-  setPersistence,
   signInWithPopup,
   signOut as firebaseSignOut,
   User,
@@ -30,17 +28,26 @@ export class AuthGateway {
   /** Emits on every sign-in and sign-out, starting with the restored session. */
   public readonly user$: Observable<User | null> = authState(this.auth);
 
+  /**
+   * The session survives closing the browser: `getAuth()` initializes with
+   * local persistence, which is what a teacher who returns to this tool once a
+   * reporting period needs.
+   *
+   * That is inherited, not configured. An explicit
+   * `setPersistence(auth, browserLocalPersistence)` here threw
+   * "cls is not a constructor" from the SDK's `_getInstance`, which does
+   * `new cls()` on what it is handed. `setPersistence` is on `@angular/fire`'s
+   * zone-wrapped export list; `browserLocalPersistence` is not, and reaches us
+   * through its `export * from 'firebase/auth'` instead. Do not "restore" the
+   * call for explicitness — it configured the default and broke sign-in.
+   */
   public async signInWithGoogle(): Promise<void> {
     // `@angular/fire` zone-wraps the SDK functions and warns when they are
     // called outside an injection context; field initializers run inside one,
     // method bodies do not.
-    await runInInjectionContext(this.injector, async () => {
-      // Explicit rather than inherited: local persistence is the web default,
-      // and the choice — a teacher stays signed in between browser sessions —
-      // should be visible in the code that depends on it.
-      await setPersistence(this.auth, browserLocalPersistence);
-      await signInWithPopup(this.auth, new GoogleAuthProvider());
-    });
+    await runInInjectionContext(this.injector, () =>
+      signInWithPopup(this.auth, new GoogleAuthProvider()),
+    );
   }
 
   public async signOut(): Promise<void> {

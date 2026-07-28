@@ -250,5 +250,15 @@
   "selectValue": "Select value...",
   "date": "Date",
   "cambridge": "Raport Cambridge",
-  "selectStudentsClassToShowTable": "The table content will appear after selecting the student's class"
+  "selectStudentsClassToShowTable": "The table content will appear after selecting the student's class",
+  "auth": {
+    "checkingAccess": "Checking access…",
+    "signInTitle": "Sign in",
+    "signInLead": "Britannia Reports is available to teachers whose Google account has been added by an administrator.",
+    "signInWithGoogle": "Sign in with Google",
+    "signOut": "Sign out",
+    "noAccess": "This Google account has no access to Britannia Reports. Check that you are using your school account, or contact an administrator.",
+    "verificationFailed": "Access could not be checked. Check your internet connection and try again.",
+    "popupBlocked": "The Google sign-in window did not open. Allow pop-ups for this page and try again."
+  }
 }
