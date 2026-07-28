@@ -654,28 +654,28 @@ preserve. Nothing is deployed to hosting, so the live site is unaffected by this
 
 #### Automated
 
-- [x] 1.1 Rules deploy cleanly: `npx firebase deploy --only firestore:rules`
-- [x] 1.2 Rules compile without warnings in the deploy output
+- [x] 1.1 Rules deploy cleanly: `npx firebase deploy --only firestore:rules` — ca0458e
+- [x] 1.2 Rules compile without warnings in the deploy output — ca0458e
 
 #### Manual
 
-- [x] 1.3 Console shows the `allowedUsers` block live alongside the deny-all
-- [x] 1.4 `allowedUsers/<seeded email>` exists with a `role` field
-- [x] 1.5 `docs/teacher-allowlist-runbook.md` is followable by someone who did not write it
-- [x] 1.6 The trailing comment in `firestore.rules` no longer instructs a skipped step
+- [x] 1.3 Console shows the `allowedUsers` block live alongside the deny-all — ca0458e
+- [x] 1.4 `allowedUsers/<seeded email>` exists with a `role` field — ca0458e
+- [x] 1.5 `docs/teacher-allowlist-runbook.md` is followable by someone who did not write it — ca0458e
+- [x] 1.6 The trailing comment in `firestore.rules` no longer instructs a skipped step — ca0458e
 
 ### Phase 2: Session layer
 
 #### Automated
 
-- [ ] 2.1 Lint passes: `npm run lint`
-- [ ] 2.2 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
-- [ ] 2.3 Production build type-checks: `npm run build`
-- [ ] 2.4 Dev build type-checks: `npm run build -- --configuration development`
+- [x] 2.1 Lint passes: `npm run lint`
+- [x] 2.2 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
+- [x] 2.3 Production build type-checks: `npm run build`
+- [x] 2.4 Dev build type-checks: `npm run build -- --configuration development`
 
 #### Manual
 
-- [ ] 2.5 The four report tabs still render and download PDFs
+- [x] 2.5 The four report tabs still render and download PDFs
 
 ### Phase 3: Routing, shell extraction, guard, and sign-in screen
 
