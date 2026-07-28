@@ -2,13 +2,35 @@ rules_version = '2';
 
 // Britannia Reports — Firestore security rules
 //
-// Posture: deny everything, for everyone, authenticated or not.
-// F-01 provisions the store but ships zero collections, so there is nothing
-// legitimate to allow yet. Every collection is opened by the slice that
-// introduces it — never pre-emptively.
+// Posture: deny everything by default. Each collection is opened by the slice
+// that introduces it — never pre-emptively.
+//
+// Open collections:
+//   allowedUsers — S-01. Read-only, and only to the account the document names.
 
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // The FR-003 teacher allowlist.
+    //
+    // Document id is the user's Google address, lowercased. The only field is
+    // `role`, which is either "teacher" or "director".
+    //
+    // Writing is closed to every caller, including the signed-in user the
+    // document names: FR-003 makes seeding a developer action performed in the
+    // Firebase Console, and the MVP ships no invite UI. See
+    // `docs/teacher-allowlist-runbook.md` for the procedure.
+    //
+    // `.lower()` on the token side makes the comparison robust against a
+    // differently-cased address; the runbook is what keeps the stored document
+    // id lowercase. `email_verified` is free hardening — Google accounts always
+    // carry it.
+    match /allowedUsers/{email} {
+      allow read: if request.auth != null
+                  && request.auth.token.email_verified == true
+                  && request.auth.token.email.lower() == email;
+      allow write: if false;
+    }
 
     match /{document=**} {
       allow read, write: if false;
@@ -18,47 +40,65 @@ service cloud.firestore {
 }
 
 // ---------------------------------------------------------------------------
-// ILLUSTRATIVE ONLY — NOT LIVE RULE CODE. DO NOT UNCOMMENT AS-IS.
+// FOR THE NEXT SLICE THAT ADDS A COLLECTION — READ BEFORE WRITING A RULE
 // ---------------------------------------------------------------------------
 //
-// The shape below sketches the per-collection ownership pattern later slices
-// will need. It is a sketch, not a template: the collection name and the owner
-// field name are both S-01's to choose, and `ownerField` below is a deliberate
-// placeholder that will not match anything real.
+// The `allowedUsers` rule above is the project's first conditional rule. It is
+// deliberately the *easy* shape: read-only to everyone, keyed by an identifier
+// the caller already proves via their token, and holding no personal data
+// beyond an address and a role. Nothing about it generalises to what comes
+// next.
 //
-// Placement: this block belongs INSIDE `match /databases/{database}/documents`,
-// alongside the deny-all rule above — not here, where it sits outside the
-// `service` block and cannot compile.
+// S-02 (templates) and S-03 (student roster) are the hard shape. Both store
+// per-teacher data that must never cross between teachers, and both key
+// ownership on `request.auth.uid` — NOT on the email this allowlist uses. Those
+// are two different identifiers for the same person; do not reach for the wrong
+// one because this file happens to show the email version first. The pattern
+// they need is:
 //
 //   match /<collection>/{docId} {
 //     allow read, write: if request.auth != null
 //                        && request.auth.uid == resource.data.<ownerField>;
 //   }
 //
-// ⚠ READ THIS BEFORE UNCOMMENTING ANYTHING
+// ⚠ The owner field name must be copied from the actual document schema, not
+// from this comment and not from memory.
 //
-// A single field-name typo in exactly this comparison is the most expensive
-// failure mode this project has modelled. The pre-mortem in
-// `context/foundation/infrastructure.md` describes it concretely: a rule
-// written against `teacherUid` while the documents actually carried
-// `teacherId`. The comparison silently evaluated against a missing field,
-// the rule silently over-permitted, and one teacher could read another
-// teacher's data for a month before anyone noticed. Over-permissive rules do
-// not fail loudly — that is the whole problem.
+// `context/foundation/infrastructure.md` describes the failure mode concretely:
+// a rule written against `teacherUid` while the documents actually carried
+// `teacherId`. The comparison silently evaluated against a missing field, the
+// rule silently over-permitted, and one teacher could read another teacher's
+// data for a month before anyone noticed. Over-permissive rules do not fail
+// loudly — that is the whole problem.
 //
-// Two consequences, both binding:
+// ---------------------------------------------------------------------------
+// THE RULES-TESTING HARNESS WAS DEFERRED — IT IS NOW YOURS
+// ---------------------------------------------------------------------------
 //
-//   1. The owner field name here must be copied from the actual document
-//      schema, not from this comment and not from memory.
+// This block previously instructed whoever wrote the first conditional rule to
+// stand up the Firebase emulator suite and `@firebase/rules-unit-testing`
+// first. S-01 wrote that rule and did NOT build the harness. That was a
+// deliberate, recorded decision, not an oversight — see
+// `context/changes/google-sign-in-gate/plan-brief.md` → Open Risks, and
+// `context/foundation/infrastructure.md` → Getting Started step 4.
 //
-//   2. Whoever turns this sketch into a live rule writes rules tests FIRST.
-//      That means adopting `@firebase/rules-unit-testing` plus the Firebase
-//      emulator suite — both deliberately deferred out of F-01, and both
-//      recorded as a hard S-01 prerequisite in the plan's Open Risks, not as
-//      a nice-to-have. The emulator carries its own runtime prerequisite;
-//      see that plan section for the current setup cost.
+// The reasoning was specific to the rule above and does not extend past it: the
+// allowlist is read-only to every caller and carries no student data, so the
+// cross-teacher leak surface the pre-mortem describes did not yet exist.
 //
-// Minimum coverage before any conditional rule is considered done:
-// teacher A can read and write only their own documents; teacher B is denied
-// access to teacher A's documents; an unauthenticated caller is denied
-// everything.
+// It exists the moment S-02 or S-03 writes its first per-teacher rule. Build
+// the harness there, before that rule:
+//
+//   - a JDK (absent on the development machine as of 2026-07-28)
+//   - an `emulators` block in `firebase.json`
+//   - a `useEmulators` flag on the `Environment` interface
+//   - `connect*Emulator` calls in `app.config.ts`
+//   - `*.rules.spec.ts` run against the emulator before any deploy
+//
+// Minimum coverage before any per-teacher rule is considered done: teacher A
+// can read and write only their own documents; teacher B is denied access to
+// teacher A's documents; an unauthenticated caller is denied everything.
+//
+// One more reason it cannot slip again: dev and prod share a single Firebase
+// project, so from S-02's first collection onward, local development reads and
+// writes real teacher data.
