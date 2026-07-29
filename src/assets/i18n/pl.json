@@ -251,5 +251,12 @@
   "selectValue": "Wybierz wartość...",
   "date": "Data",
   "cambridge": "Raport Cambridge",
-  "selectStudentsClassToShowTable": "Zawartość tabeli pojawi się po wybraniu klasy ucznia"
+  "selectStudentsClassToShowTable": "Zawartość tabeli pojawi się po wybraniu klasy ucznia",
+  "Listening": "Listening",
+  "Reading": "Reading",
+  "Use of English": "Use of English",
+  "Writing": "Writing",
+  "Speaking": "Speaking",
+  "Informacje dodatkowe": "Informacje dodatkowe",
+  "Dodaj rekomendację egzaminacyjną": "Dodaj rekomendację egzaminacyjną"
 }

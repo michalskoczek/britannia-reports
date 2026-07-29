@@ -783,7 +783,10 @@ coordinate before Phase 1 and again before Phase 5.
 - [x] 2.2 Linting passes: `npm run lint` — 84b6130
 - [x] 2.3 Tests pass, both contract specs unmodified — 84b6130
 - [x] 2.4 No raw `<mat-form-field>` remains in either form's template — 84b6130
-- [x] 2.5 Both components' `.ts` diffs limited to `imports` and option-list getters — 84b6130
+- [~] 2.5 Both components' `.ts` diffs limited to `imports` and option-list getters — 84b6130. **Not met
+      for `year-report.component.ts`**: it also gained `detailColumns`, `pathColumns`, `detailRows`,
+      `getPathRowGroup()`, `trackByIndex`. The criterion this one stood in for — no `generatePDF` or
+      document-definition line changed — does hold. See `### Verification record`.
 - [x] 2.6 No literal `1px solid black` remains in `year-report.component.scss` — 84b6130
 - [x] 2.7 Every `app-section-title` key resolves in both i18n bundles — 84b6130
 - [x] 2.8 Semester and year-end landed as two separate commits — 968ce3d, 84b6130
@@ -872,11 +875,34 @@ project's recorded preference.
 **PDF fidelity — procedure deliberately not run.** `docs/pdf-fidelity-check.md` §1 makes the capture
 procedure mandatory for changes touching a `pdfmake` builder. This change edits `*-report.component.ts`,
 so it trips that trigger by the letter. It was read by purpose instead, and the reasoning is recorded in
-full in `docs/design-language.md` §8. In short: every `.ts` edit was confined to the `imports` array (no
-option-list getters proved necessary), verified as an automated criterion at each phase; the fidelity
-fixtures never drive the DOM, and the form model they patch into is frozen by the Phase 1 contract specs;
-and the builders read no translation keys. The smoke specs rendered every fixture end-to-end at every
-phase boundary.
+full in `docs/design-language.md` §8. In short: no line of any document definition changed in any of the
+three components; the fidelity fixtures never drive the DOM, and the form model they patch into is frozen
+by the Phase 1 contract specs; and the builders read no translation keys. The smoke specs rendered every
+fixture end-to-end at every phase boundary.
+
+**The `.ts` edit scope was wider than the plan permitted, and the capture procedure was still not run.**
+Recorded plainly because the plan's own stop-condition (`## Testing Strategy`, and
+`## Critical Implementation Details`) says a third kind of edit to a `*-report.component.ts` breaks the
+argument and forces the capture. What actually landed:
+
+- `cambridge-report.component.ts` — `imports` only.
+- `semestr-report.component.ts` — `imports` plus option-list getters (`frequencyOptions`, `markOptions`,
+  `markOptionsCache`). Within the permitted two kinds.
+- `year-report.component.ts` — `imports`, the option list `classOptions`, **and** five members that are
+  neither: `detailColumns`, `pathColumns`, `detailRows`, `getPathRowGroup()`, `trackByIndex`. These exist
+  because the year-end tables became `mat-table`s (see the deviation below), and a `mat-table` needs a data
+  source. That is the third kind of edit.
+
+The capture was deliberately still not run, on the narrower ground that these five members are **PDF-inert**:
+all five feed the template only. The `pdfmake` builder reads `form.value`, and the diff on that file contains
+no hunk past line 130 — `generatePDF` and every document definition are untouched, which the phase criteria
+checked. The form model is unchanged and machine-checked by the Phase 1 contract spec, so `patchValue` in
+`year-report.fixture.ts` reaches the same controls and the smoke spec renders the same document.
+
+**This is a second deliberate reading of the guardrail by purpose rather than letter, and it is weaker than
+the first** — the first rested on a bright-line rule about edit scope, this one on inspecting what the added
+code does. A future slice should not treat it as precedent for a third. If anything reaches `form.value`,
+a control's contents, or a document definition, run the capture.
 
 **Where that reasoning was tested.** Phase 4 found that composing the Cambridge `score` field through
 `app-input-text` would change the control's value from `85` to `"85"` — the `.ts` constraint held, but the
@@ -888,6 +914,23 @@ has its own spec in `input-text.component.spec.ts`.
 ### Deviations from the plan as written
 
 Recorded because a reader comparing plan to diff will otherwise find them unexplained.
+
+- **The year-end form's two hand-rolled tables became Material tables.** Phase 2 change #6 says
+  `.row-wrapper` and `.table-wrapper` *"keep their structure … without becoming Material tables."* They did
+  not: the detail table and the development-path table are now `<table mat-table>` on `class="data-table"`,
+  and both wrapper classes are gone from the stylesheet. The reason is that once all three tables on the
+  form share `data-table-cells`, keeping two of them as div grids meant maintaining a parallel set of rules
+  to imitate what the mixin already emits — the plan's own goal for this form was that the tables "read as
+  the same family" as the Teddy Eddie ones, and `mat-table` gets there by composition instead of imitation.
+  Three consequences follow, and each is a departure in its own right:
+  - `year-report.component.ts` gained five table-plumbing members. See `### Verification record` for why the
+    capture procedure was still not run.
+  - **Six raw `<mat-form-field class="cell-field">` now exist in the template**, so automated criterion 2.4
+    ("no raw `mat-form-field` remains") is not met for this form. In-table-cell fields are the one place the
+    reference does the same — `teddy-eddie-table.component.html` and `cambridge-path-table.component.html`
+    both use `.cell-field`, which `data-table-cells` styles for exactly this case.
+  - The raw `<input type="checkbox">` cells became `<mat-checkbox>`, which change #5 said would stay as they
+    are. Both write `boolean`, so no control changed the value it holds.
 
 - **The plan says eleven Cambridge exam blocks; there are twelve** (3 A1 + 4 A2/B1 + 5 B2/C1). The plan's
   own list of line references has twelve entries, so the prose count was the error. All twelve were

@@ -250,5 +250,12 @@
   "selectValue": "Select value...",
   "date": "Date",
   "cambridge": "Raport Cambridge",
-  "selectStudentsClassToShowTable": "The table content will appear after selecting the student's class"
+  "selectStudentsClassToShowTable": "The table content will appear after selecting the student's class",
+  "Listening": "Listening",
+  "Reading": "Reading",
+  "Use of English": "Use of English",
+  "Writing": "Writing",
+  "Speaking": "Speaking",
+  "Informacje dodatkowe": "Additional information",
+  "Dodaj rekomendację egzaminacyjną": "Add exam recommendation"
 }

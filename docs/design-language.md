@@ -81,7 +81,7 @@ two-consumer test — a scale would have been invented, not extracted.
 
 | Member | Threshold | Example call site |
 | --- | --- | --- |
-| `$tablet` / `breakpoint-max-tablet()` | `768px` | `button.component.scss:16`, `teddy-eddie-form.component.scss:15` |
+| `$tablet` / `breakpoint-max-tablet()` | `768px` | `button.component.scss:41`, `teddy-eddie-form.component.scss:15` |
 | `$tablet` / `breakpoint-tablet()` | `768px` | `styles.scss:19`, `header.component.scss:25` |
 | `$desktop` / `breakpoint-desktop()` | `1200px` | **No consumer** |
 | `$xxl-desktop` / `breakpoint-desktop-xxl()` | `1600px` | **No consumer** |
@@ -220,8 +220,16 @@ just what Teddy Eddie happens to use.
   choice only, staying silent on `patchValue`, so it is the right hook for a side effect.
 - A date → **`app-date`**. `[hint]` renders a `<mat-hint>` when non-empty; `[readonly]` blocks typed
   input and opens the picker on click.
-- Never a raw `mat-form-field`. The wrappers carry the `appearance="outline"` choice, the translate pipe
-  on labels, and the error-state plumbing that makes a control show its parent's validation state.
+- Never a raw `mat-form-field` — **outside a table cell**. The wrappers carry the `appearance="outline"`
+  choice, the translate pipe on labels, and the error-state plumbing that makes a control show its parent's
+  validation state.
+- **Inside a Material table cell, use a raw `<mat-form-field class="cell-field">`.** This is the one
+  exception, and it is the established pattern, not a shortcut: `data-table-cells` styles `.cell-field`
+  (`_data-table.scss:44`) precisely for in-cell controls, stripping the subscript area so a row stays one
+  line high. The wrappers render their own label and error subscript, which is what you want in a form and
+  wrong in a 38px table row. Call sites: `teddy-eddie-table.component.html`,
+  `cambridge-path-table.component.html`, and the year-end detail and development-path tables
+  (`year-report.component.html:146`, `:190`, `:199`, `:208`, `:221`, `:234`).
 
 ### Two composition rules worth copying
 
@@ -340,8 +348,12 @@ tab compared by eye against the Teddy Eddie tab and confirmed by the human befor
 **Why the capture procedure was not run.** `docs/pdf-fidelity-check.md` §1 is written by trigger, and this
 change trips one. It was read by purpose instead, and that reading rests on three checkable facts:
 
-1. The edits to each `*-report.component.ts` were confined to the `imports` array and option-list
-   getters. No line of any document definition changed — an explicit automated criterion at every phase.
+1. No line of any document definition changed in any of the three components — an explicit automated
+   criterion at every phase. The edit scope was `imports` only for Cambridge, and `imports` plus
+   option-list getters for the semester form. **The year-end form went wider**: its two hand-rolled tables
+   became `mat-table`s, so `year-report.component.ts` also gained `detailColumns`, `pathColumns`,
+   `detailRows`, `getPathRowGroup()`, and `trackByIndex`. All five feed the template only; the builder
+   reads `form.value`, and the diff on that file contains no hunk past line 130.
 2. The fidelity fixtures never drive the DOM. They call `form.patchValue` and the components' own
    array-building methods, so template structure is invisible to them — and the form model they patch
    into is the one the contract specs freeze.
@@ -353,5 +365,15 @@ fails loudly.
 **The one place this nearly broke.** Composing the Cambridge exam-row `score` field through
 `app-input-text` would have changed the control's value from `85` to `"85"` — fact 1 held, but the *value*
 would not have. That was caught before it landed and fixed at the wrapper (see §4), not worked around at
-the call site. **If a future slice finds itself needing a third kind of edit to a `*-report.component.ts`,
-or changing what any control holds, this reasoning has broken and the capture procedure must run.**
+the call site.
+
+**The one place it did break, and was overruled.** `S-05b` was planned around a bright-line rule: only two
+kinds of edit to a `*-report.component.ts`, `imports` and option-list getters, with any third kind forcing
+the capture. The year-end form needed a third kind — five `mat-table` plumbing members, listed in fact 1 —
+and the capture was still not run. The narrower ground was that all five are PDF-inert: they feed the
+template, the builder reads `form.value`, and that file's diff stops short of `generatePDF` entirely.
+
+That is a weaker argument than the one it replaced. The first rested on a rule you can check with `git
+diff`; this one rests on reading what the added code does. **Do not treat it as precedent.** For the next
+slice the line is: if an edit reaches `form.value`, changes what any control holds, or touches a document
+definition, run the capture procedure — regardless of how the edit is categorised.
