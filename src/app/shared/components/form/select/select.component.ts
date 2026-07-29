@@ -1,4 +1,4 @@
-import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
+import { Component, computed, inject, input, OnDestroy, OnInit, output } from '@angular/core';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatOption, ErrorStateMatcher } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
@@ -27,7 +27,25 @@ export class SelectComponent implements ControlValueAccessor, OnInit, OnDestroy 
   placeholder = input<string>('selectValue');
   required = input<boolean>(false);
   errorMessage = input<string>('error.fieldIsRequired');
-  itemList = input.required<SelectOptions<any>[]>();
+  multiple = input<boolean>(false);
+
+  /**
+   * Accepts either `{ label, value }` options or a flat list of strings. The three older report forms
+   * carry plain `string[]` lists (teachers, courses, books, exam types); normalizing here keeps them
+   * from having to map in every consumer.
+   */
+  itemList = input.required<SelectOptions<any>[] | string[]>();
+
+  protected readonly options = computed<SelectOptions<any>[]>(() =>
+    this.itemList().map((item) => (typeof item === 'string' ? { label: item, value: item } : item))
+  );
+
+  /**
+   * Emits when the user picks a different option. Deliberately mirrors `mat-select`'s own
+   * `selectionChange` rather than the control's `valueChanges`: it stays silent on `patchValue`, so a
+   * consumer can hang a side effect off a user choice without it firing during programmatic setup.
+   */
+  selectionChange = output<any>();
 
   public readonly ngControl = inject(NgControl, { self: true, optional: true });
 

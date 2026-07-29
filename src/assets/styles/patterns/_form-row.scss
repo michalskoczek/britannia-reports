@@ -1,0 +1,35 @@
+@use "../utils/index" as ds;
+
+// The flex row the Teddy Eddie form uses (`teddy-eddie-form.component.scss`), generalized so the three
+// older report forms can drop their Bootstrap grid columns without hand-rolling the same rules three
+// times.
+//
+// Both mixins emit declarations only and carry no selector of their own, matching the convention
+// `data-table-empty-cell` set: the consumer keeps its own nesting.
+
+// A row of form controls. Wraps on overflow so a narrow viewport degrades instead of overflowing.
+@mixin form-row($gap: ds.$distance-16) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: $gap;
+  width: 100%;
+}
+
+// One column inside `form-row`, sized by how many equal columns the row holds — `form-col(2)` is half
+// a two-column row, `form-col(3)` a third, `form-col(1)` the full width.
+//
+// Taking the column count rather than a raw width is what lets the gap be subtracted correctly: two
+// `width: 50%` children plus a `16px` gap overflow their row, `calc((100% - 16px) / 2)` does not. Pass
+// the same `$gap` the row was given.
+//
+// Collapses to full width below the tablet breakpoint, which is what the Teddy Eddie form does by hand.
+@mixin form-col($of: 1, $gap: ds.$distance-16) {
+  flex: 0 1 auto;
+  width: calc((100% - #{$of - 1} * #{$gap}) / #{$of});
+
+  @include ds.breakpoint-max-tablet() {
+    width: 100%;
+  }
+}

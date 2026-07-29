@@ -1,0 +1,21 @@
+@use "../utils/index" as ds;
+
+// The section-header bar: the top half of the card surface.
+// Name kept as `section-tile` — it is already published and consumed by
+// `section-title.component.scss`.
+@mixin section-tile {
+  font-family: ds.$font;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: center;
+  color: ds.$britannia-blue;
+  background-color: ds.$britannia-background;
+  padding: ds.$distance-8 ds.$distance-16;
+  margin: 0;
+  border-left: 6px solid ds.$white;
+  border-top: 6px solid ds.$white;
+  border-right: 6px solid ds.$white;
+  border-radius: ds.$radius-20 ds.$radius-20 0 0;
+  box-shadow: ds.$shadow-1;
+}

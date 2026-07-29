@@ -10,6 +10,16 @@
   <h1 class="title">{{ title }}</h1>
 
   <div class="button-wrapper">
+    @if (email(); as address) {
+      <span class="account-email">{{ address }}</span>
+
+      <app-button
+        [translateKey]="'auth.signOut'"
+        [icon]="'logout'"
+        (clicked)="signOut()"
+      ></app-button>
+    }
+
     <!--    <svg-->
     <!--      width="30"-->
     <!--      height="20"-->

@@ -1,0 +1,10 @@
+@use "../utils/index" as ds;
+
+// The white elevated surface shared by the form wrapper and the data tables.
+// Emits appearance only — padding, margin, width and overflow differ per consumer
+// and stay in the consumer's own rule.
+@mixin card-surface($radius: 0 0 ds.$radius-20 ds.$radius-20) {
+  background-color: ds.$white;
+  border-radius: $radius;
+  box-shadow: ds.$shadow-1;
+}

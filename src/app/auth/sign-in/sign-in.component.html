@@ -1,0 +1,20 @@
+<section class="sign-in">
+  <h2 class="sign-in-title">{{ 'auth.signInTitle' | translate }}</h2>
+
+  <p class="sign-in-lead">{{ 'auth.signInLead' | translate }}</p>
+
+  <app-button
+    [translateKey]="'auth.signInWithGoogle'"
+    [icon]="'login'"
+    [disabled]="pending()"
+    (clicked)="signIn()"
+  ></app-button>
+
+  @if (denialKey(); as key) {
+    <p class="sign-in-error" role="alert">{{ key | translate }}</p>
+  }
+
+  @if (attemptFailureKey(); as key) {
+    <p class="sign-in-error" role="alert">{{ key | translate }}</p>
+  }
+</section>

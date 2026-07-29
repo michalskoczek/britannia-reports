@@ -1,0 +1,35 @@
+@use "../../../assets/styles/utils/index" as ds;
+@use "../../../assets/styles/mixins" as *;
+
+.sign-in {
+  // A standalone card, so it takes a full radius — the mixin's default rounds
+  // the bottom corners only, for cards that sit under a section-title bar.
+  @include card-surface(ds.$radius-20);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: ds.$distance-16;
+  max-width: 480px;
+  margin: ds.$distance-40 auto 0;
+  padding: ds.$distance-32 ds.$distance-24;
+  text-align: center;
+}
+
+.sign-in-title {
+  margin: 0;
+  color: ds.$britannia-blue;
+  font: 600 24px/1.2 ds.$font;
+}
+
+.sign-in-lead {
+  margin: 0;
+  color: ds.$black-87;
+  font: 400 14px/1.5 ds.$font;
+}
+
+.sign-in-error {
+  margin: 0;
+  color: ds.$britannia-red;
+  font: 600 14px/1.5 ds.$font;
+}

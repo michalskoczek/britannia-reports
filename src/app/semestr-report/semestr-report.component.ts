@@ -22,10 +22,7 @@ import { image } from '../shared/images-base64';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ReportType } from '../shared/enum/report-type.enum';
 import { Sex } from '../shared/enum/sex.enum';
-import { MatError, MatFormField, MatHint, MatInput, MatLabel } from '@angular/material/input';
-import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from '@angular/material/datepicker';
-
-import { MatOption, MatSelect } from '@angular/material/select';
+import { MatError } from '@angular/material/input';
 import {
   MatAccordion,
   MatExpansionPanel,
@@ -33,7 +30,6 @@ import {
   MatExpansionPanelTitle,
 } from '@angular/material/expansion';
 import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
-import { MatButton } from '@angular/material/button';
 import {
   MatCell,
   MatCellDef,
@@ -47,6 +43,14 @@ import {
   MatTable,
 } from '@angular/material/table';
 import { MatCheckbox } from '@angular/material/checkbox';
+import { FormWrapperComponent } from '../shared/components/form/form-wrapper/form-wrapper.component';
+import { SectionTitleComponent } from '../shared/components/UI/section-title/section-title.component';
+import { InputTextComponent } from '../shared/components/form/input-text/input-text.component';
+import { SelectComponent } from '../shared/components/form/select/select.component';
+import { DateComponent } from '../shared/components/form/date/date.component';
+import { TextareaComponent } from '../shared/components/form/textarea/textarea.component';
+import { ButtonComponent } from '../shared/components/button/button.component';
+import { SelectOptions } from '../shared/components/form/select/select-options';
 
 pdfMake.vfs = pdfFonts.vfs;
 
@@ -57,24 +61,14 @@ pdfMake.vfs = pdfFonts.vfs;
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    MatFormField,
-    MatLabel,
     TranslateModule,
     MatError,
-    MatDatepickerInput,
-    MatHint,
-    MatDatepickerToggle,
-    MatInput,
-    MatDatepicker,
-    MatSelect,
-    MatOption,
     MatAccordion,
     MatExpansionPanel,
     MatExpansionPanelHeader,
     MatExpansionPanelTitle,
     MatRadioGroup,
     MatRadioButton,
-    MatButton,
     MatTable,
     MatColumnDef,
     MatCell,
@@ -86,6 +80,13 @@ pdfMake.vfs = pdfFonts.vfs;
     MatCellDef,
     MatHeaderRowDef,
     MatRowDef,
+    FormWrapperComponent,
+    SectionTitleComponent,
+    InputTextComponent,
+    SelectComponent,
+    DateComponent,
+    TextareaComponent,
+    ButtonComponent,
   ],
 })
 export class SemestrReportComponent implements OnInit {
@@ -143,6 +144,42 @@ export class SemestrReportComponent implements OnInit {
   protected readonly ReportType = ReportType;
   protected readonly Sex = Sex;
   protected readonly examsRecommendations = examsRecommendations;
+
+  /** Attendance marks carry no female variant, so this list never depends on `sex`. */
+  protected readonly frequencyOptions: SelectOptions<string>[] = frequencyMarks.map((mark) => ({
+    label: mark.viewValue,
+    value: mark.value,
+  }));
+
+  private readonly markOptionsCache = new Map<Marks[], { isMale: boolean; options: SelectOptions<string>[] }>();
+
+  /**
+   * The descriptive-mark selects used to flip both label and value inline
+   * (`sex === MALE ? mark.value : mark.valueFemale`). `app-select` binds `item.value`, so the
+   * sex-awareness moves from the binding into the option list — the value written into the control is
+   * unchanged for identical user input.
+   *
+   * Results are cached per source list and invalidated when `sex` flips, so the template gets the same
+   * array reference on every change-detection pass. Returning a fresh array each pass would make the
+   * signal input dirty forever.
+   */
+  protected markOptions(list: Marks[]): SelectOptions<string>[] {
+    const isMale = this.form.controls['sex'].value === Sex.MALE;
+    const cached = this.markOptionsCache.get(list);
+
+    if (cached && cached.isMale === isMale) {
+      return cached.options;
+    }
+
+    const options: SelectOptions<string>[] = list.map((mark) => ({
+      label: (isMale ? mark.viewValue : mark.viewValueFemale) as string,
+      value: (isMale ? mark.value : mark.valueFemale) as string,
+    }));
+
+    this.markOptionsCache.set(list, { isMale, options });
+
+    return options;
+  }
 
   ngOnInit(): void {
     this.form = this.createForm();

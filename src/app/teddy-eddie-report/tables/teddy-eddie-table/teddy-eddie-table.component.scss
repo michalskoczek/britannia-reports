@@ -1,15 +1,11 @@
-@use '../../../../assets/styles/utils/index' as ds;
+@use '../../../../assets/styles/mixins' as *;
+
 .wrapper {
+  @include card-surface;
   margin: 0 auto;
   padding: 8px;
   width: 100%;
   max-width: 100%;
-  background-color: white;
-  border-radius: 0 0 20px 20px;
-  box-shadow:
-    0px 2px 1px -1px rgba(0, 0, 0, 0.2),
-    0px 1px 1px 0px rgba(0, 0, 0, 0.14),
-    0px 1px 3px 0px rgba(0, 0, 0, 0.12);
   overflow: auto;
 
   .te-table {
@@ -17,84 +13,12 @@
     background: transparent;
     overflow: hidden;
 
-    ::ng-deep {
-      .mat-mdc-header-row {
-        background-color: #eef0fa;
-      }
-
-      .mat-mdc-header-cell {
-        background-color: #eef0fa;
-        color: ds.$britannia-blue;
-        font-weight: 600;
-        font-size: 13px;
-        font-family: ds.$font;
-        border-right: 1px solid rgba(0, 0, 0, 0.08);
-
-        &:last-of-type {
-          border-right: none;
-        }
-      }
-
-      .mat-mdc-row {
-        background-color: ds.$white;
-      }
-
-      .mat-mdc-cell {
-        padding: 8px 4px;
-        border-right: 1px solid rgba(0, 0, 0, 0.06);
-
-        &:last-of-type {
-          border-right: none;
-        }
-      }
-
-      .cell-field {
-        width: 100%;
-
-        .mat-mdc-form-field-subscript-wrapper {
-          display: none;
-        }
-
-        .mat-mdc-text-field-wrapper {
-          padding: 0 8px;
-          background-color: transparent;
-        }
-
-        .mdc-notched-outline__leading,
-        .mdc-notched-outline__notch,
-        .mdc-notched-outline__trailing {
-          border-color: transparent !important;
-        }
-      }
-
-      .mat-mdc-form-field-disabled,
-      .mdc-text-field--disabled {
-        .mdc-notched-outline__leading,
-        .mdc-notched-outline__notch,
-        .mdc-notched-outline__trailing {
-          border-color: transparent !important;
-        }
-      }
-
-      .mdc-text-field--disabled {
-        input.mat-mdc-input-element,
-        .mat-mdc-select-value-text,
-        .mat-mdc-select-min-line,
-        .mdc-text-field__input {
-          color: rgba(0, 0, 0, 0.87) !important;
-          -webkit-text-fill-color: rgba(0, 0, 0, 0.87) !important;
-        }
-      }
-    }
+    @include data-table-cells;
   }
 
   .no-data-row {
     .mat-cell {
-      padding: 24px 16px;
-      text-align: center;
-      color: ds.$britannia-blue;
-      font-style: italic;
-      background-color: ds.$white;
+      @include data-table-empty-cell;
     }
   }
 

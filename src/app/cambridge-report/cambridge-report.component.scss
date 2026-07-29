@@ -1,15 +1,51 @@
-@use "../../assets/styles/utils/index" as *;
+@use "../../assets/styles/utils/index" as ds;
+@use "../../assets/styles/mixins" as *;
 
-.subtitle {
-  font: 600 22px/1 $font;
+.container {
+  max-width: 1400px;
 }
 
+.form-section {
+  display: block;
+  margin-top: ds.$distance-24;
+}
+
+.field-row {
+  @include form-row;
+
+  margin-bottom: ds.$distance-8;
+
+  .field-half {
+    @include form-col(2);
+  }
+
+  .field-third {
+    @include form-col(3);
+  }
+
+  .field-full {
+    @include form-col(1);
+  }
+
+  // The comment field takes whatever the remove button next to it leaves.
+  .field-grow {
+    flex: 1 1 320px;
+    min-width: 0;
+  }
+}
+
+.field-label {
+  width: 100%;
+  margin: 0 0 ds.$distance-8;
+  font-weight: 600;
+  color: ds.$britannia-blue;
+}
+
+// `bottom: 10px` where the other three forms use 30px. Recorded in `docs/design-language.md` §5 as a
+// deliberate inconsistency, so it is kept rather than "fixed" here.
 .generate-btn {
   position: fixed;
   bottom: 10px;
   right: 30px;
-}
-
-.signature-textarea {
-  height: 250px !important;
+  z-index: 99999;
 }

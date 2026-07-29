@@ -1,0 +1,46 @@
+<p class="field-label">{{ heading() | translate }}</p>
+
+<div [formArrayName]="arrayName()">
+  <div class="field-row">
+    <app-button
+      [translateKey]="'Dodaj test'"
+      [type]="'button'"
+      [variant]="'secondary'"
+      [icon]="'add'"
+      (clicked)="addTerm.emit()"
+    ></app-button>
+  </div>
+
+  @for (exam of rows.controls; track exam; let i = $index) {
+    <div class="field-row" [formGroupName]="i">
+      <app-date
+        class="term-field"
+        formControlName="date"
+        [label]="'Data'"
+        [hint]="'DD.M.RRRR'"
+      ></app-date>
+
+      <app-input-text
+        class="term-field"
+        formControlName="score"
+        [type]="'number'"
+        [label]="('Wynik testu nr' | translate) + ' ' + (i + 1) + ' ' + ('w %' | translate)"
+      ></app-input-text>
+
+      <app-select
+        class="term-field"
+        formControlName="result"
+        [label]="'Decyzja'"
+        [itemList]="resultOfExam"
+      ></app-select>
+
+      <app-button
+        [translateKey]="'Usuń'"
+        [type]="'button'"
+        [variant]="'danger'"
+        [icon]="'delete'"
+        (clicked)="removeTerm.emit(i)"
+      ></app-button>
+    </div>
+  }
+</div>

@@ -1,11 +1,13 @@
 <div class="wrapper">
   <app-header></app-header>
 
-  <main class="main-wrapper">
-    <app-tab-group (clickTabEvent)="emitTab($event)"></app-tab-group>
+  <router-outlet></router-outlet>
 
-    @if (activeTab) {
-      <ng-container *ngComponentOutlet="activeTab.component"></ng-container>
-    }
-  </main>
+  @if (isResolving()) {
+    <div class="boot" role="status" aria-live="polite">
+      <mat-progress-spinner mode="indeterminate" [diameter]="48"></mat-progress-spinner>
+
+      <p class="boot-message">{{ 'auth.checkingAccess' | translate }}</p>
+    </div>
+  }
 </div>

@@ -30,7 +30,12 @@ Running a single spec: `npm test -- --include='**/teddy-eddie-form.component.spe
 
 **Standalone-only.** There are no NgModules in `src/app/`. The app bootstraps via `src/app/app.config.ts` (the `appConfig: ApplicationConfig` export) with `bootstrapApplication` in `src/main.ts`. Every component — `AppComponent`, the four report components, shared form components, and the rating-scale surface — is `standalone: true` with its own `imports` array. New components must be standalone; do not introduce an NgModule.
 
-**Composition is `NgComponentOutlet` against `TabData.tabs`.** `AppComponent` (`src/app/app.component.ts`) renders a `TabGroupComponent` plus an `<ng-component-outlet>` that swaps in the active tab's feature component. `TabData.tabs` in `src/app/shared/static-data/tab-data.ts` is the registry — adding a new report type means adding an entry there (with the report's standalone component class) and the new feature folder. There is no Angular Router.
+**Two layers of navigation, and they do different jobs.** The router decides *whether you are in the app*; the tab registry decides *which report you are looking at*. Do not merge them.
+
+- **Router — two routes, added by `S-01`.** `src/app/app.routes.ts`: `/sign-in` → `SignInComponent` behind `signInGuard`, and `''` → `ShellComponent` behind `authGuard`, with `**` redirecting to `''`. `provideRouter(routes)` sits in `app.config.ts`. `AppComponent` is now just the header plus a `<router-outlet>` plus the boot indicator. There is deliberately **no route per report type** — adding one would rewrite the registry below for no gain.
+- **Composition inside the shell is still `NgComponentOutlet` against `TabData.tabs`.** `ShellComponent` (`src/app/shell/`) renders a `TabGroupComponent` plus an `<ng-component-outlet>` that swaps in the active tab's feature component. `TabData.tabs` in `src/app/shared/static-data/tab-data.ts` is the registry — adding a new report type means adding an entry there (with the report's standalone component class) and the new feature folder.
+
+**The header lives in `AppComponent`, above the outlet, and must stay there.** It carries the PL/EN toggle, and FR-018 requires that toggle on *every* screen including sign-in. Moving it into `ShellComponent` would silently strip it from the sign-in screen.
 
 **Global providers live in `app.config.ts`.** That single file wires `provideHttpClient()`, `provideTranslateService({ ... loader: provideTranslateHttpLoader({ prefix: './assets/i18n/', suffix: '.json' }) })` (the new `@ngx-translate/core@17` API — no `TranslateModule.forRoot()` at runtime), `LOCALE_ID = 'pl-PL'`, `MAT_DATE_LOCALE = 'pl-PL'`, `MAT_FORM_FIELD_DEFAULT_OPTIONS = { floatLabel: 'always' }`, and `provideMomentDateAdapter(MY_FORMATS)` with Polish moment locale. Date pickers and number formatting follow Polish conventions even when the UI is switched to English; `ngx-translate` toggles only user-visible strings, not locale-aware formatting. Custom date display format is `DD.MM.YYYY`.
 
@@ -38,7 +43,21 @@ Running a single spec: `npm test -- --include='**/teddy-eddie-form.component.spe
 
 The App Check debug-token assignment at the top of `app.config.ts` (`FIREBASE_APPCHECK_DEBUG_TOKEN`, guarded by `!environment.production`) must execute **before** `initializeAppCheck` runs — that is why it sits at module scope rather than inside the provider factory. `@angular/fire` also sets this itself on localhost, so the line is belt-and-braces; keep it, because it makes the mechanism legible instead of buried in a dependency.
 
-**There is no emulator suite.** No `emulators` block in `firebase.json`, no `connect*Emulator` calls, no `useEmulators` flag — so `npm start` is a single command. This is deliberate for now, but it means local development talks to the **production** Firebase project. That is harmless only while Firestore is empty under deny-all rules. The first change that adds a real collection must stand up the emulator suite and a rules-testing harness first — see `context/foundation/infrastructure.md` → Getting Started step 4.
+**There is no emulator suite, and local development therefore talks to the *production* Firebase project.** No `emulators` block in `firebase.json`, no `connect*Emulator` calls, no `useEmulators` flag — so `npm start` is a single command.
+
+This was supposed to end at the first real collection. `S-01` added one (`allowedUsers`) and deferred the harness anyway, by recorded decision: that collection is read-only to every caller and holds no student data, so the cross-teacher leak the pre-mortem models has no surface in it. **The next change that adds a per-teacher collection does not get that argument** — it must stand up the emulator and `@firebase/rules-unit-testing` *before* its first rule. Full reasoning and setup cost: `context/foundation/infrastructure.md` → Getting Started step 4.
+
+Until then, treat anything you run locally as writing to production.
+
+**The session gate lives in `src/app/auth/`, and `SessionService` is the only source of session truth.** It exposes one `SessionState` signal — `resolving` | `anonymous` | `authorized` | `denied` — and the guards, the sign-in screen, and the header all read it and nothing else. Two thin gateways (`auth.gateway.ts`, `allowlist.gateway.ts`) hold every raw SDK call; that seam exists so the state machine can be unit-tested with fakes, and new Firebase calls belong behind it rather than sprinkled into components.
+
+Three rules learned the hard way in `S-01`, each from a defect a green test suite did not catch:
+
+- **Do not decide anything while the state is `resolving`.** Guards return an observable that waits; deciding early produces a redirect and an immediate bounce back.
+- **`signIn()` and `signOut()` do not resolve until the state stops describing the old session.** Firebase settles its own promises independently of the auth stream, so acting on the signal immediately after either call reads a stale answer. This is what makes the post-sign-in and post-sign-out navigations safe.
+- **Guards run on activation, not on session change.** Any in-app transition between signed-in and signed-out must navigate explicitly.
+
+Fakes in specs are more obliging than Firebase — model the gaps (a `Subject` that stays silent, a `signOut` that withholds its follow-up emission), or the specs will pass over exactly the windows where bugs live.
 
 **UI library mix.** `@angular/material` (datepicker, form-field, table, tabs, expansion, etc.) plus Bootstrap 5 (scss + JS bundle, registered in `angular.json`). For new surfaces, prefer Material; existing report layouts that mix both retain their current stack.
 
@@ -48,11 +67,13 @@ The App Check debug-token assignment at the top of `app.config.ts` (`FIREBASE_AP
 
 ## Folder map
 
+- `src/app/auth/` — the sign-in gate: `session.service.ts` (the `SessionState` signal), `auth.gateway.ts` and `allowlist.gateway.ts` (the only files calling the Firebase SDK), `auth.guard.ts` (`authGuard` + `signInGuard`), and `sign-in/` (the sign-in screen).
+- `src/app/shell/` — `ShellComponent`, the signed-in surface: the tab bar plus the `NgComponentOutlet` that mounts the active report.
 - `src/app/<feature>-report/` — feature folders per report type: `cambridge-report/`, `semestr-report/` (Polish spelling is intentional, do not "fix"), `teddy-eddie-report/`, `year-report/`. Each owns its standalone component + `pdfmake` builder.
 - `src/app/rating-scale/` — `RatingScaleComponent` and a nested `SpecialMarksComponent`, both standalone. The rating-scale surface is reused across report types via direct `imports` in the consuming report component.
-- `src/app/shared/` — Angular constructs reused across features: standalone components under `components/` (`button/`, `header/`, `form/`, `UI/tab-group`, `UI/section-title`), reusable form scaffolding under `forms/template/`, static data tables (`exams.ts`, `marks.ts`, `select-values.ts`, `development-path.ts`), `static-data/tab-data.ts` (the tab registry that drives `AppComponent`), `testing/translate-testing.ts` (shared spec helper, see below), `testing/pdf-fidelity/` (fixtures, the pdfmake interception helper, and the capture harness behind `docs/pdf-fidelity-check.md`), and the base64 image blobs.
+- `src/app/shared/` — Angular constructs reused across features: standalone components under `components/` (`button/`, `header/`, `form/`, `UI/tab-group`, `UI/section-title`), reusable form scaffolding under `forms/template/`, static data tables (`exams.ts`, `marks.ts`, `select-values.ts`, `development-path.ts`), `static-data/tab-data.ts` (the tab registry that drives `ShellComponent`), `testing/translate-testing.ts` (shared spec helper, see below), `testing/pdf-fidelity/` (fixtures, the pdfmake interception helper, and the capture harness behind `docs/pdf-fidelity-check.md`), and the base64 image blobs.
 - `src/app/helper/` — pure-TypeScript helpers, no Angular decorators. Currently only `cambridge/` lives here; new pure helpers go here, not in `shared/`.
-- `src/app/model/` — TypeScript interfaces and types only. No runtime code (`development-path-in-school.ts`, `development-path-teddy-eddie.ts`, `tab.interface.ts`).
+- `src/app/model/` — TypeScript interfaces and types only. No runtime code (`development-path-in-school.ts`, `development-path-teddy-eddie.ts`, `tab.interface.ts`, `auth.interface.ts`).
 
 ## Conventions
 
@@ -70,7 +91,22 @@ As of 2026-07-10, `dev` does **not** satisfy this: 9 errors in `src/app/year-rep
 
 **For subscription cleanup, use `takeUntil`, `async` pipe, or `destroyRef` — pick one per file.** Material modules and `ngx-translate` observables are the usual culprits.
 
-**Design tokens live in `src/assets/styles/utils/`** (`_colors.scss`, `_typography.scss`, `_spacing.scss`, `_breakpoints.scss`, barrelled via `index.scss`; plus `src/assets/styles/mixins.scss`). New component SCSS must `@use` these tokens (see `src/app/teddy-eddie-report/teddy-eddie-form/teddy-eddie-form.component.scss` for the pattern) — do not hardcode hex colours, px font sizes, or breakpoint widths. The Teddy Eddie report is the styling reference for which tokens get used together; the older report types (Cambridge, semester/trimester, year-end) reflect earlier visual iterations and are not the reference, so do not copy their styling into new work.
+**The style layer has two halves, and `docs/design-language.md` is the authority on both.** Read it before adding any component SCSS.
+
+- `src/assets/styles/utils/` holds **tokens** — `_colors.scss`, `_typography.scss`, `_spacing.scss`, `_breakpoints.scss`, `_radius.scss`, `_elevation.scss`, plus the global `_reset.scss`, all barrelled via `index.scss`. Reach them with `@use ".../assets/styles/utils/index" as ds`.
+- `src/assets/styles/patterns/` holds **composite mixins** — `card-surface`, `data-table-cells`, `data-table-empty-cell`, `section-tile`, `form-row`, `form-col`. Do not `@use` that directory directly: `src/assets/styles/mixins.scss` forwards it, so every existing `@use ".../assets/styles/mixins"` path keeps resolving. There is no `patterns/index.scss`.
+
+New component SCSS must `@use` these instead of hardcoding hex colours, px font sizes, breakpoint widths, corner radii, or box-shadows — tokens now exist for all six. `src/app/teddy-eddie-report/tables/teddy-eddie-table/teddy-eddie-table.component.scss` is the compact example of consuming both halves.
+
+**`data-table-cells` must be included inside a scoping selector, never at stylesheet root.** It emits an `::ng-deep` block, which at root escapes component encapsulation and overrides every Material table in the app.
+
+Three root-level `::ng-deep` blocks do escape today, and all three are **deliberately retained, not oversights** — each carries a comment at its site saying so. `semestr-report.component.scss:66` and `year-report.component.scss:105` declare `.mat-mdc-row { height: 38px !important }`; they are the only source of the Teddy Eddie tables' row height, so deleting them would grow the reference tab's rows to Material's ~52px default. `date.component.scss:5-7` sets `.mat-mdc-form-field-flex { height: 36px }` for every Material form field in the app. Removing any of them is a visual change to surfaces far from the file it lives in — do not do it as a drive-by. See `docs/design-language.md` §3.
+
+**Form fields go through the shared wrappers, never a raw `mat-form-field`:** `app-input-text`, `app-textarea`, `app-select`, `app-date`, with `app-form-wrapper` / `app-section-title` for section headings and `app-button` for actions. All four report forms compose them; `docs/design-language.md` §4 is the picking guide and lists every input.
+
+**The one exception is a control inside a Material table cell**, which uses a raw `<mat-form-field class="cell-field">`. The `data-table-cells` mixin styles `.cell-field` for exactly that case — the wrappers render their own label and error subscript, which a 38px table row cannot fit. Four tables do this: both Teddy Eddie tables and the year-end detail and development-path tables. Two traps it documents: a button inside a `<form>` must pass `[type]` (`app-button` defaults to an invalid value that HTML resolves to *submit*), and `app-input-text` spells its `type="number"` branch out separately because Angular's `NumberValueAccessor` only matches a static attribute.
+
+The Teddy Eddie report is the styling reference for which tokens get used together. Its **tables** are the pattern to copy for new Material tables. The three older report types (Cambridge, semester/trimester, year-end) now compose the same language on their **forms** — `S-05b` converted them — so they are safe to read for the form-row / form-col layout idiom. What is still not a model there is anything outside those forms.
 
 **Configuration lives in `src/environments/`, and the three files there have distinct jobs.** `environment.ts` (dev, `production: false`) and `environment.prod.ts` (`production: true`) each export a const named `environment`; both hold the Firebase SDK config and the reCAPTCHA site key. `environment.model.ts` exports the `Environment` interface that both files type themselves against.
 

@@ -4,10 +4,12 @@
     [formControl]="control"
     [placeholder]="placeholder() | translate"
     [required]="required()"
+    [multiple]="multiple()"
     [errorStateMatcher]="errorStateMatcher"
+    (selectionChange)="selectionChange.emit($event.value)"
     (closed)="onClosed()"
   >
-    @for (item of itemList(); track item.value) {
+    @for (item of options(); track item.value) {
       <mat-option [value]="item.value">
         {{ item.label | translate }}
       </mat-option>

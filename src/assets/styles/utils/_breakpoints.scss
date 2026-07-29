@@ -23,7 +23,7 @@ $xxl-desktop: 1600px;
 }
 
 @mixin breakpoint-desktop-xxl() {
-  @media screen and (width > $desktop) {
+  @media screen and (width > $xxl-desktop) {
     @content;
   }
 }
