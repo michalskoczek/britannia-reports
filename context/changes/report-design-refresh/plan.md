@@ -845,18 +845,18 @@ coordinate before Phase 1 and again before Phase 5.
 
 #### Automated
 
-- [x] 5.1 Build succeeds: `npm run build`
-- [x] 5.2 Linting passes: `npm run lint`
-- [x] 5.3 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
-- [x] 5.4 Every file and line reference in `docs/design-language.md` resolves
-- [x] 5.5 No removed translation key has a remaining reference in `src/`
+- [x] 5.1 Build succeeds: `npm run build` — 7c9832f
+- [x] 5.2 Linting passes: `npm run lint` — 7c9832f
+- [x] 5.3 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless` — 7c9832f
+- [x] 5.4 Every file and line reference in `docs/design-language.md` resolves — 7c9832f
+- [x] 5.5 No removed translation key has a remaining reference in `src/` — 7c9832f
 
 #### Manual
 
-- [x] 5.6 `docs/design-language.md` no longer assigns the `::ng-deep` cleanup to this slice
-- [x] 5.7 `src/CLAUDE.md` describes no layout or convention this change altered
-- [x] 5.8 §4 is self-sufficient for choosing a form-field component
-- [x] 5.9 `## Progress` records the verification outcome
+- [x] 5.6 `docs/design-language.md` no longer assigns the `::ng-deep` cleanup to this slice — 7c9832f
+- [x] 5.7 `src/CLAUDE.md` describes no layout or convention this change altered — 7c9832f
+- [x] 5.8 §4 is self-sufficient for choosing a form-field component — 7c9832f
+- [x] 5.9 `## Progress` records the verification outcome — 7c9832f
 
 ### Verification record
 
