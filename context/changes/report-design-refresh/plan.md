@@ -824,36 +824,93 @@ coordinate before Phase 1 and again before Phase 5.
 
 #### Automated
 
-- [x] 4.1 Build succeeds: `npm run build`
-- [x] 4.2 Linting passes: `npm run lint`
-- [x] 4.3 Tests pass, contract spec unmodified
-- [x] 4.4 No raw `<mat-form-field>` remains in either Cambridge template
-- [x] 4.5 No inline `style="…"` attribute remains in either Cambridge template
-- [x] 4.6 `cambridge-report.component.ts` diff limited to `imports` and option-list getters
-- [x] 4.7 Every `app-section-title` key resolves in both bundles
+- [x] 4.1 Build succeeds: `npm run build` — 35ae85e
+- [x] 4.2 Linting passes: `npm run lint` — 35ae85e
+- [x] 4.3 Tests pass, contract spec unmodified — 35ae85e
+- [x] 4.4 No raw `<mat-form-field>` remains in either Cambridge template — 35ae85e
+- [x] 4.5 No inline `style="…"` attribute remains in either Cambridge template — 35ae85e
+- [x] 4.6 `cambridge-report.component.ts` diff limited to `imports` and option-list getters — 35ae85e
+- [x] 4.7 Every `app-section-title` key resolves in both bundles — 35ae85e
 
 #### Manual
 
-- [x] 4.8 Cambridge tab matches the Teddy Eddie language
-- [x] 4.9 English proficiency-level heading renders in English
-- [x] 4.10 Top date field opens on click and refuses typed input
-- [x] 4.11 Exam rows styled consistently across all eleven sections
-- [x] 4.12 Both Cambridge PDFs download and look right
-- [x] 4.13 The other three tabs unchanged
+- [x] 4.8 Cambridge tab matches the Teddy Eddie language — 35ae85e
+- [x] 4.9 English proficiency-level heading renders in English — 35ae85e
+- [x] 4.10 Top date field opens on click and refuses typed input — 35ae85e
+- [x] 4.11 Exam rows styled consistently across all eleven sections — 35ae85e
+- [x] 4.12 Both Cambridge PDFs download and look right — 35ae85e
+- [x] 4.13 The other three tabs unchanged — 35ae85e
 
 ### Phase 5: Contract and documentation repair
 
 #### Automated
 
-- [ ] 5.1 Build succeeds: `npm run build`
-- [ ] 5.2 Linting passes: `npm run lint`
-- [ ] 5.3 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
-- [ ] 5.4 Every file and line reference in `docs/design-language.md` resolves
-- [ ] 5.5 No removed translation key has a remaining reference in `src/`
+- [x] 5.1 Build succeeds: `npm run build`
+- [x] 5.2 Linting passes: `npm run lint`
+- [x] 5.3 Tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
+- [x] 5.4 Every file and line reference in `docs/design-language.md` resolves
+- [x] 5.5 No removed translation key has a remaining reference in `src/`
 
 #### Manual
 
-- [ ] 5.6 `docs/design-language.md` no longer assigns the `::ng-deep` cleanup to this slice
-- [ ] 5.7 `src/CLAUDE.md` describes no layout or convention this change altered
-- [ ] 5.8 §4 is self-sufficient for choosing a form-field component
-- [ ] 5.9 `## Progress` records the verification outcome
+- [x] 5.6 `docs/design-language.md` no longer assigns the `::ng-deep` cleanup to this slice
+- [x] 5.7 `src/CLAUDE.md` describes no layout or convention this change altered
+- [x] 5.8 §4 is self-sufficient for choosing a form-field component
+- [x] 5.9 `## Progress` records the verification outcome
+
+### Verification record
+
+**Date**: 2026-07-29. **Baseline commit**: `49f9fd9` (the last commit before `e1e2433`, this change's
+first phase). **Verdict**: adopted — all five phases landed and were confirmed by eye on the running app.
+
+**Tabs compared**: semester/trimester, year-end, and Cambridge, each against the Teddy Eddie tab, after
+the phase that changed it. Teddy Eddie was re-checked with both tables populated at each phase boundary,
+per `docs/design-language.md` §7 step 1 — `.is-empty` hides its header rows, so the default state proves
+nothing. Verification was by eye, reported by the human; no screenshots were captured or stored, per the
+project's recorded preference.
+
+**PDF fidelity — procedure deliberately not run.** `docs/pdf-fidelity-check.md` §1 makes the capture
+procedure mandatory for changes touching a `pdfmake` builder. This change edits `*-report.component.ts`,
+so it trips that trigger by the letter. It was read by purpose instead, and the reasoning is recorded in
+full in `docs/design-language.md` §8. In short: every `.ts` edit was confined to the `imports` array (no
+option-list getters proved necessary), verified as an automated criterion at each phase; the fidelity
+fixtures never drive the DOM, and the form model they patch into is frozen by the Phase 1 contract specs;
+and the builders read no translation keys. The smoke specs rendered every fixture end-to-end at every
+phase boundary.
+
+**Where that reasoning was tested.** Phase 4 found that composing the Cambridge `score` field through
+`app-input-text` would change the control's value from `85` to `"85"` — the `.ts` constraint held, but the
+"no control changes the value it holds" constraint would not have. It was caught by probing the actual
+runtime type before the code landed, and fixed at the shared wrapper (a static `type="number"` branch, so
+Angular's `NumberValueAccessor` matches) rather than worked around at the call site. That invariant now
+has its own spec in `input-text.component.spec.ts`.
+
+### Deviations from the plan as written
+
+Recorded because a reader comparing plan to diff will otherwise find them unexplained.
+
+- **The plan says eleven Cambridge exam blocks; there are twelve** (3 A1 + 4 A2/B1 + 5 B2/C1). The plan's
+  own list of line references has twelve entries, so the prose count was the error. All twelve were
+  extracted into `app-exam-term-rows`.
+- **The plan's `"Poziom biegłości"` dead-code finding was wrong.** It records the key as present in
+  neither bundle, with the English UI falling back to Polish. Checked against baseline `49f9fd9`:
+  `en.json` already carried `"Poziom biegłości": "Proficiency level"`. There was no bug. The heading still
+  moved to the semantic key `proficiencyLevel` as planned.
+- **Two shared components were extended in Phase 4**, beyond the Phase 1 contract that was meant to hold
+  all such work: `app-input-text` gained the static number branch described above, and `app-button` gained
+  a `variant` input (`primary` / `secondary` / `danger`). The second was user-requested after the Phase 4
+  visual check — in-form actions needed to be distinguishable from the submit button, and destructive
+  actions needed the brand red. Both are additive, default to today's behaviour, and are documented in
+  `docs/design-language.md` §4.
+- **No option-list getters were needed in `cambridge-report.component.ts`.** Phases 2–4 permitted them;
+  only the semester form actually required them, so the Cambridge `.ts` diff is `imports`-only.
+- **The results heading changed case.** `WYNIKI PRÓBNYCH EGZAMINÓW CAMBRIDGE` became sentence case under
+  the new key `mockExamResults`, because as a section-title bar next to "Podstawowe informacje" the
+  all-caps read as a leftover of its former life as a bare paragraph.
+- **The proficiency section has no title bar.** After the Phase 4 visual check the section title above the
+  description accordion was dropped and the panel's own header now carries "Poziom biegłości" in place of
+  "Opis", so the heading is not stated twice.
+- **`resultOfExam` is now unused on `CambridgeReportComponent`.** `app-exam-term-rows` imports it directly.
+  The field was left in place because the phase criterion restricts that file's diff to `imports`.
+- **The `::ng-deep` cleanup was declined**, as the plan's "What We're NOT Doing" states. All three leaks
+  now carry a comment at their site and are recorded in `docs/design-language.md` §3 and `src/CLAUDE.md`.
