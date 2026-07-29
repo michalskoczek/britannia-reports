@@ -1,0 +1,28 @@
+@use "../../../assets/styles/utils/index" as ds;
+@use "../../../assets/styles/mixins" as *;
+
+// The extracted markup used to sit directly inside the form, so the host must not introduce an inline
+// box between the form and the rows.
+:host {
+  display: block;
+  margin-top: ds.$distance-16;
+}
+
+// Was `style="font-weight: 600"` on the heading paragraph. Matches `.field-label` on the other two
+// composed forms so every in-card sub-heading reads the same.
+.field-label {
+  margin: 0 0 ds.$distance-8;
+  font-weight: 600;
+  color: ds.$britannia-blue;
+}
+
+.field-row {
+  @include form-row;
+
+  margin-bottom: ds.$distance-8;
+
+  // Three fields to a row; the remove button takes the width it needs from what is left.
+  .term-field {
+    @include form-col(4);
+  }
+}

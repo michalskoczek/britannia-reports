@@ -1,15 +1,9 @@
 import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
-import { MatError, MatFormField, MatFormFieldModule, MatLabel } from '@angular/material/form-field';
-import {
-  MatDatepicker,
-  MatDatepickerInput,
-  MatDatepickerModule,
-  MatDatepickerToggle,
-} from '@angular/material/datepicker';
-import { TranslateModule } from '@ngx-translate/core';
-import { MatInput, MatInputModule } from '@angular/material/input';
+import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 import { ControlValueAccessor, FormControl, NgControl, ReactiveFormsModule } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
 
 class ParentErrorStateMatcher implements ErrorStateMatcher {
@@ -22,43 +16,25 @@ class ParentErrorStateMatcher implements ErrorStateMatcher {
 }
 
 @Component({
-  selector: 'app-date',
-  imports: [
-    MatLabel,
-    MatDatepicker,
-    MatFormField,
-    MatError,
-    MatDatepickerToggle,
-    TranslateModule,
-    MatDatepickerInput,
-    MatInput,
-    ReactiveFormsModule,
-    MatDatepickerModule,
-    MatFormFieldModule,
-    MatInputModule,
-  ],
-  templateUrl: './date.component.html',
-  styleUrl: './date.component.scss',
+  selector: 'app-textarea',
+  imports: [MatFormField, MatLabel, MatInput, ReactiveFormsModule, TranslateModule, MatError],
+  templateUrl: './textarea.component.html',
+  styleUrl: './textarea.component.scss',
 })
-export class DateComponent implements ControlValueAccessor, OnInit, OnDestroy {
-  label = input<string>('chooseDate');
-  placeholder = input<string>('chooseDate');
+export class TextareaComponent implements ControlValueAccessor, OnInit, OnDestroy {
+  placeholder = input<string>('typeValue');
+  label = input<string>('set label');
   required = input<boolean>(false);
   errorMessage = input<string>('error.fieldIsRequired');
-
-  /** Rendered as `<mat-hint>` only when non-empty. Passed through the translate pipe. */
-  hint = input<string>('');
-
-  /** Blocks typed input and opens the picker on click, the way the Cambridge date field behaves. */
-  readonly = input<boolean>(false);
+  rows = input<number>(3);
 
   public readonly ngControl = inject(NgControl, { self: true, optional: true });
 
-  protected readonly control = new FormControl<Date | null>(null);
+  protected readonly control = new FormControl<any>(null);
   protected readonly errorStateMatcher: ErrorStateMatcher;
 
   private readonly destroy$ = new Subject<void>();
-  private onChange: (value: Date | null) => void = () => {};
+  private onChange: (value: any) => void = () => {};
   private onTouched: () => void = () => {};
 
   constructor() {
@@ -77,11 +53,11 @@ export class DateComponent implements ControlValueAccessor, OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  writeValue(value: Date | null): void {
+  writeValue(value: any): void {
     this.control.setValue(value, { emitEvent: false });
   }
 
-  registerOnChange(fn: (value: Date | null) => void): void {
+  registerOnChange(fn: (value: any) => void): void {
     this.onChange = fn;
   }
 
@@ -99,11 +75,5 @@ export class DateComponent implements ControlValueAccessor, OnInit, OnDestroy {
 
   protected onBlur(): void {
     this.onTouched();
-  }
-
-  protected onClick(picker: MatDatepicker<Date>): void {
-    if (this.readonly()) {
-      picker.open();
-    }
   }
 }

@@ -20,10 +20,14 @@ import { ReportFixture } from '../report-fixture';
  *
  * All fourteen `FormArray`s stay empty on purpose: `semestr-report.component.html` binds no
  * `formArrayName` anywhere, so no user can populate `comments`, `recommendations`, or the twelve
- * exam-level arrays. A fixture that filled them would describe an unreachable state.
+ * exam-level arrays. A fixture that filled them would describe an unreachable state. Re-verified
+ * against the composed template after `S-05b` Phase 2 — still no `formArrayName` on this form.
  *
- * The `class` control holds the plain string value here — the template binds `[value]="classItem.value"`
- * (`semestr-report.component.html:92`). This differs from the year-end report, which binds the object.
+ * The `class` control holds the plain string value here. `S-05b` moved that binding out of this
+ * template: the field is now `<app-select [itemList]="classes">`
+ * (`semestr-report.component.html:58`), and the option value comes from `[value]="item.value"` inside
+ * the shared wrapper (`select.component.html:13`). Since `classes` is a `SelectOptions[]`, the control
+ * still receives the `value` string, not the object — which is what differs from the year-end report.
  */
 export const semestrFixtures: ReportFixture<SemestrReportComponent>[] = [
   {

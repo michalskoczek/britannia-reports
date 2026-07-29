@@ -1,213 +1,143 @@
-<div class="container pb-5">
-  <form [formGroup]="form" (ngSubmit)="generatePDF(form)" class="col-12">
-    <div class="row mt-5">
-      <div class="col-12 mb-4">
-        <h2 class="subtitle">{{ "reportType" | translate }}</h2>
-      </div>
-    </div>
-
-    <mat-radio-group aria-label="Select an option" formControlName="reportType">
-      <mat-radio-button [value]="ReportType.SEMESTER"
-        >{{ "semester" | translate }}
-      </mat-radio-button>
-      <mat-radio-button [value]="ReportType.TRIMESTER">{{
-        "firstTrimesterReport" | translate
-      }}</mat-radio-button>
-      @if (form.controls['reportType'].hasError('required')) {
-        <mat-error>
-          {{ "fieldIsRequired" | translate }}
-        </mat-error>
-      }
-    </mat-radio-group>
-
-    <div class="row mt-5">
-      <div class="col-12 mb-4">
-        <h2 class="subtitle">{{ "basicInformation" | translate }}</h2>
-      </div>
-    </div>
-
-    <div class="row">
-      <mat-form-field class="col-6 my-1">
-        <mat-label>{{ "nameAndLastNameStudent" | translate }}</mat-label>
-        <input matInput type="text" formControlName="studentName" />
-        @if (form.controls['studentName'].hasError('required')) {
-          <mat-error
-            >{{ "fieldIsRequired" | translate }}
-          </mat-error>
-        }
-      </mat-form-field>
-
-      <mat-form-field class="col-6 my-1">
-        <mat-label>{{
-          "Imię ucznia do wyświetlenia w tekście (np. Jaś)" | translate
-        }}</mat-label>
-        <input matInput type="text" formControlName="name" />
-        @if (form.controls['name'].hasError('required')) {
-          <mat-error
-            >{{ "fieldIsRequired" | translate }}
-          </mat-error>
-        }
-      </mat-form-field>
-    </div>
-
-    <div class="row">
-      <mat-form-field class="col-6 my-1">
-        <mat-label>{{ "maleFemale" | translate }}</mat-label>
-        <mat-select formControlName="sex">
-          @for (sex of sexes; track sex) {
-            <mat-option [value]="sex">
-              {{ sex | translate }}
-            </mat-option>
+<div class="container pb-5 my-4">
+  <form [formGroup]="form" (ngSubmit)="generatePDF(form)">
+    <section class="form-section">
+      <app-form-wrapper [sectionTitle]="'reportType'">
+        <mat-radio-group aria-label="Select an option" formControlName="reportType">
+          <mat-radio-button [value]="ReportType.SEMESTER">
+            {{ "semester" | translate }}
+          </mat-radio-button>
+          <mat-radio-button [value]="ReportType.TRIMESTER">
+            {{ "firstTrimesterReport" | translate }}
+          </mat-radio-button>
+          @if (form.controls['reportType'].hasError('required')) {
+            <mat-error>{{ "fieldIsRequired" | translate }}</mat-error>
           }
-        </mat-select>
-        @if (form.controls['sex'].hasError('required')) {
-          <mat-error
-            >{{ "fieldIsRequired" | translate }}
-          </mat-error>
-        }
-      </mat-form-field>
+        </mat-radio-group>
+      </app-form-wrapper>
+    </section>
 
-      <mat-form-field class="col-6 my-1">
-        <mat-label>{{ "chooseDate" | translate }}</mat-label>
-        <input matInput [matDatepicker]="picker" formControlName="date" />
-        @if (form.controls['date'].hasError('required')) {
-          <mat-error
-            >{{ "fieldIsRequired" | translate }}
-          </mat-error>
-        }
-        <mat-hint>DD.M.RRRR</mat-hint>
-        <mat-datepicker-toggle
-          matIconSuffix
-          [for]="picker"
-        ></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-      </mat-form-field>
-    </div>
+    <section class="form-section">
+      <app-form-wrapper [sectionTitle]="'basicInformation'">
+        <div class="field-row">
+          <app-input-text
+            class="field-half"
+            formControlName="studentName"
+            [label]="'nameAndLastNameStudent'"
+            [required]="true"
+            [errorMessage]="'fieldIsRequired'"
+          ></app-input-text>
 
-    <div class="row form-field">
-      <mat-form-field class="col-6 my-1">
-        <mat-label>{{ "Klasa" | translate }}</mat-label>
-        <mat-select formControlName="class">
-          @for (classItem of classes; track classItem) {
-            <mat-option [value]="classItem.value">
-              {{ classItem.label | translate }}
-            </mat-option>
+          <app-input-text
+            class="field-half"
+            formControlName="name"
+            [label]="'Imię ucznia do wyświetlenia w tekście (np. Jaś)'"
+            [errorMessage]="'fieldIsRequired'"
+          ></app-input-text>
+        </div>
+
+        <div class="field-row">
+          <app-select
+            class="field-half"
+            formControlName="sex"
+            [label]="'maleFemale'"
+            [required]="true"
+            [itemList]="sexes"
+            [errorMessage]="'fieldIsRequired'"
+          ></app-select>
+
+          <app-date
+            class="field-half"
+            formControlName="date"
+            [label]="'chooseDate'"
+            [hint]="'DD.M.RRRR'"
+            [errorMessage]="'fieldIsRequired'"
+          ></app-date>
+        </div>
+
+        <div class="field-row">
+          <app-select
+            class="field-half"
+            formControlName="class"
+            [label]="'Klasa'"
+            [itemList]="classes"
+            [errorMessage]="'fieldIsRequired'"
+          ></app-select>
+
+          <app-select
+            class="field-half"
+            formControlName="teachers"
+            [label]="'teachers'"
+            [multiple]="true"
+            [itemList]="teachers"
+          ></app-select>
+        </div>
+
+        <div class="field-row">
+          <span id="example-radio-group-label">{{ "Podręcznik:" | translate }}</span>
+
+          <mat-radio-group
+            aria-labelledby="example-radio-group-label"
+            formControlName="ownEducationMaterial"
+          >
+            <mat-radio-button value="1" (change)="onCheckboxChangeBook()">
+              {{ "Podręcznik z listy" | translate }}
+            </mat-radio-button>
+            <mat-radio-button value="2" (change)="onCheckboxChangeOwnTitle()">
+              {{ "Wpisz tytuł i wydawnictwo" | translate }}
+            </mat-radio-button>
+            <mat-radio-button (change)="onCheckboxChangeOwnMaterialEducation()">
+              {{ "Własne materiały szkoleniowe" | translate }}
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+
+        <div class="field-row">
+          @if (isCheckedBook) {
+            <app-select
+              class="field-half"
+              formControlName="studentBookTitle"
+              [label]="'Tytuł podręcznika'"
+              [itemList]="books"
+              [errorMessage]="'fieldIsRequired'"
+            ></app-select>
           }
-        </mat-select>
-        @if (form.controls['class'].hasError('required')) {
-          <mat-error
-            >{{ "fieldIsRequired" | translate }}
-          </mat-error>
-        }
-      </mat-form-field>
 
-      <mat-form-field class="col-6 my-1">
-        <mat-label>{{ "teachers" | translate }}</mat-label>
-        <mat-select formControlName="teachers" multiple>
-          @for (teacher of teachers; track teacher) {
-            <mat-option [value]="teacher">
-              {{ teacher }}
-            </mat-option>
+          @if (isCheckedOwnTitle) {
+            <app-input-text
+              class="field-half"
+              formControlName="ownTitleStudentBook"
+              [label]="'Tytuł i wydawnictwo'"
+              [errorMessage]="'fieldIsRequired'"
+            ></app-input-text>
           }
-        </mat-select>
-      </mat-form-field>
-    </div>
 
-    <div class="row form-field">
-      <span id="example-radio-group-label">{{
-        "Podręcznik:" | translate
-      }}</span>
-      <mat-radio-group
-        aria-labelledby="example-radio-group-label"
-        formControlName="ownEducationMaterial"
-        >
-        <mat-radio-button value="1" (change)="onCheckboxChangeBook()"
-          >{{ "Podręcznik z listy" | translate }}
-        </mat-radio-button>
-        <mat-radio-button value="2" (change)="onCheckboxChangeOwnTitle()"
-          >{{ "Wpisz tytuł i wydawnictwo" | translate }}
-        </mat-radio-button>
-        <mat-radio-button (change)="onCheckboxChangeOwnMaterialEducation()"
-          >{{ "Własne materiały szkoleniowe" | translate }}
-        </mat-radio-button>
-      </mat-radio-group>
+          <app-select
+            class="field-half"
+            formControlName="course"
+            [label]="'Kurs'"
+            [itemList]="courses"
+            [errorMessage]="'fieldIsRequired'"
+          ></app-select>
+        </div>
 
-      @if (isCheckedBook) {
-        <mat-form-field class="col-6 my-1">
-          <mat-label>{{ "Tytuł podręcznika" | translate }}</mat-label>
-          <mat-select formControlName="studentBookTitle">
-            @for (book of books; track book) {
-              <mat-option [value]="book">
-                {{ book | translate }}
-              </mat-option>
-            }
-          </mat-select>
-          @if (form.controls['studentBookTitle'].hasError('required')) {
-            <mat-error
-              >{{ "fieldIsRequired" | translate }}
-            </mat-error>
-          }
-        </mat-form-field>
-      }
+        <div class="field-row">
+          <app-textarea
+            class="field-full"
+            formControlName="realizedMaterial"
+            [label]="'Zrealizowany materiał'"
+            [errorMessage]="'fieldIsRequired'"
+          ></app-textarea>
+        </div>
+      </app-form-wrapper>
+    </section>
 
-      @if (isCheckedOwnTitle) {
-        <mat-form-field class="col-6 my-1">
-          <mat-label>{{ "Tytuł i wydawnictwo" | translate }}</mat-label>
-          <input matInput type="text" formControlName="ownTitleStudentBook" />
-          @if (form.controls['ownTitleStudentBook'].hasError('required')) {
-            <mat-error
-              >{{ "fieldIsRequired" | translate }}
-            </mat-error>
-          }
-        </mat-form-field>
-      }
+    <section class="form-section">
+      <app-section-title [sectionTitle]="'grades'"></app-section-title>
 
-      <mat-form-field class="col-6 my-1">
-        <mat-label>{{ "Kurs" | translate }}</mat-label>
-        <mat-select formControlName="course">
-          @for (course of courses; track course) {
-            <mat-option [value]="course">
-              {{ course }}
-            </mat-option>
-          }
-        </mat-select>
-        @if (form.controls['course'].hasError('required')) {
-          <mat-error
-            >{{ "fieldIsRequired" | translate }}
-          </mat-error>
-        }
-      </mat-form-field>
-    </div>
-
-    <div class="row form-field">
-      <mat-form-field class="col-12 my-1">
-        <mat-label>{{ "Zrealizowany materiał" | translate }}</mat-label>
-        <textarea
-          matInput
-          type="text"
-          formControlName="realizedMaterial"
-        ></textarea>
-        @if (form.controls['realizedMaterial'].hasError('required')) {
-          <mat-error
-            >{{ "fieldIsRequired" | translate }}
-          </mat-error>
-        }
-      </mat-form-field>
-    </div>
-
-    <div class="row mt-1">
-      <div class="col-12 mb-4">
-        <h2 class="subtitle">{{ "Oceny" | translate }}</h2>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-2">
-        <table mat-table [dataSource]="dataSource" class="mat-elevation-z3">
+      <div class="scale-wrapper">
+        <table mat-table [dataSource]="dataSource" class="scale-table">
           <ng-container matColumnDef="percent">
-            <th mat-header-cell *matHeaderCellDef>
-              {{ "Procent" | translate }}
-            </th>
+            <th mat-header-cell *matHeaderCellDef>{{ "Procent" | translate }}</th>
             <td mat-cell *matCellDef="let element">{{ element.percent }}</td>
           </ng-container>
 
@@ -220,334 +150,208 @@
           <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
         </table>
 
-        <small>{{ "* Ocena celująca" | translate }}</small>
+        <small class="scale-note">{{ "* Ocena celująca" | translate }}</small>
       </div>
+    </section>
 
-      <div class="col-10">
-        <p class="w-100">{{ "Ocena opisowa" | translate }}</p>
+    <section class="form-section">
+      <app-form-wrapper [sectionTitle]="'descriptiveGrade'">
+        <div class="field-row">
+          <app-select
+            class="field-half"
+            formControlName="pronunciation"
+            [label]="'pronunciation'"
+            [required]="true"
+            [itemList]="markOptions(pronunciationMarks)"
+            [errorMessage]="'fieldIsRequired'"
+          ></app-select>
 
-        <mat-form-field class="w-50 px-2">
-          <mat-label>{{ "pronunciation" | translate }}</mat-label>
-          <mat-select formControlName="pronunciation">
-            @for (mark of pronunciationMarks; track mark) {
-              <mat-option
-              [value]="
-                form.controls['sex'].value === Sex.MALE
-                  ? mark.value
-                  : mark.valueFemale
-              "
-                >
-                {{
-                (form.controls["sex"].value === Sex.MALE
-                ? mark.viewValue
-                : mark.viewValueFemale!
-                ) | translate
-                }}
-              </mat-option>
-            }
-          </mat-select>
-          @if (form.controls['pronunciation'].hasError('required')) {
-            <mat-error
-              >{{ "fieldIsRequired" | translate }}
-            </mat-error>
-          }
-        </mat-form-field>
+          <app-select
+            class="field-half"
+            formControlName="vocabulary"
+            [label]="'vocabulary'"
+            [required]="true"
+            [itemList]="markOptions(vocabularyMarks)"
+            [errorMessage]="'fieldIsRequired'"
+          ></app-select>
+        </div>
 
-        <mat-form-field class="w-50 px-2">
-          <mat-label>{{ "vocabulary" | translate }}</mat-label>
-          <mat-select formControlName="vocabulary">
-            @for (mark of vocabularyMarks; track mark) {
-              <mat-option
-              [value]="
-                form.controls['sex'].value === Sex.MALE
-                  ? mark.value
-                  : mark.valueFemale
-              "
-                >
-                {{
-                (form.controls["sex"].value === Sex.MALE
-                ? mark.viewValue
-                : mark.viewValueFemale!
-                ) | translate
-                }}
-              </mat-option>
-            }
-          </mat-select>
-          @if (form.controls['vocabulary'].hasError('required')) {
-            <mat-error
-              >{{ "fieldIsRequired" | translate }}
-            </mat-error>
-          }
-        </mat-form-field>
+        <div class="field-row">
+          <app-select
+            class="field-half"
+            formControlName="prepareToLecture"
+            [label]="'preparationForClasses'"
+            [required]="true"
+            [itemList]="markOptions(prepareToLectureMarks)"
+            [errorMessage]="'fieldIsRequired'"
+          ></app-select>
 
-        <mat-form-field class="w-50 px-2">
-          <mat-label>{{ "preparationForClasses" | translate }}</mat-label>
-          <mat-select formControlName="prepareToLecture">
-            @for (mark of prepareToLectureMarks; track mark) {
-              <mat-option
-              [value]="
-                form.controls['sex'].value === Sex.MALE
-                  ? mark.value
-                  : mark.valueFemale
-              "
-                >
-                {{
-                (form.controls["sex"].value === Sex.MALE
-                ? mark.viewValue
-                : mark.viewValueFemale!
-                ) | translate
-                }}
-              </mat-option>
-            }
-          </mat-select>
-          @if (form.controls['prepareToLecture'].hasError('required')) {
-            <mat-error
-              >{{ "fieldIsRequired" | translate }}
-            </mat-error>
-          }
-        </mat-form-field>
+          <app-select
+            class="field-half"
+            formControlName="homeworks"
+            [label]="'homework'"
+            [required]="true"
+            [itemList]="markOptions(homeworksMarks)"
+            [errorMessage]="'fieldIsRequired'"
+          ></app-select>
+        </div>
 
-        <mat-form-field class="w-50 px-2">
-          <mat-label>{{ "homework" | translate }}</mat-label>
-          <mat-select formControlName="homeworks">
-            @for (mark of homeworksMarks; track mark) {
-              <mat-option
-              [value]="
-                form.controls['sex'].value === Sex.MALE
-                  ? mark.value
-                  : mark.valueFemale
-              "
-                >
-                {{
-                (form.controls["sex"].value === Sex.MALE
-                ? mark.viewValue
-                : mark.viewValueFemale!
-                ) | translate
-                }}
-              </mat-option>
-            }
-          </mat-select>
-          @if (form.controls['homeworks'].hasError('required')) {
-            <mat-error
-              >{{ "fieldIsRequired" | translate }}
-            </mat-error>
-          }
-        </mat-form-field>
+        <div class="field-row">
+          <app-select
+            class="field-half"
+            formControlName="involvement"
+            [label]="'engagement'"
+            [required]="true"
+            [itemList]="markOptions(involvementMarks)"
+            [errorMessage]="'fieldIsRequired'"
+          ></app-select>
 
-        <mat-form-field class="w-50 px-2">
-          <mat-label>{{ "engagement" | translate }}</mat-label>
-          <mat-select formControlName="involvement">
-            @for (mark of involvementMarks; track mark) {
-              <mat-option
-              [value]="
-                form.controls['sex'].value === Sex.MALE
-                  ? mark.value
-                  : mark.valueFemale
-              "
-                >
-                {{
-                (form.controls["sex"].value === Sex.MALE
-                ? mark.viewValue
-                : mark.viewValueFemale!
-                ) | translate
-                }}
-              </mat-option>
-            }
-          </mat-select>
-          @if (form.controls['involvement'].hasError('required')) {
-            <mat-error
-              >{{ "fieldIsRequired" | translate }}
-            </mat-error>
-          }
-        </mat-form-field>
+          <app-select
+            class="field-half"
+            formControlName="behaviour"
+            [label]="'behaviourInClass'"
+            [required]="true"
+            [itemList]="markOptions(behaviourMarks)"
+            [errorMessage]="'fieldIsRequired'"
+          ></app-select>
+        </div>
 
-        <mat-form-field class="w-50 px-2">
-          <mat-label>{{ "behaviourInClass" | translate }}</mat-label>
-          <mat-select formControlName="behaviour">
-            @for (mark of behaviourMarks; track mark) {
-              <mat-option
-              [value]="
-                form.controls['sex'].value === Sex.MALE
-                  ? mark.value
-                  : mark.valueFemale
-              "
-                >
-                {{
-                (form.controls["sex"].value === Sex.MALE
-                ? mark.viewValue
-                : mark.viewValueFemale!
-                ) | translate
-                }}
-              </mat-option>
-            }
-          </mat-select>
-          @if (form.controls['behaviour'].hasError('required')) {
-            <mat-error
-              >{{ "fieldIsRequired" | translate }}
-            </mat-error>
-          }
-        </mat-form-field>
+        <div class="field-row">
+          <app-select
+            class="field-full"
+            formControlName="frequency"
+            [label]="'frequency'"
+            [itemList]="frequencyOptions"
+          ></app-select>
+        </div>
 
-        <mat-form-field class="w-100 px-2">
-          <mat-label>{{ "frequency" | translate }}</mat-label>
-          <mat-select formControlName="frequency">
-            @for (mark of frequencyMarks; track mark) {
-              <mat-option
-                [value]="mark.value"
-                >
-                {{ mark.viewValue | translate }}
-              </mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field class="w-100 px-2">
-          <mat-label>{{
-            (form.controls["reportType"].value === ReportType.SEMESTER
-            ? "semesterMark"
-            : "trimesterMark"
-            ) | translate
-          }}</mat-label>
-          <input matInput formControlName="avgMark" />
-        </mat-form-field>
+        <div class="field-row">
+          <app-input-text
+            class="field-full"
+            formControlName="avgMark"
+            [label]="
+              form.controls['reportType'].value === ReportType.SEMESTER
+                ? 'semesterMark'
+                : 'trimesterMark'
+            "
+          ></app-input-text>
+        </div>
 
         @if (form.controls['reportType'].value === ReportType.SEMESTER) {
-          <mat-checkbox
-            class="mb-4"
-            formControlName="recommendationToCambridgeExam"
-            >
-            {{ "recommendationToCambridgeExam" | translate }}
-          </mat-checkbox>
+          <div class="field-row">
+            <mat-checkbox formControlName="recommendationToCambridgeExam">
+              {{ "recommendationToCambridgeExam" | translate }}
+            </mat-checkbox>
+          </div>
         }
 
-        <mat-form-field class="w-100 px-2">
-          <mat-label>Informacje dodatkowe</mat-label>
-          <textarea matInput formControlName="additionalComment"></textarea>
-        </mat-form-field>
-      </div>
-    </div>
-
-    <div class="row mt-3">
-      <div class="col-12 mb-1">
-        <h2 class="subtitle">{{ "Rekomendacje egzaminacyjne" | translate }}</h2>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-12">
-        <mat-checkbox formControlName="isExamRecommendation"
-          >Dodaj rekomendację egzaminacyjną</mat-checkbox
-          >
+        <div class="field-row">
+          <app-textarea
+            class="field-full"
+            formControlName="additionalComment"
+            [label]="'Informacje dodatkowe'"
+          ></app-textarea>
         </div>
-      </div>
+      </app-form-wrapper>
+    </section>
 
-      <div class="row mb-4">
-        <mat-radio-group formControlName="examRecommendationOptions">
-          <mat-radio-button
-            value="1"
-            [disabled]="!form.controls['isExamRecommendation'].value"
-            (change)="onCheckboxChangeRecommendation()"
-            >{{
-            "Rekomendacje egzaminacyjne zostaną przekazane po kolejnym próbnym teście Cambridge."
-            | translate
-            }}
-          </mat-radio-button>
-          <mat-radio-button
-            value="2"
-            [disabled]="!form.controls['isExamRecommendation'].value"
-            (change)="onCheckboxChangeRecommendation()"
-            >{{
-            "Nie rekomenduję wzięcia udziału w czerwcowej sesji egzaminacyjnej Cambridge w tym roku szkolnym."
-            | translate
-            }}
-          </mat-radio-button>
-          <mat-radio-button
-            value="3"
-            (change)="onCheckboxChange()"
-            [disabled]="!form.controls['isExamRecommendation'].value"
-            >{{
-            "Rekomenduję wzięcie udziału w czerwcowej sesji egzaminacyjnej Cambridge w tym roku szkolnym."
-            | translate
-            }}
-          </mat-radio-button>
-        </mat-radio-group>
+    <section class="form-section">
+      <app-form-wrapper [sectionTitle]="'examRecommendations'">
+        <div class="field-row">
+          <mat-checkbox formControlName="isExamRecommendation">
+            {{ "Dodaj rekomendację egzaminacyjną" | translate }}
+          </mat-checkbox>
+        </div>
+
+        <div class="field-row">
+          <mat-radio-group formControlName="examRecommendationOptions">
+            <mat-radio-button
+              value="1"
+              [disabled]="!form.controls['isExamRecommendation'].value"
+              (change)="onCheckboxChangeRecommendation()"
+            >
+              {{
+                "Rekomendacje egzaminacyjne zostaną przekazane po kolejnym próbnym teście Cambridge."
+                  | translate
+              }}
+            </mat-radio-button>
+            <mat-radio-button
+              value="2"
+              [disabled]="!form.controls['isExamRecommendation'].value"
+              (change)="onCheckboxChangeRecommendation()"
+            >
+              {{
+                "Nie rekomenduję wzięcia udziału w czerwcowej sesji egzaminacyjnej Cambridge w tym roku szkolnym."
+                  | translate
+              }}
+            </mat-radio-button>
+            <mat-radio-button
+              value="3"
+              [disabled]="!form.controls['isExamRecommendation'].value"
+              (change)="onCheckboxChange()"
+            >
+              {{
+                "Rekomenduję wzięcie udziału w czerwcowej sesji egzaminacyjnej Cambridge w tym roku szkolnym."
+                  | translate
+              }}
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
 
         @if (isChecked) {
-          <div class="col-12">
-            <p>{{ "Rekomenduję podejście do egzaminu" | translate }}</p>
-            <mat-form-field class="w-50">
-              <mat-label>{{ "Egzamin" | translate }}</mat-label>
-              <mat-select formControlName="examRecommendationResult">
-                @for (result of examsRecommendations; track result) {
-                  <mat-option
-                    [value]="result"
-                    >
-                    {{ result }}
-                  </mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
+          <div class="field-row">
+            <p class="field-full">{{ "Rekomenduję podejście do egzaminu" | translate }}</p>
+          </div>
+
+          <div class="field-row">
+            <app-select
+              class="field-half"
+              formControlName="examRecommendationResult"
+              [label]="'Egzamin'"
+              [itemList]="examsRecommendations"
+            ></app-select>
           </div>
         }
-      </div>
+      </app-form-wrapper>
+    </section>
 
-      <div class="row">
-        <div class="col-12">
-          <div class="row">
-            <div class="col-12">
-              <mat-accordion class="example-headers-align" multi>
-                <mat-expansion-panel>
-                  <mat-expansion-panel-header>
-                    <mat-panel-title>
-                      {{ "additionalExamInformation" | translate }}
-                    </mat-panel-title>
-                  </mat-expansion-panel-header>
-                  <ul>
-                    @for (text of addExamInfoCambridge; track text) {
-                      <li>
-                        <p>
-                          {{ text }}
-                        </p>
-                      </li>
-                    }
-                  </ul>
-                </mat-expansion-panel>
-              </mat-accordion>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row mt-4">
-        <div class="col-12 mb-4">
-          <h2 class="subtitle">{{ "Podpis" | translate }}</h2>
-        </div>
-      </div>
-
-      <div class="row">
-        <mat-form-field class="col-12">
-          <mat-label>{{ "teacher" | translate }}</mat-label>
-          <mat-select formControlName="signature">
-            @for (teacher of teachers; track teacher) {
-              <mat-option [value]="teacher">
-                {{ teacher }}
-              </mat-option>
+    <section class="form-section">
+      <mat-accordion class="example-headers-align" multi>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>{{ "additionalExamInformation" | translate }}</mat-panel-title>
+          </mat-expansion-panel-header>
+          <ul>
+            @for (text of addExamInfoCambridge; track text) {
+              <li>
+                <p>{{ text }}</p>
+              </li>
             }
-          </mat-select>
-        </mat-form-field>
-      </div>
+          </ul>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </section>
 
-      <div class="row generate-btn">
-        <div class="col-12 d-flex justify-content-end">
-          <button
-            mat-raised-button
-            color="primary"
-            type="submit"
-            [disabled]="form.invalid"
-            >
-            {{ "downloadPDF" | translate }}
-          </button>
+    <section class="form-section">
+      <app-form-wrapper [sectionTitle]="'signature'">
+        <div class="field-row">
+          <app-select
+            class="field-full"
+            formControlName="signature"
+            [label]="'teacher'"
+            [itemList]="teachers"
+          ></app-select>
         </div>
-      </div>
-    </form>
-  </div>
+      </app-form-wrapper>
+    </section>
+
+    <div class="generate-btn">
+      <app-button
+        [translateKey]="'downloadPDF'"
+        [icon]="'download'"
+        [type]="'submit'"
+        [disabled]="form.invalid"
+      ></app-button>
+    </div>
+  </form>
+</div>

@@ -1,20 +1,14 @@
 <mat-form-field appearance="outline">
   <mat-label>{{ label() | translate }}</mat-label>
-  <mat-select
+  <textarea
+    matInput
     [formControl]="control"
     [placeholder]="placeholder() | translate"
     [required]="required()"
-    [multiple]="multiple()"
+    [rows]="rows()"
     [errorStateMatcher]="errorStateMatcher"
-    (selectionChange)="selectionChange.emit($event.value)"
-    (closed)="onClosed()"
-  >
-    @for (item of options(); track item.value) {
-      <mat-option [value]="item.value">
-        {{ item.label | translate }}
-      </mat-option>
-    }
-  </mat-select>
+    (blur)="onBlur()"
+  ></textarea>
 
   <mat-error>{{ errorMessage() | translate }}</mat-error>
 </mat-form-field>

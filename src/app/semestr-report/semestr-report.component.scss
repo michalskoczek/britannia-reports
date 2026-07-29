@@ -1,23 +1,68 @@
-@use "../../assets/styles/utils/index" as *;
+@use "../../assets/styles/utils/index" as ds;
+@use "../../assets/styles/mixins" as *;
 
-.subtitle {
-  font: 600 22px/1 $font;
+.container {
+  max-width: 1400px;
+}
+
+.form-section {
+  display: block;
+  margin-top: ds.$distance-24;
+}
+
+.field-row {
+  @include form-row;
+
+  margin-bottom: ds.$distance-8;
+
+  .field-half {
+    @include form-col(2);
+  }
+
+  .field-full {
+    @include form-col(1);
+  }
+}
+
+// The percentage-to-grade reference table. Not a form, so it takes a bare `app-section-title` above a
+// card rather than an `app-form-wrapper` — the same composition both Teddy Eddie tables use.
+.scale-wrapper {
+  @include card-surface;
+
+  margin: 0 auto;
+  padding: ds.$distance-8;
+  width: 100%;
+  overflow: auto;
+
+  .scale-table {
+    width: min-content;
+    background: transparent;
+    overflow: hidden;
+
+    @include data-table-cells;
+  }
+
+  .scale-note {
+    display: block;
+    padding-top: ds.$distance-8;
+    color: ds.$britannia-blue;
+  }
 }
 
 .generate-btn {
   position: fixed;
   bottom: 30px;
   right: 30px;
-}
-
-.signature-textarea {
-  height: 250px !important;
+  z-index: 99999;
 }
 
 ::ng-deep .mat-mdc-radio-button .mdc-radio {
   padding: 8px 2px 8px 16px;
 }
 
+// Deliberately kept, despite escaping this component: it is the only source of the Teddy Eddie tables'
+// 38px row height. See `docs/design-language.md` §3 — removing it is a visual change to the reference
+// tab and is out of scope for this slice.
 ::ng-deep .mat-mdc-row {
   height: 38px !important;
 }

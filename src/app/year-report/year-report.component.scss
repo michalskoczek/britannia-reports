@@ -1,100 +1,107 @@
-@use "../../assets/styles/utils/index" as *;
+@use "../../assets/styles/utils/index" as ds;
 @use "../../assets/styles/mixins" as *;
 
-.subtitle {
-  font: 600 22px/1 $font;
+.container {
+  max-width: 1400px;
+}
+
+.form-section {
+  display: block;
+  margin-top: ds.$distance-24;
+}
+
+.field-row {
+  @include form-row;
+
+  margin-bottom: ds.$distance-8;
+
+  .field-half {
+    @include form-col(2);
+  }
+
+  .field-full {
+    @include form-col(1);
+  }
+
+  .field-label {
+    width: 100%;
+    margin: 0;
+    font-weight: 600;
+    color: ds.$britannia-blue;
+  }
+
+  .checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: ds.$distance-16;
+  }
+}
+
+// All three tables on this form are Material tables, so they share one `data-table-cells` inclusion.
+// Including it once per table would emit the whole `::ng-deep` block three times and blow the
+// component-style budget; one scoping class covers them all.
+.data-table {
+  background: transparent;
+  overflow: hidden;
+
+  @include data-table-cells;
+}
+
+// Two tables side by side — the percentage scale and the year-end detail table. Neither is a form, so
+// the section takes a bare `app-section-title` above them rather than an `app-form-wrapper`.
+.grades-row {
+  @include form-row;
+
+  align-items: stretch;
+}
+
+.scale-wrapper,
+.detail-wrapper,
+.path-wrapper {
+  @include card-surface;
+
+  padding: ds.$distance-8;
+  overflow: auto;
+}
+
+.scale-wrapper {
+  .scale-table {
+    width: min-content;
+  }
+
+  .scale-note {
+    display: block;
+    padding-top: ds.$distance-8;
+    color: ds.$britannia-blue;
+  }
+}
+
+.detail-wrapper {
+  flex: 1 1 320px;
+
+  .detail-table {
+    width: 100%;
+  }
+}
+
+.path-wrapper {
+  width: 100%;
+
+  .path-table {
+    width: 100%;
+  }
 }
 
 .generate-btn {
   position: fixed;
   bottom: 30px;
   right: 30px;
+  z-index: 99999;
 }
 
-.row-wrapper {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  width: 100%;
-
-  div {
-    width: 100%;
-  }
-
-  p {
-    width: calc(100% / 6);
-    border: 1px solid black;
-    margin: 0;
-  }
-
-  .row-group {
-    width: 100%;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    flex-wrap: wrap;
-
-    div {
-      width: calc(100% / 6);
-      border: 1px solid black;
-      margin: 0;
-
-      input {
-        width: 100%;
-      }
-    }
-  }
-}
-
-.table-wrapper {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  width: 100%;
-  flex-wrap: wrap;
-
-  .table-row {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    width: 100%;
-    border: 1px solid black;
-    margin: 0;
-
-    .title {
-      width: 60%;
-      border-right: 1px solid black;
-      padding: 5px 0;
-
-      p {
-        margin: 0;
-      }
-    }
-
-    .select-wrapper {
-      width: 30%;
-      border-right: 1px solid black;
-      padding: 5px 0;
-
-      input {
-        width: 100%;
-      }
-    }
-
-    .checkbox-wrapper {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 5px 0;
-      width: 10%;
-    }
-  }
-}
-
-.signature-textarea {
-  height: 250px !important;
-}
-
+// Deliberately kept, despite escaping this component: together with the copy in
+// `semestr-report.component.scss` it is the only source of the Teddy Eddie tables' 38px row height —
+// which this form's tables now share. See `docs/design-language.md` §3.
 ::ng-deep .mat-mdc-row {
   height: 38px !important;
 }
