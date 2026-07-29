@@ -1,10 +1,10 @@
 ---
 change_id: google-sign-in-gate
 title: Gate the four report forms behind Google sign-in
-status: impl_reviewed
+status: archived
 created: 2026-07-28
-updated: 2026-07-28
-archived_at: null
+updated: 2026-07-29
+archived_at: 2026-07-29T11:06:50Z
 ---
 
 ## Notes

@@ -38,7 +38,7 @@ The change turns a stateless public tool into a stateful, signed-in product. The
 | F-02 | `pdf-fidelity-baseline`       | (foundation) a repeatable before/after PDF comparison exists for all four report types | —             | §Success Criteria (Guardrails), FR-015, FR-016, FR-017 | ready    |
 | S-05a | `report-design-language`     | (enabling) the visual language is extracted from the Teddy Eddie form into tokens, mixins, and shared patterns, and written down | F-01, F-02    | OQ-1                                              | merged (not deployed) |
 | S-05b | `report-design-refresh`      | fill the semester, year-end, and Cambridge **forms** in that same visual language | S-05a         | OQ-1, FR-014, FR-015, FR-016, FR-017              | merged (not deployed) |
-| S-01 | `google-sign-in-gate`         | sign in with Google and reach the four existing report forms; unauthenticated visitors cannot | F-01, F-02    | FR-001, FR-002, FR-003, FR-004, FR-014, FR-015, FR-016, FR-017, FR-018 | merged (not deployed) |
+| S-01 | `google-sign-in-gate`         | sign in with Google and reach the four existing report forms; unauthenticated visitors cannot | F-01, F-02    | FR-001, FR-002, FR-003, FR-004, FR-014, FR-015, FR-016, FR-017, FR-018 | done (not deployed) |
 | S-02 | `trimester-report-templates`  | save a trimester/semester report as a named template, list, apply, and delete templates | S-01          | US-01, FR-009, FR-010, FR-011, FR-012, FR-014, FR-018 | proposed |
 | S-03 | `student-roster`              | add, view, edit, and delete students on their own roster                       | S-01          | FR-005, FR-006, FR-007, FR-008, FR-018            | proposed |
 | S-04 | `student-picker-in-report`    | pick a student from the roster when starting a trimester/semester report       | S-02, S-03    | US-01, FR-013, FR-014                             | proposed |
@@ -155,7 +155,7 @@ Two decisions already recorded upstream and treated as settled by this roadmap:
   - **Nothing was deployed.** No hosting deploy, not even a preview channel — the public-URL regression still waits on Open Roadmap Question #2. App Check enforcement was left off and is now unowned; attach it to that first deploy.
 - **What it cost that the plan did not predict:** three defects reached a running browser through a fully green test suite — a broken SDK call (`setPersistence` with a value from `@angular/fire`'s wildcard re-export), a guard reading stale session state after sign-in, and a sign-out that never left the shell. All three lived in the seam between the app and Firebase, which is exactly the seam unit-test fakes replace. Treat "the suite is green" as saying nothing about the Firebase layer.
 - **Merged (2026-07-29):** landed on `10xdevs-m2l5` after `S-05b`, as Stream E's ordering intended. The four contested files predicted above resolved exactly as predicted and mechanically: both i18n bundles (append-only, key parity re-verified at 267/267), `button.component.ts` (both slices added an identical `disabled` input; `S-05b`'s `variant` is the superset), and `docs/design-language.md` (three sections where each slice retired the other's "no consumer" markers). Combined gates on the merge commit: lint clean, **50/50** specs, both production and development builds type-check, five pre-existing SCSS budget warnings and no new ones.
-- **Status:** merged into `10xdevs-m2l5`, not deployed
+- **Status:** done — archived 2026-07-29, **not deployed**
 
 ### S-02: Trimester/semester report templates — **north star**
 
@@ -237,4 +237,4 @@ Two decisions already recorded upstream and treated as settled by this roadmap:
 
 ## Done
 
-(Empty on first generation. `/10x-archive` appends here when a change whose `Change ID` matches a roadmap item is archived.)
+- **S-01: A teacher signs in with a Google account and reaches the four existing report forms; a visitor who is not signed in lands on a sign-in screen and cannot reach any form.** — Archived 2026-07-29 → `context/archive/2026-07-28-google-sign-in-gate/`. Lesson: a green unit suite says nothing about the Firebase seam — three defects reached a running browser through it.
