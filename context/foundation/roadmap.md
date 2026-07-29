@@ -3,7 +3,7 @@ project: "Britannia Reports"
 version: 1
 status: draft
 created: 2026-07-10
-updated: 2026-07-27
+updated: 2026-07-28
 prd_version: 1
 main_goal: low-complexity
 top_blocker: time
@@ -38,7 +38,7 @@ The change turns a stateless public tool into a stateful, signed-in product. The
 | F-02 | `pdf-fidelity-baseline`       | (foundation) a repeatable before/after PDF comparison exists for all four report types | —             | §Success Criteria (Guardrails), FR-015, FR-016, FR-017 | ready    |
 | S-05a | `report-design-language`     | (enabling) the visual language is extracted from the Teddy Eddie form into tokens, mixins, and shared patterns, and written down | F-01, F-02    | OQ-1                                              | planned  |
 | S-05b | `report-design-refresh`      | fill the semester, year-end, and Cambridge **forms** in that same visual language | S-05a         | OQ-1, FR-014, FR-015, FR-016, FR-017              | planned  |
-| S-01 | `google-sign-in-gate`         | sign in with Google and reach the four existing report forms; unauthenticated visitors cannot | F-01, F-02    | FR-001, FR-002, FR-003, FR-004, FR-014, FR-015, FR-016, FR-017, FR-018 | proposed |
+| S-01 | `google-sign-in-gate`         | sign in with Google and reach the four existing report forms; unauthenticated visitors cannot | F-01, F-02    | FR-001, FR-002, FR-003, FR-004, FR-014, FR-015, FR-016, FR-017, FR-018 | implemented (not deployed) |
 | S-02 | `trimester-report-templates`  | save a trimester/semester report as a named template, list, apply, and delete templates | S-01          | US-01, FR-009, FR-010, FR-011, FR-012, FR-014, FR-018 | proposed |
 | S-03 | `student-roster`              | add, view, edit, and delete students on their own roster                       | S-01          | FR-005, FR-006, FR-007, FR-008, FR-018            | proposed |
 | S-04 | `student-picker-in-report`    | pick a student from the roster when starting a trimester/semester report       | S-02, S-03    | US-01, FR-013, FR-014                             | proposed |
@@ -142,12 +142,16 @@ Two decisions already recorded upstream and treated as settled by this roadmap:
 - **Prerequisites:** F-01, F-02 (hard); `S-05a` (soft — see below)
 - **Parallel with:** S-05b, once `S-05a` has merged
 - **Blockers:** —
-- **Unknowns:**
-  - The app has no navigation layer at all — the sign-in gate needs either a real navigation surface or a shell-level conditional above the tab registry. Which one is cheaper here is not something the PRD can answer. — Owner: implementer. Block: no.
-  - FR-003 says the developer seeds teacher Google identifiers into the backing store, but the shape of that seed (a document per teacher? a static allowlist? who runs it?) is unspecified. — Owner: implementer. Block: no.
+- **Unknowns:** both resolved during implementation (2026-07-28).
+  - ~~Navigation layer~~ → a minimal Angular Router: two routes (`/sign-in`, guarded shell), `@angular/router` was already an unused dependency. The tab registry stays the composition mechanism inside the shell; there is no route per report type.
+  - ~~Shape of the FR-003 seed~~ → a Firestore collection `allowedUsers`, document id = the lowercased Google address, one `role` field (`teacher` | `director`), read-only to the account it names and writable by nobody. Keyed on email rather than UID because a UID does not exist before first sign-in, which would make advance seeding impossible. Procedure: `docs/teacher-allowlist-runbook.md`.
 - **Parallelism with Stream E** (assessed 2026-07-27): the two slices work on different layers and can run concurrently. `S-01` works *above* the report components — `AppComponent` mounts them through `NgComponentOutlet` against `TabData.tabs`, so the gate can sit in the shell without editing a single report template. `S-05b` works *inside* three of those templates. `S-05a` is a soft prerequisite rather than a hard one: `S-01` builds a new sign-in surface that must `@use` the shared style tokens, and starting before `S-05a` publishes them means either a merge-time build break or a sign-in screen in the old visual language — the exact rework the Stream E ordering exists to avoid. Remaining contested files after `S-05a` lands, all minor: `src/assets/i18n/{en,pl}.json` (both slices append keys) and `src/app/shared/components/UI/header/` (`S-01` wants sign-out there). Coordinate those two; everything else is disjoint.
 - **Risk:** This is the slice that carries the change's only deliberate regression — the public URL stops working for anyone not on file. It also touches all four report forms, which is precisely where the PDF fidelity guardrail bites, hence `F-02` as a prerequisite rather than an afterthought. Sequenced first among slices because both the north star and the roster need an identity to scope "their own" data against; there is no cheaper ordering. The three preserved form types (`FR-015`–`FR-017`) must come out of this slice behaviourally untouched — gating wraps them, it does not enter them. One cost the entry above understates: `src/CLAUDE.md` records that the first change adding a real collection must stand up the Firebase emulator suite and a rules-testing harness first. `FR-003`'s teacher allowlist is that collection, so this slice owns that work and is larger than it looks — which is also what makes the parallel window for `S-05b` comfortable.
-- **Status:** proposed
+- **Outcome (2026-07-28):** delivered in five phases on `feature/google-sign-in-gate` (`ca0458e`, `b29afa0`, `8f5940f`, `3efa55c`, + epilogue). **Two deliberate deviations, both carried forward:**
+  - **The emulator suite and rules-testing harness were NOT built.** The slice shipped one conditional rule without them, on the argument that `allowedUsers` is read-only to every caller and holds no student data. That argument does not extend to `S-02` or `S-03`, which now inherit the work as a hard prerequisite. See `## Open Roadmap Questions` #5.
+  - **Nothing was deployed.** No hosting deploy, not even a preview channel — the public-URL regression still waits on Open Roadmap Question #2. App Check enforcement was left off and is now unowned; attach it to that first deploy.
+- **What it cost that the plan did not predict:** three defects reached a running browser through a fully green test suite — a broken SDK call (`setPersistence` with a value from `@angular/fire`'s wildcard re-export), a guard reading stale session state after sign-in, and a sign-out that never left the shell. All three lived in the seam between the app and Firebase, which is exactly the seam unit-test fakes replace. Treat "the suite is green" as saying nothing about the Firebase layer.
+- **Status:** implemented, not deployed
 
 ### S-02: Trimester/semester report templates — **north star**
 
@@ -195,9 +199,9 @@ Two decisions already recorded upstream and treated as settled by this roadmap:
 | F-02       | `pdf-fidelity-baseline`      | Capture reference PDFs and a before/after comparison procedure        | yes                   | Parallel with F-01. Run `/10x-plan pdf-fidelity-baseline`.     |
 | S-05a      | `report-design-language`     | Extract the Teddy Eddie visual language into shared tokens, mixins, and patterns | yes           | First slice. F-01 and F-02 are `impl_reviewed`. Run `/10x-plan report-design-language`. Small and enabling; unblocks S-01 and S-05b in parallel. |
 | S-05b      | `report-design-refresh`      | Align the semester, year-end, and Cambridge forms with the Teddy Eddie design | no                    | Needs S-05a. Then parallel with S-01. Forms only — PDF output unchanged. |
-| S-01       | `google-sign-in-gate`        | Gate the four report forms behind Google sign-in                      | no                    | Needs F-01 and F-02; start after S-05a merges. Then parallel with S-05b. |
-| S-02       | `trimester-report-templates` | Save, list, apply, and delete trimester/semester templates            | no                    | North star. Needs S-01.                                         |
-| S-03       | `student-roster`             | Teacher-scoped student roster with add / view / edit / delete         | no                    | Needs S-01. Parallel with S-02.                                 |
+| S-01       | `google-sign-in-gate`        | Gate the four report forms behind Google sign-in                      | done                  | Implemented 2026-07-28, **not deployed**. Emulator harness deferred to S-02/S-03. |
+| S-02       | `trimester-report-templates` | Save, list, apply, and delete trimester/semester templates            | yes                   | North star. S-01 landed. **Inherits the emulator suite + rules-testing harness as a hard prerequisite — build it before the first per-teacher rule.** Ownership keys on `request.auth.uid`, not the email the allowlist uses. |
+| S-03       | `student-roster`             | Teacher-scoped student roster with add / view / edit / delete         | yes                   | S-01 landed. Parallel with S-02. Same inherited harness prerequisite, and the first slice to persist minors' data — see Open Roadmap Question #1. |
 | S-04       | `student-picker-in-report`   | Pre-fill student-identity fields from the roster in the report form   | no                    | Needs S-02 and S-03.                                            |
 
 ## Open Roadmap Questions
@@ -206,6 +210,8 @@ Two decisions already recorded upstream and treated as settled by this roadmap:
 2. **Cutover communication to bookmarked-link users.** FR-004 removes public-URL access; the message telling existing visitors that they now need a seeded account does not exist. Owner: school director. Block: nothing before deploy; gates the deploy of `S-01`. Carried from PRD Open Question #4.
 3. **Backend persistence platform (PRD Open Question #3) — effectively resolved, PRD not yet updated.** `infrastructure.md` selects Firebase and records `eur3` as the Firestore location. The PRD still lists this as open. Owner: implementer. Block: nothing — `F-01` proceeds on the `infrastructure.md` decision. Worth closing in the PRD so the two documents stop disagreeing.
 4. **Visual-language consolidation (PRD Open Question #1) — now owned by `S-05a` + `S-05b`.** `src/CLAUDE.md` directs new surfaces to Angular Material, which covers new work. What it does not cover is the drift found during `F-01`/`F-02`: the semester, year-end, and Cambridge *forms* still carry an older design while the Teddy Eddie form carries the newest. `S-05a` names and extracts that language, `S-05b` applies it; generated PDFs are out of scope for both. Owner: implementer. Block: none.
+5. **Firestore rules have no automated test, and the next slice inherits that.** `S-01` shipped the project's first conditional rule (`allowedUsers`) without the emulator suite or `@firebase/rules-unit-testing`, deliberately: that rule is read-only to every caller and holds no student data, so the cross-teacher leak in the pre-mortem has no surface in it. `S-02` and `S-03` store per-teacher data whose correctness *is* a field-name comparison in a rule, so the argument stops applying there. Owner: implementer. Block: **yes for `S-02`/`S-03`** — before their first per-teacher rule, not after. Setup cost (a JDK is still missing on the dev machine, plus a second Node-based test runner alongside Karma) is itemised in `infrastructure.md` → Getting Started step 4. Added 2026-07-28.
+6. **App Check enforcement is unowned.** Registered in monitoring mode since F-01; `S-01` was expected to enable it and deliberately did not, since enforcement requires a deployed client and this slice deploys nothing. Owner: whoever runs the first hosting deploy of the gate. Block: nothing today — it protects nothing either. Added 2026-07-28.
 
 ## Parked
 

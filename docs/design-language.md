@@ -43,7 +43,7 @@ All tokens are reachable through a single entry point:
 | `$black-87` | `rgba(0, 0, 0, 0.87)` | Disabled-cell text, kept legible | `patterns/_data-table.scss:77` |
 | `$black-08` | `rgba(0, 0, 0, 0.08)` | Header-cell divider | `patterns/_data-table.scss:24` |
 | `$black-06` | `rgba(0, 0, 0, 0.06)` | Body-cell divider | `patterns/_data-table.scss:37` |
-| `$britannia-red` | `#d4162f` | Destructive-action fill — `app-button`'s `danger` variant | `button.component.scss:35` |
+| `$britannia-red` | `#d4162f` | Destructive-action fill — `app-button`'s `danger` variant; sign-in denial and error messages | `button.component.scss:35`, `sign-in.component.scss` |
 
 ### Typography — `utils/_typography.scss`
 
@@ -62,8 +62,8 @@ two-consumer test — a scale would have been invented, not extracted.
 | `$distance-8` | `8px` | `patterns/_section-title.scss:14`, `tab-group.component.scss:9` |
 | `$distance-16` | `16px` | `patterns/_section-title.scss:14`, `header.component.scss:7` |
 | `$distance-24` | `24px` | `styles.scss:20` |
-| `$distance-32` | `32px` | **No consumer** — see §6 |
-| `$distance-40` | `40px` | **No consumer** — see §6 |
+| `$distance-32` | `32px` | `sign-in.component.scss` (card padding) |
+| `$distance-40` | `40px` | `sign-in.component.scss` (card top margin), `app.component.scss` (boot indicator) |
 
 ### Radius — `utils/_radius.scss`
 
@@ -196,7 +196,8 @@ composing them the same way is how a new screen lands in the same language.
 Until `S-05b` each of these had exactly one consumer, so none passed the two-consumer test as a *token* —
 they were listed because a new screen needs them more than it needs any variable. **That is no longer
 true:** all four report forms now compose them, and the inputs below are the full published surface, not
-just what Teddy Eddie happens to use.
+just what Teddy Eddie happens to use. `S-01` bore the original bet out from the other direction: the
+sign-in screen it added is built from `app-button` and the published tokens, and needed no new pattern.
 
 | Component | Inputs | Call sites |
 | --- | --- | --- |
@@ -206,7 +207,7 @@ just what Teddy Eddie happens to use.
 | `app-select` | the above minus `[type]`, plus `[itemList]`, `[multiple]`, `(selectionChange)` | `teddy-eddie-form.component.html:9`, `semestr-report.component.html:70` (`[multiple]`), `cambridge-report.component.html:69` (`(selectionChange)`) |
 | `app-textarea` | `formControlName`, `[label]`, `[placeholder]`, `[required]`, `[errorMessage]`, `[rows]` | `semestr-report.component.html:124`, `year-report.component.html:282` |
 | `app-date` | `formControlName`, `[label]`, `[required]`, `[errorMessage]`, `[hint]`, `[readonly]` | `teddy-eddie-form.component.html:17`, `semestr-report.component.html:48` (`[hint]`), `cambridge-report.component.html:19` (`[readonly]`) |
-| `app-button` | `[translateKey]`, `[icon]`, `[type]`, `[disabled]`, `[variant]`, `(clicked)` | `teddy-eddie-report.component.html:38`, `semestr-report.component.html:353` (`[disabled]`), `exam-term-rows.component.html:8` (`[variant]`) |
+| `app-button` | `[translateKey]`, `[icon]`, `[type]`, `[disabled]`, `[variant]`, `(clicked)` | `teddy-eddie-report.component.html:38`, `semestr-report.component.html:353` (`[disabled]`), `exam-term-rows.component.html:8` (`[variant]`), `sign-in.component.html`, `header.component.html` |
 
 ### Choosing a form-field component
 
@@ -266,7 +267,7 @@ re-litigated every time someone notices the duplication.
 | Not extracted | Where it repeats | Why not |
 | --- | --- | --- |
 | Fixed generate-button offsets | `app.component.scss:6`, `teddy-eddie-report.component.scss:8`, `semestr-report.component.scss:54`, `year-report.component.scss:97` use `bottom: 30px`; `cambridge-report.component.scss:48` uses `bottom: 10px` | Repeated by coincidence, not by intent, and already inconsistent. A token would freeze the inconsistency and imply a decision nobody made. `S-05b` left the `10px` outlier alone for the same reason. |
-| The tab bar's copy of the elevation shadow | `tab-group.component.scss:15` | Left alone on purpose: it is app shell rather than report layer, and it uses a full `20px` radius, not the card's bottom-only radius. `S-01` should absorb it when it builds the sign-in surface. |
+| ~~The tab bar's copy of the elevation shadow~~ — **absorbed by `S-01`, 2026-07-28** | `tab-group.component.scss` | It now uses `ds.$shadow-1`. Verified a visual no-op by the §7.4 CSS diff, which came back empty. The full `20px` radius stays as it was — that is app shell, not the card's bottom-only radius, and it is still not part of the language. |
 
 Two rows were removed from this table by `S-05b`, and the reasons are worth keeping:
 
@@ -287,10 +288,13 @@ Recorded rather than hidden, so nobody rediscovers them as surprises.
   `S-05b` changes the corner radius to something else, the name will misdescribe its own value. This was a
   deliberate choice for consistency with `$distance-8` and friends; the alternative was a semantic layer
   alongside the existing brand names.
-- **Two tokens have no consumer**: `$distance-32` and `$distance-40`. They were kept rather than deleted
-  because deleting names from a layer meant to be a stable contract is the wrong default. `$britannia-red`
-  was the third until `S-05b` gave it to `app-button`'s `danger` variant.
-- **`tab-group.component.scss` still holds a fifth copy of the elevation shadow** — see §5.
+- ~~**Three tokens have no consumer**~~ — **all three have one as of 2026-07-29.** `$distance-32` and
+  `$distance-40` became the sign-in screen's padding and top margin in `S-01`; `$britannia-red` is both
+  that screen's denial message and, from `S-05b`, `app-button`'s `danger` variant fill. Keeping names in a
+  layer meant to be a stable contract, rather than deleting them for want of a call site, paid off within
+  two slices.
+- ~~**`tab-group.component.scss` still holds a fifth copy of the elevation shadow**~~ — absorbed by `S-01`,
+  see §5.
 - **Three root-level `::ng-deep` blocks escape their components on purpose** — see §3. They are load
   bearing, not oversights.
 - **Almost nothing enforces any of this.** There is still no stylelint config and no visual-regression

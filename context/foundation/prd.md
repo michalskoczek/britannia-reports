@@ -3,7 +3,7 @@ project: "Britannia Reports"
 version: 1
 status: draft
 created: 2026-05-23
-updated: 2026-07-27
+updated: 2026-07-28
 context_type: brownfield
 product_type: web-app
 target_scale:
@@ -250,4 +250,4 @@ Kept in place, with original numbering, so that references from downstream docum
    Extended 2026-07-27 — the resolution above covers new surfaces only. Existing-surface drift (three of the four report forms carry an older design than Teddy Eddie) is now owned by roadmap slice `S-05`, on-screen presentation only. See `## Constraints & Compatibility` → Visual-language convention.
 3. **Backend persistence platform.** RESOLVED 2026-07-20 → **Firestore**, as part of selecting Firebase (Hosting + Authentication + Firestore) as the platform; runner-up was Cloudflare (Pages + D1 + Access). Decision and its rationale live in `context/foundation/infrastructure.md`. Was owned by: implementer during `/10x-infra-research`.
 
-   Caveat — this is a decision, not an implementation. The Firestore database has not been created (region `eur3` is recorded as the intended one-way choice) and the Google sign-in provider is not yet enabled in the Firebase Console. FR-005 / FR-009 implementation is still gated on both steps.
+   Executed 2026-07-23 by `F-01`: the Firestore database exists in `eur3` (a one-way choice, now shut) and the Google sign-in provider is enabled. `S-01` added the first collection and the first conditional security rule on 2026-07-28. FR-005 / FR-009 are no longer gated on infrastructure.

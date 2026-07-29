@@ -1,21 +1,29 @@
-import { Component } from '@angular/core';
-import { Tab } from './model/tab.interface';
-import { TabData } from './shared/static-data/tab-data';
+import { Component, computed, inject, Signal } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { TranslateModule } from '@ngx-translate/core';
 import { HeaderComponent } from './shared/components/UI/header/header.component';
-import { TabGroupComponent } from './shared/components/UI/tab-group/tab-group.component';
-import { NgComponentOutlet } from '@angular/common';
+import { SessionService } from './auth/session.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   standalone: true,
-  imports: [HeaderComponent, TabGroupComponent, NgComponentOutlet],
+  imports: [HeaderComponent, RouterOutlet, MatProgressSpinner, TranslateModule],
 })
 export class AppComponent {
-  public activeTab: Tab | undefined = TabData.tabs.find((tab: Tab) => tab.defaultActive);
+  private readonly session: SessionService = inject(SessionService);
 
-  public emitTab(tab: Tab): void {
-    this.activeTab = tab;
-  }
+  /**
+   * While this is true the guards are still holding their navigation, so the
+   * outlet renders nothing and this indicator is all the user sees.
+   *
+   * The indicator sits *alongside* `<router-outlet>` rather than wrapping it:
+   * removing the outlet from the DOM would make route activation depend on the
+   * outlet registering after a pending navigation resolves.
+   */
+  protected readonly isResolving: Signal<boolean> = computed(
+    () => this.session.state().status === 'resolving',
+  );
 }
