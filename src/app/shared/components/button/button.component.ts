@@ -13,6 +13,7 @@ export class ButtonComponent {
   translateKey = input.required<string>();
   type = input<string>('text');
   icon = input<string>();
+  disabled = input<boolean>(false);
 
   clicked = output();
 

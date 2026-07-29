@@ -147,6 +147,19 @@ The only file this runbook writes is itself (step 11, the deploy record).
 6. Live URL serves the same content as the verified preview.
 7. The deploy record below is updated.
 
+**Added by the `S-01` sign-in gate (2026-07-28)** — the four report tabs are now behind Google sign-in, so
+the checks above only run once you are through it:
+
+8. The deployed domain is listed under Firebase Console → Authentication → Settings → Authorized domains.
+   It is not there by default for a new preview channel, and its absence fails as `auth/unauthorized-domain`.
+9. Sign in with a seeded account, then **close the browser entirely, reopen it, and load the URL again** —
+   you should still be signed in. Auth persistence is inherited from `getAuth()` rather than set explicitly
+   (see `auth.gateway.ts`), and nothing automated covers it, so this is the only check that it holds.
+10. Sign in with a Google account that is *not* in `allowedUsers`: expect the no-access message and no
+    session left behind.
+11. App Check is still monitoring-only. Enabling enforcement needs a deployed client, so this deploy is the
+    first moment it can be turned on — see roadmap Open Roadmap Question #6.
+
 ## Risks
 
 Scoped to a hosting deploy. Auth/Firestore/Functions risks live in `infrastructure.md` and are out of scope here.

@@ -1,4 +1,5 @@
 import { signal, WritableSignal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import {
   ActivatedRouteSnapshot,
@@ -33,7 +34,13 @@ describe('auth guards', () => {
     state = signal<SessionState>({ status: 'resolving' });
 
     TestBed.configureTestingModule({
-      providers: [provideRouter([]), { provide: SessionService, useValue: { state } }],
+      providers: [
+        provideRouter([]),
+        // `useFactory`, not `useValue`: `toObservable` needs an injection
+        // context, and the guards now read `state$` rather than building their
+        // own stream from the signal.
+        { provide: SessionService, useFactory: () => ({ state, state$: toObservable(state) }) },
+      ],
     });
   });
 

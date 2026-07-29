@@ -67,8 +67,14 @@ If the sign-in screen comes back saying the account has no access, check, in thi
    granted; before that, the account chooser is the only place to check.
 4. **The collection name.** `allowedUsers`, camelCase, plural.
 
-A message saying access could not be *verified* (rather than that it was denied) means something else
-went wrong — no network, or the rules were changed. That is not an allowlist problem.
+A message saying access could not be *verified* (rather than that it was denied) usually means something
+else went wrong — no network, or the rules were changed. That is normally not an allowlist problem.
+
+**The one exception is a typo in `role`.** The app refuses any value other than `teacher` or `director`
+rather than guessing, and that refusal surfaces as "could not be verified" — deliberately, because the
+account *is* on the list and it is the record that is wrong. So if one specific person gets this message
+while everyone else signs in fine, open their document and check the `role` field before looking at the
+network.
 
 ## Removing a person
 

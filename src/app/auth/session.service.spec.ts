@@ -180,11 +180,22 @@ describe('SessionService', () => {
     authGateway.user$.next(allowlistedUser);
     tick();
 
-    void service.signIn();
+    let finished = false;
+    void service.signIn().then(() => (finished = true));
     tick();
 
     expect(authGateway.signInWithGoogle).toHaveBeenCalled();
     expect(service.state()).toEqual({ status: 'anonymous' });
+
+    // Settle the attempt before the test ends. Left pending, the promise is
+    // rejected by TestBed teardown — `firstValueFrom` over a stream that
+    // completes without emitting throws `EmptyError` — and the unhandled
+    // rejection prints on an otherwise green run.
+    allowlistGateway.lookup.and.resolveTo({ role: 'teacher' });
+    authGateway.user$.next(allowlistedUser);
+    tick();
+
+    expect(finished).toBeTrue();
   }));
 
   it('clears the denial reason on an explicit sign-out', fakeAsync(() => {

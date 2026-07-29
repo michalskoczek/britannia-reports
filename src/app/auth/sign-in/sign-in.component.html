@@ -6,6 +6,7 @@
   <app-button
     [translateKey]="'auth.signInWithGoogle'"
     [icon]="'login'"
+    [disabled]="pending()"
     (clicked)="signIn()"
   ></app-button>
 
@@ -13,7 +14,7 @@
     <p class="sign-in-error" role="alert">{{ key | translate }}</p>
   }
 
-  @if (popupKey(); as key) {
+  @if (attemptFailureKey(); as key) {
     <p class="sign-in-error" role="alert">{{ key | translate }}</p>
   }
 </section>

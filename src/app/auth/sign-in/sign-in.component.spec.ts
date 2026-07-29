@@ -92,6 +92,19 @@ describe('SignInComponent', () => {
     expect(errorTexts()).toEqual(['auth.popupBlocked']);
   });
 
+  it('does not blame the pop-up blocker for a configuration failure', async () => {
+    // `auth/unauthorized-domain` is the likeliest failure on a first deploy.
+    // Reported as "allow pop-ups", it sends whoever debugs it the wrong way.
+    signIn.and.rejectWith({ code: 'auth/unauthorized-domain' });
+    spyOn(console, 'error');
+
+    fixture.nativeElement.querySelector('button').click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(errorTexts()).toEqual(['auth.verificationFailed']);
+  });
+
   it('stays silent when the user simply closes the popup', async () => {
     signIn.and.rejectWith({ code: 'auth/popup-closed-by-user' });
 

@@ -50,7 +50,15 @@ export class HeaderComponent implements OnInit {
    * does after signing in.
    */
   protected async signOut(): Promise<void> {
-    await this.session.signOut();
+    // Navigate whatever happens. By the time this rejects the local session is
+    // already gone or unreadable, so leaving the user parked inside the shell
+    // is the worse outcome — `authGuard` re-checks on the way back in.
+    try {
+      await this.session.signOut();
+    } catch (error: unknown) {
+      console.error('Sign-out did not complete cleanly', error);
+    }
+
     await this.router.navigate(['/sign-in']);
   }
 }

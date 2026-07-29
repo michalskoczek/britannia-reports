@@ -15,6 +15,16 @@ const CANCELLED_BY_USER: readonly string[] = [
   'auth/user-cancelled',
 ];
 
+/**
+ * The only codes that actually mean the browser refused to open the window.
+ *
+ * Everything else that is not a cancellation — `auth/unauthorized-domain` on a
+ * fresh deploy, a network failure, an App Check refusal, a malformed key — is a
+ * configuration or connectivity problem, and telling the user to allow pop-ups
+ * sends whoever debugs it in the wrong direction.
+ */
+const POPUP_BLOCKED: readonly string[] = ['auth/popup-blocked', 'auth/popup-blocked-by-browser'];
+
 @Component({
   selector: 'app-sign-in',
   templateUrl: './sign-in.component.html',
@@ -26,7 +36,13 @@ export class SignInComponent {
   private readonly session: SessionService = inject(SessionService);
   private readonly router: Router = inject(Router);
 
-  private readonly popupFailed: WritableSignal<boolean> = signal(false);
+  /**
+   * Why the last sign-in *attempt* failed, as a translate key, or `null`.
+   *
+   * Distinct from `denialKey`: that is the allowlist refusing an established
+   * session, this is the sign-in never completing in the first place.
+   */
+  private readonly attemptFailure: WritableSignal<string | null> = signal(null);
 
   /**
    * The translate key for why the last attempt was refused, or `null`.
@@ -45,12 +61,20 @@ export class SignInComponent {
     return state.reason === 'not-allowlisted' ? 'auth.noAccess' : 'auth.verificationFailed';
   });
 
-  protected readonly popupKey: Signal<string | null> = computed(() =>
-    this.popupFailed() ? 'auth.popupBlocked' : null,
-  );
+  protected readonly attemptFailureKey: Signal<string | null> = this.attemptFailure.asReadonly();
+
+  /**
+   * True while an attempt is in flight.
+   *
+   * The chain behind the button — popup, allowlist round-trip, settle, navigate
+   * — can take a visible moment, and without this the screen is indistinguishable
+   * from idle, so the natural response is to click again and open a second popup.
+   */
+  protected readonly pending: WritableSignal<boolean> = signal(false);
 
   protected async signIn(): Promise<void> {
-    this.popupFailed.set(false);
+    this.attemptFailure.set(null);
+    this.pending.set(true);
 
     try {
       await this.session.signIn();
@@ -68,7 +92,14 @@ export class SignInComponent {
       }
 
       console.error('Google sign-in did not complete', error);
-      this.popupFailed.set(true);
+
+      this.attemptFailure.set(
+        code !== undefined && POPUP_BLOCKED.includes(code)
+          ? 'auth.popupBlocked'
+          : 'auth.verificationFailed',
+      );
+    } finally {
+      this.pending.set(false);
     }
   }
 }

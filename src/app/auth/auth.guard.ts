@@ -1,5 +1,4 @@
-import { inject, Injector } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
+import { inject } from '@angular/core';
 import { CanActivateFn, Router, UrlTree } from '@angular/router';
 import { filter, map, Observable, take } from 'rxjs';
 import { SessionState } from '../model/auth.interface';
@@ -15,9 +14,12 @@ import { SessionService } from './session.service';
  */
 const settledState = (): Observable<SessionState> => {
   const session: SessionService = inject(SessionService);
-  const injector: Injector = inject(Injector);
 
-  return toObservable(session.state, { injector }).pipe(
+  // Reads the service's single shared stream rather than calling
+  // `toObservable` here: that cleans up on injector destruction, not on
+  // unsubscribe, so a per-run instance would leave a live effect behind on
+  // every navigation. See `SessionService.state$`.
+  return session.state$.pipe(
     filter((state: SessionState) => state.status !== 'resolving'),
     take(1),
   );

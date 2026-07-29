@@ -171,7 +171,7 @@ pattern.
 | `app-input-text` | `formControlName`, `[label]`, `[required]`, `[errorMessage]` | `teddy-eddie-form.component.html:2` |
 | `app-select` | the above plus `[itemList]` | `teddy-eddie-form.component.html:9` |
 | `app-date` | `formControlName`, `[label]`, `[required]`, `[errorMessage]` | `teddy-eddie-form.component.html:17` |
-| `app-button` | `[translateKey]`, `[icon]`, `(clicked)`, label projected | `teddy-eddie-report.component.html:38`, `sign-in.component.html`, `header.component.html` |
+| `app-button` | `[translateKey]`, `[icon]`, `[disabled]`, `(clicked)`, label projected | `teddy-eddie-report.component.html:38`, `sign-in.component.html`, `header.component.html` |
 
 Two things worth copying from `teddy-eddie-report.component.html`:
 
