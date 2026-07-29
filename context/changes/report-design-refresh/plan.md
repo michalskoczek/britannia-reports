@@ -806,40 +806,40 @@ coordinate before Phase 1 and again before Phase 5.
 
 #### Automated
 
-- [x] 3.1 Build succeeds: `npm run build`
-- [x] 3.2 Linting passes: `npm run lint`
-- [x] 3.3 Tests pass, Cambridge smoke and contract specs unmodified
-- [x] 3.4 `cambridge-report.component.html` at least 500 lines shorter
-- [x] 3.5 `cambridge-report.component.ts` diff limited to `imports`
+- [x] 3.1 Build succeeds: `npm run build` — da05edf
+- [x] 3.2 Linting passes: `npm run lint` — da05edf
+- [x] 3.3 Tests pass, Cambridge smoke and contract specs unmodified — da05edf
+- [x] 3.4 `cambridge-report.component.html` at least 500 lines shorter — da05edf
+- [x] 3.5 `cambridge-report.component.ts` diff limited to `imports` — da05edf
 
 #### Manual
 
-- [x] 3.6 Cambridge tab visually identical to before this phase
-- [x] 3.7 Each exam type reveals the same skill sections in the same order
-- [x] 3.8 Add and remove target the correct array in every section
-- [x] 3.9 Entered values round-trip into the PDF results table
-- [x] 3.10 Rows added in two sections do not cross-write
+- [x] 3.6 Cambridge tab visually identical to before this phase — da05edf
+- [x] 3.7 Each exam type reveals the same skill sections in the same order — da05edf
+- [x] 3.8 Add and remove target the correct array in every section — da05edf
+- [x] 3.9 Entered values round-trip into the PDF results table — da05edf
+- [x] 3.10 Rows added in two sections do not cross-write — da05edf
 
 ### Phase 4: Cambridge — compose and restyle
 
 #### Automated
 
-- [ ] 4.1 Build succeeds: `npm run build`
-- [ ] 4.2 Linting passes: `npm run lint`
-- [ ] 4.3 Tests pass, contract spec unmodified
-- [ ] 4.4 No raw `<mat-form-field>` remains in either Cambridge template
-- [ ] 4.5 No inline `style="…"` attribute remains in either Cambridge template
-- [ ] 4.6 `cambridge-report.component.ts` diff limited to `imports` and option-list getters
-- [ ] 4.7 Every `app-section-title` key resolves in both bundles
+- [x] 4.1 Build succeeds: `npm run build`
+- [x] 4.2 Linting passes: `npm run lint`
+- [x] 4.3 Tests pass, contract spec unmodified
+- [x] 4.4 No raw `<mat-form-field>` remains in either Cambridge template
+- [x] 4.5 No inline `style="…"` attribute remains in either Cambridge template
+- [x] 4.6 `cambridge-report.component.ts` diff limited to `imports` and option-list getters
+- [x] 4.7 Every `app-section-title` key resolves in both bundles
 
 #### Manual
 
-- [ ] 4.8 Cambridge tab matches the Teddy Eddie language
-- [ ] 4.9 English proficiency-level heading renders in English
-- [ ] 4.10 Top date field opens on click and refuses typed input
-- [ ] 4.11 Exam rows styled consistently across all eleven sections
-- [ ] 4.12 Both Cambridge PDFs download and look right
-- [ ] 4.13 The other three tabs unchanged
+- [x] 4.8 Cambridge tab matches the Teddy Eddie language
+- [x] 4.9 English proficiency-level heading renders in English
+- [x] 4.10 Top date field opens on click and refuses typed input
+- [x] 4.11 Exam rows styled consistently across all eleven sections
+- [x] 4.12 Both Cambridge PDFs download and look right
+- [x] 4.13 The other three tabs unchanged
 
 ### Phase 5: Contract and documentation repair
 

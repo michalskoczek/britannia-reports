@@ -10,6 +10,8 @@
   "basicInformation": "Podstawowe informacje",
   "grades": "Oceny",
   "descriptiveGrade": "Ocena opisowa",
+  "proficiencyLevel": "Poziom biegłości",
+  "mockExamResults": "Wyniki próbnych egzaminów Cambridge",
   "examRecommendations": "Rekomendacje egzaminacyjne",
   "signature": "Podpis",
   "nameAndLastNameStudent": "Imię i nazwisko ucznia",

@@ -10,6 +10,8 @@
   "basicInformation": "Basic information",
   "grades": "Grades",
   "descriptiveGrade": "Descriptive grade",
+  "proficiencyLevel": "Proficiency level",
+  "mockExamResults": "Cambridge mock exam results",
   "examRecommendations": "Examination recommendations",
   "signature": "Signature",
   "nameAndLastNameStudent": "Student's Name and Surname",

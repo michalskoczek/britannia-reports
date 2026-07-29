@@ -1,6 +1,8 @@
 <button
   mat-raised-button
   class="button"
+  [class.button--secondary]="variant() === 'secondary'"
+  [class.button--danger]="variant() === 'danger'"
   [type]="type()"
   [disabled]="disabled()"
   (click)="emitClicked()"

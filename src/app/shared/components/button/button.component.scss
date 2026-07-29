@@ -13,6 +13,31 @@
   letter-spacing: 0.1px;
 }
 
+// Repeated in-form actions — "add a row", "add a comment". Deliberately lower emphasis than the
+// primary variant so they do not compete with the form's submit button. The fill is the same token
+// the `app-section-title` bar uses, so the two read as one family.
+//
+// Equal specificity with `.button`, so these win on source order. Keep them below it.
+.button--secondary {
+  @include mat.button-overrides(
+    (
+      protected-container-color: ds.$britannia-background,
+      protected-label-text-color: ds.$britannia-blue,
+    )
+  );
+}
+
+// Destructive actions. First consumer of `$britannia-red`, which `docs/design-language.md` §2 listed
+// as a token with no call site.
+.button--danger {
+  @include mat.button-overrides(
+    (
+      protected-container-color: ds.$britannia-red,
+      protected-label-text-color: ds.$white,
+    )
+  );
+}
+
 @include ds.breakpoint-max-tablet() {
   .button {
     height: 30px;

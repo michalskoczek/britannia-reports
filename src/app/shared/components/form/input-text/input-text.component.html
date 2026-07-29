@@ -1,14 +1,33 @@
 <mat-form-field appearance="outline">
   <mat-label>{{ label() | translate }}</mat-label>
-  <input
-    matInput
-    [type]="type()"
-    [formControl]="control"
-    [placeholder]="placeholder() | translate"
-    [required]="required()"
-    [errorStateMatcher]="errorStateMatcher"
-    (blur)="onBlur()"
-  />
+
+  <!--
+    The number branch is spelled out rather than folded into `[type]="type()"` because Angular's
+    `NumberValueAccessor` selector is `input[type=number][formControl]` — it matches a *static*
+    attribute only. Behind a binding the control falls back to `DefaultValueAccessor`, and a control
+    that used to hold the number 85 would start holding the string "85".
+  -->
+  @if (type() === "number") {
+    <input
+      matInput
+      type="number"
+      [formControl]="control"
+      [placeholder]="placeholder() | translate"
+      [required]="required()"
+      [errorStateMatcher]="errorStateMatcher"
+      (blur)="onBlur()"
+    />
+  } @else {
+    <input
+      matInput
+      [type]="type()"
+      [formControl]="control"
+      [placeholder]="placeholder() | translate"
+      [required]="required()"
+      [errorStateMatcher]="errorStateMatcher"
+      (blur)="onBlur()"
+    />
+  }
 
   <mat-error>{{ errorMessage() | translate }}</mat-error>
 </mat-form-field>

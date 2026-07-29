@@ -18,11 +18,7 @@ import { GenerateTableA1 } from '../helper/cambridge/static-function/generate-ta
 import { GenerateTableA2B1 } from '../helper/cambridge/static-function/generate-table-A2-B1';
 import { GenerateTableB2C1 } from '../helper/cambridge/static-function/generate-table-B2-C1';
 import { ExamTypes } from '../shared/enum/exam-type.enum';
-import { MatError, MatFormField, MatHint, MatInput, MatLabel } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from '@angular/material/datepicker';
-
-import { MatOption, MatSelect } from '@angular/material/select';
 import {
   MatAccordion,
   MatExpansionPanel,
@@ -30,8 +26,12 @@ import {
   MatExpansionPanelTitle,
 } from '@angular/material/expansion';
 import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
-import { MatButton } from '@angular/material/button';
 import { ExamTermRowsComponent } from './exam-term-rows/exam-term-rows.component';
+import { ButtonComponent } from '../shared/components/button/button.component';
+import { DateComponent } from '../shared/components/form/date/date.component';
+import { FormWrapperComponent } from '../shared/components/form/form-wrapper/form-wrapper.component';
+import { InputTextComponent } from '../shared/components/form/input-text/input-text.component';
+import { SelectComponent } from '../shared/components/form/select/select.component';
 
 pdfMake.vfs = pdfFonts.vfs;
 
@@ -42,25 +42,19 @@ pdfMake.vfs = pdfFonts.vfs;
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    MatFormField,
-    MatLabel,
     TranslateModule,
-    MatError,
-    MatDatepickerInput,
-    MatHint,
-    MatDatepickerToggle,
-    MatInput,
-    MatDatepicker,
-    MatSelect,
-    MatOption,
     MatAccordion,
     MatExpansionPanel,
     MatExpansionPanelHeader,
     MatExpansionPanelTitle,
     MatRadioGroup,
     MatRadioButton,
-    MatButton,
     ExamTermRowsComponent,
+    ButtonComponent,
+    FormWrapperComponent,
+    InputTextComponent,
+    SelectComponent,
+    DateComponent,
   ],
 })
 export class CambridgeReportComponent implements OnInit {

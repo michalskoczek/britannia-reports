@@ -1,11 +1,11 @@
 import { Component, inject, input, output } from '@angular/core';
 import { ControlContainer, FormArray, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
-import { MatButton } from '@angular/material/button';
-import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from '@angular/material/datepicker';
-import { MatFormField, MatHint, MatInput, MatLabel } from '@angular/material/input';
-import { MatOption, MatSelect } from '@angular/material/select';
 import { TranslateModule } from '@ngx-translate/core';
 
+import { ButtonComponent } from '../../shared/components/button/button.component';
+import { DateComponent } from '../../shared/components/form/date/date.component';
+import { InputTextComponent } from '../../shared/components/form/input-text/input-text.component';
+import { SelectComponent } from '../../shared/components/form/select/select.component';
 import { resultOfExam } from '../../shared/exams';
 
 /**
@@ -25,16 +25,10 @@ import { resultOfExam } from '../../shared/exams';
   imports: [
     ReactiveFormsModule,
     TranslateModule,
-    MatFormField,
-    MatLabel,
-    MatHint,
-    MatInput,
-    MatDatepicker,
-    MatDatepickerInput,
-    MatDatepickerToggle,
-    MatSelect,
-    MatOption,
-    MatButton,
+    ButtonComponent,
+    DateComponent,
+    InputTextComponent,
+    SelectComponent,
   ],
   viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
 })
