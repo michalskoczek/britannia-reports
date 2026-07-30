@@ -1040,30 +1040,52 @@ a redeploy of the previous `firestore.rules`.
 
 #### Automated
 
-- [x] 5.1 `npm run lint` exits 0
-- [x] 5.2 `npm test -- --watch=false --browsers=ChromeHeadless` still green
+- [x] 5.1 `npm run lint` exits 0 — 409a8eb
+- [x] 5.2 `npm test -- --watch=false --browsers=ChromeHeadless` still green — 409a8eb
 
 #### Manual
 
-- [x] 5.3 No sentence in `src/CLAUDE.md` contradicts the repo (emulator suite, single-command start)
-- [x] 5.4 A newcomer can start emulators, seed the allowlist and sign in using `src/CLAUDE.md` alone
-- [x] 5.5 Roadmap, PRD and `infrastructure.md` agree on whether the harness exists
+- [x] 5.3 No sentence in `src/CLAUDE.md` contradicts the repo (emulator suite, single-command start) — 409a8eb
+- [x] 5.4 A newcomer can start emulators, seed the allowlist and sign in using `src/CLAUDE.md` alone — 409a8eb
+- [x] 5.5 Roadmap, PRD and `infrastructure.md` agree on whether the harness exists — 409a8eb
 
 ### Phase 6: Deploy to live and enable App Check enforcement
 
 #### Automated
 
-- [ ] 6.1 `npm run build` succeeds and `dist/browser/index.html` exists
-- [ ] 6.2 `npx firebase deploy --only firestore:rules` succeeds
-- [ ] 6.3 `npx firebase deploy --only hosting` reports a non-zero file count from `dist/browser`
-- [ ] 6.4 `npm run test:rules` passed before the deploy
+- [x] 6.1 `npm run build` succeeds and `dist/browser/index.html` exists
+- [x] 6.2 `npx firebase deploy --only firestore:rules` succeeds
+- [x] 6.3 `npx firebase deploy --only hosting` reports a non-zero file count from `dist/browser`
+- [x] 6.4 `npm run test:rules` passed before the deploy
 
 #### Manual
 
-- [ ] 6.5 The live URL loads the sign-in screen for a signed-out visitor
-- [ ] 6.6 A seeded account signs in and all four report tabs render
-- [ ] 6.7 Save / list / apply / delete works against production Firestore
-- [ ] 6.8 A live-app PDF matches the Phase 4 comparison
-- [ ] 6.9 A second seeded account sees only its own templates
-- [ ] 6.10 App Check shows verified requests, then enforcement is enabled and the app still works
-- [ ] 6.11 PL/EN switching works on the live sign-in screen and in the panel
+- [x] 6.5 The live URL loads the sign-in screen for a signed-out visitor
+- [x] 6.6 A seeded account signs in and all four report tabs render
+- [x] 6.7 Save / list / apply / delete works against production Firestore
+- [x] 6.8 A live-app PDF matches the Phase 4 comparison
+- [x] 6.9 A second seeded account sees only its own templates
+- [x] 6.10 App Check shows verified requests, then enforcement is enabled and the app still works
+- [x] 6.11 PL/EN switching works on the live sign-in screen and in the panel
+
+#### Deploy record
+
+- Date: 2026-07-30, release time 15:37:36 (live channel, site `britannia-reports`)
+- Deployed from branch `10xdevs-S02` (222 commits ahead of `master`, 0 behind) at `409a8eb` plus the
+  Phase 5 SHA write-back — **not** from `master`. Publishes `S-05b`, `S-01` and `S-02` together.
+- Rules: `firestore.rules` compiled and released to `cloud.firestore` before hosting, per the ordering
+  contract. `npm run test:rules` was green (11/11) immediately beforehand.
+- Hosting: 28 files from `dist/browser`, 14 newly uploaded.
+- Artifact check: the shipped bundle carries `{production:!0,useEmulators:!1,…}` and neither emulator
+  connect call survives tree-shaking (`connectAuthEmulator` absent; the lone `connectFirestoreEmulator`
+  occurrence is a warning string inside the Firebase SDK itself). The `"localhost"`/`9099`/`8080`
+  constants remain as dead data with no reader, and `FIREBASE_APPCHECK_DEBUG_TOKEN` sits behind
+  `production || …`, so it never assigns. App Check is provided — the reCAPTCHA site key is in the
+  bundle.
+- **Hosting version id: not captured.** `firebase-tools@15` prints no version id on a successful
+  `deploy --only hosting`, and `hosting:versions:list` is not a command in this version. Read it from
+  Console → Hosting → Release history when a rollback is needed; `firebase hosting:clone
+  britannia-reports:<version> britannia-reports:live` is the rollback. Next deploy: pass `--debug` to
+  capture the version name from the log.
+- Shipped **without** a cutover message (PRD Open Question #4 / roadmap OQ#2), as decided during
+  planning. Bookmark holders meet the sign-in screen with no advance notice.

@@ -23,6 +23,7 @@ npm run emulators                                          # Firebase Auth + Fir
 npm run test:rules                                         # Firestore rules tests: node --test test/rules, behind emulators:exec (needs a JDK)
 npm run lint                                               # ESLint over **/*.ts and **/*.html
 npm run lint -- --fix                                      # auto-fix what is auto-fixable
+npx firebase deploy --only firestore:rules                 # deploy rules FIRST, before hosting (run npm run test:rules beforehand)
 npx firebase deploy --only hosting                         # deploy (requires `npm run build` first; public = dist/browser)
 ```
 
@@ -50,6 +51,8 @@ The App Check debug-token assignment at the top of `app.config.ts` (`FIREBASE_AP
 The emulators start empty, so seed one `allowedUsers` document through the emulator UI (`http://localhost:4000/firestore`, document id = your lowercased address, one `role` field) before signing in locally — otherwise `SessionService` refuses the session and the app is unusable. `npm run emulators` imports and exports `.emulator-data/`, which is gitignored: **on a fresh clone create it first (`mkdir .emulator-data`)**, because `--import` fails on a missing directory. Only a clean exit (Ctrl+C) triggers the export.
 
 Flipping `useEmulators` back to `false` returns local development to reading and writing real teacher data — dev and prod share one Firebase project. `provideAppCheck` is skipped entirely while the flag is on.
+
+**Since `S-02`'s deploy (2026-07-30), App Check enforcement is ON for Firestore in production** — which changes what that flag flip costs. With `useEmulators: false` locally you now need a debug token registered in Firebase Console → App Check → Apps → Manage debug tokens (per machine, per browser profile), or **every Firestore call returns `permission-denied`**. It presents on the Firestore call, not on sign-in: signing in fine and then failing to save is this, not a rules bug. The emulator path never exercises App Check at all, so this only bites the flag-flipped path.
 
 **The session gate lives in `src/app/auth/`, and `SessionService` is the only source of session truth.** It exposes one `SessionState` signal — `resolving` | `anonymous` | `authorized` | `denied` — and the guards, the sign-in screen, and the header all read it and nothing else. Two thin gateways (`auth.gateway.ts`, `allowlist.gateway.ts`) hold every raw SDK call; that seam exists so the state machine can be unit-tested with fakes, and new Firebase calls belong behind it rather than sprinkled into components.
 

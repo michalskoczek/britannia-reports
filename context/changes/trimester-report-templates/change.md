@@ -43,6 +43,35 @@ Chrome's download path, which does **not** overwrite — a stale `docs/pdf-fidel
 new run land as `<fixture> (1).pdf` and the comparison silently reads the old files. Caught on
 timestamps and redone. `docs/pdf-fidelity-check.md` §5 now warns about it.
 
+## Deployed to production (2026-07-30, Phase 6)
+
+Live at `https://britannia-reports.web.app`. Rules released first, then hosting (28 files from
+`dist/browser`, 14 newly uploaded), publishing **`S-05b` + `S-01` + `S-02` in one release** — the first
+hosting deploy since `S-05a`. `npm run test:rules` was green (11/11) immediately beforehand. Deployed
+from branch `10xdevs-S02`, not `master`. Post-deploy verification passed, including a second seeded
+account seeing only its own templates.
+
+**App Check enforcement is now ON for Firestore** — deploy → observe → enforce, in that order, then
+re-verified. Two consequences that outlive this change: a broken App Check presents as
+`permission-denied` on a Firestore call rather than as a sign-in failure, and a local build with
+`useEmulators: false` now needs a registered debug token or every Firestore call is denied. Recorded in
+`src/CLAUDE.md` and `infrastructure.md`.
+
+**The FR-004 regression shipped without the cutover message**, as decided during planning. Bookmark
+holders meet a sign-in screen with no notice. PRD Open Question #4 and roadmap OQ#2 are recorded as
+*overtaken by events*, not resolved.
+
+Two documentation defects found and fixed while doing this, both outside the phase's written contract:
+
+- `infrastructure.md` documented the hosting rollback with **two commands that do not exist** —
+  `hosting:versions:list` and `hosting:versions:clone`. The real one is
+  `firebase hosting:clone <site>:<version> <site>:live`. A rollback procedure that fails at the prompt
+  is worse than none, so it was corrected in place.
+- `firebase-tools@15` prints **no hosting version id** on a successful deploy, so the plan's
+  "record the hosting version id from the CLI output" could not be satisfied as written. The release
+  timestamp (15:37:36) is recorded instead; the id is readable from Console → Hosting → Release
+  history, or via `--debug` on the deploy. Noted for the next deploy.
+
 ## JDK setup — required for `npm run emulators` and `npm run test:rules`
 
 The Firestore emulator runs on the JVM. `firebase-tools` shells out to whatever `java` is on `PATH`;
