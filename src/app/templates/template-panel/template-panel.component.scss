@@ -1,0 +1,85 @@
+@use '../../../assets/styles/utils/index' as ds;
+
+.template-panel-lead {
+  margin: 0 0 ds.$distance-16;
+  color: ds.$black-87;
+  font: 400 14px/1.5 ds.$font;
+}
+
+// Not `form-row` / `form-col`: those size columns as equal fractions, and this row
+// is one field that grows next to one button that does not.
+.template-panel-save {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: ds.$distance-16;
+  width: 100%;
+
+  .template-panel-name {
+    flex: 1 1 260px;
+    // Without this a long placeholder makes the flex item refuse to shrink and
+    // the button wraps onto its own line at desktop widths.
+    min-width: 0;
+  }
+
+  .template-panel-save-button {
+    flex: 0 0 auto;
+  }
+}
+
+.template-panel-note {
+  margin: ds.$distance-8 0 0;
+  color: ds.$black-87;
+  font: 400 14px/1.5 ds.$font;
+  font-style: italic;
+}
+
+.template-panel-error {
+  margin: 0;
+  color: ds.$britannia-red;
+  font: 600 14px/1.5 ds.$font;
+}
+
+.template-panel-failure {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: ds.$distance-16;
+  margin-top: ds.$distance-8;
+}
+
+.template-panel-list {
+  margin: ds.$distance-8 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.template-panel-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: ds.$distance-8;
+  padding: ds.$distance-8;
+
+  // Zebra striping in the data-table header fill, so a list of similar-looking
+  // names stays scannable. No radius: there is no token below 20px, and 20px on a
+  // one-line row reads as a pill rather than a row.
+  &:nth-child(odd) {
+    background-color: ds.$britannia-light-blue;
+  }
+}
+
+.template-panel-item-name {
+  flex: 1 1 200px;
+  min-width: 0;
+  color: ds.$britannia-blue;
+  font: 600 14px/1.4 ds.$font;
+  overflow-wrap: anywhere;
+}
+
+.template-panel-item-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: ds.$distance-8;
+}

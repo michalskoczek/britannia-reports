@@ -1,0 +1,33 @@
+<h2 mat-dialog-title class="confirm-dialog-title">{{ data.titleKey | translate }}</h2>
+
+<mat-dialog-content class="confirm-dialog-content">
+  <p class="confirm-dialog-message">{{ data.messageKey | translate: data.messageParams }}</p>
+
+  @for (group of itemGroups; track group.titleKey) {
+    <h3 class="confirm-dialog-group-title">{{ group.titleKey | translate }}</h3>
+
+    <ul class="confirm-dialog-items">
+      @for (item of group.items; track item) {
+        <li>{{ item | translate }}</li>
+      }
+    </ul>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions class="confirm-dialog-actions">
+  <app-button
+    class="confirm-dialog-cancel"
+    [translateKey]="data.cancelKey"
+    [type]="'button'"
+    [variant]="'secondary'"
+    (clicked)="cancel()"
+  ></app-button>
+
+  <app-button
+    class="confirm-dialog-confirm"
+    [translateKey]="data.confirmKey"
+    [type]="'button'"
+    [variant]="data.confirmVariant ?? 'primary'"
+    (clicked)="confirm()"
+  ></app-button>
+</mat-dialog-actions>

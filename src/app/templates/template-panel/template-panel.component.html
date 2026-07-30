@@ -1,0 +1,76 @@
+<app-form-wrapper [sectionTitle]="'templates.sectionTitle'">
+  <p class="template-panel-lead">{{ 'templates.lead' | translate }}</p>
+
+  <div class="template-panel-save">
+    <!--
+      Enter is caught on the way out of the name field, because this panel is
+      mounted inside the report's `<form>`, whose submit handler downloads a PDF.
+    -->
+    <app-input-text
+      class="template-panel-name"
+      [formControl]="nameControl"
+      [label]="'templates.nameLabel'"
+      [placeholder]="'templates.namePlaceholder'"
+      (keydown.enter)="onNameEnter($event)"
+    ></app-input-text>
+
+    <app-button
+      class="template-panel-save-button"
+      [translateKey]="'templates.save'"
+      [icon]="'bookmark_add'"
+      [type]="'button'"
+      [disabled]="saving()"
+      (clicked)="save()"
+    ></app-button>
+  </div>
+
+  @if (nameFailureKey(); as key) {
+    <p class="template-panel-error" role="alert">{{ key | translate }}</p>
+  }
+
+  @if (loading()) {
+    <p class="template-panel-note">{{ 'templates.loading' | translate }}</p>
+  } @else if (loadFailureKey(); as key) {
+    <div class="template-panel-failure" role="alert">
+      <p class="template-panel-error">{{ key | translate }}</p>
+
+      <app-button
+        [translateKey]="'templates.retry'"
+        [icon]="'refresh'"
+        [type]="'button'"
+        [variant]="'secondary'"
+        (clicked)="reload()"
+      ></app-button>
+    </div>
+  } @else if (templates().length === 0) {
+    <p class="template-panel-note">{{ 'templates.empty' | translate }}</p>
+  } @else {
+    <ul class="template-panel-list">
+      @for (template of templates(); track template.id) {
+        <li class="template-panel-item">
+          <span class="template-panel-item-name">{{ template.name }}</span>
+
+          <span class="template-panel-item-actions">
+            <app-button
+              [translateKey]="'templates.apply'"
+              [icon]="'playlist_add_check'"
+              [type]="'button'"
+              [variant]="'secondary'"
+              [disabled]="deletingId() !== null"
+              (clicked)="applyTemplate(template)"
+            ></app-button>
+
+            <app-button
+              [translateKey]="'templates.delete'"
+              [icon]="'delete'"
+              [type]="'button'"
+              [variant]="'danger'"
+              [disabled]="deletingId() !== null"
+              (clicked)="remove(template)"
+            ></app-button>
+          </span>
+        </li>
+      }
+    </ul>
+  }
+</app-form-wrapper>

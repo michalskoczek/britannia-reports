@@ -268,5 +268,55 @@
     "noAccess": "To konto Google nie ma dostępu do Britannia Reports. Sprawdź, czy logujesz się kontem służbowym, albo skontaktuj się z administratorem.",
     "verificationFailed": "Nie udało się sprawdzić dostępu. Sprawdź połączenie z internetem i spróbuj ponownie.",
     "popupBlocked": "Okno logowania Google nie otworzyło się. Zezwól na wyskakujące okienka dla tej strony i spróbuj ponownie."
+  },
+  "templates": {
+    "sectionTitle": "Szablony",
+    "lead": "Zapisz pola, które powtarzają się w całej klasie — kurs, podręcznik, lektorów, zrealizowany materiał, podpis, typ raportu i datę — i wypełnij je jednym kliknięciem przy następnym raporcie. Szablon nigdy nie zawiera imienia ani ocen ucznia.",
+    "nameLabel": "Nazwa szablonu",
+    "namePlaceholder": "np. Klasa 5 semestr",
+    "save": "Zapisz jako szablon",
+    "apply": "Zastosuj",
+    "delete": "Usuń",
+    "retry": "Spróbuj ponownie",
+    "cancel": "Anuluj",
+    "loading": "Wczytywanie szablonów…",
+    "empty": "Nie masz jeszcze żadnych szablonów. Wypełnij pola klasy powyżej, wpisz nazwę i zapisz.",
+    "saved": "Szablon zapisany.",
+    "deleted": "Szablon usunięty.",
+    "nothingToApply": "Ten szablon nie zawiera żadnych wartości, więc nic się nie zmieniło.",
+    "fields": {
+      "reportType": "Typ raportu",
+      "date": "Data",
+      "teachers": "Lektor/-rzy",
+      "ownEducationMaterial": "Wybór podręcznika",
+      "studentBookTitle": "Tytuł podręcznika",
+      "ownTitleStudentBook": "Tytuł i wydawnictwo",
+      "course": "Kurs",
+      "realizedMaterial": "Zrealizowany materiał",
+      "signature": "Podpis",
+      "isExamRecommendation": "Sekcja rekomendacji egzaminacyjnej"
+    },
+    "confirmApply": {
+      "title": "Zastosować ten szablon?",
+      "message": "„{{name}}” zmieni pola, które już wypełniłeś.",
+      "overwritten": "Zostaną zastąpione:",
+      "cleared": "Zostaną przywrócone do wartości domyślnej:",
+      "confirm": "Zastosuj"
+    },
+    "confirmDelete": {
+      "title": "Usunąć ten szablon?",
+      "message": "„{{name}}” zostanie trwale usunięty. Szablonów nie da się edytować, więc tej operacji nie można cofnąć.",
+      "confirm": "Usuń"
+    },
+    "errors": {
+      "nameRequired": "Wpisz nazwę szablonu.",
+      "nameTooLong": "Nazwa może mieć najwyżej 60 znaków.",
+      "nameInvalid": "Nazwa nie może zawierać znaku „/” ani zaczynać się od „__”.",
+      "nameTaken": "Masz już szablon o tej nazwie. Nazwy porównujemy bez rozróżniania wielkości liter i nadmiarowych spacji.",
+      "notSignedIn": "Twoja sesja wygasła. Zaloguj się ponownie.",
+      "permissionDenied": "Nie masz dostępu do tych szablonów. Zaloguj się ponownie.",
+      "offline": "Brak połączenia z serwerem. Sprawdź połączenie z internetem i spróbuj ponownie.",
+      "unknown": "Operacja nie udała się. Spróbuj ponownie."
+    }
   }
 }

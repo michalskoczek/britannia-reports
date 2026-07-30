@@ -973,29 +973,29 @@ a redeploy of the previous `firestore.rules`.
 
 #### Automated
 
-- [x] 2.1 `npm test -- --watch=false --browsers=ChromeHeadless` green, including the service spec
-- [x] 2.2 Session specs assert `uid` is carried through the authorized state
-- [x] 2.3 `npm run lint` exits 0
-- [x] 2.4 `npm run build` type-checks
-- [x] 2.5 `npm run build -- --configuration development` type-checks
+- [x] 2.1 `npm test -- --watch=false --browsers=ChromeHeadless` green, including the service spec — 8a822b2
+- [x] 2.2 Session specs assert `uid` is carried through the authorized state — 8a822b2
+- [x] 2.3 `npm run lint` exits 0 — 8a822b2
+- [x] 2.4 `npm run build` type-checks — 8a822b2
+- [x] 2.5 `npm run build -- --configuration development` type-checks — 8a822b2
 
 #### Manual
 
-- [ ] 2.6 The session's `uid` matches the Auth emulator's user id
+- [x] 2.6 The session's `uid` matches the Auth emulator's user id — 8a822b2
 
 ### Phase 3: Template panel, confirmation dialog, snackbar, and translations
 
 #### Automated
 
-- [ ] 3.1 `npm test -- --watch=false --browsers=ChromeHeadless` green, including both new specs
-- [ ] 3.2 `pl.json` and `en.json` key parity verified
-- [ ] 3.3 `npm run lint` exits 0
-- [ ] 3.4 `npm run build` type-checks
-- [ ] 3.5 `npm run build -- --configuration development` type-checks
+- [x] 3.1 `npm test -- --watch=false --browsers=ChromeHeadless` green, including both new specs
+- [x] 3.2 `pl.json` and `en.json` key parity verified
+- [x] 3.3 `npm run lint` exits 0
+- [x] 3.4 `npm run build` type-checks
+- [x] 3.5 `npm run build -- --configuration development` type-checks
 
 #### Manual
 
-- [ ] 3.6 All four report tabs are visually and behaviourally unchanged (panel not yet mounted)
+- [x] 3.6 All four report tabs are visually and behaviourally unchanged (panel not yet mounted)
 
 ### Phase 4: Wire the panel into the trimester/semester report
 

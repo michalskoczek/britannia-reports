@@ -267,5 +267,55 @@
     "noAccess": "This Google account has no access to Britannia Reports. Check that you are using your school account, or contact an administrator.",
     "verificationFailed": "Access could not be checked. Check your internet connection and try again.",
     "popupBlocked": "The Google sign-in window did not open. Allow pop-ups for this page and try again."
+  },
+  "templates": {
+    "sectionTitle": "Templates",
+    "lead": "Save the fields that repeat across a whole class — course, coursebook, teachers, material covered, signature, report type and date — and fill them in with one click next time. A template never carries a student's name or grades.",
+    "nameLabel": "Template name",
+    "namePlaceholder": "e.g. Class 5 semester",
+    "save": "Save as template",
+    "apply": "Apply",
+    "delete": "Delete",
+    "retry": "Try again",
+    "cancel": "Cancel",
+    "loading": "Loading templates…",
+    "empty": "You have no templates yet. Fill in the class fields above, type a name and save.",
+    "saved": "Template saved.",
+    "deleted": "Template deleted.",
+    "nothingToApply": "This template holds no values, so nothing was changed.",
+    "fields": {
+      "reportType": "Report type",
+      "date": "Date",
+      "teachers": "Teacher(s)",
+      "ownEducationMaterial": "Coursebook option",
+      "studentBookTitle": "Title of the coursebook",
+      "ownTitleStudentBook": "Title and publisher",
+      "course": "Course",
+      "realizedMaterial": "Material covered",
+      "signature": "Signature",
+      "isExamRecommendation": "Exam recommendation section"
+    },
+    "confirmApply": {
+      "title": "Apply this template?",
+      "message": "\"{{name}}\" changes fields you have already filled in.",
+      "overwritten": "Will be replaced:",
+      "cleared": "Will be reset to the default:",
+      "confirm": "Apply"
+    },
+    "confirmDelete": {
+      "title": "Delete this template?",
+      "message": "\"{{name}}\" will be deleted permanently. Templates cannot be edited, so this cannot be undone.",
+      "confirm": "Delete"
+    },
+    "errors": {
+      "nameRequired": "Enter a name for the template.",
+      "nameTooLong": "The name may be at most 60 characters long.",
+      "nameInvalid": "The name cannot contain \"/\" or start with \"__\".",
+      "nameTaken": "You already have a template with this name. Names are compared ignoring case and extra spaces.",
+      "notSignedIn": "Your session has expired. Sign in again.",
+      "permissionDenied": "You have no access to these templates. Sign in again.",
+      "offline": "No connection to the server. Check your internet connection and try again.",
+      "unknown": "The operation failed. Try again."
+    }
   }
 }
