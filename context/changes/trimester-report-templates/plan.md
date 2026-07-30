@@ -1053,20 +1053,20 @@ a redeploy of the previous `firestore.rules`.
 
 #### Automated
 
-- [x] 6.1 `npm run build` succeeds and `dist/browser/index.html` exists
-- [x] 6.2 `npx firebase deploy --only firestore:rules` succeeds
-- [x] 6.3 `npx firebase deploy --only hosting` reports a non-zero file count from `dist/browser`
-- [x] 6.4 `npm run test:rules` passed before the deploy
+- [x] 6.1 `npm run build` succeeds and `dist/browser/index.html` exists — 68cbb9f
+- [x] 6.2 `npx firebase deploy --only firestore:rules` succeeds — 68cbb9f
+- [x] 6.3 `npx firebase deploy --only hosting` reports a non-zero file count from `dist/browser` — 68cbb9f
+- [x] 6.4 `npm run test:rules` passed before the deploy — 68cbb9f
 
 #### Manual
 
-- [x] 6.5 The live URL loads the sign-in screen for a signed-out visitor
-- [x] 6.6 A seeded account signs in and all four report tabs render
-- [x] 6.7 Save / list / apply / delete works against production Firestore
-- [x] 6.8 A live-app PDF matches the Phase 4 comparison
-- [x] 6.9 A second seeded account sees only its own templates
-- [x] 6.10 App Check shows verified requests, then enforcement is enabled and the app still works
-- [x] 6.11 PL/EN switching works on the live sign-in screen and in the panel
+- [x] 6.5 The live URL loads the sign-in screen for a signed-out visitor — 68cbb9f
+- [x] 6.6 A seeded account signs in and all four report tabs render — 68cbb9f
+- [x] 6.7 Save / list / apply / delete works against production Firestore — 68cbb9f
+- [x] 6.8 A live-app PDF matches the Phase 4 comparison — 68cbb9f
+- [x] 6.9 A second seeded account sees only its own templates — 68cbb9f
+- [x] 6.10 App Check shows verified requests, then enforcement is enabled and the app still works — 68cbb9f
+- [x] 6.11 PL/EN switching works on the live sign-in screen and in the panel — 68cbb9f
 
 #### Deploy record
 
