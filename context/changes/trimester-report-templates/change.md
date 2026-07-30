@@ -28,6 +28,20 @@ non-empty fields), deletes templates they no longer want, and downloads the resu
   student-identity fields. Getting this field-domain boundary wrong quietly breaks S-04.
 - Open unknown: an empty template must apply as a no-op (US-01), but "empty" is undefined for
   fields that carry defaults rather than blanks. Owner: implementer. Non-blocking.
+  **Resolved (Phase 2):** "empty" means equal to `TEMPLATE_DOMAIN_DEFAULTS`. Apply always writes all
+  ten domain keys including `null`s (FR-011), and emptiness is a separate explicit comparison against
+  that constant. See `context/foundation/roadmap.md` → S-02.
+
+**PDF-fidelity verdict (2026-07-30): PASS — no visible differences**, trimester/semester, both
+fixtures, against the committed references at `docs/pdf-fidelity/reference/semestr-{minimal,maximal}.pdf`.
+File sizes identical (43 865 / 47 850 bytes) and every differing byte `cmp -l` reports sits in the two
+non-deterministic regions (`/CreationDate` and the trailer `/ID`), so the content streams are
+byte-identical. Full record under `plan.md` → `## Progress` → Phase 4.
+
+One trap found while doing it, now written into the procedure: `npm run test:capture` goes through
+Chrome's download path, which does **not** overwrite — a stale `docs/pdf-fidelity/captured/` makes the
+new run land as `<fixture> (1).pdf` and the comparison silently reads the old files. Caught on
+timestamps and redone. `docs/pdf-fidelity-check.md` §5 now warns about it.
 
 ## JDK setup — required for `npm run emulators` and `npm run test:rules`
 

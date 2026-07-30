@@ -61,9 +61,9 @@ part of a routine check; replacing a reference is a deliberate act (see §8).
 
 ### If you already captured before you started editing
 
-`npm run test:capture` **overwrites** `docs/pdf-fidelity/captured/` in place. If that directory already
-holds PDFs produced before your change, copy it somewhere outside the repository *before* you capture
-again:
+`npm run test:capture` does **not** overwrite `docs/pdf-fidelity/captured/` — see the warning in §5,
+which is worse. Either way, if that directory already holds PDFs produced before your change, copy it
+somewhere outside the repository *before* you capture again:
 
 ```bash
 cp -r docs/pdf-fidelity/captured ../br-before-pdfs
@@ -105,6 +105,21 @@ npm run test:capture
 
 Eight PDFs are written to `docs/pdf-fidelity/captured/` (gitignored), named after the fixture ids. The
 run takes a few seconds and ends with a short pause while Chrome finishes writing the files.
+
+**⚠ Empty `docs/pdf-fidelity/captured/` first, or you will compare stale files and see no differences.**
+The capture goes through Chrome's download path, which does not overwrite: if `semestr-maximal.pdf`
+already exists, the new run lands as `semestr-maximal (1).pdf` and leaves the old file exactly where the
+comparison expects to find it. Nothing fails, nothing warns, and the check passes against the previous
+capture. This bit `S-02` (2026-07-30) and was caught only on the file timestamps. So:
+
+```bash
+rm -rf docs/pdf-fidelity/captured
+npm run test:capture
+ls -l docs/pdf-fidelity/captured   # eight files, no "(1)" in any name, all timestamped just now
+```
+
+Check the listing every time. A ` (1)` in any filename means the directory was not clean and the run
+must be redone.
 
 If a fixture throws instead of rendering, that is a fidelity failure of the loudest kind — fix it before
 comparing anything.

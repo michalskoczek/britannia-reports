@@ -3,7 +3,7 @@ project: "Britannia Reports"
 version: 1
 status: draft
 created: 2026-05-23
-updated: 2026-07-28
+updated: 2026-07-30
 context_type: brownfield
 product_type: web-app
 target_scale:
@@ -241,6 +241,8 @@ Numbered list. Each entry names what's unknown, who needs to resolve it, and the
 2. **GDPR / EU minor data baseline.** The only privacy commitment this PRD makes is data minimization — see `## Non-Goals`, "No over-detailed student or teacher records" (students hold a name and a free-text class label; teachers hold a Google identity and a display name). There is no privacy NFR and no privacy guardrail beyond that; specific GDPR safeguards — data export on request, data deletion on request, retention windows, consent-flow language — were not pinned during shaping. Owner: user (school director). Resolution latest: before any non-Britannia user touches the system.
 4. **Cutover communication to existing bookmarked-link users.** FR-004 removes public-URL access; the script for telling existing visitors who have the URL bookmarked that they need a seeded account is not specified. Owner: school director. Resolution latest: at deploy time.
 
+   **Status 2026-07-30 — still open, and a decision has been taken to ship without it.** Three slices are now merged and undeployed (`S-05b`, `S-01`, `S-02`), so the first hosting deploy publishes the FR-004 regression. `S-02`'s plan carries that deploy as its final phase and records, deliberately, that it ships **without** the cutover message: anyone holding a bookmark will meet a sign-in screen with no advance notice. That phase has not been run, so nothing is published yet and the director can still supply a message. If the deploy happens first, treat this question as overtaken by events rather than answered — the decision was to accept the cost, not to discover it.
+
 ### Resolved since this PRD was written
 
 Kept in place, with original numbering, so that references from downstream documents stay valid and each question sits next to its answer.
@@ -251,3 +253,5 @@ Kept in place, with original numbering, so that references from downstream docum
 3. **Backend persistence platform.** RESOLVED 2026-07-20 → **Firestore**, as part of selecting Firebase (Hosting + Authentication + Firestore) as the platform; runner-up was Cloudflare (Pages + D1 + Access). Decision and its rationale live in `context/foundation/infrastructure.md`. Was owned by: implementer during `/10x-infra-research`.
 
    Executed 2026-07-23 by `F-01`: the Firestore database exists in `eur3` (a one-way choice, now shut) and the Google sign-in provider is enabled. `S-01` added the first collection and the first conditional security rule on 2026-07-28. FR-005 / FR-009 are no longer gated on infrastructure.
+
+   Confirmed closed 2026-07-30 by `S-02`, which added the first per-teacher collection (`users/{uid}/reportTemplates/{templateId}`), the Firebase emulator suite, and a rules-testing harness (`npm run test:rules`). FR-009…FR-012 are implemented against Firestore. Roadmap Open Question #3 — which existed only because this PRD had not yet recorded the resolution — is closed with it.

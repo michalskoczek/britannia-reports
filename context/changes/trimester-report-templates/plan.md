@@ -1001,26 +1001,26 @@ a redeploy of the previous `firestore.rules`.
 
 #### Automated
 
-- [x] 4.1 `npm test -- --watch=false --browsers=ChromeHeadless` green, both semestr smoke fixtures included
-- [x] 4.2 The form-model contract spec still asserts the original 48 control names and 14 arrays
-- [x] 4.3 The exhaustive-partition assertion passes (10 + 4 + 12 + 22 = 48, pairwise disjoint)
-- [x] 4.4 `npm run test:rules` still passes
-- [x] 4.5 `npm run lint` exits 0
-- [x] 4.6 `npm run build` type-checks
-- [x] 4.7 `npm run build -- --configuration development` type-checks
+- [x] 4.1 `npm test -- --watch=false --browsers=ChromeHeadless` green, both semestr smoke fixtures included — 8551b70
+- [x] 4.2 The form-model contract spec still asserts the original 48 control names and 14 arrays — 8551b70
+- [x] 4.3 The exhaustive-partition assertion passes (10 + 4 + 12 + 22 = 48, pairwise disjoint) — 8551b70
+- [x] 4.4 `npm run test:rules` still passes — 8551b70
+- [x] 4.5 `npm run lint` exits 0 — 8551b70
+- [x] 4.6 `npm run build` type-checks — 8551b70
+- [x] 4.7 `npm run build -- --configuration development` type-checks — 8551b70
 
 #### Manual
 
-- [x] 4.8 Save a template from the cohort fields and see it listed
-- [x] 4.9 Apply fills the ten domain fields and leaves the other 38 controls untouched
-- [x] 4.10 Apply over non-empty fields lists overwritten *and* cleared fields; cancel is a no-op
-- [x] 4.11 All three book options round-trip with the correct field **visible**
-- [x] 4.12 A template with a date round-trips in the datepicker and in the PDF
-- [x] 4.13 An all-defaults template applies as a no-op with no dialog
-- [x] 4.14 A duplicate name in different case is rejected with a clear message
-- [x] 4.15 Delete works through the dialog
-- [x] 4.16 PL/EN switching works in the panel and in the dialog
-- [x] 4.17 PDF-fidelity comparison recorded for both semestr fixtures
+- [x] 4.8 Save a template from the cohort fields and see it listed — 8551b70
+- [x] 4.9 Apply fills the ten domain fields and leaves the other 38 controls untouched — 8551b70
+- [x] 4.10 Apply over non-empty fields lists overwritten *and* cleared fields; cancel is a no-op — 8551b70
+- [x] 4.11 All three book options round-trip with the correct field **visible** — 8551b70
+- [x] 4.12 A template with a date round-trips in the datepicker and in the PDF — 8551b70
+- [x] 4.13 An all-defaults template applies as a no-op with no dialog — 8551b70
+- [x] 4.14 A duplicate name in different case is rejected with a clear message — 8551b70
+- [x] 4.15 Delete works through the dialog — 8551b70
+- [x] 4.16 PL/EN switching works in the panel and in the dialog — 8551b70
+- [x] 4.17 PDF-fidelity comparison recorded for both semestr fixtures — 8551b70
 
 #### PDF fidelity check
 
@@ -1040,14 +1040,14 @@ a redeploy of the previous `firestore.rules`.
 
 #### Automated
 
-- [ ] 5.1 `npm run lint` exits 0
-- [ ] 5.2 `npm test -- --watch=false --browsers=ChromeHeadless` still green
+- [x] 5.1 `npm run lint` exits 0
+- [x] 5.2 `npm test -- --watch=false --browsers=ChromeHeadless` still green
 
 #### Manual
 
-- [ ] 5.3 No sentence in `src/CLAUDE.md` contradicts the repo (emulator suite, single-command start)
-- [ ] 5.4 A newcomer can start emulators, seed the allowlist and sign in using `src/CLAUDE.md` alone
-- [ ] 5.5 Roadmap, PRD and `infrastructure.md` agree on whether the harness exists
+- [x] 5.3 No sentence in `src/CLAUDE.md` contradicts the repo (emulator suite, single-command start)
+- [x] 5.4 A newcomer can start emulators, seed the allowlist and sign in using `src/CLAUDE.md` alone
+- [x] 5.5 Roadmap, PRD and `infrastructure.md` agree on whether the harness exists
 
 ### Phase 6: Deploy to live and enable App Check enforcement
 
