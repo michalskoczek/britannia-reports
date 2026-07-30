@@ -954,30 +954,30 @@ a redeploy of the previous `firestore.rules`.
 
 #### Automated
 
-- [x] 1.1 `java -version` reports a JDK ≥ 11
-- [x] 1.2 `npx firebase emulators:start` boots Firestore and Auth without error
-- [x] 1.3 `npm run test:rules` passes all four scenarios
-- [x] 1.4 `npm run lint` exits 0
-- [x] 1.5 `npm test -- --watch=false --browsers=ChromeHeadless` stays green
-- [x] 1.6 `npm run build` type-checks
-- [x] 1.7 `npm run build -- --configuration development` type-checks
+- [x] 1.1 `java -version` reports a JDK ≥ 11 — f0c08c5
+- [x] 1.2 `npx firebase emulators:start` boots Firestore and Auth without error — f0c08c5
+- [x] 1.3 `npm run test:rules` passes all four scenarios — f0c08c5
+- [x] 1.4 `npm run lint` exits 0 — f0c08c5
+- [x] 1.5 `npm test -- --watch=false --browsers=ChromeHeadless` stays green — f0c08c5
+- [x] 1.6 `npm run build` type-checks — f0c08c5
+- [x] 1.7 `npm run build -- --configuration development` type-checks — f0c08c5
 
 #### Manual
 
-- [x] 1.8 With `useEmulators: true`, `npm start` reaches sign-in with no Firebase console errors
-- [x] 1.9 Signing in against the Auth emulator with a seeded allowlist document reaches the shell
-- [x] 1.10 A non-seeded address still shows the existing "no access" message
-- [x] 1.11 Restarting the emulators preserves the seeded allowlist document
+- [x] 1.8 With `useEmulators: true`, `npm start` reaches sign-in with no Firebase console errors — f0c08c5
+- [x] 1.9 Signing in against the Auth emulator with a seeded allowlist document reaches the shell — f0c08c5
+- [x] 1.10 A non-seeded address still shows the existing "no access" message — f0c08c5
+- [x] 1.11 Restarting the emulators preserves the seeded allowlist document — f0c08c5
 
 ### Phase 2: Session `uid` and the template data layer
 
 #### Automated
 
-- [ ] 2.1 `npm test -- --watch=false --browsers=ChromeHeadless` green, including the service spec
-- [ ] 2.2 Session specs assert `uid` is carried through the authorized state
-- [ ] 2.3 `npm run lint` exits 0
-- [ ] 2.4 `npm run build` type-checks
-- [ ] 2.5 `npm run build -- --configuration development` type-checks
+- [x] 2.1 `npm test -- --watch=false --browsers=ChromeHeadless` green, including the service spec
+- [x] 2.2 Session specs assert `uid` is carried through the authorized state
+- [x] 2.3 `npm run lint` exits 0
+- [x] 2.4 `npm run build` type-checks
+- [x] 2.5 `npm run build -- --configuration development` type-checks
 
 #### Manual
 

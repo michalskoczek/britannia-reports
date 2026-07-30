@@ -55,7 +55,7 @@ describe('auth guards', () => {
   it('lets an authorized user through', fakeAsync(() => {
     const decision = decide(authGuard);
 
-    state.set({ status: 'authorized', email: 'anna@britannia.pl', role: 'teacher' });
+    state.set({ status: 'authorized', uid: 'firebase-uid-anna', email: 'anna@britannia.pl', role: 'teacher' });
     tick();
 
     expect(decision()).toBeTrue();
@@ -89,7 +89,7 @@ describe('auth guards', () => {
   it('keeps a signed-in user off the sign-in screen', fakeAsync(() => {
     const decision = decide(signInGuard);
 
-    state.set({ status: 'authorized', email: 'anna@britannia.pl', role: 'director' });
+    state.set({ status: 'authorized', uid: 'firebase-uid-anna', email: 'anna@britannia.pl', role: 'director' });
     tick();
 
     expect(decision()?.toString()).toBe('/');

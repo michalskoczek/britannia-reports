@@ -17,6 +17,12 @@ import { AllowlistGateway } from './allowlist.gateway';
 import { AuthGateway } from './auth.gateway';
 
 interface AuthorizedAccount {
+  /**
+   * The Firebase Auth user id. Distinct from `email`: the allowlist is keyed on
+   * the address, while Firestore rules and every per-teacher document path are
+   * keyed on this. See the note on `SessionState`.
+   */
+  uid: string;
   email: string;
   role: UserRole;
 }
@@ -121,7 +127,12 @@ export class SessionService {
     }
 
     if (account !== null) {
-      return { status: 'authorized', email: account.email, role: account.role };
+      return {
+        status: 'authorized',
+        uid: account.uid,
+        email: account.email,
+        role: account.role,
+      };
     }
 
     const denial: DenialReason | null = this.denial();
@@ -202,7 +213,10 @@ export class SessionService {
 
     this.denial.set(null);
 
-    return { email, role: entry.role };
+    // `uid` comes straight off the `User` in hand rather than from any lookup:
+    // it is the value Firestore rules will compare against, so anything derived
+    // from the allowlist (which is email-keyed) would be the wrong identifier.
+    return { uid: user.uid, email, role: entry.role };
   }
 
   private async refuse(reason: DenialReason): Promise<null> {

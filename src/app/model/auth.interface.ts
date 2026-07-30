@@ -29,8 +29,16 @@ export interface AllowlistEntry {
  */
 export type DenialReason = 'not-allowlisted' | 'lookup-failed';
 
+/**
+ * `authorized` carries two identifiers for the same person, and they are not
+ * interchangeable. `email` is what the `allowedUsers` allowlist is keyed on;
+ * `uid` is what Firestore rules compare against (`request.auth.uid`) and what
+ * addresses the caller's own data under `users/{uid}/...`. Reaching for `email`
+ * where a rule expects `uid` produces a path no rule will ever match — see the
+ * warning in `firestore.rules`.
+ */
 export type SessionState =
   | { status: 'resolving' }
   | { status: 'anonymous' }
-  | { status: 'authorized'; email: string; role: UserRole }
+  | { status: 'authorized'; uid: string; email: string; role: UserRole }
   | { status: 'denied'; reason: DenialReason };

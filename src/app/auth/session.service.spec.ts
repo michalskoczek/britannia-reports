@@ -17,8 +17,9 @@ import { SessionService } from './session.service';
  * to the root zone and `tick()` never flushes it.
  */
 describe('SessionService', () => {
-  const allowlistedUser = { email: 'anna.kowalska@britannia.pl' } as User;
+  const allowlistedUser = { uid: 'firebase-uid-anna', email: 'anna.kowalska@britannia.pl' } as User;
   const email: string = allowlistedUser.email!;
+  const uid: string = allowlistedUser.uid;
 
   let authGateway: {
     user$: Subject<User | null>;
@@ -92,7 +93,7 @@ describe('SessionService', () => {
     expect(service.state().status).toBe('authorized');
   }));
 
-  it('resolves to authorized, carrying the email and the role, for an allowlisted account', fakeAsync(() => {
+  it('resolves to authorized, carrying the uid, the email and the role, for an allowlisted account', fakeAsync(() => {
     const entry: AllowlistEntry = { role: 'director' };
     allowlistGateway.lookup.and.resolveTo(entry);
 
@@ -102,7 +103,29 @@ describe('SessionService', () => {
     tick();
 
     expect(allowlistGateway.lookup).toHaveBeenCalledWith(email);
-    expect(service.state()).toEqual({ status: 'authorized', email, role: 'director' });
+    expect(service.state()).toEqual({ status: 'authorized', uid, email, role: 'director' });
+  }));
+
+  /**
+   * The `uid` is what `firestore.rules` compares against and what addresses
+   * every `users/{uid}/...` document, while the allowlist lookup that authorizes
+   * the session is keyed on the email. Nothing but this assertion proves the two
+   * did not get crossed — a `uid` sourced from the wrong place still type-checks,
+   * and the failure surfaces as `permission-denied` on an unrelated screen.
+   */
+  it('takes the uid from the auth emission, not from anything the allowlist returned', fakeAsync(() => {
+    allowlistGateway.lookup.and.resolveTo({ role: 'teacher' });
+
+    const service: SessionService = createService();
+    const otherUser = { uid: 'firebase-uid-tomasz', email: 'tomasz.lis@britannia.pl' } as User;
+
+    authGateway.user$.next(otherUser);
+    tick();
+
+    const state = service.state();
+
+    expect(state.status).toBe('authorized');
+    expect(state.status === 'authorized' && state.uid).toBe('firebase-uid-tomasz');
   }));
 
   it('denies and signs out an account that is not on the allowlist', fakeAsync(() => {
