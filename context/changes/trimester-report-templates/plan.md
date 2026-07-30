@@ -987,40 +987,54 @@ a redeploy of the previous `firestore.rules`.
 
 #### Automated
 
-- [x] 3.1 `npm test -- --watch=false --browsers=ChromeHeadless` green, including both new specs
-- [x] 3.2 `pl.json` and `en.json` key parity verified
-- [x] 3.3 `npm run lint` exits 0
-- [x] 3.4 `npm run build` type-checks
-- [x] 3.5 `npm run build -- --configuration development` type-checks
+- [x] 3.1 `npm test -- --watch=false --browsers=ChromeHeadless` green, including both new specs — f386745
+- [x] 3.2 `pl.json` and `en.json` key parity verified — f386745
+- [x] 3.3 `npm run lint` exits 0 — f386745
+- [x] 3.4 `npm run build` type-checks — f386745
+- [x] 3.5 `npm run build -- --configuration development` type-checks — f386745
 
 #### Manual
 
-- [x] 3.6 All four report tabs are visually and behaviourally unchanged (panel not yet mounted)
+- [x] 3.6 All four report tabs are visually and behaviourally unchanged (panel not yet mounted) — f386745
 
 ### Phase 4: Wire the panel into the trimester/semester report
 
 #### Automated
 
-- [ ] 4.1 `npm test -- --watch=false --browsers=ChromeHeadless` green, both semestr smoke fixtures included
-- [ ] 4.2 The form-model contract spec still asserts the original 48 control names and 14 arrays
-- [ ] 4.3 The exhaustive-partition assertion passes (10 + 4 + 12 + 22 = 48, pairwise disjoint)
-- [ ] 4.4 `npm run test:rules` still passes
-- [ ] 4.5 `npm run lint` exits 0
-- [ ] 4.6 `npm run build` type-checks
-- [ ] 4.7 `npm run build -- --configuration development` type-checks
+- [x] 4.1 `npm test -- --watch=false --browsers=ChromeHeadless` green, both semestr smoke fixtures included
+- [x] 4.2 The form-model contract spec still asserts the original 48 control names and 14 arrays
+- [x] 4.3 The exhaustive-partition assertion passes (10 + 4 + 12 + 22 = 48, pairwise disjoint)
+- [x] 4.4 `npm run test:rules` still passes
+- [x] 4.5 `npm run lint` exits 0
+- [x] 4.6 `npm run build` type-checks
+- [x] 4.7 `npm run build -- --configuration development` type-checks
 
 #### Manual
 
-- [ ] 4.8 Save a template from the cohort fields and see it listed
-- [ ] 4.9 Apply fills the ten domain fields and leaves the other 38 controls untouched
-- [ ] 4.10 Apply over non-empty fields lists overwritten *and* cleared fields; cancel is a no-op
-- [ ] 4.11 All three book options round-trip with the correct field **visible**
-- [ ] 4.12 A template with a date round-trips in the datepicker and in the PDF
-- [ ] 4.13 An all-defaults template applies as a no-op with no dialog
-- [ ] 4.14 A duplicate name in different case is rejected with a clear message
-- [ ] 4.15 Delete works through the dialog
-- [ ] 4.16 PL/EN switching works in the panel and in the dialog
-- [ ] 4.17 PDF-fidelity comparison recorded for both semestr fixtures
+- [x] 4.8 Save a template from the cohort fields and see it listed
+- [x] 4.9 Apply fills the ten domain fields and leaves the other 38 controls untouched
+- [x] 4.10 Apply over non-empty fields lists overwritten *and* cleared fields; cancel is a no-op
+- [x] 4.11 All three book options round-trip with the correct field **visible**
+- [x] 4.12 A template with a date round-trips in the datepicker and in the PDF
+- [x] 4.13 An all-defaults template applies as a no-op with no dialog
+- [x] 4.14 A duplicate name in different case is rejected with a clear message
+- [x] 4.15 Delete works through the dialog
+- [x] 4.16 PL/EN switching works in the panel and in the dialog
+- [x] 4.17 PDF-fidelity comparison recorded for both semestr fixtures
+
+#### PDF fidelity check
+
+- Date: 2026-07-30
+- Report types compared: trimester/semester (both fixtures)
+- Before: committed references at `docs/pdf-fidelity/reference/semestr-{minimal,maximal}.pdf`
+- Verdict: no visible differences
+- Supporting signal (§7): identical file sizes (43 865 / 47 850 bytes), and every byte `cmp -l`
+  reports as differing sits in the two non-deterministic regions — the `/CreationDate` string and the
+  trailer `/ID`. Content streams are byte-identical.
+- Note for the next run: `docs/pdf-fidelity/captured/` held artifacts from a previous capture, so
+  Chrome wrote the new run as `<fixture> (1).pdf` and the first comparison silently used the stale
+  files. Caught on the timestamps and redone. `docs/pdf-fidelity-check.md` does not warn about this —
+  see Phase 5.
 
 ### Phase 5: Documentation sync
 

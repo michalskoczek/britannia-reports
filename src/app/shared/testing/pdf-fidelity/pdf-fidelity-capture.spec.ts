@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideNativeDateAdapter } from '@angular/material/core';
 
+import { templatePanelTestingProviders } from '../templates-testing';
 import { translateTestingImports } from '../translate-testing';
 import { ReportFixture } from './report-fixture';
 import { capturePdfDefinition, downloadDefinition } from './render-pdf';
@@ -47,7 +48,9 @@ function captureSuite<TComponent>(
 
       await TestBed.configureTestingModule({
         imports: [componentType, ...translateTestingImports],
-        providers: [provideNoopAnimations(), provideNativeDateAdapter()],
+        // `SemestrReportComponent` mounts `app-template-panel` as of `S-02`; the
+        // other three report types ignore these providers.
+        providers: [provideNoopAnimations(), provideNativeDateAdapter(), ...templatePanelTestingProviders()],
       }).compileComponents();
 
       const testFixture = TestBed.createComponent(componentType);

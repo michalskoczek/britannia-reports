@@ -1,4 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, Signal, signal, WritableSignal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 // @ts-expect-error pdfMake
 import pdfMake from 'pdfmake/build/pdfmake';
@@ -51,8 +52,88 @@ import { DateComponent } from '../shared/components/form/date/date.component';
 import { TextareaComponent } from '../shared/components/form/textarea/textarea.component';
 import { ButtonComponent } from '../shared/components/button/button.component';
 import { SelectOptions } from '../shared/components/form/select/select-options';
+import { ReportTemplateFields, TemplateField } from '../model/report-template.interface';
+import { TEMPLATE_DOMAIN, TEMPLATE_DOMAIN_DEFAULTS } from '../templates/template-domain';
+import { TemplatePanelComponent } from '../templates/template-panel/template-panel.component';
 
 pdfMake.vfs = pdfFonts.vfs;
+
+/**
+ * The two `mat-radio-button` values the book selector binds
+ * (`semestr-report.component.html:82-90`).
+ *
+ * The third option — own training materials — deliberately binds no `value`, so
+ * selecting it leaves the control `undefined`. That is what
+ * `toStoredMaterial` / `toControlMaterial` translate around.
+ */
+const BOOK_FROM_LIST = '1';
+const OWN_BOOK_TITLE = '2';
+
+/** `YYYY-MM-DD`, the shape `ReportTemplateFields.date` is stored in. */
+const CALENDAR_DATE = /^\d{4}-\d{2}-\d{2}$/;
+
+const parseCalendarDate = (value: string): Date => {
+  const [year, month, day]: number[] = value.split('-').map(Number);
+
+  return new Date(year, month - 1, day);
+};
+
+/**
+ * Whatever the `date` control holds, as a native `Date`.
+ *
+ * Three types reach here. `app.config.ts` provides the moment adapter and every
+ * spec provides the native one, so the control holds a `Moment` in the browser
+ * and a `Date` under Karma — and a `YYYY-MM-DD` string if something wrote one
+ * directly. `Moment` is duck-typed rather than imported: this file must not
+ * depend on which adapter the app happens to be configured with.
+ */
+const toNativeDate = (value: unknown): Date | null => {
+  if (value instanceof Date) {
+    return value;
+  }
+
+  if (typeof value === 'string') {
+    return CALENDAR_DATE.test(value) ? parseCalendarDate(value) : null;
+  }
+
+  if (typeof value === 'object' && value !== null && typeof (value as { toDate?: unknown }).toDate === 'function') {
+    return (value as { toDate: () => Date }).toDate();
+  }
+
+  return null;
+};
+
+/**
+ * The `date` control as a calendar date.
+ *
+ * Read through the local accessors, not `toISOString()`: the stored value is a
+ * calendar day with no time and no zone, and going via UTC would move it by one
+ * for anyone west of Greenwich.
+ */
+const toCalendarDate = (value: unknown): string | null => {
+  const date: Date | null = toNativeDate(value);
+
+  if (date === null || Number.isNaN(date.getTime())) {
+    return null;
+  }
+
+  const month: string = `${date.getMonth() + 1}`.padStart(2, '0');
+  const day: string = `${date.getDate()}`.padStart(2, '0');
+
+  return `${date.getFullYear()}-${month}-${day}`;
+};
+
+/**
+ * A stored calendar date as local midnight.
+ *
+ * `new Date('2026-06-15')` parses as UTC, and `generatePDF` renders
+ * `form.value.date` through `toLocaleDateString` — so handing the control the
+ * bare string would print the 14th in any zone behind Greenwich. Both date
+ * adapters deserialize a `Date` for display, which keeps the datepicker and the
+ * PDF reading the same day whichever one is active.
+ */
+const toControlDate = (value: unknown): Date | null =>
+  typeof value === 'string' && CALENDAR_DATE.test(value) ? parseCalendarDate(value) : null;
 
 @Component({
   selector: 'app-semestr-report',
@@ -87,10 +168,12 @@ pdfMake.vfs = pdfFonts.vfs;
     DateComponent,
     TextareaComponent,
     ButtonComponent,
+    TemplatePanelComponent,
   ],
 })
 export class SemestrReportComponent implements OnInit {
   private readonly translate = inject(TranslateService);
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor() {
     this.translate.setDefaultLang('pl');
@@ -98,6 +181,21 @@ export class SemestrReportComponent implements OnInit {
   title = 'britannia-reports';
 
   public form!: FormGroup;
+
+  private readonly domainFields: WritableSignal<ReportTemplateFields> = signal<ReportTemplateFields>({
+    ...TEMPLATE_DOMAIN_DEFAULTS,
+  });
+
+  /**
+   * What `app-template-panel` reads as `currentFields` — the left-hand side of the
+   * FR-011 diff, kept current from `form.valueChanges`.
+   *
+   * A signal rather than `[currentFields]="collectTemplateFields()"` in the
+   * binding: `currentFields` is a signal input, so a fresh object on every
+   * change-detection pass would leave it permanently dirty. Same trap
+   * `markOptions` below caches around.
+   */
+  public readonly templateFields: Signal<ReportTemplateFields> = this.domainFields.asReadonly();
 
   public readonly sexes: string[] = sexes;
   public readonly classes: { label: string; value: string }[] = classes;
@@ -183,6 +281,101 @@ export class SemestrReportComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.createForm();
+    this.domainFields.set(this.collectTemplateFields());
+
+    this.form.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.domainFields.set(this.collectTemplateFields()));
+  }
+
+  /**
+   * Reads the template domain out of `form` (FR-010).
+   *
+   * Driven by `TEMPLATE_DOMAIN` rather than a hand-written list, so widening the
+   * domain in `S-04` needs no edit here. The other 38 controls are not read at
+   * all — this is the half of the field-domain boundary that keeps a student's
+   * identity and every assessment field out of a saved template.
+   */
+  public collectTemplateFields(): ReportTemplateFields {
+    const fields: Record<TemplateField, unknown> = { ...TEMPLATE_DOMAIN_DEFAULTS };
+
+    for (const field of TEMPLATE_DOMAIN) {
+      fields[field] = this.toStored(field, this.form.get(field)?.value);
+    }
+
+    return fields as ReportTemplateFields;
+  }
+
+  /**
+   * Writes a template payload into `form` and brings the book-visibility booleans
+   * back into agreement with it (FR-011).
+   *
+   * `patchValue` over the domain keys only. `setValue` on the whole form would
+   * reach all 48 controls — including `studentName`, `sex` and the six required
+   * descriptive marks, which no template may touch.
+   */
+  public applyTemplateFields(fields: ReportTemplateFields): void {
+    const patch: Record<string, unknown> = {};
+
+    for (const field of TEMPLATE_DOMAIN) {
+      patch[field] = this.toControl(field, fields[field]);
+    }
+
+    this.form.patchValue(patch);
+    this.syncBookVisibility(fields);
+  }
+
+  /** One domain value on its way out of `form`. */
+  private toStored(field: TemplateField, value: unknown): unknown {
+    switch (field) {
+      case 'date':
+        return toCalendarDate(value);
+
+      // Selecting "own training materials" leaves the control `undefined` — that
+      // radio binds no `value`, and the group's writeback lands after the
+      // `onCheckboxChangeOwnMaterialEducation` handler has set `true`. Firestore
+      // rejects `undefined` and no member of the stored union describes it, so it
+      // is stored as the `true` the handler intended.
+      case 'ownEducationMaterial':
+        return value === undefined ? true : value;
+
+      default:
+        return value ?? TEMPLATE_DOMAIN_DEFAULTS[field];
+    }
+  }
+
+  /** One stored value on its way into `form`. The inverse of `toStored`. */
+  private toControl(field: TemplateField, value: unknown): unknown {
+    switch (field) {
+      case 'date':
+        return toControlDate(value);
+
+      // Only `undefined` re-checks the own-materials radio, because that is the
+      // `value` it compares against. Patching `true` would leave all three blank.
+      case 'ownEducationMaterial':
+        return value === true ? undefined : value;
+
+      default:
+        return value;
+    }
+  }
+
+  /**
+   * `studentBookTitle` and `ownTitleStudentBook` render behind booleans that live
+   * outside `form`, so applying a template that fills one without raising its flag
+   * would put a value into `form.value` — and therefore into the PDF — behind a
+   * field the teacher cannot see.
+   *
+   * A stored title shows its field even when the radio selection disagrees:
+   * showing a field the teacher did not ask for is recoverable, printing a value
+   * they could not see is not.
+   *
+   * `isChecked` is deliberately untouched. It gates `examRecommendationResult`,
+   * which is a per-student field and never in a template.
+   */
+  private syncBookVisibility(fields: ReportTemplateFields): void {
+    this.isCheckedBook = fields.studentBookTitle !== null || fields.ownEducationMaterial === BOOK_FROM_LIST;
+    this.isCheckedOwnTitle = fields.ownTitleStudentBook !== null || fields.ownEducationMaterial === OWN_BOOK_TITLE;
   }
 
   get comments(): FormArray {

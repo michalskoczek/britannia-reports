@@ -1,6 +1,13 @@
 <div class="container pb-5 my-4">
   <form [formGroup]="form" (ngSubmit)="generatePDF(form)">
     <section class="form-section">
+      <app-template-panel
+        [currentFields]="templateFields()"
+        (apply)="applyTemplateFields($event)"
+      ></app-template-panel>
+    </section>
+
+    <section class="form-section">
       <app-form-wrapper [sectionTitle]="'reportType'">
         <mat-radio-group aria-label="Select an option" formControlName="reportType">
           <mat-radio-button [value]="ReportType.SEMESTER">
