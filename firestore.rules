@@ -6,7 +6,8 @@ rules_version = '2';
 // that introduces it — never pre-emptively.
 //
 // Open collections:
-//   allowedUsers — S-01. Read-only, and only to the account the document names.
+//   allowedUsers                       — S-01. Read-only, and only to the account the document names.
+//   users/{uid}/reportTemplates/{id}   — S-02. Read/create/delete by the owning uid only; never updated.
 
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -32,6 +33,29 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // FR-009..FR-012 — per-teacher trimester/semester report templates.
+    //
+    // Ownership is the `{uid}` path segment, compared against the caller's own
+    // `request.auth.uid`. Note this is a DIFFERENT identifier from the email the
+    // allowlist above is keyed on: same person, two ids. The allowlist answers
+    // "is this account allowed in at all", this answers "whose data is this".
+    //
+    // `update` is denied to everyone, the owner included. PRD `## Non-Goals`
+    // makes templates write-once — to change one, the teacher deletes it and
+    // saves a new one — so the store enforces that rather than the UI alone. It
+    // is also what makes duplicate names impossible: the document id is the
+    // normalized name, so a second save under the same name is a create against
+    // an existing document, which fails.
+    //
+    // The `users/{uid}` parent document is never written and gets no rule of its
+    // own; the catch-all below keeps it closed. Firestore allows a subcollection
+    // under a document that does not exist.
+    match /users/{uid}/reportTemplates/{templateId} {
+      allow read, create, delete: if request.auth != null
+                                  && request.auth.uid == uid;
+      allow update: if false;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }
@@ -40,29 +64,13 @@ service cloud.firestore {
 }
 
 // ---------------------------------------------------------------------------
-// FOR THE NEXT SLICE THAT ADDS A COLLECTION — READ BEFORE WRITING A RULE
+// HOW OWNERSHIP IS EXPRESSED HERE, AND WHY IT IS NOT A FIELD
 // ---------------------------------------------------------------------------
 //
-// The `allowedUsers` rule above is the project's first conditional rule. It is
-// deliberately the *easy* shape: read-only to everyone, keyed by an identifier
-// the caller already proves via their token, and holding no personal data
-// beyond an address and a role. Nothing about it generalises to what comes
-// next.
-//
-// S-02 (templates) and S-03 (student roster) are the hard shape. Both store
-// per-teacher data that must never cross between teachers, and both key
-// ownership on `request.auth.uid` — NOT on the email this allowlist uses. Those
-// are two different identifiers for the same person; do not reach for the wrong
-// one because this file happens to show the email version first. The pattern
-// they need is:
-//
-//   match /<collection>/{docId} {
-//     allow read, write: if request.auth != null
-//                        && request.auth.uid == resource.data.<ownerField>;
-//   }
-//
-// ⚠ The owner field name must be copied from the actual document schema, not
-// from this comment and not from memory.
+// The templates rule compares `request.auth.uid` against a path segment. The
+// obvious alternative — a flat `reportTemplates/{id}` collection with an
+// `ownerUid` field and a rule reading `resource.data.ownerUid` — was rejected
+// deliberately.
 //
 // `context/foundation/infrastructure.md` describes the failure mode concretely:
 // a rule written against `teacherUid` while the documents actually carried
@@ -71,34 +79,40 @@ service cloud.firestore {
 // data for a month before anyone noticed. Over-permissive rules do not fail
 // loudly — that is the whole problem.
 //
+// A path segment cannot drift from the schema, because it IS the schema. Any
+// new per-teacher collection should follow the same shape:
+//
+//   match /users/{uid}/<collection>/{docId} {
+//     allow read, create, delete: if request.auth != null && request.auth.uid == uid;
+//   }
+//
+// ⚠ If you ever do need an owner FIELD (a collection-group query, say), copy the
+// field name from the actual document schema — not from this comment and not
+// from memory — and add a rules test that fails when the names disagree.
+//
 // ---------------------------------------------------------------------------
-// THE RULES-TESTING HARNESS WAS DEFERRED — IT IS NOW YOURS
+// THE RULES-TESTING HARNESS EXISTS — RUN IT
 // ---------------------------------------------------------------------------
 //
-// This block previously instructed whoever wrote the first conditional rule to
-// stand up the Firebase emulator suite and `@firebase/rules-unit-testing`
-// first. S-01 wrote that rule and did NOT build the harness. That was a
-// deliberate, recorded decision, not an oversight — see
-// `context/changes/google-sign-in-gate/plan-brief.md` → Open Risks, and
-// `context/foundation/infrastructure.md` → Getting Started step 4.
+// `npm run test:rules` starts the Firestore emulator, runs `test/rules/` against
+// it, and shuts it down. It needs a JDK on the machine. Coverage today:
 //
-// The reasoning was specific to the rule above and does not extend past it: the
-// allowlist is read-only to every caller and carries no student data, so the
-// cross-teacher leak surface the pre-mortem describes did not yet exist.
+//   - teacher A reads, creates and deletes their own template
+//   - teacher B is denied read, create and delete against A's template
+//   - an unauthenticated caller is denied everything
+//   - update is denied, including for the owner (the write-once invariant)
 //
-// It exists the moment S-02 or S-03 writes its first per-teacher rule. Build
-// the harness there, before that rule:
+// S-01 shipped the `allowedUsers` rule above without this harness, by recorded
+// decision: that rule is read-only to every caller and holds no student data, so
+// the cross-teacher leak surface did not yet exist. S-02 built the harness before
+// writing the rule above it, which is where that argument ran out.
 //
-//   - a JDK (absent on the development machine as of 2026-07-28)
-//   - an `emulators` block in `firebase.json`
-//   - a `useEmulators` flag on the `Environment` interface
-//   - `connect*Emulator` calls in `app.config.ts`
-//   - `*.rules.spec.ts` run against the emulator before any deploy
+// Two things worth knowing before you change a rule here:
 //
-// Minimum coverage before any per-teacher rule is considered done: teacher A
-// can read and write only their own documents; teacher B is denied access to
-// teacher A's documents; an unauthenticated caller is denied everything.
-//
-// One more reason it cannot slip again: dev and prod share a single Firebase
-// project, so from S-02's first collection onward, local development reads and
-// writes real teacher data.
+//   - The harness is NOT wired into `npm test` and there is no CI. Nothing runs
+//     it for you. Run it yourself, before you deploy, every time this file
+//     changes.
+//   - Dev and prod share one Firebase project. `environment.ts` sets
+//     `useEmulators: true` so local development no longer writes to the
+//     production store — but anyone who flips that flag is back to editing real
+//     teacher data from localhost.

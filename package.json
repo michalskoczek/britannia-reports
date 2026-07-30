@@ -8,6 +8,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test:capture": "ng test --configuration capture --watch=false",
+    "test:rules": "firebase emulators:exec --only firestore \"node --test test/rules\"",
+    "emulators": "firebase emulators:start --import=./.emulator-data --export-on-exit",
     "lint": "ng lint"
   },
   "private": true,
@@ -39,6 +41,7 @@
     "@angular/cli": "~20.3.26",
     "@angular/compiler-cli": "^20.3.21",
     "@eslint/js": "~9.39.4",
+    "@firebase/rules-unit-testing": "^5.0.1",
     "@types/jasmine": "~4.3.0",
     "angular-eslint": "~20.7.0",
     "eslint": "^9.28.0",

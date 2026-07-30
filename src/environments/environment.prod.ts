@@ -9,12 +9,17 @@
  * file. Firestore security rules, not key secrecy, protect the data.
  *
  * Dev and prod share one Firebase project, so `firebase` is identical in both
- * files today; only `production` differs.
+ * files today; `production` and `useEmulators` are what differ.
+ *
+ * `useEmulators` MUST stay `false` here. This is the file that ships, and it is
+ * the only one a default `npm run build` type-checks — a `true` here would point
+ * the live app at a localhost that does not exist, and no gate would catch it.
  */
 import { Environment } from './environment.model';
 
 export const environment: Environment = {
   production: true,
+  useEmulators: false,
   firebase: {
     apiKey: 'AIzaSyBYXjjdYzjhewx1NUGJ079AuvvMveUskzc',
     authDomain: 'britannia-reports.firebaseapp.com',

@@ -7,13 +7,14 @@
  * file. Firestore security rules, not key secrecy, protect the data.
  *
  * Dev and prod share one Firebase project, so `firebase` is identical in both
- * files today; only `production` differs. The seam exists so S-01 has somewhere
- * to put the first value that genuinely does differ.
+ * files today; `production` and `useEmulators` are what differ. `useEmulators`
+ * is the first value that genuinely does — the seam S-01 left behind.
  */
 import { Environment } from './environment.model';
 
 export const environment: Environment = {
   production: false,
+  useEmulators: true,
   firebase: {
     apiKey: 'AIzaSyBYXjjdYzjhewx1NUGJ079AuvvMveUskzc',
     authDomain: 'britannia-reports.firebaseapp.com',
