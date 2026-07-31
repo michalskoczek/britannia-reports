@@ -521,13 +521,13 @@ None. `students` is a new collection; no existing document is read or rewritten.
 
 #### Automated
 
-- [x] 5.1 Rules tests pass immediately before the rules deploy
-- [x] 5.2 Current branch is the deploy base: `git branch --show-current` prints `10xdevs`
-- [x] 5.3 Build output present: `ls dist/browser/index.html`
+- [x] 5.1 Rules tests pass immediately before the rules deploy — 7edad23
+- [x] 5.2 Current branch is the deploy base: `git branch --show-current` prints `10xdevs` — 7edad23
+- [x] 5.3 Build output present: `ls dist/browser/index.html` — 7edad23
 
 #### Manual
 
-- [x] 5.4 Add / edit / delete a student on production
-- [x] 5.5 A second seeded account sees only its own roster on production
-- [x] 5.6 The four report forms still render and still download a PDF
-- [x] 5.7 No `permission-denied` during any roster action
+- [x] 5.4 Add / edit / delete a student on production — 7edad23
+- [x] 5.5 A second seeded account sees only its own roster on production — 7edad23
+- [x] 5.6 The four report forms still render and still download a PDF — 7edad23
+- [x] 5.7 No `permission-denied` during any roster action — 7edad23
