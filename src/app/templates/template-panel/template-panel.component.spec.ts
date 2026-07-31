@@ -228,6 +228,46 @@ describe('TemplatePanelComponent', () => {
       expect(listedNames()).toEqual(['Klasa 5 semestr']);
     });
 
+    it('recovers the list after saving while it was failed', async () => {
+      // Save sits above the failure block, so it is reachable while the list is
+      // not. Leaving the panel in that state hides the new template AND leaves
+      // the duplicate-name check running against an empty list — a collision
+      // would then reach the store and come back as `permission-denied`.
+      spyOn(console, 'error');
+      gateway.list.and.rejectWith(firebaseError('unavailable'));
+
+      await render();
+
+      expect(text('.template-panel-failure')).toContain('templates.errors.offline');
+
+      gateway.list.and.resolveTo([stored('klasa 5', 'Klasa 5', fields({ course: 'A2' }))]);
+      typeName('Klasa 5');
+      pressSave();
+      await settle();
+
+      expect(gateway.create).toHaveBeenCalled();
+      expect(fixture.nativeElement.querySelector('.template-panel-failure')).toBeNull();
+      expect(listedNames()).toEqual(['Klasa 5']);
+    });
+
+    it('does not spend a read reloading when the list was already good', async () => {
+      // The service appends the saved template to its cache, so an unconditional
+      // reload would cost one Firestore read per save against the Spark budget.
+      gateway.list.and.resolveTo([]);
+
+      await render();
+
+      expect(gateway.list).toHaveBeenCalledTimes(1);
+
+      typeName('Klasa 5');
+      pressSave();
+      await settle();
+
+      expect(gateway.create).toHaveBeenCalled();
+      expect(gateway.list).toHaveBeenCalledTimes(1);
+      expect(listedNames()).toEqual(['Klasa 5']);
+    });
+
     it('clears the name message as soon as the name changes', async () => {
       await render();
 

@@ -5,8 +5,25 @@
 - **Scope**: Full plan — Phases 1–6 of 6
 - **Commits**: `f0c08c5`, `8a822b2`, `f386745`, `8551b70`, `409a8eb`, `68cbb9f`, `c253fa7` (44 files, +4863/−130)
 - **Date**: 2026-07-30
-- **Verdict**: NEEDS ATTENTION
+- **Verdict**: NEEDS ATTENTION → **all findings triaged 2026-07-31** (3 fixed, 1 skipped, 1 accepted)
 - **Findings**: 0 critical, 2 warnings, 3 observations
+
+## Triage outcome (2026-07-31)
+
+| Finding | Decision |
+|---|---|
+| F1 — rule does not consult the allowlist | **FIXED** via Fix B — `isAllowlisted()` added, rules tests 11 → 17, redeployed to production (`f898550`) |
+| F2 — production ahead of the deployment base | **FIXED differently** — the base is `10xdevs`, not `master`; fast-forwarded and documented in `src/CLAUDE.md` |
+| F3 — no rollback version id recorded | SKIPPED — Console lookup at rollback time accepted |
+| F4 — `permission-denied` covers several causes | **FIXED** — panel reloads after a save that followed a failed load; specs 122 → 124 |
+| F5 — unplanned but disclosed file changes | ACCEPTED as disclosed scope |
+
+Gates after triage: lint clean, **124/124** specs, **17/17** rules tests, both builds type-check.
+
+**Still open, carried in `follow-ups/review-fixes.md`:** App Check enforcement has never been proven to
+reject an unattested caller. F1's fix means template authorization no longer depends on it, but it
+remains the only thing standing between the public project id and the rest of Firestore. The GDPR
+baseline (PRD Open Question #2) is also still untouched.
 
 **Reviewer blind spot, stated up front:** the reviewing agent implemented Phase 6 in this same
 session, so F1 and F3 are findings against its own work and F1 in particular is the kind of gap an
@@ -127,7 +144,17 @@ The prior review at `reviews/impl-review-phase-1.md` and its triage outcomes in
     the failure mode `infrastructure.md`'s empty-deploy row already exists to guard against.
   - Confidence: MEDIUM — documentation prevents this only if read.
   - Blind spot: None significant.
-- **Decision**: PENDING
+- **Decision**: FIXED differently (2026-07-31) — **and the finding's premise was partly wrong.**
+  `master` is not the deployment base; **`10xdevs` is**, and feature branches (`10xdevs-<slice>`) merge
+  into it. The review named `master` because it is the repo's default branch, which was the wrong
+  inference. The hazard itself survives the correction — a deploy from a *stale* `10xdevs` reverts
+  production exactly as described — but the fix is different from either option offered.
+
+  Applied: `10xdevs-S02` fast-forwarded into `10xdevs` (7 commits, no conflict surface), so the
+  deployment base now matches what production serves; `master` deliberately left alone. `src/CLAUDE.md`
+  gained a note next to the deploy commands stating that `10xdevs` is the base, that `master` is not,
+  and what deploying from the wrong branch would silently do. Not pushed — `10xdevs` is ahead of
+  `origin/10xdevs` locally, which is the user's call.
 
 ### F3 — No rollback target recorded for the live release
 
@@ -143,7 +170,10 @@ The prior review at `reviews/impl-review-phase-1.md` and its triage outcomes in
   the one moment nobody wants an extra lookup.
 - **Fix**: Read the live version id from Console → Hosting → Release history and paste it into the plan's
   Deploy record, so the rollback command is copy-pasteable.
-- **Decision**: PENDING
+- **Decision**: SKIPPED — a Console lookup at rollback time is acceptable. Consequence accepted: a
+  rollback costs one extra lookup before the command can be run. The corrected procedure in
+  `infrastructure.md` says where to look and gives the right command, which is the part that was
+  actually broken.
 
 ### F4 — `permission-denied` reaches the teacher as a message with three different causes
 
@@ -169,7 +199,16 @@ The prior review at `reviews/impl-review-phase-1.md` and its triage outcomes in
   listed even though the snackbar confirms it saved.
 - **Fix**: Clear `loadFailureKey` on a successful save and re-run `reload()` after one, so the list
   recovers and the duplicate check has real data to work against on the next attempt.
-- **Decision**: PENDING
+- **Decision**: FIXED (2026-07-31). `TemplatePanelComponent.save()` now reloads after a successful save
+  **only when `loadFailureKey()` is set** — unconditionally reloading would spend a Firestore read per
+  save against the Spark budget for nothing, since the service already appends the saved template to
+  its cache. Two specs added (122 → 124): one proving the list recovers after saving while failed, one
+  proving the good path still costs exactly one `list` call.
+
+  Note the cause count grew during this review: today's F1 rule change makes "not on the allowlist" a
+  fourth way to reach `permission-denied`. The fix narrows when the ambiguous message can be *reached*;
+  it does not disambiguate the message itself. Distinguishing the four would need a read-back on
+  failure, which was judged not worth a Firestore read on an error path.
 
 ### F5 — Four unplanned file changes, all justified and disclosed
 
@@ -190,7 +229,7 @@ The prior review at `reviews/impl-review-phase-1.md` and its triage outcomes in
   what `lessons.md`'s rule asks for. Logged so a strict scope-discipline read has the list in one place
   rather than as a defect.
 - **Fix**: None needed — accept as disclosed scope.
-- **Decision**: PENDING
+- **Decision**: ACCEPTED as disclosed scope. No action; the record stands as written.
 
 ## Success criteria re-verification
 

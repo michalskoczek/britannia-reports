@@ -168,6 +168,23 @@ export class TemplatePanelComponent implements OnInit {
         this.nameControl.setValue('');
         this.notify('templates.saved');
 
+        // A save is reachable while the list is not: the name field and Save sit
+        // above the failure block, not inside it. In that state the panel is
+        // still showing its retry, the just-saved template is not listed, and —
+        // worse — the duplicate-name check has been running against an empty
+        // list, so a collision reaches the store and comes back as
+        // `permission-denied`. That message now has four possible causes (name
+        // taken, wrong owner, App Check, not on the allowlist), which is exactly
+        // the ambiguity `TemplatesFailure` exists to avoid. Reloading repairs
+        // both the display and the next check.
+        //
+        // Only on the failure path: the service appends the saved template to
+        // its cache, so an unconditional reload here would spend a Firestore read
+        // per save against the Spark budget for nothing.
+        if (this.loadFailureKey() !== null) {
+          await this.reload();
+        }
+
         return;
       }
 
