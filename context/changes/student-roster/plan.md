@@ -489,33 +489,33 @@ None. `students` is a new collection; no existing document is read or rewritten.
 
 #### Automated
 
-- [x] 3.1 Unit tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
-- [x] 3.2 Lint clean: `npm run lint`
-- [x] 3.3 Both builds type-check
-- [x] 3.4 i18n key parity between `pl.json` and `en.json`
+- [x] 3.1 Unit tests pass: `npm test -- --watch=false --browsers=ChromeHeadless` — 266de58
+- [x] 3.2 Lint clean: `npm run lint` — 266de58
+- [x] 3.3 Both builds type-check — 266de58
+- [x] 3.4 i18n key parity between `pl.json` and `en.json` — 266de58
 
 #### Manual
 
-- [x] 3.5 Add, list, edit and delete work against the emulators
-- [x] 3.6 Header nav appears only when signed in; sign-in screen keeps only the language toggle
-- [x] 3.7 PL/EN switching relabels the roster and the dialog
-- [x] 3.8 A second seeded account sees a disjoint, empty roster
-- [x] 3.9 `/students` while signed out lands on the sign-in screen
-- [x] 3.10 The four report forms are visually unchanged
+- [x] 3.5 Add, list, edit and delete work against the emulators — 266de58
+- [x] 3.6 Header nav appears only when signed in; sign-in screen keeps only the language toggle — 266de58
+- [x] 3.7 PL/EN switching relabels the roster and the dialog — 266de58
+- [x] 3.8 A second seeded account sees a disjoint, empty roster — 266de58
+- [x] 3.9 `/students` while signed out lands on the sign-in screen — 266de58
+- [x] 3.10 The four report forms are visually unchanged — 266de58
 
 ### Phase 4: Verification and documentation
 
 #### Automated
 
-- [ ] 4.1 Rules tests pass: `npm run test:rules`
-- [ ] 4.2 Unit tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
-- [ ] 4.3 Lint clean: `npm run lint`
-- [ ] 4.4 Both builds type-check
+- [x] 4.1 Rules tests pass: `npm run test:rules`
+- [x] 4.2 Unit tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
+- [x] 4.3 Lint clean: `npm run lint`
+- [x] 4.4 Both builds type-check
 
 #### Manual
 
-- [ ] 4.5 No document contradicts another (`src/CLAUDE.md`, `firestore.rules`, roadmap, PRD)
-- [ ] 4.6 Full FR walkthrough: FR-005, FR-006, FR-007, FR-008, FR-018
+- [x] 4.5 No document contradicts another (`src/CLAUDE.md`, `firestore.rules`, roadmap, PRD)
+- [x] 4.6 Full FR walkthrough: FR-005, FR-006, FR-007, FR-008, FR-018
 
 ### Phase 5: Release
 

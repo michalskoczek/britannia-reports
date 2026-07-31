@@ -3,7 +3,7 @@ project: "Britannia Reports"
 version: 1
 status: draft
 created: 2026-05-23
-updated: 2026-07-30
+updated: 2026-07-31
 context_type: brownfield
 product_type: web-app
 target_scale:
@@ -88,7 +88,7 @@ A new role introduced by this change. Before: not a user of the current app at a
 - Applying a template populates all template-controlled (boilerplate) fields. If any of those fields already contain content at the moment of apply, the teacher is shown a confirmation prompt before the overwrite.
 - An empty template (saved with no fields filled) applies as a no-op.
 - The pre-filled form remains fully editable — any field can be changed after the template is applied.
-- The student picker populates student-identity fields (name, free-text class label). Template apply never writes to those fields; they are owned by the picker.
+- The student picker populates student-identity fields (name, free-text class label — but see FR-005's 2026-07-31 amendment: there are four such fields and `class` is a select). Template apply never writes to those fields; they are owned by the picker.
 - Polish / English switching continues to function on the trimester/semester form after the template is applied.
 - The generated PDF for a templated report is visually equivalent to a PDF produced by typing the same field values manually.
 
@@ -111,6 +111,11 @@ Each item below is tagged `[new]`, `[modified]`, `[preserved]`, or `[removed]`. 
 
 - [new] **FR-005** — Teacher can add a student with minimal information: name and a free-text class label. Priority: must-have.
   > Socrates: No counter-argument; stands as written. "Class" is a free-text field on student, not a separate entity (see `## Non-Goals`).
+  > **Amended 2026-07-31 by `S-03` (`student-roster`) — what actually ships stores four fields, and `class` is not free text.** A student record is `studentName` (the full name), `name` (the display first name substituted into PDF prose — the report form labels it "Imię ucznia do wyświetlenia w tekście (np. Jaś)"), `sex`, and `class`. Two departures, both deliberate:
+  > - **`sex` is stored.** It is `Validators.required` on the trimester/semester form and selects the gendered wording `Uczeń` / `Uczennica` in the generated PDF. A roster omitting it would leave FR-013's picker filling two of the four student-identity controls, and the teacher re-picking sex for every single report — the retyping this whole change exists to remove.
+  > - **`class` is a closed select, not free text.** The report form already binds `class` to a thirteen-value option list (`src/app/shared/select-values.ts`), so a free-text label pre-filled by FR-013 would be a value outside that list. The roster reuses the same constant; the letter of this FR was traded for a working pre-fill.
+  >
+  > The four stored fields are exactly the four student-identity controls FR-013 pre-fills, and a spec asserts that equality (`src/app/students/student-domain.spec.ts`), so the two cannot drift. See `## Non-Goals` → "No over-detailed student or teacher records" for the matching amendment, and `context/foundation/roadmap.md` → S-03 Outcome for the full record.
 - [new] **FR-006** — Teacher can view a list of their own students. Priority: must-have.
   > Socrates: No counter-argument; stands as written.
 - [new] **FR-007** — Teacher can edit a student's information. Priority: must-have.
@@ -131,7 +136,7 @@ Each item below is tagged `[new]`, `[modified]`, `[preserved]`, or `[removed]`. 
 
 ### Report generation
 
-- [new] **FR-013** — Teacher can pick a student from their roster when starting a trimester/semester report; the student-identity fields (name, free-text class label) pre-fill from the picked student. The picker owns student-identity fields; templates (FR-011) own boilerplate fields — disjoint domains. Usual flow is picker-first then template, but the order is not enforced. Priority: must-have.
+- [new] **FR-013** — Teacher can pick a student from their roster when starting a trimester/semester report; the student-identity fields (name, free-text class label — amended 2026-07-31: four fields, `class` a select; see FR-005) pre-fill from the picked student. The picker owns student-identity fields; templates (FR-011) own boilerplate fields — disjoint domains. Usual flow is picker-first then template, but the order is not enforced. Priority: must-have.
   > Socrates: Counter-argument considered: "Picker overlaps with template-apply — two pre-fill mechanisms hitting the same form risk order-dependent confusion." Resolution: revised; explicit disjoint-domain rule now baked into the FR — picker → student fields, template → boilerplate, no field overlap.
 - [modified] **FR-014** — Teacher can fill a trimester/semester report and download it as PDF. Was: any visitor on the public URL could do this. Now: sign-in-gated, with an optional student picker (FR-013) and optional template apply (FR-011) layered on top of the existing form-fill-then-PDF path. This form is also in scope for the `S-05` on-screen design refresh onto the Teddy Eddie visual language; the refresh does not reach the PDF. Priority: must-have.
   > Socrates: No counter-argument; stands as written.
@@ -231,6 +236,8 @@ The MVP explicitly does NOT do the following. Each item has a one-line rationale
 - **No template editing.** Templates are write-once; to change a template, the teacher deletes it and saves a new one. Rationale: the shaping Socratic round identified three management surfaces for one entity (save / edit / delete) as over-complex for MVP.
 - **No templates for forms other than trimester/semester.** Year-end, Cambridge, and Teddy Eddie forms remain template-free in MVP. Rationale: cuts template UI work by approximately three-quarters and lets MVP prove the template concept on the most-used form type before generalizing.
 - **No over-detailed student or teacher records.** Minimal personal data only — students have a name and a free-text class label; teachers have a Google identity and a display name. Rationale: from the original idea-notes; aligns with EU minor-data minimization principles.
+
+  > **Amended 2026-07-31 by `S-03` (`student-roster`).** The non-goal stands — a student record is still four fields and nothing else, with no contact details, no date of birth, no guardian data, no notes, and no report history — but the record is **wider than this bullet described**: `studentName`, `name` (display first name), `sex`, and `class`. `sex` is stored because it is a required control on the report form and drives gendered PDF wording, so omitting it would mean re-entering it per report; `class` is a value from the report form's own thirteen-item select rather than free text, because a free-text label could not pre-fill that control. Both are recorded in full under FR-005. Data minimization is unchanged as a principle and the deletion path (FR-008) is unchanged; what changed is the honest description of the stored shape. Open Question #2 (the GDPR baseline) is **not** affected by this amendment and stays open — see `context/foundation/roadmap.md` → Open Roadmap Question #1 for what is now live.
 
 ## Open Questions
 
