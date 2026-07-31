@@ -1,7 +1,7 @@
 ---
 change_id: student-roster
 title: Teacher-scoped student roster with add, view, edit, and delete
-status: implemented
+status: impl_reviewed
 created: 2026-07-31
 updated: 2026-07-31
 archived_at: null
