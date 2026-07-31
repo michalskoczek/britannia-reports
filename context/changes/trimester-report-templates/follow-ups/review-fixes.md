@@ -2,7 +2,26 @@
 
 Queued during triage of `reviews/impl-review-phase-1.md` (2026-07-30).
 
-## F1 — Re-examine the templates rule when App Check enforcement lands
+## F1 — RESOLVED 2026-07-31 by Fix B (the rule now consults the allowlist)
+
+**Status: closed.** The full-plan review (`reviews/impl-review.md` → F1) found that Phase 6 enabled App
+Check enforcement but never ran the check this file assigned it — it verified only "the app still
+works", the exact insufficient test warned about below. Rather than run that check and keep depending
+on attestation, the gap was closed at the layer that actually decides: `firestore.rules` now ANDs
+`isAllowlisted()` (email verified + `exists()` on `allowedUsers/{lowercased email}`) onto the
+templates rule, with six new scenarios in `test/rules/` (17 passing) and the rules redeployed.
+
+The original entry is kept below unedited, because the reasoning is what made the fallback available
+and because "nobody would notice, because nothing fails" turned out to be exactly right.
+
+**One item survives this closure:** whether App Check enforcement actually rejects unattested callers
+is still unverified. It is no longer load-bearing for template authorization, but it is the only thing
+standing between the public project id and the rest of Firestore, so it is worth proving once. Owner:
+unassigned. The GDPR question below also remains untouched.
+
+---
+
+## F1 (original) — Re-examine the templates rule when App Check enforcement lands
 
 - **Source**: Phase 1 review, finding F1 — `firestore.rules:63-67`
 - **Decision taken**: Fix A — accept the gap now, revisit at App Check.

@@ -27,6 +27,15 @@ npx firebase deploy --only firestore:rules                 # deploy rules FIRST,
 npx firebase deploy --only hosting                         # deploy (requires `npm run build` first; public = dist/browser)
 ```
 
+**Deploy from `10xdevs`, and from nothing else.** `10xdevs` is the integration branch and the base for
+every deploy; feature branches (`10xdevs-<slice>`) merge into it and are deployed from there. **`master`
+is not the deployment base** — it is far behind and carries none of `S-05a`, `S-05b`, `S-01` or `S-02`.
+Building and deploying from `master` would silently roll production back past the sign-in gate,
+re-exposing all four report forms publicly and stranding saved templates behind a client with no panel
+to read them. `firebase deploy` cannot detect this: it publishes whatever is in `dist/browser` and exits
+0. Firestore data does not roll back with hosting, so the templates would survive invisibly rather than
+be lost. Check `git branch --show-current` before building a release.
+
 Running a single spec: `npm test -- --include='**/teddy-eddie-form.component.spec.ts' --watch=false --browsers=ChromeHeadless`.
 
 ## Architecture
