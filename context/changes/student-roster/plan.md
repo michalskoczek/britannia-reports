@@ -507,27 +507,27 @@ None. `students` is a new collection; no existing document is read or rewritten.
 
 #### Automated
 
-- [x] 4.1 Rules tests pass: `npm run test:rules`
-- [x] 4.2 Unit tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
-- [x] 4.3 Lint clean: `npm run lint`
-- [x] 4.4 Both builds type-check
+- [x] 4.1 Rules tests pass: `npm run test:rules` — 3c67a3e
+- [x] 4.2 Unit tests pass: `npm test -- --watch=false --browsers=ChromeHeadless` — 3c67a3e
+- [x] 4.3 Lint clean: `npm run lint` — 3c67a3e
+- [x] 4.4 Both builds type-check — 3c67a3e
 
 #### Manual
 
-- [x] 4.5 No document contradicts another (`src/CLAUDE.md`, `firestore.rules`, roadmap, PRD)
-- [x] 4.6 Full FR walkthrough: FR-005, FR-006, FR-007, FR-008, FR-018
+- [x] 4.5 No document contradicts another (`src/CLAUDE.md`, `firestore.rules`, roadmap, PRD) — 3c67a3e
+- [x] 4.6 Full FR walkthrough: FR-005, FR-006, FR-007, FR-008, FR-018 — 3c67a3e
 
 ### Phase 5: Release
 
 #### Automated
 
-- [ ] 5.1 Rules tests pass immediately before the rules deploy
-- [ ] 5.2 Current branch is the deploy base: `git branch --show-current` prints `10xdevs`
-- [ ] 5.3 Build output present: `ls dist/browser/index.html`
+- [x] 5.1 Rules tests pass immediately before the rules deploy
+- [x] 5.2 Current branch is the deploy base: `git branch --show-current` prints `10xdevs`
+- [x] 5.3 Build output present: `ls dist/browser/index.html`
 
 #### Manual
 
-- [ ] 5.4 Add / edit / delete a student on production
-- [ ] 5.5 A second seeded account sees only its own roster on production
-- [ ] 5.6 The four report forms still render and still download a PDF
-- [ ] 5.7 No `permission-denied` during any roster action
+- [x] 5.4 Add / edit / delete a student on production
+- [x] 5.5 A second seeded account sees only its own roster on production
+- [x] 5.6 The four report forms still render and still download a PDF
+- [x] 5.7 No `permission-denied` during any roster action
