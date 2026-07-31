@@ -7,10 +7,41 @@ rules_version = '2';
 //
 // Open collections:
 //   allowedUsers                       — S-01. Read-only, and only to the account the document names.
-//   users/{uid}/reportTemplates/{id}   — S-02. Read/create/delete by the owning uid only; never updated.
+//   users/{uid}/reportTemplates/{id}   — S-02. Read/create/delete by the owning uid, and only while
+//                                        that account is on the allowlist; never updated.
 
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // Is the caller an account the school has actually let in?
+    //
+    // Added 2026-07-31, closing the gap the S-02 Phase 1 review raised as F1:
+    // the templates rule used to authorize on `request.auth.uid` alone, so ANY
+    // Google account that completed Firebase sign-in could create, read and
+    // delete under its own `users/{uid}/reportTemplates` subtree — allowlisted
+    // or not. No cross-teacher leak and no student data, but the project's
+    // storage and its Spark write quota were reachable by anyone holding the
+    // project id, which ships in the bundle.
+    //
+    // That gap was first accepted on the argument that App Check enforcement
+    // would close it. Enforcement did land (Phase 6), but this is the layer that
+    // actually decides: rules are evaluated independently of App Check, of
+    // `SessionService`, and of any future client. Defence in depth, and the only
+    // half of it that fails closed.
+    //
+    // Cost, stated plainly: one extra document read per template operation,
+    // billed against the Spark 50K reads/day budget. Template operations are
+    // rare — a handful per teacher per term — so this is not the quota risk that
+    // `onSnapshot` listeners are.
+    //
+    // Keyed on the EMAIL, because that is what `allowedUsers` is keyed on and
+    // FR-003 requires seeding before a uid exists. See the two-identifier note
+    // on the templates rule below.
+    function isAllowlisted() {
+      return request.auth != null
+             && request.auth.token.email_verified == true
+             && exists(/databases/$(database)/documents/allowedUsers/$(request.auth.token.email.lower()));
+    }
 
     // The FR-003 teacher allowlist.
     //
@@ -40,6 +71,11 @@ service cloud.firestore {
     // allowlist above is keyed on: same person, two ids. The allowlist answers
     // "is this account allowed in at all", this answers "whose data is this".
     //
+    // BOTH questions are asked here, and they are not redundant. `uid == uid`
+    // alone would let any signed-in Google account use its own subtree as free
+    // storage; `isAllowlisted()` alone would let one allowlisted teacher read
+    // another's templates. Neither check subsumes the other.
+    //
     // `update` is denied to everyone, the owner included. PRD `## Non-Goals`
     // makes templates write-once — to change one, the teacher deletes it and
     // saves a new one — so the store enforces that rather than the UI alone. It
@@ -52,7 +88,8 @@ service cloud.firestore {
     // under a document that does not exist.
     match /users/{uid}/reportTemplates/{templateId} {
       allow read, create, delete: if request.auth != null
-                                  && request.auth.uid == uid;
+                                  && request.auth.uid == uid
+                                  && isAllowlisted();
       allow update: if false;
     }
 
@@ -98,9 +135,23 @@ service cloud.firestore {
 // it, and shuts it down. It needs a JDK on the machine. Coverage today:
 //
 //   - teacher A reads, creates and deletes their own template
-//   - teacher B is denied read, create and delete against A's template
+//   - teacher A is recognised whatever case the address is signed in with
+//   - teacher B — also allowlisted, so this tests ownership and not the allowlist
+//     — is denied read, create and delete against A's template
+//   - a signed-in account that is NOT on the allowlist is denied create, read and
+//     delete under its OWN uid, including when the allowlist holds some other
+//     address (which is what would catch an `exists()` testing the collection
+//     rather than the caller's own document)
+//   - an allowlisted address whose email is unverified is denied
 //   - an unauthenticated caller is denied everything
 //   - update is denied, including for the owner (the write-once invariant)
+//
+// One emulator artefact you will see and should not chase: denials of a WRITE
+// log `evaluation error at L90` rather than a plain `false`. It appeared when
+// `isAllowlisted()` added a document lookup to the expression. Every outcome is
+// correct — reads deny cleanly, owners are still allowed, and a create of a
+// genuinely new template still succeeds — and the branches that log it were
+// going to deny regardless. Verified by probe on 2026-07-31.
 //
 // S-01 shipped the `allowedUsers` rule above without this harness, by recorded
 // decision: that rule is read-only to every caller and holds no student data, so
