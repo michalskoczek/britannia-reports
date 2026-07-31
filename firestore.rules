@@ -9,6 +9,9 @@ rules_version = '2';
 //   allowedUsers                       — S-01. Read-only, and only to the account the document names.
 //   users/{uid}/reportTemplates/{id}   — S-02. Read/create/delete by the owning uid, and only while
 //                                        that account is on the allowlist; never updated.
+//   users/{uid}/students/{studentId}   — S-03. Read/create/update/delete by the owning uid, and only
+//                                        while that account is on the allowlist. The first MUTABLE
+//                                        collection here: everything above is write-once or read-only.
 
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -93,6 +96,38 @@ service cloud.firestore {
       allow update: if false;
     }
 
+    // FR-005..FR-008 — the per-teacher student roster.
+    //
+    // Same ownership shape as the templates rule above, and for the same reason:
+    // the `{uid}` path segment IS the schema, so it cannot drift from it. Both
+    // questions are asked here too — `uid == uid` answers "whose data is this",
+    // `isAllowlisted()` answers "is this account allowed in at all".
+    //
+    // `update` is ALLOWED here, and this is the first rule in the file that allows
+    // it. That is not an inconsistency with the templates rule one block up: PRD
+    // `## Non-Goals` makes templates write-once (delete and re-save to change one),
+    // while FR-007 makes editing a student a first-class capability. A teacher
+    // fixing a misspelt surname must not have to delete the child and re-add them.
+    //
+    // Document ids are Firestore auto-ids, NOT the normalized name the templates
+    // rule uses. A student's name is mutable (FR-007) and not unique — two children
+    // may share one — so a name-keyed id would turn a rename into a non-atomic
+    // delete + create and would reject a legitimate second "Jan Kowalski".
+    //
+    // WHAT THIS RULE DELIBERATELY DOES NOT DO: validate the document's shape.
+    // Required keys, types and length caps live in `StudentsService`, not here.
+    // `context/foundation/infrastructure.md` records why — a rule that restates a
+    // schema drifts from it silently, and an over-permissive rule does not fail
+    // loudly. The boundary that actually protects a child's record is ownership,
+    // and that is what this rule enforces and what `test/rules/students.test.mjs`
+    // proves. A malformed write costs its own author a broken row; it cannot reach
+    // another teacher.
+    match /users/{uid}/students/{studentId} {
+      allow read, create, update, delete: if request.auth != null
+                                          && request.auth.uid == uid
+                                          && isAllowlisted();
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }
@@ -132,7 +167,11 @@ service cloud.firestore {
 // ---------------------------------------------------------------------------
 //
 // `npm run test:rules` starts the Firestore emulator, runs `test/rules/` against
-// it, and shuts it down. It needs a JDK on the machine. Coverage today:
+// it, and shuts it down. It needs a JDK on the machine. It runs the WHOLE
+// directory (`node --test test/rules`), so a new `.mjs` file there needs no
+// config change anywhere.
+//
+// Coverage today — `report-templates.test.mjs`:
 //
 //   - teacher A reads, creates and deletes their own template
 //   - teacher A is recognised whatever case the address is signed in with
@@ -146,6 +185,17 @@ service cloud.firestore {
 //   - an unauthenticated caller is denied everything
 //   - update is denied, including for the owner (the write-once invariant)
 //
+// Coverage today — `students.test.mjs`:
+//
+//   - teacher A reads, creates, UPDATES and deletes their own student
+//   - teacher A is recognised whatever case the address is signed in with
+//   - teacher B — also allowlisted — is denied all four operations against A's
+//     student, update included
+//   - a signed-in account that is NOT on the allowlist is denied all four under
+//     its OWN uid, including when the allowlist holds some other address
+//   - an allowlisted address whose email is unverified is denied
+//   - an unauthenticated caller is denied everything
+//
 // One emulator artefact you will see and should not chase: denials of a WRITE
 // log `evaluation error at L90` rather than a plain `false`. It appeared when
 // `isAllowlisted()` added a document lookup to the expression. Every outcome is
@@ -158,7 +208,16 @@ service cloud.firestore {
 // the cross-teacher leak surface did not yet exist. S-02 built the harness before
 // writing the rule above it, which is where that argument ran out.
 //
-// Two things worth knowing before you change a rule here:
+// ⚠ EVERY TEST FILE HERE NEEDS ITS OWN `projectId`. `node --test` runs one
+// process per file, in parallel, against a single emulator, and
+// `initializeTestEnvironment` namespaces data and rules by project id. Two files
+// sharing an id share a dataset — and each one's `clearFirestore()` in
+// `afterEach` then deletes the other's fixtures mid-test. Adding
+// `students.test.mjs` made a previously stable templates test fail
+// intermittently on a create its own `seedAllowlist` had just made legal, which
+// is how this was found. A third file needs a third id.
+//
+// Three things worth knowing before you change a rule here:
 //
 //   - The harness is NOT wired into `npm test` and there is no CI. Nothing runs
 //     it for you. Run it yourself, before you deploy, every time this file
