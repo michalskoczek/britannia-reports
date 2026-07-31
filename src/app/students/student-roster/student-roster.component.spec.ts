@@ -33,6 +33,7 @@ describe('StudentRosterComponent', () => {
   let service: {
     students: WritableSignal<readonly Student[]>;
     validate: (identity: StudentIdentity) => StudentsFailure | null;
+    hasFreshRoster: jasmine.Spy;
     load: jasmine.Spy;
     create: jasmine.Spy;
     update: jasmine.Spy;
@@ -157,6 +158,9 @@ describe('StudentRosterComponent', () => {
       // always agreed would hide exactly that check. `validate` reads nothing
       // off `this`, so borrowing it off the prototype is safe.
       validate: StudentsService.prototype.validate,
+      // Default false: every spec below that does not say otherwise is exercising
+      // a first visit, where the roster does have to be read.
+      hasFreshRoster: jasmine.createSpy('hasFreshRoster').and.returnValue(false),
       load: jasmine.createSpy('load').and.callFake(async () => ok(listed())),
       create: jasmine.createSpy('create').and.callFake(async (draft: StudentDraft) => {
         const created: Student = { id: 'generated-id', identity: draft.identity, createdAt: null };
@@ -249,6 +253,62 @@ describe('StudentRosterComponent', () => {
       expect(fixture.nativeElement.querySelector('.student-roster-failure')).toBeNull();
       expect(listedNames()).toEqual(['Anna Nowak']);
     });
+
+    it('does not re-read the roster when the service already holds this teacher’s list', async () => {
+      // Coming back from the reports re-creates the component; the cached list
+      // did not go anywhere, so a read here buys nothing.
+      service.hasFreshRoster.and.returnValue(true);
+      listed.set([student('a', { studentName: 'Anna Nowak' })]);
+
+      await render();
+
+      expect(service.load).not.toHaveBeenCalled();
+      expect(listedNames()).toEqual(['Anna Nowak']);
+    });
+
+    it('still reads the roster when the cache belongs to nobody yet', async () => {
+      service.hasFreshRoster.and.returnValue(false);
+
+      await render();
+
+      expect(service.load).toHaveBeenCalledTimes(1);
+    });
+
+    it('recovers the list when a student is added while the load has failed', async () => {
+      service.load.and.resolveTo(failed('offline'));
+
+      await render();
+
+      // The form sits above the failure block and stays usable, so the teacher
+      // can save into a roster that is not being displayed.
+      expect(text('.student-roster-failure')).toContain('students.errors.offline');
+
+      service.load.and.callFake(async () => ok(listed()));
+
+      type('studentName', 'Jan Kowalski');
+      await choose('sex', Sex.MALE);
+      submit();
+      await settle();
+
+      expect(service.create).toHaveBeenCalled();
+      expect(fixture.nativeElement.querySelector('.student-roster-failure')).toBeNull();
+      expect(listedNames()).toEqual(['Jan Kowalski']);
+    });
+
+    it('does not spend a second list read when the save follows a good load', async () => {
+      await render();
+
+      expect(service.load).toHaveBeenCalledTimes(1);
+
+      type('studentName', 'Jan Kowalski');
+      await choose('sex', Sex.MALE);
+      submit();
+      await settle();
+
+      // The service appends to its own cache; reloading here would cost a read
+      // against the Spark budget for a list that is already correct.
+      expect(service.load).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('add', () => {
@@ -273,6 +333,22 @@ describe('StudentRosterComponent', () => {
 
       expect(service.create).not.toHaveBeenCalled();
       expect(text('.student-roster-error')).toBe('students.errors.sexRequired');
+    });
+
+    it('drops the rejection message as soon as the teacher fixes the field', async () => {
+      await render();
+
+      await choose('sex', Sex.MALE);
+      submit();
+      await settle();
+
+      expect(text('.student-roster-error')).toBe('students.errors.nameRequired');
+
+      type('studentName', 'Jan Kowalski');
+      await settle();
+
+      // A message that outlives its cause reads as a second, different refusal.
+      expect(fixture.nativeElement.querySelector('.student-roster-error')).toBeNull();
     });
 
     it('adds the student and clears the form', async () => {

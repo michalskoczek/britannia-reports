@@ -1,4 +1,15 @@
-import { Component, ElementRef, inject, OnInit, Signal, signal, viewChild, WritableSignal } from '@angular/core';
+import {
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  OnInit,
+  Signal,
+  signal,
+  viewChild,
+  WritableSignal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -110,6 +121,25 @@ export class StudentRosterComponent implements OnInit {
   protected readonly deletingId: WritableSignal<string | null> = signal<string | null>(null);
 
   /**
+   * Any write in flight, anywhere on the surface.
+   *
+   * The form and the rows guard on each other rather than only on their own
+   * write. Pressing Edit during a save used to patch the form and then have it
+   * wiped by that save's `resetToAddMode()`, with nothing on screen to say why;
+   * Delete stayed live in the same window. One signal, so the two can't drift
+   * apart again.
+   *
+   * The disable stays list-wide rather than per-row on purpose: `deletingId`
+   * holds one id, and the confirm dialog closes before the delete resolves — so
+   * a second delete started in that window would overwrite it and the first
+   * `finally` would clear the second's flag. Which row is going is said by the
+   * row itself, below.
+   */
+  protected readonly busy: Signal<boolean> = computed(
+    () => this.saving() || this.deletingId() !== null,
+  );
+
+  /**
    * Why the list is not on screen, as a translate key.
    *
    * Rendered inline with a retry rather than in a snackbar: a transient message
@@ -117,7 +147,7 @@ export class StudentRosterComponent implements OnInit {
    */
   protected readonly loadFailureKey: WritableSignal<string | null> = signal<string | null>(null);
 
-  /** Why the form was refused, as a translate key. Cleared on the next submit. */
+  /** Why the form was refused, as a translate key. Cleared as soon as it changes. */
   protected readonly formFailureKey: WritableSignal<string | null> = signal<string | null>(null);
 
   /**
@@ -129,11 +159,30 @@ export class StudentRosterComponent implements OnInit {
   private readonly formElement: Signal<ElementRef<HTMLElement> | undefined> =
     viewChild<ElementRef<HTMLElement>>('rosterForm');
 
+  constructor() {
+    // The message goes when its cause goes, not when the teacher presses Add
+    // again — otherwise a corrected name still reads as rejected. Same shape as
+    // `TemplatePanelComponent`; the whole group rather than one control, because
+    // any of the four can be what the failure was about.
+    this.form.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => this.formFailureKey.set(null));
+  }
+
   /**
    * The roster only mounts behind `authGuard`, which holds until the session
    * stops being `resolving` — so the uid the service needs is already known.
    */
   public ngOnInit(): void {
+    // The service cache outlives this component, but the component does not:
+    // `/students` is a route, so leaving for the reports and coming back
+    // destroys and re-creates it — and this slice added the header nav that
+    // makes that round trip one click. Mounting is therefore not evidence that
+    // anything changed, and reloading on every mount would spend a full-
+    // collection read per visit against the Spark budget. Retry is the explicit
+    // refresh.
+    if (this.studentsService.hasFreshRoster()) {
+      return;
+    }
+
     void this.reload();
   }
 
@@ -188,6 +237,20 @@ export class StudentRosterComponent implements OnInit {
 
       this.resetToAddMode();
       this.notify(studentId === null ? 'students.saved' : 'students.updated');
+
+      // A save is reachable while the list is not: the form sits above the
+      // failure block, not inside it, and the failure branch wins over the list
+      // in the template. In that state the roster is still showing its retry and
+      // the just-saved student is listed nowhere — the teacher is told the save
+      // worked and shown a screen that contradicts it.
+      //
+      // Only on the failure path: the service appends the saved student to its
+      // cache, so an unconditional reload here would spend a Firestore read per
+      // save against the Spark budget for nothing. Same shape and same reason as
+      // `TemplatePanelComponent.save()`.
+      if (this.loadFailureKey() !== null) {
+        await this.reload();
+      }
     } finally {
       this.saving.set(false);
     }

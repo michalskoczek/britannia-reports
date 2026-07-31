@@ -11,7 +11,7 @@ import {
   serverTimestamp,
   updateDoc,
 } from '@angular/fire/firestore';
-import { StudentDocument, StudentIdentity } from '../model/student.interface';
+import { StudentDocument } from '../model/student.interface';
 import { USERS_COLLECTION } from '../templates/templates.gateway';
 
 /** Contract shared with `firestore.rules`. */
@@ -98,11 +98,21 @@ export class StudentsGateway {
    * so a key the caller omitted is removed rather than left behind from the
    * previous version. That is what makes an edit a full replacement of the four
    * fields, matching what `StudentsService` normalizes on the way in.
+   *
+   * Takes the same document shape as `create` rather than a bare identity, so
+   * `schemaVersion` is rewritten alongside the fields it describes. An update
+   * that replaced the identity but left the old version behind would leave the
+   * only field a future migration can branch on describing a shape the document
+   * no longer has.
    */
-  public async update(uid: string, studentId: string, identity: StudentIdentity): Promise<void> {
+  public async update(
+    uid: string,
+    studentId: string,
+    document: Omit<StudentDocument, 'createdAt' | 'updatedAt'>,
+  ): Promise<void> {
     await runInInjectionContext(this.injector, () =>
       updateDoc(doc(this.firestore, USERS_COLLECTION, uid, STUDENTS_COLLECTION, studentId), {
-        identity,
+        ...document,
         updatedAt: serverTimestamp(),
       }),
     );

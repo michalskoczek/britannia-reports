@@ -76,6 +76,12 @@
   &--editing {
     outline: 2px solid ds.$britannia-blue;
   }
+
+  // The row a delete is in flight for. Every row's buttons disable during a
+  // delete, so without this the teacher cannot tell which one is going.
+  &--deleting {
+    opacity: 0.5;
+  }
 }
 
 .student-roster-item-identity {

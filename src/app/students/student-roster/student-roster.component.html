@@ -55,7 +55,7 @@
           [translateKey]="editingId() === null ? 'students.add' : 'students.saveChanges'"
           [icon]="editingId() === null ? 'person_add' : 'save'"
           [type]="'submit'"
-          [disabled]="saving()"
+          [disabled]="busy()"
         ></app-button>
 
         @if (editingId() !== null) {
@@ -65,7 +65,7 @@
             [icon]="'close'"
             [type]="'button'"
             [variant]="'secondary'"
-            [disabled]="saving()"
+            [disabled]="busy()"
             (clicked)="cancelEdit()"
           ></app-button>
         }
@@ -92,7 +92,11 @@
   } @else {
     <ul class="student-roster-list">
       @for (student of students(); track student.id) {
-        <li class="student-roster-item" [class.student-roster-item--editing]="editingId() === student.id">
+        <li
+          class="student-roster-item"
+          [class.student-roster-item--editing]="editingId() === student.id"
+          [class.student-roster-item--deleting]="deletingId() === student.id"
+        >
           <span class="student-roster-item-identity">
             <span class="student-roster-item-name">{{ student.identity.studentName }}</span>
 
@@ -117,7 +121,7 @@
               [icon]="'edit'"
               [type]="'button'"
               [variant]="'secondary'"
-              [disabled]="deletingId() !== null"
+              [disabled]="busy()"
               (clicked)="edit(student)"
             ></app-button>
 
@@ -126,7 +130,7 @@
               [icon]="'delete'"
               [type]="'button'"
               [variant]="'danger'"
-              [disabled]="deletingId() !== null"
+              [disabled]="busy()"
               (clicked)="remove(student)"
             ></app-button>
           </span>

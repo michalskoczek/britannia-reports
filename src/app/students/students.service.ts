@@ -100,6 +100,21 @@ export class StudentsService {
     return null;
   }
 
+  /**
+   * Whether the cached list already describes the signed-in teacher.
+   *
+   * Lets a mounting surface skip a read it does not need. `loadedFor` is `null`
+   * until the first *successful* load, so this separates "loaded, and the
+   * teacher has no students yet" from "never loaded" — without that distinction
+   * a teacher with an empty roster would re-read the collection on every visit,
+   * which is the case that needs the saving most.
+   */
+  public hasFreshRoster(): boolean {
+    const uid: string | null = this.currentUid();
+
+    return uid !== null && uid === this.loadedFor();
+  }
+
   /** Replaces the cached list on success; leaves it untouched on failure. */
   public async load(): Promise<StudentsResult<readonly Student[]>> {
     const uid: string | null = this.currentUid();
@@ -188,8 +203,13 @@ export class StudentsService {
       return { ok: false, failure };
     }
 
+    const document: Omit<StudentDocument, 'createdAt' | 'updatedAt'> = {
+      schemaVersion: STUDENT_SCHEMA_VERSION,
+      identity,
+    };
+
     try {
-      await this.gateway.update(uid, studentId, identity);
+      await this.gateway.update(uid, studentId, document);
     } catch (error: unknown) {
       return this.fail('Editing a student failed', error);
     }

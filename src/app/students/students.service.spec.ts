@@ -224,6 +224,47 @@ describe('StudentsService', () => {
     });
   });
 
+  describe('hasFreshRoster', () => {
+    it('is false before the first load and true after it', async () => {
+      const service: StudentsService = createService();
+      expect(service.hasFreshRoster()).toBeFalse();
+
+      await service.load();
+
+      expect(service.hasFreshRoster()).toBeTrue();
+    });
+
+    it('is true after a load that found no students', async () => {
+      gateway.list.and.resolveTo([]);
+
+      const service: StudentsService = createService();
+      await service.load();
+
+      // The saving matters most here: without it, the teacher who has not added
+      // anyone yet pays a read on every single visit.
+      expect(service.hasFreshRoster()).toBeTrue();
+    });
+
+    it('stays false when the load failed', async () => {
+      spyOn(console, 'error');
+      gateway.list.and.rejectWith(firebaseError('unavailable'));
+
+      const service: StudentsService = createService();
+      await service.load();
+
+      expect(service.hasFreshRoster()).toBeFalse();
+    });
+
+    it('is false again once a different teacher is signed in', async () => {
+      const service: StudentsService = createService();
+      await service.load();
+
+      sessionState.set({ status: 'authorized', uid: 'firebase-uid-tomasz', email: 't@britannia.pl', role: 'teacher' });
+
+      expect(service.hasFreshRoster()).toBeFalse();
+    });
+  });
+
   describe('create', () => {
     it('writes the schema version and the trimmed identity, and keeps the list sorted', async () => {
       gateway.list.and.resolveTo([storedIdentity('Zofia Wrona')] satisfies StoredStudent[]);
@@ -321,11 +362,16 @@ describe('StudentsService', () => {
       const result = await service.update('a', { identity: identity({ studentName: 'Zenon Nowak' }) });
 
       expect(result.ok).toBeTrue();
+      // The version travels with the identity it describes — an edit rewrites
+      // both, so a document cannot end up stamped with a schema it no longer has.
       expect(gateway.update).toHaveBeenCalledWith(UID, 'a', {
-        studentName: 'Zenon Nowak',
-        name: null,
-        sex: Sex.MALE,
-        class: null,
+        schemaVersion: STUDENT_SCHEMA_VERSION,
+        identity: {
+          studentName: 'Zenon Nowak',
+          name: null,
+          sex: Sex.MALE,
+          class: null,
+        },
       });
       expect(names(service)).toEqual(['Marta Cis', 'Zenon Nowak']);
     });
