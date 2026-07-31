@@ -480,28 +480,28 @@ None. `students` is a new collection; no existing document is read or rewritten.
 
 #### Automated
 
-- [x] 2.1 Unit tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
-- [x] 2.2 Lint clean: `npm run lint`
-- [x] 2.3 Production build type-checks: `npm run build`
-- [x] 2.4 Development build type-checks: `npm run build -- --configuration development`
+- [x] 2.1 Unit tests pass: `npm test -- --watch=false --browsers=ChromeHeadless` — f0273a7
+- [x] 2.2 Lint clean: `npm run lint` — f0273a7
+- [x] 2.3 Production build type-checks: `npm run build` — f0273a7
+- [x] 2.4 Development build type-checks: `npm run build -- --configuration development` — f0273a7
 
 ### Phase 3: Roster surface — route, navigation, component
 
 #### Automated
 
-- [ ] 3.1 Unit tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
-- [ ] 3.2 Lint clean: `npm run lint`
-- [ ] 3.3 Both builds type-check
-- [ ] 3.4 i18n key parity between `pl.json` and `en.json`
+- [x] 3.1 Unit tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
+- [x] 3.2 Lint clean: `npm run lint`
+- [x] 3.3 Both builds type-check
+- [x] 3.4 i18n key parity between `pl.json` and `en.json`
 
 #### Manual
 
-- [ ] 3.5 Add, list, edit and delete work against the emulators
-- [ ] 3.6 Header nav appears only when signed in; sign-in screen keeps only the language toggle
-- [ ] 3.7 PL/EN switching relabels the roster and the dialog
-- [ ] 3.8 A second seeded account sees a disjoint, empty roster
-- [ ] 3.9 `/students` while signed out lands on the sign-in screen
-- [ ] 3.10 The four report forms are visually unchanged
+- [x] 3.5 Add, list, edit and delete work against the emulators
+- [x] 3.6 Header nav appears only when signed in; sign-in screen keeps only the language toggle
+- [x] 3.7 PL/EN switching relabels the roster and the dialog
+- [x] 3.8 A second seeded account sees a disjoint, empty roster
+- [x] 3.9 `/students` while signed out lands on the sign-in screen
+- [x] 3.10 The four report forms are visually unchanged
 
 ### Phase 4: Verification and documentation
 

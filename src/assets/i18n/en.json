@@ -317,5 +317,42 @@
       "offline": "No connection to the server. Check your internet connection and try again.",
       "unknown": "The operation failed. Try again."
     }
+  },
+  "students": {
+    "navLink": "Students",
+    "navReports": "Reports",
+    "sectionTitle": "My students",
+    "lead": "Save the students you write reports for — full name, the first name used in the report text, sex and class. Only you can see this list.",
+    "studentNameLabel": "Full name",
+    "studentNamePlaceholder": "e.g. Jan Kowalski",
+    "nameLabel": "First name as shown in the report text",
+    "namePlaceholder": "e.g. Jaś",
+    "sexLabel": "Male / Female",
+    "classLabel": "Class",
+    "add": "Add student",
+    "saveChanges": "Save changes",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "retry": "Try again",
+    "loading": "Loading students…",
+    "empty": "You have no students yet. Fill in the fields above and add your first one.",
+    "saved": "Student added.",
+    "updated": "Student details saved.",
+    "deleted": "Student deleted.",
+    "confirmDelete": {
+      "title": "Delete this student?",
+      "message": "\"{{name}}\" will be permanently removed from your list. This cannot be undone.",
+      "confirm": "Delete"
+    },
+    "errors": {
+      "nameRequired": "Enter the student's full name.",
+      "nameTooLong": "The full name may be at most 80 characters long.",
+      "sexRequired": "Choose male or female.",
+      "notSignedIn": "Your session has expired. Sign in again.",
+      "permissionDenied": "You have no access to this student list. Sign in again.",
+      "offline": "No connection to the server. Check your internet connection and try again.",
+      "unknown": "The operation failed. Try again."
+    }
   }
 }

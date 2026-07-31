@@ -1,0 +1,137 @@
+<section class="student-roster">
+  <!--
+    `#rosterForm` is what `revealForm()` scrolls to and focuses into: the form
+    sits above the list, so pressing Edit on a row far down otherwise looks like
+    it did nothing.
+  -->
+  <form #rosterForm [formGroup]="form" (ngSubmit)="submit()">
+    <app-form-wrapper [sectionTitle]="'students.sectionTitle'">
+      <p class="student-roster-lead">{{ 'students.lead' | translate }}</p>
+
+      <div class="student-roster-fields">
+        <app-input-text
+          class="student-roster-field"
+          formControlName="studentName"
+          [label]="'students.studentNameLabel'"
+          [placeholder]="'students.studentNamePlaceholder'"
+          [required]="true"
+        ></app-input-text>
+
+        <app-input-text
+          class="student-roster-field"
+          formControlName="name"
+          [label]="'students.nameLabel'"
+          [placeholder]="'students.namePlaceholder'"
+        ></app-input-text>
+
+        <app-select
+          class="student-roster-field"
+          formControlName="sex"
+          [label]="'students.sexLabel'"
+          [itemList]="sexes"
+          [required]="true"
+        ></app-select>
+
+        <app-select
+          class="student-roster-field"
+          formControlName="class"
+          [label]="'students.classLabel'"
+          [itemList]="classes"
+        ></app-select>
+      </div>
+
+      @if (formFailureKey(); as key) {
+        <p class="student-roster-error" role="alert">{{ key | translate }}</p>
+      }
+
+      <div class="student-roster-actions">
+        <!--
+          `[type]` is explicit because `app-button` defaults to a value HTML
+          resolves to *submit* — which is right for this one and wrong for
+          Cancel, which must not submit the form it sits in.
+        -->
+        <app-button
+          class="student-roster-submit"
+          [translateKey]="editingId() === null ? 'students.add' : 'students.saveChanges'"
+          [icon]="editingId() === null ? 'person_add' : 'save'"
+          [type]="'submit'"
+          [disabled]="saving()"
+        ></app-button>
+
+        @if (editingId() !== null) {
+          <app-button
+            class="student-roster-cancel"
+            [translateKey]="'students.cancel'"
+            [icon]="'close'"
+            [type]="'button'"
+            [variant]="'secondary'"
+            [disabled]="saving()"
+            (clicked)="cancelEdit()"
+          ></app-button>
+        }
+      </div>
+    </app-form-wrapper>
+  </form>
+
+  @if (loading()) {
+    <p class="student-roster-note">{{ 'students.loading' | translate }}</p>
+  } @else if (loadFailureKey(); as key) {
+    <div class="student-roster-failure" role="alert">
+      <p class="student-roster-error">{{ key | translate }}</p>
+
+      <app-button
+        [translateKey]="'students.retry'"
+        [icon]="'refresh'"
+        [type]="'button'"
+        [variant]="'secondary'"
+        (clicked)="reload()"
+      ></app-button>
+    </div>
+  } @else if (students().length === 0) {
+    <p class="student-roster-note">{{ 'students.empty' | translate }}</p>
+  } @else {
+    <ul class="student-roster-list">
+      @for (student of students(); track student.id) {
+        <li class="student-roster-item" [class.student-roster-item--editing]="editingId() === student.id">
+          <span class="student-roster-item-identity">
+            <span class="student-roster-item-name">{{ student.identity.studentName }}</span>
+
+            <span class="student-roster-item-details">
+              @if (student.identity.name) {
+                <span class="student-roster-item-detail">{{ student.identity.name }}</span>
+              }
+
+              @if (student.identity.sex; as sex) {
+                <span class="student-roster-item-detail">{{ sex | translate }}</span>
+              }
+
+              @if (student.identity.class; as studentClass) {
+                <span class="student-roster-item-detail">{{ classLabelKey(studentClass) | translate }}</span>
+              }
+            </span>
+          </span>
+
+          <span class="student-roster-item-actions">
+            <app-button
+              [translateKey]="'students.edit'"
+              [icon]="'edit'"
+              [type]="'button'"
+              [variant]="'secondary'"
+              [disabled]="deletingId() !== null"
+              (clicked)="edit(student)"
+            ></app-button>
+
+            <app-button
+              [translateKey]="'students.delete'"
+              [icon]="'delete'"
+              [type]="'button'"
+              [variant]="'danger'"
+              [disabled]="deletingId() !== null"
+              (clicked)="remove(student)"
+            ></app-button>
+          </span>
+        </li>
+      }
+    </ul>
+  }
+</section>

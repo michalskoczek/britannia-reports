@@ -2,13 +2,14 @@ import { Component, computed, inject, OnInit, Signal } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { NgOptimizedImage } from '@angular/common';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
-import { Router } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { ButtonComponent } from '../../button/button.component';
 import { SessionService } from '../../../../auth/session.service';
 
 @Component({
   selector: 'app-header',
-  imports: [NgOptimizedImage, MatSlideToggle, ButtonComponent],
+  imports: [NgOptimizedImage, MatSlideToggle, ButtonComponent, RouterLink, RouterLinkActive, TranslateModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })

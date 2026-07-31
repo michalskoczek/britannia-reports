@@ -28,11 +28,28 @@ export class TabGroupComponent implements OnInit {
     this.clickTabEvent.emit(tab);
   }
 
+  /**
+   * Puts the bar back to "default tab selected", clearing every other flag.
+   *
+   * Authoritative rather than additive, and that is the whole point.
+   * `TabData.tabs` is a static array, so `isActive` outlives the component that
+   * wrote it: mounting used to only *set* the default and leave whatever the
+   * previous mount had marked. That was unreachable while the shell was the one
+   * routed surface a signed-in teacher could be on. `S-03`'s `/students` route
+   * made leaving and returning ordinary, and two tabs then carried `isActive` at
+   * once — the moving pill is a single `::after` positioned from
+   * `:has(.tab:nth-child(N).active)`, so it lands on one of them while BOTH get
+   * the active tab's white text. The other one reads as an empty slot in the
+   * bar.
+   *
+   * Resetting to the default is the right answer and not merely the cheap one:
+   * `ShellComponent` independently starts from `defaultActive` on every mount,
+   * so anything else here would put the bar and the rendered report out of
+   * agreement.
+   */
   private initDefaultActiveTab(): void {
     this.tabs.forEach((tab: Tab): void => {
-      if (tab.defaultActive) {
-        tab.isActive = true;
-      }
+      tab.isActive = tab.defaultActive;
     });
   }
 

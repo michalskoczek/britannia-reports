@@ -11,6 +11,33 @@
 
   <div class="button-wrapper">
     @if (email(); as address) {
+      <!--
+        Both links live inside this block on purpose. FR-018 requires the
+        language toggle on every screen including sign-in, which is what makes
+        this boundary load-bearing: anything roster-related outside it would
+        appear on a screen where neither route can be activated.
+
+        `routerLinkActive` needs `[routerLinkActiveOptions]` on the reports link
+        because `/` is a prefix of every other route and would otherwise stay
+        marked as active from the roster.
+      -->
+      <nav class="app-nav">
+        <a
+          class="app-nav-link"
+          routerLink="/"
+          routerLinkActive="app-nav-link--active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          >{{ 'students.navReports' | translate }}</a
+        >
+
+        <a
+          class="app-nav-link"
+          routerLink="/students"
+          routerLinkActive="app-nav-link--active"
+          >{{ 'students.navLink' | translate }}</a
+        >
+      </nav>
+
       <span class="account-email">{{ address }}</span>
 
       <app-button

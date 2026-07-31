@@ -318,5 +318,42 @@
       "offline": "Brak połączenia z serwerem. Sprawdź połączenie z internetem i spróbuj ponownie.",
       "unknown": "Operacja nie udała się. Spróbuj ponownie."
     }
+  },
+  "students": {
+    "navLink": "Uczniowie",
+    "navReports": "Raporty",
+    "sectionTitle": "Moi uczniowie",
+    "lead": "Zapisz uczniów, dla których piszesz raporty — imię i nazwisko, imię do tekstu raportu, płeć i klasę. Listę widzisz tylko Ty.",
+    "studentNameLabel": "Imię i nazwisko",
+    "studentNamePlaceholder": "np. Jan Kowalski",
+    "nameLabel": "Imię ucznia do wyświetlenia w tekście",
+    "namePlaceholder": "np. Jaś",
+    "sexLabel": "Uczeń / Uczennica",
+    "classLabel": "Klasa",
+    "add": "Dodaj ucznia",
+    "saveChanges": "Zapisz zmiany",
+    "cancel": "Anuluj",
+    "edit": "Edytuj",
+    "delete": "Usuń",
+    "retry": "Spróbuj ponownie",
+    "loading": "Wczytywanie uczniów…",
+    "empty": "Nie masz jeszcze żadnych uczniów. Wypełnij pola powyżej i dodaj pierwszego.",
+    "saved": "Uczeń dodany.",
+    "updated": "Dane ucznia zapisane.",
+    "deleted": "Uczeń usunięty.",
+    "confirmDelete": {
+      "title": "Usunąć tego ucznia?",
+      "message": "„{{name}}” zostanie trwale usunięty z Twojej listy. Tej operacji nie można cofnąć.",
+      "confirm": "Usuń"
+    },
+    "errors": {
+      "nameRequired": "Wpisz imię i nazwisko ucznia.",
+      "nameTooLong": "Imię i nazwisko może mieć najwyżej 80 znaków.",
+      "sexRequired": "Wybierz uczeń albo uczennica.",
+      "notSignedIn": "Twoja sesja wygasła. Zaloguj się ponownie.",
+      "permissionDenied": "Nie masz dostępu do tej listy uczniów. Zaloguj się ponownie.",
+      "offline": "Brak połączenia z serwerem. Sprawdź połączenie z internetem i spróbuj ponownie.",
+      "unknown": "Operacja nie udała się. Spróbuj ponownie."
+    }
   }
 }
