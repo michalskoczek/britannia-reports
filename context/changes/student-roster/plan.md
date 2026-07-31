@@ -469,21 +469,21 @@ None. `students` is a new collection; no existing document is read or rewritten.
 
 #### Automated
 
-- [x] 1.1 Rules tests pass: `npm run test:rules`
-- [x] 1.2 The new suite fails when the rule is temporarily narrowed, then passes again once restored
+- [x] 1.1 Rules tests pass: `npm run test:rules` — e6dadbb
+- [x] 1.2 The new suite fails when the rule is temporarily narrowed, then passes again once restored — e6dadbb
 
 #### Manual
 
-- [x] 1.3 Emulator `evaluation error` lines confirmed as the known `isAllowlisted()` artefact
+- [x] 1.3 Emulator `evaluation error` lines confirmed as the known `isAllowlisted()` artefact — e6dadbb
 
 ### Phase 2: Data layer — model, gateway, service
 
 #### Automated
 
-- [ ] 2.1 Unit tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
-- [ ] 2.2 Lint clean: `npm run lint`
-- [ ] 2.3 Production build type-checks: `npm run build`
-- [ ] 2.4 Development build type-checks: `npm run build -- --configuration development`
+- [x] 2.1 Unit tests pass: `npm test -- --watch=false --browsers=ChromeHeadless`
+- [x] 2.2 Lint clean: `npm run lint`
+- [x] 2.3 Production build type-checks: `npm run build`
+- [x] 2.4 Development build type-checks: `npm run build -- --configuration development`
 
 ### Phase 3: Roster surface — route, navigation, component
 
