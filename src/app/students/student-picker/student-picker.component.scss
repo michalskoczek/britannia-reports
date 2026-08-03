@@ -36,3 +36,26 @@
   gap: ds.$distance-16;
   margin-top: ds.$distance-8;
 }
+
+// The toggle and the expanded area occupy the same slot, so both carry the same
+// top margin — otherwise expanding the form makes the block above it jump.
+.student-picker-quick-add-toggle {
+  display: inline-block;
+  margin-top: ds.$distance-16;
+}
+
+// Set off from the select above it with a rule rather than a nested card: this
+// sits inside the report's own form section, and a second surface inside it
+// would read as a third panel rather than as part of this one.
+.student-picker-quick-add {
+  margin-top: ds.$distance-16;
+  padding-top: ds.$distance-16;
+  border-top: 1px solid ds.$britannia-light-blue;
+}
+
+.student-picker-quick-add-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: ds.$distance-8;
+  margin-top: ds.$distance-16;
+}

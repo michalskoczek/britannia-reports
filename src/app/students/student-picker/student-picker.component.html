@@ -44,4 +44,56 @@
       (selectionChange)="pick($event)"
     ></app-select>
   }
+
+  <!--
+    Outside the state chain above on purpose: "this student isn't in my roster
+    yet" is exactly what an empty roster means, and a failed load is no reason to
+    refuse an add — the create path does not depend on the list being on screen.
+  -->
+  @if (quickAddOpen()) {
+    <!--
+      Enter is caught on the way out of the fields, because this panel is mounted
+      inside the report's `<form>`, whose submit handler downloads a PDF.
+    -->
+    <div class="student-picker-quick-add">
+      <app-student-form
+        [form]="quickAddForm"
+        [failureKey]="quickAddFailureKey()"
+        (keydown.enter)="onQuickAddEnter($event)"
+      ></app-student-form>
+
+      <div class="student-picker-quick-add-actions">
+        <!--
+          `[type]` is explicit on both: `app-button` defaults to a value HTML
+          resolves to *submit*, and the enclosing form is the report's.
+        -->
+        <app-button
+          class="student-picker-quick-add-submit"
+          [translateKey]="'students.picker.quickAdd.submit'"
+          [icon]="'person_add'"
+          [type]="'button'"
+          [disabled]="saving()"
+          (clicked)="submitQuickAdd()"
+        ></app-button>
+
+        <app-button
+          [translateKey]="'students.picker.quickAdd.cancel'"
+          [icon]="'close'"
+          [type]="'button'"
+          [variant]="'secondary'"
+          [disabled]="saving()"
+          (clicked)="cancelQuickAdd()"
+        ></app-button>
+      </div>
+    </div>
+  } @else {
+    <app-button
+      class="student-picker-quick-add-toggle"
+      [translateKey]="'students.picker.quickAdd.toggle'"
+      [icon]="'person_add'"
+      [type]="'button'"
+      [variant]="'secondary'"
+      (clicked)="openQuickAdd()"
+    ></app-button>
+  }
 </app-form-wrapper>

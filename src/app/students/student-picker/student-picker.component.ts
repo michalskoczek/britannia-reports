@@ -11,7 +11,8 @@ import {
   signal,
   WritableSignal,
 } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -22,9 +23,16 @@ import { FormWrapperComponent } from '../../shared/components/form/form-wrapper/
 import { SelectComponent } from '../../shared/components/form/select/select.component';
 import { SelectOptions } from '../../shared/components/form/select/select-options';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../templates/confirm-dialog/confirm-dialog.component';
-import { FAILURE_KEYS } from '../student-failure-keys';
+import { FAILURE_KEYS, FORM_FAILURES } from '../student-failure-keys';
+import {
+  createStudentForm,
+  readStudentForm,
+  resetStudentForm,
+  StudentFormComponent,
+  StudentFormControls,
+} from '../student-form/student-form.component';
 import { diffIdentity, StudentIdentityDiff } from '../student-identity-diff';
-import { StudentsResult, StudentsService } from '../students.service';
+import { StudentsFailure, StudentsResult, StudentsService } from '../students.service';
 
 /** The label a field is listed under in the confirmation dialog. */
 const fieldLabelKey = (field: keyof StudentIdentity): string => `students.fields.${field}`;
@@ -43,13 +51,25 @@ const SNACKBAR_DURATION_MS = 4000;
  * controls. The two panels write disjoint halves of the field-domain partition
  * in `templates/template-domain.ts`, which is what lets them sit on the same
  * form without either one being able to touch the other's fields.
+ *
+ * It also carries the quick-add: "this student isn't in my roster yet" arrives
+ * mid-report, and `/students` is a route, so sending the teacher there to add one
+ * destroys `ShellComponent` and every half-written report form with it
+ * (`src/CLAUDE.md`). Adding from here is what closes that cost.
  */
 @Component({
   selector: 'app-student-picker',
   templateUrl: './student-picker.component.html',
   styleUrl: './student-picker.component.scss',
   standalone: true,
-  imports: [ReactiveFormsModule, TranslateModule, FormWrapperComponent, SelectComponent, ButtonComponent],
+  imports: [
+    ReactiveFormsModule,
+    TranslateModule,
+    FormWrapperComponent,
+    SelectComponent,
+    StudentFormComponent,
+    ButtonComponent,
+  ],
 })
 export class StudentPickerComponent implements OnInit {
   /**
@@ -117,6 +137,36 @@ export class StudentPickerComponent implements OnInit {
   private selectedId: string | null = null;
 
   /**
+   * Whether the quick-add fields are on screen.
+   *
+   * Collapsed by default: picking is the ordinary action here and adding is the
+   * exception, so four extra controls sitting open above the report would be
+   * paying for the exception on every visit.
+   */
+  protected readonly quickAddOpen: WritableSignal<boolean> = signal(false);
+
+  /**
+   * The quick-add's own group, built by the same factory the roster uses so the
+   * two surfaces cannot end up with differently-typed copies of the four
+   * controls. Owned here; `app-student-form` only renders it.
+   */
+  protected readonly quickAddForm: FormGroup<StudentFormControls> = createStudentForm();
+
+  /** Why the quick-add was refused, as a translate key. `null` renders nothing. */
+  protected readonly quickAddFailureKey: WritableSignal<string | null> = signal<string | null>(null);
+
+  /** A create in flight, so the quick-add's buttons can say so. */
+  protected readonly saving: WritableSignal<boolean> = signal(false);
+
+  constructor() {
+    // The message goes when its cause goes, not when the teacher presses Add
+    // again — otherwise a corrected name still reads as rejected. The whole group
+    // rather than one control, because any of the four can be what the failure
+    // was about. Same shape as `StudentRosterComponent`.
+    this.quickAddForm.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => this.quickAddFailureKey.set(null));
+  }
+
+  /**
    * The panel only ever mounts inside the shell, which `authGuard` holds until
    * the session stops being `resolving` — so the uid the service needs is
    * already known by the time this runs.
@@ -165,6 +215,114 @@ export class StudentPickerComponent implements OnInit {
       return;
     }
 
+    await this.selectStudent(student);
+  }
+
+  protected openQuickAdd(): void {
+    this.quickAddFailureKey.set(null);
+    this.quickAddOpen.set(true);
+  }
+
+  protected cancelQuickAdd(): void {
+    this.closeQuickAdd();
+  }
+
+  /**
+   * Creates the student and then treats them exactly as a picked one.
+   *
+   * Routing the created identity through `selectStudent` rather than emitting it
+   * directly is what makes quick-add and pick the same action: the diff runs, the
+   * confirmation appears when something the teacher typed is at stake, and a
+   * dismissed prompt puts the select back. A student can be worth adding to the
+   * roster without being the one this half-written report is about.
+   */
+  protected async submitQuickAdd(): Promise<void> {
+    const identity: StudentIdentity = readStudentForm(this.quickAddForm);
+    const localFailure: StudentsFailure | null = this.studentsService.validate(identity);
+
+    // Checked here as well as in the service so an unusable student costs a
+    // message rather than a round-trip — the roster's arrangement.
+    if (localFailure !== null) {
+      this.quickAddFailureKey.set(FAILURE_KEYS[localFailure]);
+
+      return;
+    }
+
+    this.quickAddFailureKey.set(null);
+    this.saving.set(true);
+
+    try {
+      const result: StudentsResult<Student> = await this.studentsService.create({ identity });
+
+      if (!result.ok) {
+        // What the teacher typed stays inline, under the field it is about; what
+        // the store did goes to the snackbar. A message that disappears on its
+        // own is the wrong shape for one that has to stay readable while the
+        // field it describes is being fixed.
+        if (FORM_FAILURES.includes(result.failure)) {
+          this.quickAddFailureKey.set(FAILURE_KEYS[result.failure]);
+        } else {
+          this.notify(FAILURE_KEYS[result.failure]);
+        }
+
+        return;
+      }
+
+      const created: Student = result.value;
+
+      this.closeQuickAdd();
+
+      // `{ emitEvent: false }` so this does not re-enter `pick()` and ask about a
+      // student `selectStudent` is about to ask about anyway.
+      this.studentControl.setValue(created.id, { emitEvent: false });
+
+      // Only on the failure path. `StudentsService.create` sets `loadedFor` on
+      // success, so a create after a failed `load()` leaves the cache holding
+      // exactly this one student — a one-entry roster that looks complete, with
+      // every previously-added student silently missing from the select. On the
+      // ordinary path the service has already appended to the cache, and an
+      // unconditional reload would spend a full-collection read per quick-add
+      // against the Spark budget for nothing. Third instance of this branch, after
+      // `TemplatePanelComponent.save()` and `StudentRosterComponent.submit()`.
+      if (this.loadFailureKey() !== null) {
+        await this.reload();
+      }
+
+      await this.selectStudent(created);
+
+      // Notified last, and deliberately after the apply message: the create is
+      // the fact that outlives the pick — the student is on the roster whether or
+      // not the teacher let the details into this report — so it is the one worth
+      // leaving on screen.
+      this.notify('students.picker.quickAdd.added');
+    } finally {
+      this.saving.set(false);
+    }
+  }
+
+  /**
+   * Saves on Enter instead of letting the report's `<form>` submit.
+   *
+   * The panel is mounted inside `semestr-report.component.html`'s form, whose
+   * submit handler downloads a PDF — so an unhandled Enter in either quick-add
+   * text field generates a report instead of adding a student. The same trap
+   * `TemplatePanelComponent.onNameEnter` documents at its own field.
+   */
+  protected onQuickAddEnter(event: Event): void {
+    event.preventDefault();
+
+    void this.submitQuickAdd();
+  }
+
+  /** Back to the collapsed, blank state — after a cancel and after a success. */
+  private closeQuickAdd(): void {
+    this.quickAddOpen.set(false);
+    this.quickAddFailureKey.set(null);
+    resetStudentForm(this.quickAddForm);
+  }
+
+  /** Offers the identity to the report, and keeps the select telling the truth. */
+  private async selectStudent(student: Student): Promise<void> {
     const applied: boolean = await this.applyIdentity(student.identity);
 
     if (applied) {

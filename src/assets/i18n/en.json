@@ -358,7 +358,7 @@
       "selectPlaceholder": "Choose a student",
       "loading": "Loading students…",
       "retry": "Try again",
-      "empty": "You have no students yet. Add them on the \"Students\" page.",
+      "empty": "You have no students yet. Add your first one below — nothing you have typed into the report is lost.",
       "applied": "Student details filled in.",
       "confirmApply": {
         "title": "Fill in this student's details?",
@@ -366,6 +366,12 @@
         "overwritten": "Will be replaced:",
         "cleared": "Will be cleared:",
         "confirm": "Fill in"
+      },
+      "quickAdd": {
+        "toggle": "Not on the list? Add a student",
+        "submit": "Add and pick",
+        "cancel": "Cancel",
+        "added": "Student added to your list."
       }
     },
     "errors": {

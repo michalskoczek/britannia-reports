@@ -1,5 +1,6 @@
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -14,6 +15,7 @@ import { Sex } from '../../shared/enum/sex.enum';
 import { translateTestingImports } from '../../shared/testing/translate-testing';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../templates/confirm-dialog/confirm-dialog.component';
 import { STUDENT_IDENTITY_DEFAULTS } from '../student-domain';
+import { StudentFormComponent, StudentFormControls } from '../student-form/student-form.component';
 import { StoredStudent, StudentsGateway } from '../students.gateway';
 import { StudentPickerComponent } from './student-picker.component';
 
@@ -119,6 +121,41 @@ describe('StudentPickerComponent', () => {
 
   const optionLabels = (): string[] =>
     (select().itemList() as SelectOptions<string>[]).map((option: SelectOptions<string>) => option.label);
+
+  const click = async (selector: string): Promise<void> => {
+    (fixture.nativeElement.querySelector(selector) as HTMLButtonElement).click();
+
+    await settle();
+  };
+
+  /**
+   * The group the picker owns, reached through the child that renders it — the
+   * same object, and the only public route to it from a spec.
+   */
+  const quickAddForm = (): FormGroup<StudentFormControls> =>
+    (fixture.debugElement.query(By.directive(StudentFormComponent)).componentInstance as StudentFormComponent).form();
+
+  /**
+   * What the quick-add's controls hold — `name` is non-nullable there, unlike the
+   * `StudentIdentity` field it becomes once the service has normalized it.
+   */
+  interface QuickAddValues {
+    studentName?: string;
+    name?: string;
+    sex?: Sex | null;
+    class?: string | null;
+  }
+
+  /** Expand the quick-add area and type a student into it. */
+  const openQuickAdd = async (values: QuickAddValues = {}): Promise<void> => {
+    await click('.student-picker-quick-add-toggle button');
+
+    quickAddForm().patchValue({ studentName: '', name: '', sex: null, class: null, ...values });
+
+    await settle();
+  };
+
+  const submitQuickAdd = async (): Promise<void> => click('.student-picker-quick-add-submit button');
 
   const text = (selector: string): string | null => {
     const element: HTMLElement | null = fixture.nativeElement.querySelector(selector);
@@ -289,6 +326,134 @@ describe('StudentPickerComponent', () => {
 
       expect(dialogOpen).not.toHaveBeenCalled();
       expect(applied).toEqual([JAN]);
+    });
+  });
+
+  /**
+   * The point of the quick-add is that it is reachable without leaving the shell:
+   * `/students` is a route, so sending the teacher there to add one student
+   * destroys the half-written report. What these cases hold in place is that
+   * adding from here is the *same* action as picking — same diff, same
+   * confirmation, same revert — plus one create the pick does not do.
+   */
+  describe('quick-adding a student', () => {
+    /** What `StudentsService.create` normalizes the typed values into. */
+    const OLA: StudentIdentity = identity({ studentName: 'Ola Nowak', sex: Sex.FEMALE });
+
+    it('refuses an unusable student without spending a round-trip', async () => {
+      await render();
+
+      // No name: `validate` rejects it locally, and Firestore never hears about
+      // it. The message is inline, under the field it is about.
+      await openQuickAdd({ sex: Sex.FEMALE });
+      await submitQuickAdd();
+
+      expect(gateway.create).not.toHaveBeenCalled();
+      expect(text('.student-form-error')).toBe('students.errors.nameRequired');
+      expect(applied).toEqual([]);
+    });
+
+    it('creates the student, selects them, and fills the report in one action', async () => {
+      await render();
+
+      await openQuickAdd({ studentName: 'Ola Nowak', sex: Sex.FEMALE });
+      await submitQuickAdd();
+
+      expect(gateway.create).toHaveBeenCalledTimes(1);
+      expect(applied).toEqual([OLA]);
+      expect(selectedId()).toBe('new-id');
+      // Collapsed and blank again, so the panel is back to its ordinary shape.
+      expect(fixture.nativeElement.querySelector('.student-picker-quick-add')).toBeNull();
+      expect(snackBarMessages()).toEqual(['students.picker.applied', 'students.picker.quickAdd.added']);
+    });
+
+    it('asks the same question a manual pick would before overwriting the form', async () => {
+      await render(JAN);
+
+      await openQuickAdd({ studentName: 'Ola Nowak', sex: Sex.FEMALE });
+      await submitQuickAdd();
+
+      expect(dialogOpen).toHaveBeenCalled();
+      expect(dialogData().itemGroups).toEqual([
+        {
+          titleKey: 'students.picker.confirmApply.overwritten',
+          items: ['students.fields.studentName', 'students.fields.sex'],
+        },
+        {
+          titleKey: 'students.picker.confirmApply.cleared',
+          items: ['students.fields.name', 'students.fields.class'],
+        },
+      ]);
+      expect(applied).toEqual([OLA]);
+      expect(selectedId()).toBe('new-id');
+    });
+
+    it('keeps the created student but leaves the report alone when the prompt is cancelled', async () => {
+      dialogOpen.and.returnValue(dialogClosingWith(false));
+
+      await render(JAN);
+
+      await openQuickAdd({ studentName: 'Ola Nowak', sex: Sex.FEMALE });
+      await submitQuickAdd();
+
+      // The create is not undone — the student belongs on the roster either way.
+      // Only the write into the report was refused, so the select goes back to
+      // saying nothing rather than naming a student the form does not describe.
+      expect(gateway.create).toHaveBeenCalledTimes(1);
+      expect(applied).toEqual([]);
+      expect(selectedId()).toBeNull();
+      expect(snackBarMessages()).toEqual(['students.picker.quickAdd.added']);
+    });
+
+    it('reports a refused create in the snackbar and leaves the selection alone', async () => {
+      spyOn(console, 'error');
+      gateway.list.and.resolveTo([stored('jan', JAN)]);
+      gateway.create.and.rejectWith(firebaseError('permission-denied'));
+
+      await render();
+
+      await pick('jan');
+      await openQuickAdd({ studentName: 'Ola Nowak', sex: Sex.FEMALE });
+      await submitQuickAdd();
+
+      // Nothing the teacher typed is wrong, so the message is about the store and
+      // belongs in the snackbar — and the form stays open with the values in it.
+      expect(snackBarMessages()).toEqual(['students.picker.applied', 'students.errors.permissionDenied']);
+      expect(text('.student-form-error')).toBeNull();
+      expect(selectedId()).toBe('jan');
+      expect(applied).toEqual([JAN]);
+    });
+
+    it('does not re-read the collection when the roster is already on screen', async () => {
+      await render();
+      expect(gateway.list).toHaveBeenCalledTimes(1);
+
+      await openQuickAdd({ studentName: 'Ola Nowak', sex: Sex.FEMALE });
+      await submitQuickAdd();
+
+      // The service appends the created student to its own cache, so a reload
+      // here would be a full-collection read against the Spark budget for a list
+      // that is already correct.
+      expect(gateway.list).toHaveBeenCalledTimes(1);
+    });
+
+    it('re-reads the collection when the create followed a failed load', async () => {
+      spyOn(console, 'error');
+      gateway.list.and.rejectWith(firebaseError('unavailable'));
+
+      await render();
+
+      // `create` sets `loadedFor` on success, so without this the cache would
+      // hold exactly the one new student — a one-entry roster that looks
+      // complete, with every previously-added student silently missing.
+      gateway.list.and.resolveTo([stored('jan', JAN), stored('new-id', OLA)]);
+
+      await openQuickAdd({ studentName: 'Ola Nowak', sex: Sex.FEMALE });
+      await submitQuickAdd();
+
+      expect(gateway.list).toHaveBeenCalledTimes(2);
+      expect(optionLabels()).toEqual(['Jan Kowalski', 'Ola Nowak']);
+      expect(selectedId()).toBe('new-id');
     });
   });
 });

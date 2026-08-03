@@ -746,35 +746,35 @@ stay at 1, and every student written by `S-03` is readable by this slice unchang
 
 #### Automated
 
-- [x] 3.1 `counterpartValue` spec covers both directions, unmatched value, and identical variants
-- [x] 3.2 A spec asserts a `sex` flip rewrites the six mark controls and leaves `frequency` and `avgMark` untouched
-- [x] 3.3 Unit tests pass
-- [x] 3.4 Post-remap reference PDFs captured
-- [x] 3.5 Linting passes
-- [x] 3.6 Production build type-checks
+- [x] 3.1 `counterpartValue` spec covers both directions, unmatched value, and identical variants — 1671933
+- [x] 3.2 A spec asserts a `sex` flip rewrites the six mark controls and leaves `frequency` and `avgMark` untouched — 1671933
+- [x] 3.3 Unit tests pass — 1671933
+- [x] 3.4 Post-remap reference PDFs captured — 1671933
+- [x] 3.5 Linting passes — 1671933
+- [x] 3.6 Production build type-checks — 1671933
 
 #### Manual
 
-- [x] 3.7 The trimester/semester PDFs match the Phase 1 baseline, and the other three report types are unchanged
-- [x] 3.8 Six marks filled for a boy survive picking a girl, in female wording, none blank
-- [x] 3.9 Changing the sex select by hand does the same
-- [x] 3.10 The PDF for that report reads in the right gender throughout
+- [x] 3.7 The trimester/semester PDFs match the Phase 1 baseline, and the other three report types are unchanged — 1671933
+- [x] 3.8 Six marks filled for a boy survive picking a girl, in female wording, none blank — 1671933
+- [x] 3.9 Changing the sex select by hand does the same — 1671933
+- [x] 3.10 The PDF for that report reads in the right gender throughout — 1671933
 
 ### Phase 4: Quick-add inside the picker
 
 #### Automated
 
-- [ ] 4.1 Unit tests pass, including the quick-add cases
-- [ ] 4.2 Linting passes
-- [ ] 4.3 Production build type-checks
-- [ ] 4.4 Development build type-checks
-- [ ] 4.5 i18n key parity holds between pl.json and en.json
+- [x] 4.1 Unit tests pass, including the quick-add cases
+- [x] 4.2 Linting passes
+- [x] 4.3 Production build type-checks
+- [x] 4.4 Development build type-checks
+- [x] 4.5 i18n key parity holds between pl.json and en.json
 
 #### Manual
 
-- [ ] 4.6 Quick-adding mid-report leaves every other field exactly as it was
-- [ ] 4.7 The new student appears in `/students` with the same four values
-- [ ] 4.8 An invalid quick-add shows the inline message and creates nothing
+- [x] 4.6 Quick-adding mid-report leaves every other field exactly as it was
+- [x] 4.7 The new student appears in `/students` with the same four values
+- [x] 4.8 An invalid quick-add shows the inline message and creates nothing
 
 ### Phase 5: Verification and documentation
 

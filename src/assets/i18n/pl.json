@@ -359,7 +359,7 @@
       "selectPlaceholder": "Wybierz ucznia",
       "loading": "Wczytywanie uczniów…",
       "retry": "Spróbuj ponownie",
-      "empty": "Nie masz jeszcze żadnych uczniów. Dodaj ich w zakładce „Uczniowie”.",
+      "empty": "Nie masz jeszcze żadnych uczniów. Dodaj pierwszego poniżej — nie stracisz tego, co już wpisałeś w raporcie.",
       "applied": "Dane ucznia wstawione do raportu.",
       "confirmApply": {
         "title": "Wstawić dane tego ucznia?",
@@ -367,6 +367,12 @@
         "overwritten": "Zostaną zastąpione:",
         "cleared": "Zostaną wyczyszczone:",
         "confirm": "Wstaw"
+      },
+      "quickAdd": {
+        "toggle": "Nie ma go na liście? Dodaj ucznia",
+        "submit": "Dodaj i wybierz",
+        "cancel": "Anuluj",
+        "added": "Uczeń dodany do Twojej listy."
       }
     },
     "errors": {
