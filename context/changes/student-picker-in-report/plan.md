@@ -764,33 +764,33 @@ stay at 1, and every student written by `S-03` is readable by this slice unchang
 
 #### Automated
 
-- [x] 4.1 Unit tests pass, including the quick-add cases
-- [x] 4.2 Linting passes
-- [x] 4.3 Production build type-checks
-- [x] 4.4 Development build type-checks
-- [x] 4.5 i18n key parity holds between pl.json and en.json
+- [x] 4.1 Unit tests pass, including the quick-add cases — 45147fc
+- [x] 4.2 Linting passes — 45147fc
+- [x] 4.3 Production build type-checks — 45147fc
+- [x] 4.4 Development build type-checks — 45147fc
+- [x] 4.5 i18n key parity holds between pl.json and en.json — 45147fc
 
 #### Manual
 
-- [x] 4.6 Quick-adding mid-report leaves every other field exactly as it was
-- [x] 4.7 The new student appears in `/students` with the same four values
-- [x] 4.8 An invalid quick-add shows the inline message and creates nothing
+- [x] 4.6 Quick-adding mid-report leaves every other field exactly as it was — 45147fc
+- [x] 4.7 The new student appears in `/students` with the same four values — 45147fc
+- [x] 4.8 An invalid quick-add shows the inline message and creates nothing — 45147fc
 
 ### Phase 5: Verification and documentation
 
 #### Automated
 
-- [ ] 5.1 Unit tests pass
-- [ ] 5.2 Linting passes
-- [ ] 5.3 Production build type-checks
-- [ ] 5.4 Development build type-checks
+- [x] 5.1 Unit tests pass
+- [x] 5.2 Linting passes
+- [x] 5.3 Production build type-checks
+- [x] 5.4 Development build type-checks
 
 #### Manual
 
-- [ ] 5.5 The full flow runs against the emulators: pick, template in both orders, quick-add, PDF
-- [ ] 5.6 One male and one female PDF read correctly and match the reference layout by eye
-- [ ] 5.7 A second seeded account's picker lists only its own students
-- [ ] 5.8 `src/CLAUDE.md`, the roadmap, and the PRD agree with what shipped
+- [x] 5.5 The full flow runs against the emulators: pick, template in both orders, quick-add, PDF
+- [x] 5.6 One male and one female PDF read correctly and match the reference layout by eye
+- [x] 5.7 A second seeded account's picker lists only its own students
+- [x] 5.8 `src/CLAUDE.md`, the roadmap, and the PRD agree with what shipped
 
 ### Phase 6: Release
 

@@ -3,7 +3,7 @@ project: "Britannia Reports"
 version: 1
 status: draft
 created: 2026-05-23
-updated: 2026-07-31
+updated: 2026-08-03
 context_type: brownfield
 product_type: web-app
 target_scale:
@@ -138,6 +138,11 @@ Each item below is tagged `[new]`, `[modified]`, `[preserved]`, or `[removed]`. 
 
 - [new] **FR-013** — Teacher can pick a student from their roster when starting a trimester/semester report; the student-identity fields (name, free-text class label — amended 2026-07-31: four fields, `class` a select; see FR-005) pre-fill from the picked student. The picker owns student-identity fields; templates (FR-011) own boilerplate fields — disjoint domains. Usual flow is picker-first then template, but the order is not enforced. Priority: must-have.
   > Socrates: Counter-argument considered: "Picker overlaps with template-apply — two pre-fill mechanisms hitting the same form risk order-dependent confusion." Resolution: revised; explicit disjoint-domain rule now baked into the FR — picker → student fields, template → boilerplate, no field overlap.
+  > **Amended 2026-08-03 by `S-04` (`student-picker-in-report`) — the picker still writes only the four identity fields, and a separate rule rewrites six assessment fields whenever `sex` changes.** The disjoint-domain rule above holds exactly as written: `applyStudentIdentity()` patches `studentName`, `name`, `sex` and `class` and nothing else, and a spec asserts the other 44 controls of the trimester/semester form are left at their prior values. What this FR did not anticipate is a **consequence** of pre-filling `sex`:
+  > - **The six descriptive-mark selects have sex-dependent option lists.** Each builds its options from the masculine or feminine variant of the same sentence depending on the value of `sex`. A mark chosen for a boy matches no option once `sex` becomes female — the select renders blank, the `required` validator still passes because the control holds a value, and the wrong-gender sentence is what reaches the PDF.
+  > - **So a `sex` change, from any source, now re-maps those six fields to the matching variant of the same sentence.** It is keyed on `sex`, not on the picker, which means a teacher changing the sex select by hand gets the same correction. The picker's own domain is unchanged; this rewrites *values* inside per-student assessment fields without moving any field between domains.
+  >
+  > This is a behaviour change to a form covered by FR-014 rather than by a preservation FR, and it fixes a defect that was reachable before the picker existed. The generated PDF was compared before and after against all four report types' reference captures and is byte-identical outside the two non-deterministic regions. Recorded here because the correction is wider than the pre-fill this FR describes.
 - [modified] **FR-014** — Teacher can fill a trimester/semester report and download it as PDF. Was: any visitor on the public URL could do this. Now: sign-in-gated, with an optional student picker (FR-013) and optional template apply (FR-011) layered on top of the existing form-fill-then-PDF path. This form is also in scope for the `S-05` on-screen design refresh onto the Teddy Eddie visual language; the refresh does not reach the PDF. Priority: must-have.
   > Socrates: No counter-argument; stands as written.
   > Amended 2026-07-27: `S-05` design refresh named as an additional on-screen delta.
@@ -198,6 +203,7 @@ Two mechanical (non-domain) interaction policies introduced by this change are d
 
 - **Template-apply field merge** (FR-011) — applying a template overwrites all non-student template-controlled fields; if any of those fields are non-empty at the moment of apply, the teacher is prompted to confirm before the overwrite. Student-identity fields are never touched by template apply.
 - **Picker / template field-domain disjoint** (FR-013) — student-identity fields are populated by the student picker; boilerplate fields are populated by the template. The two never write to the same field.
+- **Sex-variant mark re-map** (FR-013, amended 2026-08-03) — a third, smaller mechanism, and deliberately not a pre-fill one: when `sex` changes, the six descriptive-mark fields are rewritten to the same sentence in the matching gendered variant. It is keyed on the value of `sex` rather than on the picker, so it applies equally to a manual change. It substitutes wording; it does not choose, score, or alter what the teacher assessed.
 
 These are syntactic interaction policies for the pre-fill mechanism, not domain decisions about the user's data.
 
