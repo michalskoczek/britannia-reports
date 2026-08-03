@@ -20,6 +20,16 @@ import {
 import { STUDENT_IDENTITY_DEFAULTS } from '../students/student-domain';
 import { ReportType } from '../shared/enum/report-type.enum';
 import { Sex } from '../shared/enum/sex.enum';
+import {
+  behaviourMarks,
+  frequencyMarks,
+  homeworksMarks,
+  involvementMarks,
+  Marks,
+  prepareToLectureMarks,
+  pronunciationMarks,
+  vocabularyMarks,
+} from '../shared/marks';
 
 describe('SemestrReportComponent — PDF fidelity smoke', () => {
   let component: SemestrReportComponent;
@@ -508,5 +518,169 @@ describe('SemestrReportComponent — student identity collect and apply', () => 
 
       expect(component.studentIdentity()).toBe(component.studentIdentity());
     });
+  });
+});
+
+/**
+ * The remap that keeps the six descriptive-mark selects in the same gender as the form.
+ *
+ * `markOptions` builds each of those option lists from `mark.value` or `mark.valueFemale` depending on
+ * `sex`, so a control holding the other variant matches no option: the select renders blank, `required`
+ * still passes because the control does hold a value, and the wrong-gender sentence reaches the PDF.
+ * The hook is keyed on `sex` rather than on the picker, which is why the first case here changes the
+ * control by hand — a manual change has to behave exactly like a pick.
+ */
+describe('SemestrReportComponent — the sex-driven mark remap', () => {
+  let component: SemestrReportComponent;
+  let fixture: ComponentFixture<SemestrReportComponent>;
+
+  /**
+   * One entry of each of the six sex-aware lists, in both wordings.
+   *
+   * The indices are picked so that three of the six — `vocabulary`, `involvement`
+   * and `behaviour` — genuinely differ between the variants. The other three
+   * carry the same sentence on both sides, because their wording contains no
+   * gendered word; those assertions hold by construction, which is itself worth
+   * pinning down.
+   */
+  const maleMarks = {
+    pronunciation: pronunciationMarks[1].value,
+    vocabulary: vocabularyMarks[0].value,
+    prepareToLecture: prepareToLectureMarks[1].value,
+    homeworks: homeworksMarks[1].value,
+    involvement: involvementMarks[1].value,
+    behaviour: behaviourMarks[1].value,
+  };
+
+  const femaleMarks = {
+    pronunciation: pronunciationMarks[1].valueFemale,
+    vocabulary: vocabularyMarks[0].valueFemale,
+    prepareToLecture: prepareToLectureMarks[1].valueFemale,
+    homeworks: homeworksMarks[1].valueFemale,
+    involvement: involvementMarks[1].valueFemale,
+    behaviour: behaviourMarks[1].valueFemale,
+  };
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [SemestrReportComponent, ...translateTestingImports],
+      providers: [provideNoopAnimations(), provideNativeDateAdapter(), ...semestrReportTestingProviders()],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(SemestrReportComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('rewrites all six marks into the female wording when the sex select is changed by hand', () => {
+    component.form.patchValue({ sex: Sex.MALE, ...maleMarks });
+
+    component.form.get('sex')!.setValue(Sex.FEMALE);
+
+    Object.entries(femaleMarks).forEach(([control, value]: [string, string | undefined]) => {
+      expect(component.form.get(control)!.value).withContext(control).toBe(value as string);
+    });
+  });
+
+  it('rewrites them back when the sex flips the other way', () => {
+    component.form.patchValue({ sex: Sex.FEMALE, ...femaleMarks });
+
+    component.form.get('sex')!.setValue(Sex.MALE);
+
+    Object.entries(maleMarks).forEach(([control, value]: [string, string]) => {
+      expect(component.form.get(control)!.value).withContext(control).toBe(value);
+    });
+  });
+
+  it('leaves every option-bearing mark matching one of its select`s options', () => {
+    // The failure this whole phase exists to prevent: a value from the other
+    // variant matches no option, so the select renders blank while `required`
+    // still passes.
+    component.form.patchValue({ sex: Sex.MALE, ...maleMarks });
+
+    component.form.get('sex')!.setValue(Sex.FEMALE);
+
+    const lists: Record<string, Marks[]> = {
+      pronunciation: pronunciationMarks,
+      vocabulary: vocabularyMarks,
+      prepareToLecture: prepareToLectureMarks,
+      homeworks: homeworksMarks,
+      involvement: involvementMarks,
+      behaviour: behaviourMarks,
+    };
+
+    Object.entries(lists).forEach(([control, list]: [string, Marks[]]) => {
+      const options: string[] = list.map((mark) => mark.valueFemale as string);
+
+      expect(options).withContext(control).toContain(component.form.get(control)!.value);
+    });
+  });
+
+  it('leaves `frequency` and `avgMark` alone — their lists carry no female variant', () => {
+    component.form.patchValue({ sex: Sex.MALE, ...maleMarks, frequency: frequencyMarks[0].value, avgMark: '5' });
+
+    component.form.get('sex')!.setValue(Sex.FEMALE);
+
+    expect(component.form.get('frequency')!.value).toBe(frequencyMarks[0].value);
+    expect(component.form.get('avgMark')!.value).toBe('5');
+  });
+
+  it('touches nothing outside the six marks', () => {
+    const untouched = {
+      studentName: 'Jan Kowalski',
+      name: 'Jaś',
+      class: 'Klasa 5 szkoły podstawowej',
+      course: 'A2',
+      realizedMaterial: 'Units 1-8',
+      signature: 'Anna Kowalska',
+      additionalComment: 'Bardzo dobra praca',
+    };
+
+    component.form.patchValue({ sex: Sex.MALE, ...maleMarks, ...untouched });
+
+    component.form.get('sex')!.setValue(Sex.FEMALE);
+
+    Object.entries(untouched).forEach(([control, value]: [string, string]) => {
+      expect(component.form.get(control)!.value).withContext(control).toBe(value);
+    });
+  });
+
+  it('does nothing when the sex changes to a value on the same side of the predicate', () => {
+    // `markOptions` reads `=== Sex.MALE`, so anything that is not male is female
+    // as far as the option lists are concerned. Clearing the select must not
+    // rewrite marks that are already in the right wording.
+    component.form.patchValue({ sex: Sex.FEMALE, ...femaleMarks });
+
+    component.form.get('sex')!.setValue(null);
+
+    Object.entries(femaleMarks).forEach(([control, value]: [string, string | undefined]) => {
+      expect(component.form.get(control)!.value).withContext(control).toBe(value as string);
+    });
+  });
+
+  it('runs on a pick, before the picker has finished writing the identity', () => {
+    component.form.patchValue({ sex: Sex.MALE, ...maleMarks });
+
+    component.applyStudentIdentity({
+      studentName: 'Zofia Nowak',
+      name: 'Zosia',
+      sex: Sex.FEMALE,
+      class: 'Klasa 5 szkoły podstawowej',
+    });
+
+    // `class` is written after `sex` in `STUDENT_IDENTITY_FIELDS` order, so this
+    // asserts the remap re-entered mid-patch and the outer patch still finished.
+    expect(component.form.get('class')!.value).toBe('Klasa 5 szkoły podstawowej');
+    Object.entries(femaleMarks).forEach(([control, value]: [string, string | undefined]) => {
+      expect(component.form.get(control)!.value).withContext(control).toBe(value as string);
+    });
+  });
+
+  it('leaves a sentence from no list alone rather than blanking a required select', () => {
+    component.form.patchValue({ sex: Sex.MALE, pronunciation: 'X zdanie z poprzedniej wersji listy' });
+
+    component.form.get('sex')!.setValue(Sex.FEMALE);
+
+    expect(component.form.get('pronunciation')!.value).toBe('X zdanie z poprzedniej wersji listy');
   });
 });

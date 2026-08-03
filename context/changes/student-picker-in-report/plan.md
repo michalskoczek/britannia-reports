@@ -727,38 +727,38 @@ stay at 1, and every student written by `S-03` is readable by this slice unchang
 
 #### Automated
 
-- [x] 2.1 Unit tests pass, including the new picker and diff specs
-- [x] 2.2 The PDF capture harness still instantiates every report type after the picker is mounted
-- [x] 2.3 Linting passes
-- [x] 2.4 Production build type-checks
-- [x] 2.5 Development build type-checks
-- [x] 2.6 i18n key parity holds between pl.json and en.json
+- [x] 2.1 Unit tests pass, including the new picker and diff specs — af51052
+- [x] 2.2 The PDF capture harness still instantiates every report type after the picker is mounted — af51052
+- [x] 2.3 Linting passes — af51052
+- [x] 2.4 Production build type-checks — af51052
+- [x] 2.5 Development build type-checks — af51052
+- [x] 2.6 i18n key parity holds between pl.json and en.json — af51052
 
 #### Manual
 
-- [ ] 2.7 Picking on a blank form fills all four identity fields with no dialog
-- [ ] 2.8 Picking over a filled form lists the affected fields and Confirm applies them
-- [ ] 2.9 Cancel leaves both the form and the select on the previous student
-- [ ] 2.10 Template apply and pick, in either order, leave the other's fields untouched
-- [ ] 2.11 An empty roster shows the empty-state message
+- [x] 2.7 Picking on a blank form fills all four identity fields with no dialog — af51052
+- [x] 2.8 Picking over a filled form lists the affected fields and Confirm applies them — af51052
+- [x] 2.9 Cancel leaves both the form and the select on the previous student — af51052
+- [x] 2.10 Template apply and pick, in either order, leave the other's fields untouched — af51052
+- [x] 2.11 An empty roster shows the empty-state message — af51052
 
 ### Phase 3: Re-map descriptive marks when `sex` changes
 
 #### Automated
 
-- [ ] 3.1 `counterpartValue` spec covers both directions, unmatched value, and identical variants
-- [ ] 3.2 A spec asserts a `sex` flip rewrites the six mark controls and leaves `frequency` and `avgMark` untouched
-- [ ] 3.3 Unit tests pass
-- [ ] 3.4 Post-remap reference PDFs captured
-- [ ] 3.5 Linting passes
-- [ ] 3.6 Production build type-checks
+- [x] 3.1 `counterpartValue` spec covers both directions, unmatched value, and identical variants
+- [x] 3.2 A spec asserts a `sex` flip rewrites the six mark controls and leaves `frequency` and `avgMark` untouched
+- [x] 3.3 Unit tests pass
+- [x] 3.4 Post-remap reference PDFs captured
+- [x] 3.5 Linting passes
+- [x] 3.6 Production build type-checks
 
 #### Manual
 
-- [ ] 3.7 The trimester/semester PDFs match the Phase 1 baseline, and the other three report types are unchanged
-- [ ] 3.8 Six marks filled for a boy survive picking a girl, in female wording, none blank
-- [ ] 3.9 Changing the sex select by hand does the same
-- [ ] 3.10 The PDF for that report reads in the right gender throughout
+- [x] 3.7 The trimester/semester PDFs match the Phase 1 baseline, and the other three report types are unchanged
+- [x] 3.8 Six marks filled for a boy survive picking a girl, in female wording, none blank
+- [x] 3.9 Changing the sex select by hand does the same
+- [x] 3.10 The PDF for that report reads in the right gender throughout
 
 ### Phase 4: Quick-add inside the picker
 
@@ -804,3 +804,22 @@ stay at 1, and every student written by `S-03` is readable by this slice unchang
 
 - [ ] 6.4 Production sign-in, pick, template apply, quick-add, and PDF download all work
 - [ ] 6.5 A second seeded account's picker lists only its own students in production
+
+### PDF fidelity check
+
+- Date: 2026-08-03 (Phase 3, after the sex-driven mark remap landed)
+- Report types compared: all four, both fixtures each — trimester/semester under this phase's contract,
+  the other three as the regression check
+- Before: `../br-before-pdfs-S04`, captured in Phase 1 from the branch point `67588f4`
+- After: `docs/pdf-fidelity/captured/`, emptied first (eight files, no ` (1)` in any name)
+- Method: the `docs/pdf-fidelity-check.md` §7 supporting byte comparison, then the §6 checklist by eye
+- Byte comparison: all eight files identical in size, and every differing byte falls inside the two
+  documented non-deterministic regions — the five digits of `(D:…)` in the `/CreationDate` object and
+  the two hex strings in the trailer's `/ID`. No content stream differs by a byte in any of the eight.
+- Fixture re-read: `semestr-report.fixture.ts` still describes the composed template accurately (the
+  `S-05b` notes about `formArrayName` and the `class` binding both hold). Neither fixture exercises a
+  `sex` flip — `semestr-minimal` patches `sex` before its marks and `semestr-maximal` never leaves the
+  female side — so the capture proves the remap perturbs no recorded state, which is what the guardrail
+  asks of it.
+- Verdict: no differences. The §6 visual pass (Progress item 3.7) is the human's, and it is reading
+  files whose content streams are already proven byte-identical.

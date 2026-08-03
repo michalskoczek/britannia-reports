@@ -58,8 +58,30 @@ import { STUDENT_IDENTITY_FIELDS, TEMPLATE_DOMAIN, TEMPLATE_DOMAIN_DEFAULTS } fr
 import { TemplatePanelComponent } from '../templates/template-panel/template-panel.component';
 import { STUDENT_IDENTITY_DEFAULTS } from '../students/student-domain';
 import { StudentPickerComponent } from '../students/student-picker/student-picker.component';
+import { counterpartValue } from '../helper/marks/sex-variant';
 
 pdfMake.vfs = pdfFonts.vfs;
+
+/**
+ * The six descriptive-mark controls whose option lists depend on `sex`, each
+ * paired with the list `markOptions` builds those options from.
+ *
+ * `frequency` and `avgMark` are deliberately absent: `frequencyMarks` and
+ * `marks` carry no `valueFemale`, so there is nothing to re-map and writing them
+ * would be a change to fields this has no business touching.
+ *
+ * These are all `PER_STUDENT_FIELDS` (`templates/template-domain.ts`). The remap
+ * changes their *values*; it does not move any field across the partition, and
+ * the picker's own domain stays the four identity controls.
+ */
+const MARK_CONTROLS: readonly { control: string; list: Marks[] }[] = [
+  { control: 'pronunciation', list: pronunciationMarks },
+  { control: 'vocabulary', list: vocabularyMarks },
+  { control: 'prepareToLecture', list: prepareToLectureMarks },
+  { control: 'homeworks', list: homeworksMarks },
+  { control: 'involvement', list: involvementMarks },
+  { control: 'behaviour', list: behaviourMarks },
+];
 
 /**
  * The two `mat-radio-button` values the book selector binds
@@ -298,15 +320,69 @@ export class SemestrReportComponent implements OnInit {
     return options;
   }
 
+  /**
+   * Which variant the six descriptive-mark controls currently hold, as of the
+   * last `sex` emission this component acted on.
+   *
+   * Tracked rather than derived, because the remap has to know which *direction*
+   * a change went — and because `markOptions` reads the control while the same
+   * `sex` value is in play, the two can only agree if they use the same
+   * predicate (`=== Sex.MALE`) over the same value.
+   */
+  private wasMale = false;
+
   ngOnInit(): void {
     this.form = this.createForm();
     this.domainFields.set(this.collectTemplateFields());
     this.identityFields.set(this.collectStudentIdentity());
+    this.wasMale = this.form.controls['sex'].value === Sex.MALE;
 
     this.form.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.domainFields.set(this.collectTemplateFields());
       this.identityFields.set(this.collectStudentIdentity());
     });
+
+    // The *child* stream, not the group's. `FormGroup.patchValue` writes each
+    // child with `onlySelf: true`, so `sex` emits in the middle of a picker's
+    // patch rather than after it — which is what lets the remap run before the
+    // teacher ever sees a blank select. What makes that safe is an invariant,
+    // not the ordering: the remap reads `sex` and the six mark controls and
+    // nothing else. A change that makes it read another identity field has to
+    // move this hook to `form.valueChanges`.
+    this.form.controls['sex'].valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((sex: unknown) => this.onSexChange(sex));
+  }
+
+  /**
+   * Keeps the six descriptive-mark controls in the same gender as the form
+   * (FR-013 amendment).
+   *
+   * Keyed on `sex` rather than on the picker, so changing the select by hand
+   * behaves identically to picking a student of the other sex — the hazard
+   * predates the picker, which only makes it one click away.
+   *
+   * The guard is the same predicate `markOptions` uses, and it is also what
+   * stops the re-entrant pass: `patchValue` below re-enters the group's
+   * `valueChanges`, but it never writes `sex`, so a second visit here finds no
+   * flip and returns.
+   */
+  private onSexChange(sex: unknown): void {
+    const isMale: boolean = sex === Sex.MALE;
+
+    if (isMale === this.wasMale) {
+      return;
+    }
+
+    this.wasMale = isMale;
+
+    const patch: Record<string, string | null> = {};
+
+    for (const { control, list } of MARK_CONTROLS) {
+      patch[control] = counterpartValue(list, this.form.get(control)?.value ?? null, isMale);
+    }
+
+    this.form.patchValue(patch);
   }
 
   /**

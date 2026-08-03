@@ -82,6 +82,15 @@ export const STUDENT_IDENTITY_FIELDS = ['studentName', 'name', 'sex', 'class'] a
  * save clicks. A template that carried them would turn "the teacher overlooked
  * one select" into "a parent received a PDF carrying another student's grade" —
  * the worst failure available to this product.
+ *
+ * `S-04` added one writer of these values that is not the teacher: when `sex`
+ * changes, `SemestrReportComponent` re-maps the six descriptive-mark controls to
+ * the matching gender's wording of the *same* sentence, because their option
+ * lists are sex-dependent and a control left holding the other variant renders
+ * blank while still passing `required`. That changes values inside this set; it
+ * does not move a single field across the partition, and the student picker's
+ * own domain is still `STUDENT_IDENTITY_FIELDS` and nothing else. Do not read
+ * the remap as a widening of what a picker or a template may reach.
  */
 export const PER_STUDENT_FIELDS = [
   'pronunciation',
