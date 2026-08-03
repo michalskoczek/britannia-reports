@@ -8,41 +8,7 @@
     <app-form-wrapper [sectionTitle]="'students.sectionTitle'">
       <p class="student-roster-lead">{{ 'students.lead' | translate }}</p>
 
-      <div class="student-roster-fields">
-        <app-input-text
-          class="student-roster-field"
-          formControlName="studentName"
-          [label]="'students.studentNameLabel'"
-          [placeholder]="'students.studentNamePlaceholder'"
-          [required]="true"
-        ></app-input-text>
-
-        <app-input-text
-          class="student-roster-field"
-          formControlName="name"
-          [label]="'students.nameLabel'"
-          [placeholder]="'students.namePlaceholder'"
-        ></app-input-text>
-
-        <app-select
-          class="student-roster-field"
-          formControlName="sex"
-          [label]="'students.sexLabel'"
-          [itemList]="sexes"
-          [required]="true"
-        ></app-select>
-
-        <app-select
-          class="student-roster-field"
-          formControlName="class"
-          [label]="'students.classLabel'"
-          [itemList]="classes"
-        ></app-select>
-      </div>
-
-      @if (formFailureKey(); as key) {
-        <p class="student-roster-error" role="alert">{{ key | translate }}</p>
-      }
+      <app-student-form [form]="form" [failureKey]="formFailureKey()"></app-student-form>
 
       <div class="student-roster-actions">
         <!--

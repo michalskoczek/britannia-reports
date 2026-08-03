@@ -10,7 +10,7 @@ import {
   WritableSignal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -18,50 +18,20 @@ import { firstValueFrom } from 'rxjs';
 import { Student, StudentIdentity } from '../../model/student.interface';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { FormWrapperComponent } from '../../shared/components/form/form-wrapper/form-wrapper.component';
-import { InputTextComponent } from '../../shared/components/form/input-text/input-text.component';
-import { SelectComponent } from '../../shared/components/form/select/select.component';
-import { Sex } from '../../shared/enum/sex.enum';
-import { classes, sexes } from '../../shared/select-values';
+import { classes } from '../../shared/select-values';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../templates/confirm-dialog/confirm-dialog.component';
-import { STUDENT_IDENTITY_DEFAULTS } from '../student-domain';
+import { FAILURE_KEYS, FORM_FAILURES } from '../student-failure-keys';
+import {
+  createStudentForm,
+  readStudentForm,
+  resetStudentForm,
+  StudentFormComponent,
+  StudentFormControls,
+} from '../student-form/student-form.component';
 import { StudentsFailure, StudentsResult, StudentsService } from '../students.service';
-
-/**
- * One message per failure the service can name.
- *
- * A total record rather than a lookup with a fallback: a new member of
- * `StudentsFailure` fails to compile here instead of reaching a teacher as
- * "something went wrong". The same arrangement `TemplatePanelComponent` uses.
- */
-const FAILURE_KEYS: Readonly<Record<StudentsFailure, string>> = {
-  'not-signed-in': 'students.errors.notSignedIn',
-  'name-required': 'students.errors.nameRequired',
-  'name-too-long': 'students.errors.nameTooLong',
-  'sex-required': 'students.errors.sexRequired',
-  'permission-denied': 'students.errors.permissionDenied',
-  offline: 'students.errors.offline',
-  unknown: 'students.errors.unknown',
-};
-
-/**
- * Failures about what the teacher typed, as opposed to what the store did.
- *
- * These get an inline message under the form rather than a snackbar: a message
- * that disappears on its own is the wrong shape for one that has to stay
- * readable while the field it describes is being fixed.
- */
-const FORM_FAILURES: readonly StudentsFailure[] = ['name-required', 'name-too-long', 'sex-required'];
 
 /** Long enough to read one sentence, short enough not to sit on the form. */
 const SNACKBAR_DURATION_MS = 4000;
-
-/** The form's controls, typed so a rename here is a compile error there. */
-interface RosterFormControls {
-  studentName: FormControl<string>;
-  name: FormControl<string>;
-  sex: FormControl<Sex | null>;
-  class: FormControl<string | null>;
-}
 
 /**
  * The teacher-facing student roster (FR-005…FR-008), mounted at `/students`.
@@ -80,14 +50,7 @@ interface RosterFormControls {
   templateUrl: './student-roster.component.html',
   styleUrl: './student-roster.component.scss',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    TranslateModule,
-    FormWrapperComponent,
-    InputTextComponent,
-    SelectComponent,
-    ButtonComponent,
-  ],
+  imports: [ReactiveFormsModule, TranslateModule, FormWrapperComponent, StudentFormComponent, ButtonComponent],
 })
 export class StudentRosterComponent implements OnInit {
   private readonly studentsService: StudentsService = inject(StudentsService);
@@ -95,15 +58,11 @@ export class StudentRosterComponent implements OnInit {
   private readonly snackBar: MatSnackBar = inject(MatSnackBar);
   private readonly translate: TranslateService = inject(TranslateService);
 
-  protected readonly sexes: string[] = sexes;
-  protected readonly classes: { label: string; value: string }[] = classes;
-
-  protected readonly form: FormGroup<RosterFormControls> = new FormGroup<RosterFormControls>({
-    studentName: new FormControl<string>('', { nonNullable: true }),
-    name: new FormControl<string>('', { nonNullable: true }),
-    sex: new FormControl<Sex | null>(null),
-    class: new FormControl<string | null>(null),
-  });
+  /**
+   * Owned here, mounted by `app-student-form`. The child renders the four
+   * controls; add/edit mode, the buttons and every service call stay here.
+   */
+  protected readonly form: FormGroup<StudentFormControls> = createStudentForm();
 
   protected readonly students: Signal<readonly Student[]> = this.studentsService.students;
 
@@ -203,7 +162,7 @@ export class StudentRosterComponent implements OnInit {
 
   /** One handler for both modes — `editingId` is what decides which. */
   protected async submit(): Promise<void> {
-    const identity: StudentIdentity = this.readForm();
+    const identity: StudentIdentity = readStudentForm(this.form);
     const localFailure: StudentsFailure | null = this.studentsService.validate(identity);
 
     // Checked here as well as in the service so an unusable student costs a
@@ -323,28 +282,10 @@ export class StudentRosterComponent implements OnInit {
     }
   }
 
-  /**
-   * The form's values as the service wants them.
-   *
-   * Blank optional text becomes `null` in the service, not here — one place
-   * decides what an emptied field means.
-   */
-  private readForm(): StudentIdentity {
-    const value = this.form.getRawValue();
-
-    return {
-      ...STUDENT_IDENTITY_DEFAULTS,
-      studentName: value.studentName,
-      name: value.name,
-      sex: value.sex,
-      class: value.class,
-    };
-  }
-
   private resetToAddMode(): void {
     this.editingId.set(null);
     this.formFailureKey.set(null);
-    this.form.reset({ studentName: '', name: '', sex: null, class: null });
+    resetStudentForm(this.form);
   }
 
   /**

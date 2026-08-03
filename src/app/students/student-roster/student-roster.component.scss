@@ -6,23 +6,6 @@
   font: 400 14px/1.5 ds.$font;
 }
 
-// Four fields that wrap rather than a `form-row` of equal fractions: at tablet
-// width two per line reads better than four squeezed ones, and the `class` label
-// is long enough to need the room.
-.student-roster-fields {
-  display: flex;
-  flex-wrap: wrap;
-  gap: ds.$distance-16;
-  width: 100%;
-}
-
-.student-roster-field {
-  flex: 1 1 240px;
-  // Without this a long label makes the flex item refuse to shrink and the row
-  // overflows instead of wrapping.
-  min-width: 0;
-}
-
 .student-roster-actions {
   display: flex;
   flex-wrap: wrap;

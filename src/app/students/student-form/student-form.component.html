@@ -1,0 +1,37 @@
+<div class="student-form" [formGroup]="form()">
+  <div class="student-form-fields">
+    <app-input-text
+      class="student-form-field"
+      formControlName="studentName"
+      [label]="'students.studentNameLabel'"
+      [placeholder]="'students.studentNamePlaceholder'"
+      [required]="true"
+    ></app-input-text>
+
+    <app-input-text
+      class="student-form-field"
+      formControlName="name"
+      [label]="'students.nameLabel'"
+      [placeholder]="'students.namePlaceholder'"
+    ></app-input-text>
+
+    <app-select
+      class="student-form-field"
+      formControlName="sex"
+      [label]="'students.sexLabel'"
+      [itemList]="sexes"
+      [required]="true"
+    ></app-select>
+
+    <app-select
+      class="student-form-field"
+      formControlName="class"
+      [label]="'students.classLabel'"
+      [itemList]="classes"
+    ></app-select>
+  </div>
+
+  @if (failureKey(); as key) {
+    <p class="student-form-error" role="alert">{{ key | translate }}</p>
+  }
+</div>

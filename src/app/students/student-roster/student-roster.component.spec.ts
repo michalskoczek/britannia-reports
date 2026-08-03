@@ -321,7 +321,7 @@ describe('StudentRosterComponent', () => {
       await settle();
 
       expect(service.create).not.toHaveBeenCalled();
-      expect(text('.student-roster-error')).toBe('students.errors.nameRequired');
+      expect(text('.student-form-error')).toBe('students.errors.nameRequired');
     });
 
     it('never reaches the store with a student that has no sex', async () => {
@@ -332,7 +332,7 @@ describe('StudentRosterComponent', () => {
       await settle();
 
       expect(service.create).not.toHaveBeenCalled();
-      expect(text('.student-roster-error')).toBe('students.errors.sexRequired');
+      expect(text('.student-form-error')).toBe('students.errors.sexRequired');
     });
 
     it('drops the rejection message as soon as the teacher fixes the field', async () => {
@@ -342,13 +342,13 @@ describe('StudentRosterComponent', () => {
       submit();
       await settle();
 
-      expect(text('.student-roster-error')).toBe('students.errors.nameRequired');
+      expect(text('.student-form-error')).toBe('students.errors.nameRequired');
 
       type('studentName', 'Jan Kowalski');
       await settle();
 
       // A message that outlives its cause reads as a second, different refusal.
-      expect(fixture.nativeElement.querySelector('.student-roster-error')).toBeNull();
+      expect(fixture.nativeElement.querySelector('.student-form-error')).toBeNull();
     });
 
     it('adds the student and clears the form', async () => {

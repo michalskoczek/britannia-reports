@@ -713,15 +713,15 @@ stay at 1, and every student written by `S-03` is readable by this slice unchang
 
 #### Automated
 
-- [ ] 1.1 Reference PDFs captured before any edit, from the branch point `67588f4`
-- [ ] 1.2 Unit tests pass
-- [ ] 1.3 Linting passes
-- [ ] 1.4 Production build type-checks
+- [x] 1.1 Reference PDFs captured before any edit, from the branch point `67588f4`
+- [x] 1.2 Unit tests pass
+- [x] 1.3 Linting passes
+- [x] 1.4 Production build type-checks
 
 #### Manual
 
-- [ ] 1.5 Roster still adds, lists, edits, and deletes with the same validation messages
-- [ ] 1.6 Edit still scrolls the form into view and focuses the first field
+- [x] 1.5 Roster still adds, lists, edits, and deletes with the same validation messages
+- [x] 1.6 Edit still scrolls the form into view and focuses the first field
 
 ### Phase 2: The picker panel and its wiring into the report form
 
