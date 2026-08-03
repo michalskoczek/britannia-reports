@@ -1,0 +1,38 @@
+@use '../../../assets/styles/utils/index' as ds;
+
+.student-picker-lead {
+  margin: 0 0 ds.$distance-16;
+  color: ds.$black-87;
+  font: 400 14px/1.5 ds.$font;
+}
+
+// One field on its own row rather than a `form-row`: the panel holds a single
+// control, and an equal-fractions grid of one is just a full-width column with
+// extra rules. Capped so the select does not stretch to the full width of a
+// desktop form, where a name would sit alone in a very wide box.
+.student-picker-select {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+}
+
+.student-picker-note {
+  margin: ds.$distance-8 0 0;
+  color: ds.$black-87;
+  font: 400 14px/1.5 ds.$font;
+  font-style: italic;
+}
+
+.student-picker-error {
+  margin: 0;
+  color: ds.$britannia-red;
+  font: 600 14px/1.5 ds.$font;
+}
+
+.student-picker-failure {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: ds.$distance-16;
+  margin-top: ds.$distance-8;
+}

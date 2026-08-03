@@ -346,6 +346,29 @@
       "message": "„{{name}}” zostanie trwale usunięty z Twojej listy. Tej operacji nie można cofnąć.",
       "confirm": "Usuń"
     },
+    "fields": {
+      "studentName": "Imię i nazwisko ucznia",
+      "name": "Imię ucznia do wyświetlenia w tekście",
+      "sex": "Uczeń / Uczennica",
+      "class": "Klasa"
+    },
+    "picker": {
+      "sectionTitle": "Uczeń",
+      "lead": "Wybierz ucznia z listy, a jego imię i nazwisko, imię do tekstu raportu, płeć i klasa wypełnią się same. Oceny i pola wspólne dla całej klasy zostają bez zmian.",
+      "selectLabel": "Uczeń z Twojej listy",
+      "selectPlaceholder": "Wybierz ucznia",
+      "loading": "Wczytywanie uczniów…",
+      "retry": "Spróbuj ponownie",
+      "empty": "Nie masz jeszcze żadnych uczniów. Dodaj ich w zakładce „Uczniowie”.",
+      "applied": "Dane ucznia wstawione do raportu.",
+      "confirmApply": {
+        "title": "Wstawić dane tego ucznia?",
+        "message": "„{{name}}” zmieni pola, które już wypełniłeś.",
+        "overwritten": "Zostaną zastąpione:",
+        "cleared": "Zostaną wyczyszczone:",
+        "confirm": "Wstaw"
+      }
+    },
     "errors": {
       "nameRequired": "Wpisz imię i nazwisko ucznia.",
       "nameTooLong": "Imię i nazwisko może mieć najwyżej 80 znaków.",

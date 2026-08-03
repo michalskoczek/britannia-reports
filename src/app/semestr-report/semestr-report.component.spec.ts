@@ -5,10 +5,11 @@ import { FormArray } from '@angular/forms';
 
 import { SemestrReportComponent } from './semestr-report.component';
 import { translateTestingImports } from '../shared/testing/translate-testing';
-import { templatePanelTestingProviders } from '../shared/testing/templates-testing';
+import { semestrReportTestingProviders } from '../shared/testing/semestr-report-testing';
 import { semestrFixtures } from '../shared/testing/pdf-fidelity/fixtures/semestr-report.fixture';
 import { capturePdfDefinition, renderToBlob } from '../shared/testing/pdf-fidelity/render-pdf';
 import { ReportTemplateFields } from '../model/report-template.interface';
+import { StudentIdentity } from '../model/student.interface';
 import {
   PER_STUDENT_FIELDS,
   STUDENT_IDENTITY_FIELDS,
@@ -16,7 +17,9 @@ import {
   TEMPLATE_DOMAIN_DEFAULTS,
   UNREACHABLE_FIELDS,
 } from '../templates/template-domain';
+import { STUDENT_IDENTITY_DEFAULTS } from '../students/student-domain';
 import { ReportType } from '../shared/enum/report-type.enum';
+import { Sex } from '../shared/enum/sex.enum';
 
 describe('SemestrReportComponent — PDF fidelity smoke', () => {
   let component: SemestrReportComponent;
@@ -30,7 +33,7 @@ describe('SemestrReportComponent — PDF fidelity smoke', () => {
 
     await TestBed.configureTestingModule({
       imports: [SemestrReportComponent, ...translateTestingImports],
-      providers: [provideNoopAnimations(), provideNativeDateAdapter(), ...templatePanelTestingProviders()],
+      providers: [provideNoopAnimations(), provideNativeDateAdapter(), ...semestrReportTestingProviders()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SemestrReportComponent);
@@ -153,7 +156,7 @@ describe('SemestrReportComponent — form model contract', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SemestrReportComponent, ...translateTestingImports],
-      providers: [provideNoopAnimations(), provideNativeDateAdapter(), ...templatePanelTestingProviders()],
+      providers: [provideNoopAnimations(), provideNativeDateAdapter(), ...semestrReportTestingProviders()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SemestrReportComponent);
@@ -250,7 +253,7 @@ describe('SemestrReportComponent — template collect and apply', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SemestrReportComponent, ...translateTestingImports],
-      providers: [provideNoopAnimations(), provideNativeDateAdapter(), ...templatePanelTestingProviders()],
+      providers: [provideNoopAnimations(), provideNativeDateAdapter(), ...semestrReportTestingProviders()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SemestrReportComponent);
@@ -381,6 +384,129 @@ describe('SemestrReportComponent — template collect and apply', () => {
       component.applyTemplateFields(fields({ isExamRecommendation: true }));
 
       expect(component.isChecked).toBeTrue();
+    });
+  });
+});
+
+/**
+ * The other half of the partition: the two methods `app-student-picker` exchanges
+ * a `StudentIdentity` with (FR-013).
+ *
+ * The panel is covered by its own spec. What is checked here is the half only the
+ * report can get wrong — that a pick lands in exactly the four identity controls
+ * and nowhere else. That disjointness is not a nicety: the twelve
+ * `PER_STUDENT_FIELDS` are the marks, and a picker that could reach one of them
+ * would put a judgement about one child onto another child's report.
+ */
+describe('SemestrReportComponent — student identity collect and apply', () => {
+  let component: SemestrReportComponent;
+  let fixture: ComponentFixture<SemestrReportComponent>;
+
+  const jan: StudentIdentity = {
+    studentName: 'Jan Kowalski',
+    name: 'Jaś',
+    sex: Sex.MALE,
+    class: 'Klasa 5 szkoły podstawowej',
+  };
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [SemestrReportComponent, ...translateTestingImports],
+      providers: [provideNoopAnimations(), provideNativeDateAdapter(), ...semestrReportTestingProviders()],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(SemestrReportComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  describe('collect', () => {
+    it('reads a blank form as the roster`s own defaults', () => {
+      // `studentName` is the coerced one: its control starts at `null` while
+      // `StudentIdentity` types it as `string`. Without that coercion a blank form
+      // would report the name as a field a pick is about to overwrite.
+      expect(component.collectStudentIdentity()).toEqual(STUDENT_IDENTITY_DEFAULTS);
+    });
+
+    it('reads only the identity fields, whatever else the teacher filled in', () => {
+      component.form.patchValue({
+        ...jan,
+        course: 'A2',
+        pronunciation: 'X mówi wyraźnie',
+        avgMark: '5',
+      });
+
+      expect(component.collectStudentIdentity()).toEqual(jan);
+    });
+  });
+
+  describe('apply', () => {
+    it('writes exactly the four identity controls and no others', () => {
+      const before: Record<string, unknown> = {};
+
+      [...TEMPLATE_DOMAIN, ...PER_STUDENT_FIELDS].forEach((field: string) => {
+        before[field] = component.form.get(field)!.value;
+      });
+
+      component.applyStudentIdentity(jan);
+
+      STUDENT_IDENTITY_FIELDS.forEach((field: string) => {
+        expect(component.form.get(field)!.value)
+          .withContext(field)
+          .toBe(jan[field as keyof StudentIdentity]);
+      });
+
+      Object.entries(before).forEach(([field, value]: [string, unknown]) => {
+        expect(component.form.get(field)!.value).withContext(field).toEqual(value);
+      });
+    });
+
+    it('leaves a filled template and every assessment field exactly as they were', () => {
+      const untouched = {
+        course: 'A2',
+        realizedMaterial: 'Units 1-8',
+        signature: 'Anna Kowalska',
+        pronunciation: 'X mówi wyraźnie',
+        vocabulary: 'X zna wiele słów',
+        avgMark: '5',
+        frequency: '95%',
+        additionalComment: 'Bardzo dobra praca',
+      };
+
+      component.form.patchValue(untouched);
+
+      component.applyStudentIdentity(jan);
+
+      Object.entries(untouched).forEach(([control, value]: [string, string]) => {
+        expect(component.form.get(control)!.value).withContext(control).toBe(value);
+      });
+    });
+
+    it('clears an identity field the picked student does not carry', () => {
+      component.form.patchValue({ ...jan });
+
+      component.applyStudentIdentity({ studentName: 'Zofia Nowak', name: null, sex: Sex.FEMALE, class: null });
+
+      expect(component.form.get('name')!.value).toBeNull();
+      expect(component.form.get('class')!.value).toBeNull();
+    });
+  });
+
+  describe('the signal the panel reads', () => {
+    it('follows the form rather than being rebuilt per change-detection pass', () => {
+      const before: StudentIdentity = component.studentIdentity();
+
+      component.form.patchValue({ studentName: 'Jan Kowalski' });
+      fixture.detectChanges();
+
+      // A fresh object every pass would leave the panel's signal input
+      // permanently dirty — the trap `templateFields` already documents.
+      expect(component.studentIdentity()).not.toBe(before);
+      expect(component.studentIdentity().studentName).toBe('Jan Kowalski');
+
+      fixture.detectChanges();
+
+      expect(component.studentIdentity()).toBe(component.studentIdentity());
     });
   });
 });

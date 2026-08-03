@@ -53,8 +53,11 @@ import { TextareaComponent } from '../shared/components/form/textarea/textarea.c
 import { ButtonComponent } from '../shared/components/button/button.component';
 import { SelectOptions } from '../shared/components/form/select/select-options';
 import { ReportTemplateFields, TemplateField } from '../model/report-template.interface';
-import { TEMPLATE_DOMAIN, TEMPLATE_DOMAIN_DEFAULTS } from '../templates/template-domain';
+import { StudentIdentity } from '../model/student.interface';
+import { STUDENT_IDENTITY_FIELDS, TEMPLATE_DOMAIN, TEMPLATE_DOMAIN_DEFAULTS } from '../templates/template-domain';
 import { TemplatePanelComponent } from '../templates/template-panel/template-panel.component';
+import { STUDENT_IDENTITY_DEFAULTS } from '../students/student-domain';
+import { StudentPickerComponent } from '../students/student-picker/student-picker.component';
 
 pdfMake.vfs = pdfFonts.vfs;
 
@@ -169,6 +172,7 @@ const toControlDate = (value: unknown): Date | null =>
     TextareaComponent,
     ButtonComponent,
     TemplatePanelComponent,
+    StudentPickerComponent,
   ],
 })
 export class SemestrReportComponent implements OnInit {
@@ -196,6 +200,21 @@ export class SemestrReportComponent implements OnInit {
    * `markOptions` below caches around.
    */
   public readonly templateFields: Signal<ReportTemplateFields> = this.domainFields.asReadonly();
+
+  private readonly identityFields: WritableSignal<StudentIdentity> = signal<StudentIdentity>({
+    ...STUDENT_IDENTITY_DEFAULTS,
+  });
+
+  /**
+   * What `app-student-picker` reads as `currentIdentity` — the left-hand side of
+   * the FR-013 diff, kept current from the same `form.valueChanges` subscription
+   * that feeds `templateFields`.
+   *
+   * A signal for the same reason `templateFields` is one: `currentIdentity` is a
+   * signal input, so a fresh object on every change-detection pass would leave
+   * it permanently dirty.
+   */
+  public readonly studentIdentity: Signal<StudentIdentity> = this.identityFields.asReadonly();
 
   public readonly sexes: string[] = sexes;
   public readonly classes: { label: string; value: string }[] = classes;
@@ -282,10 +301,12 @@ export class SemestrReportComponent implements OnInit {
   ngOnInit(): void {
     this.form = this.createForm();
     this.domainFields.set(this.collectTemplateFields());
+    this.identityFields.set(this.collectStudentIdentity());
 
-    this.form.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.domainFields.set(this.collectTemplateFields()));
+    this.form.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      this.domainFields.set(this.collectTemplateFields());
+      this.identityFields.set(this.collectStudentIdentity());
+    });
   }
 
   /**
@@ -323,6 +344,55 @@ export class SemestrReportComponent implements OnInit {
 
     this.form.patchValue(patch);
     this.syncBookVisibility(fields);
+  }
+
+  /**
+   * Reads who the report is about out of `form` (FR-013).
+   *
+   * Driven by `STUDENT_IDENTITY_FIELDS` rather than a hand-written list, the same
+   * way `collectTemplateFields` is driven by `TEMPLATE_DOMAIN` — the two sets are
+   * disjoint halves of the partition, so neither method can read the other's
+   * fields even by accident.
+   *
+   * `studentName` is the one value coerced: `StudentIdentity` types it as
+   * `string` while the control starts at `null`. Without the fallback a blank
+   * form would hand the picker a `null` name, and the diff would report it as a
+   * field the pick is about to overwrite.
+   */
+  public collectStudentIdentity(): StudentIdentity {
+    const identity: Record<keyof StudentIdentity, unknown> = { ...STUDENT_IDENTITY_DEFAULTS };
+
+    for (const field of STUDENT_IDENTITY_FIELDS) {
+      identity[field] = this.form.get(field)?.value ?? STUDENT_IDENTITY_DEFAULTS[field];
+    }
+
+    return identity as StudentIdentity;
+  }
+
+  /**
+   * Writes a picked student into `form` (FR-013).
+   *
+   * `patchValue` over the four identity keys only. The other 44 controls are not
+   * named here at all — that is the disjoint-domain rule the picker rests on, and
+   * what keeps a pick from touching a template field or, far worse, a mark.
+   *
+   * No `toStored` / `toControl` equivalent: none of the four needs a conversion,
+   * because the roster stores `class` as a value from the same `classes` constant
+   * this form binds and `sex` as the same `Sex` member.
+   *
+   * The keys are written in `STUDENT_IDENTITY_FIELDS` order, which puts `sex`
+   * before `class`. `FormGroup.patchValue` writes each child with
+   * `onlySelf: true`, so the `sex` control emits mid-patch — `S-04` Phase 3 hangs
+   * the descriptive-mark remap off exactly that emission.
+   */
+  public applyStudentIdentity(identity: StudentIdentity): void {
+    const patch: Record<string, unknown> = {};
+
+    for (const field of STUDENT_IDENTITY_FIELDS) {
+      patch[field] = identity[field];
+    }
+
+    this.form.patchValue(patch);
   }
 
   /** One domain value on its way out of `form`. */

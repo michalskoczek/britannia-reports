@@ -713,26 +713,26 @@ stay at 1, and every student written by `S-03` is readable by this slice unchang
 
 #### Automated
 
-- [x] 1.1 Reference PDFs captured before any edit, from the branch point `67588f4`
-- [x] 1.2 Unit tests pass
-- [x] 1.3 Linting passes
-- [x] 1.4 Production build type-checks
+- [x] 1.1 Reference PDFs captured before any edit, from the branch point `67588f4` — 139a2c1
+- [x] 1.2 Unit tests pass — 139a2c1
+- [x] 1.3 Linting passes — 139a2c1
+- [x] 1.4 Production build type-checks — 139a2c1
 
 #### Manual
 
-- [x] 1.5 Roster still adds, lists, edits, and deletes with the same validation messages
-- [x] 1.6 Edit still scrolls the form into view and focuses the first field
+- [x] 1.5 Roster still adds, lists, edits, and deletes with the same validation messages — 139a2c1
+- [x] 1.6 Edit still scrolls the form into view and focuses the first field — 139a2c1
 
 ### Phase 2: The picker panel and its wiring into the report form
 
 #### Automated
 
-- [ ] 2.1 Unit tests pass, including the new picker and diff specs
-- [ ] 2.2 The PDF capture harness still instantiates every report type after the picker is mounted
-- [ ] 2.3 Linting passes
-- [ ] 2.4 Production build type-checks
-- [ ] 2.5 Development build type-checks
-- [ ] 2.6 i18n key parity holds between pl.json and en.json
+- [x] 2.1 Unit tests pass, including the new picker and diff specs
+- [x] 2.2 The PDF capture harness still instantiates every report type after the picker is mounted
+- [x] 2.3 Linting passes
+- [x] 2.4 Production build type-checks
+- [x] 2.5 Development build type-checks
+- [x] 2.6 i18n key parity holds between pl.json and en.json
 
 #### Manual
 

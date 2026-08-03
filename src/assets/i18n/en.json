@@ -345,6 +345,29 @@
       "message": "\"{{name}}\" will be permanently removed from your list. This cannot be undone.",
       "confirm": "Delete"
     },
+    "fields": {
+      "studentName": "Student's full name",
+      "name": "First name as shown in the report text",
+      "sex": "Male / Female",
+      "class": "Class"
+    },
+    "picker": {
+      "sectionTitle": "Student",
+      "lead": "Pick a student from your list and their full name, the first name used in the report text, sex and class fill in by themselves. Grades and the class-wide fields are left alone.",
+      "selectLabel": "Student from your list",
+      "selectPlaceholder": "Choose a student",
+      "loading": "Loading students…",
+      "retry": "Try again",
+      "empty": "You have no students yet. Add them on the \"Students\" page.",
+      "applied": "Student details filled in.",
+      "confirmApply": {
+        "title": "Fill in this student's details?",
+        "message": "\"{{name}}\" changes fields you have already filled in.",
+        "overwritten": "Will be replaced:",
+        "cleared": "Will be cleared:",
+        "confirm": "Fill in"
+      }
+    },
     "errors": {
       "nameRequired": "Enter the student's full name.",
       "nameTooLong": "The full name may be at most 80 characters long.",

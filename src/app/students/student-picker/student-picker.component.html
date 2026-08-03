@@ -1,0 +1,47 @@
+<app-form-wrapper [sectionTitle]="'students.picker.sectionTitle'">
+  <p class="student-picker-lead">{{ 'students.picker.lead' | translate }}</p>
+
+  @if (loading()) {
+    <p class="student-picker-note">{{ 'students.picker.loading' | translate }}</p>
+  } @else if (loadFailureKey(); as key) {
+    <div class="student-picker-failure" role="alert">
+      <p class="student-picker-error">{{ key | translate }}</p>
+
+      <!--
+        `[type]` is explicit because this panel is mounted inside the report's
+        `<form>`, whose submit handler downloads a PDF — and `app-button`
+        defaults to a value HTML resolves to *submit*.
+      -->
+      <app-button
+        [translateKey]="'students.picker.retry'"
+        [icon]="'refresh'"
+        [type]="'button'"
+        [variant]="'secondary'"
+        (clicked)="reload()"
+      ></app-button>
+    </div>
+  } @else if (students().length === 0) {
+    <p class="student-picker-note">{{ 'students.picker.empty' | translate }}</p>
+  } @else {
+    <!--
+      The option labels are student names, and `app-select` renders every label
+      through the `translate` pipe. `ngx-translate` returns an unknown key
+      verbatim, so a name comes back as itself — relied on here rather than
+      accidental. A name that ever collided with a translation key would render
+      as that key's text, which is why the roster's own list prints
+      `student.identity.studentName` directly instead.
+
+      Bound to `(selectionChange)`, not to the control's `valueChanges`: it stays
+      silent on a programmatic write, so the revert after a dismissed
+      confirmation cannot ask the same question twice.
+    -->
+    <app-select
+      class="student-picker-select"
+      [formControl]="studentControl"
+      [label]="'students.picker.selectLabel'"
+      [placeholder]="'students.picker.selectPlaceholder'"
+      [itemList]="options()"
+      (selectionChange)="pick($event)"
+    ></app-select>
+  }
+</app-form-wrapper>
