@@ -1,39 +1,53 @@
 <div class="container pb-5 my-4">
   <form [formGroup]="form" (ngSubmit)="generatePDF(form)">
     <!--
-      Student first, then the class-level boilerplate: the on-screen order
-      matches FR-013's usual flow without enforcing it — the two panels write
-      disjoint sets of controls, so either order works.
+      The three things a teacher settles before writing anything: who the report
+      is about, which boilerplate to pull in, and which kind of report it is.
+      Side by side because each is small, and each stays in its own section with
+      its own card and title — a shared wrapper would read as one setting with
+      three parts, which is exactly what they are not. The picker and the panel
+      write disjoint sets of controls, so their on-screen order suggests a flow
+      without enforcing one.
     -->
-    <section class="form-section">
-      <app-student-picker
-        [currentIdentity]="studentIdentity()"
-        (apply)="applyStudentIdentity($event)"
-      ></app-student-picker>
-    </section>
+    <div class="section-row section-row--thirds">
+      <section class="form-section">
+        <app-student-picker
+          [currentIdentity]="studentIdentity()"
+          (apply)="applyStudentIdentity($event)"
+        ></app-student-picker>
+      </section>
 
-    <section class="form-section">
-      <app-template-panel
-        [currentFields]="templateFields()"
-        (apply)="applyTemplateFields($event)"
-      ></app-template-panel>
-    </section>
+      <section class="form-section">
+        <app-template-panel
+          [currentFields]="templateFields()"
+          (apply)="applyTemplateFields($event)"
+        ></app-template-panel>
+      </section>
 
-    <section class="form-section">
-      <app-form-wrapper [sectionTitle]="'reportType'">
-        <mat-radio-group aria-label="Select an option" formControlName="reportType">
-          <mat-radio-button [value]="ReportType.SEMESTER">
-            {{ "semester" | translate }}
-          </mat-radio-button>
-          <mat-radio-button [value]="ReportType.TRIMESTER">
-            {{ "firstTrimesterReport" | translate }}
-          </mat-radio-button>
-          @if (form.controls['reportType'].hasError('required')) {
-            <mat-error>{{ "fieldIsRequired" | translate }}</mat-error>
-          }
-        </mat-radio-group>
-      </app-form-wrapper>
-    </section>
+      <section class="form-section">
+        <app-form-wrapper [sectionTitle]="'reportType'">
+          <!--
+            Stacked rather than inline: at a third of the row the two labels do
+            not fit beside each other and would wrap mid-phrase.
+          -->
+          <mat-radio-group
+            class="radio-stack"
+            aria-label="Select an option"
+            formControlName="reportType"
+          >
+            <mat-radio-button [value]="ReportType.SEMESTER">
+              {{ "semester" | translate }}
+            </mat-radio-button>
+            <mat-radio-button [value]="ReportType.TRIMESTER">
+              {{ "firstTrimesterReport" | translate }}
+            </mat-radio-button>
+            @if (form.controls['reportType'].hasError('required')) {
+              <mat-error>{{ "fieldIsRequired" | translate }}</mat-error>
+            }
+          </mat-radio-group>
+        </app-form-wrapper>
+      </section>
+    </div>
 
     <section class="form-section">
       <app-form-wrapper [sectionTitle]="'basicInformation'">
@@ -150,129 +164,137 @@
       </app-form-wrapper>
     </section>
 
-    <section class="form-section">
-      <app-section-title [sectionTitle]="'grades'"></app-section-title>
+    <!--
+      The grade scale is a reference the teacher reads while filling the
+      descriptive marks beside it, so the two belong on one line. Deliberately
+      unequal: the scale is a narrow two-column table and the six mark selects
+      need the room.
+    -->
+    <div class="section-row section-row--grades">
+      <section class="form-section section-col-narrow">
+        <app-section-title [sectionTitle]="'grades'"></app-section-title>
 
-      <div class="scale-wrapper">
-        <table mat-table [dataSource]="dataSource" class="scale-table">
-          <ng-container matColumnDef="percent">
-            <th mat-header-cell *matHeaderCellDef>{{ "Procent" | translate }}</th>
-            <td mat-cell *matCellDef="let element">{{ element.percent }}</td>
-          </ng-container>
+        <div class="scale-wrapper">
+          <table mat-table [dataSource]="dataSource" class="scale-table">
+            <ng-container matColumnDef="percent">
+              <th mat-header-cell *matHeaderCellDef>{{ "Procent" | translate }}</th>
+              <td mat-cell *matCellDef="let element">{{ element.percent }}</td>
+            </ng-container>
 
-          <ng-container matColumnDef="mark">
-            <th mat-header-cell *matHeaderCellDef>{{ "Ocena" | translate }}</th>
-            <td mat-cell *matCellDef="let element">{{ element.mark }}</td>
-          </ng-container>
+            <ng-container matColumnDef="mark">
+              <th mat-header-cell *matHeaderCellDef>{{ "Ocena" | translate }}</th>
+              <td mat-cell *matCellDef="let element">{{ element.mark }}</td>
+            </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-        </table>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
 
-        <small class="scale-note">{{ "* Ocena celująca" | translate }}</small>
-      </div>
-    </section>
-
-    <section class="form-section">
-      <app-form-wrapper [sectionTitle]="'descriptiveGrade'">
-        <div class="field-row">
-          <app-select
-            class="field-half"
-            formControlName="pronunciation"
-            [label]="'pronunciation'"
-            [required]="true"
-            [itemList]="markOptions(pronunciationMarks)"
-            [errorMessage]="'fieldIsRequired'"
-          ></app-select>
-
-          <app-select
-            class="field-half"
-            formControlName="vocabulary"
-            [label]="'vocabulary'"
-            [required]="true"
-            [itemList]="markOptions(vocabularyMarks)"
-            [errorMessage]="'fieldIsRequired'"
-          ></app-select>
+          <small class="scale-note">{{ "* Ocena celująca" | translate }}</small>
         </div>
+      </section>
 
-        <div class="field-row">
-          <app-select
-            class="field-half"
-            formControlName="prepareToLecture"
-            [label]="'preparationForClasses'"
-            [required]="true"
-            [itemList]="markOptions(prepareToLectureMarks)"
-            [errorMessage]="'fieldIsRequired'"
-          ></app-select>
-
-          <app-select
-            class="field-half"
-            formControlName="homeworks"
-            [label]="'homework'"
-            [required]="true"
-            [itemList]="markOptions(homeworksMarks)"
-            [errorMessage]="'fieldIsRequired'"
-          ></app-select>
-        </div>
-
-        <div class="field-row">
-          <app-select
-            class="field-half"
-            formControlName="involvement"
-            [label]="'engagement'"
-            [required]="true"
-            [itemList]="markOptions(involvementMarks)"
-            [errorMessage]="'fieldIsRequired'"
-          ></app-select>
-
-          <app-select
-            class="field-half"
-            formControlName="behaviour"
-            [label]="'behaviourInClass'"
-            [required]="true"
-            [itemList]="markOptions(behaviourMarks)"
-            [errorMessage]="'fieldIsRequired'"
-          ></app-select>
-        </div>
-
-        <div class="field-row">
-          <app-select
-            class="field-full"
-            formControlName="frequency"
-            [label]="'frequency'"
-            [itemList]="frequencyOptions"
-          ></app-select>
-        </div>
-
-        <div class="field-row">
-          <app-input-text
-            class="field-full"
-            formControlName="avgMark"
-            [label]="
-              form.controls['reportType'].value === ReportType.SEMESTER
-                ? 'semesterMark'
-                : 'trimesterMark'
-            "
-          ></app-input-text>
-        </div>
-
-        @if (form.controls['reportType'].value === ReportType.SEMESTER) {
+      <section class="form-section section-col-wide">
+        <app-form-wrapper [sectionTitle]="'descriptiveGrade'">
           <div class="field-row">
-            <mat-checkbox formControlName="recommendationToCambridgeExam">
-              {{ "recommendationToCambridgeExam" | translate }}
-            </mat-checkbox>
-          </div>
-        }
+            <app-select
+              class="field-half"
+              formControlName="pronunciation"
+              [label]="'pronunciation'"
+              [required]="true"
+              [itemList]="markOptions(pronunciationMarks)"
+              [errorMessage]="'fieldIsRequired'"
+            ></app-select>
 
-        <div class="field-row">
-          <app-textarea
-            class="field-full"
-            formControlName="additionalComment"
-            [label]="'Informacje dodatkowe'"
-          ></app-textarea>
-        </div>
-      </app-form-wrapper>
-    </section>
+            <app-select
+              class="field-half"
+              formControlName="vocabulary"
+              [label]="'vocabulary'"
+              [required]="true"
+              [itemList]="markOptions(vocabularyMarks)"
+              [errorMessage]="'fieldIsRequired'"
+            ></app-select>
+          </div>
+
+          <div class="field-row">
+            <app-select
+              class="field-half"
+              formControlName="prepareToLecture"
+              [label]="'preparationForClasses'"
+              [required]="true"
+              [itemList]="markOptions(prepareToLectureMarks)"
+              [errorMessage]="'fieldIsRequired'"
+            ></app-select>
+
+            <app-select
+              class="field-half"
+              formControlName="homeworks"
+              [label]="'homework'"
+              [required]="true"
+              [itemList]="markOptions(homeworksMarks)"
+              [errorMessage]="'fieldIsRequired'"
+            ></app-select>
+          </div>
+
+          <div class="field-row">
+            <app-select
+              class="field-half"
+              formControlName="involvement"
+              [label]="'engagement'"
+              [required]="true"
+              [itemList]="markOptions(involvementMarks)"
+              [errorMessage]="'fieldIsRequired'"
+            ></app-select>
+
+            <app-select
+              class="field-half"
+              formControlName="behaviour"
+              [label]="'behaviourInClass'"
+              [required]="true"
+              [itemList]="markOptions(behaviourMarks)"
+              [errorMessage]="'fieldIsRequired'"
+            ></app-select>
+          </div>
+
+          <div class="field-row">
+            <app-select
+              class="field-full"
+              formControlName="frequency"
+              [label]="'frequency'"
+              [itemList]="frequencyOptions"
+            ></app-select>
+          </div>
+
+          <div class="field-row">
+            <app-input-text
+              class="field-full"
+              formControlName="avgMark"
+              [label]="
+                form.controls['reportType'].value === ReportType.SEMESTER
+                  ? 'semesterMark'
+                  : 'trimesterMark'
+              "
+            ></app-input-text>
+          </div>
+
+          @if (form.controls['reportType'].value === ReportType.SEMESTER) {
+            <div class="field-row">
+              <mat-checkbox formControlName="recommendationToCambridgeExam">
+                {{ "recommendationToCambridgeExam" | translate }}
+              </mat-checkbox>
+            </div>
+          }
+
+          <div class="field-row">
+            <app-textarea
+              class="field-full"
+              formControlName="additionalComment"
+              [label]="'Informacje dodatkowe'"
+            ></app-textarea>
+          </div>
+        </app-form-wrapper>
+      </section>
+    </div>
 
     <section class="form-section">
       <app-form-wrapper [sectionTitle]="'examRecommendations'">
@@ -283,7 +305,13 @@
         </div>
 
         <div class="field-row">
-          <mat-radio-group formControlName="examRecommendationOptions">
+          <!--
+            One option per line. These three are whole sentences, and side by
+            side they read as one run-on paragraph with radio buttons in it —
+            the teacher has to parse where each option ends before they can
+            choose one.
+          -->
+          <mat-radio-group class="radio-stack" formControlName="examRecommendationOptions">
             <mat-radio-button
               value="1"
               [disabled]="!form.controls['isExamRecommendation'].value"
@@ -334,35 +362,43 @@
       </app-form-wrapper>
     </section>
 
-    <section class="form-section">
-      <mat-accordion class="example-headers-align" multi>
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title>{{ "additionalExamInformation" | translate }}</mat-panel-title>
-          </mat-expansion-panel-header>
-          <ul>
-            @for (text of addExamInfoCambridge; track text) {
-              <li>
-                <p>{{ text }}</p>
-              </li>
-            }
-          </ul>
-        </mat-expansion-panel>
-      </mat-accordion>
-    </section>
+    <!--
+      Two small closing sections side by side: a collapsed reference panel and a
+      single select. Each keeps its own section — the accordion is read-only
+      boilerplate and the signature is a form control, so folding them into one
+      card would claim a relationship they do not have.
+    -->
+    <div class="section-row section-row--halves">
+      <section class="form-section">
+        <mat-accordion class="example-headers-align" multi>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>{{ "additionalExamInformation" | translate }}</mat-panel-title>
+            </mat-expansion-panel-header>
+            <ul>
+              @for (text of addExamInfoCambridge; track text) {
+                <li>
+                  <p>{{ text }}</p>
+                </li>
+              }
+            </ul>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </section>
 
-    <section class="form-section">
-      <app-form-wrapper [sectionTitle]="'signature'">
-        <div class="field-row">
-          <app-select
-            class="field-full"
-            formControlName="signature"
-            [label]="'teacher'"
-            [itemList]="teachers"
-          ></app-select>
-        </div>
-      </app-form-wrapper>
-    </section>
+      <section class="form-section">
+        <app-form-wrapper [sectionTitle]="'signature'">
+          <div class="field-row">
+            <app-select
+              class="field-full"
+              formControlName="signature"
+              [label]="'teacher'"
+              [itemList]="teachers"
+            ></app-select>
+          </div>
+        </app-form-wrapper>
+      </section>
+    </div>
 
     <div class="generate-btn">
       <app-button

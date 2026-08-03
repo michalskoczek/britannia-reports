@@ -24,6 +24,73 @@
   }
 }
 
+// A row of whole SECTIONS, as opposed to `.field-row`, which is a row of controls
+// inside one section.
+//
+// The distinction is the point: every child keeps its own `<section>`, its own
+// `app-form-wrapper`, its own card and title. Sections are placed beside each
+// other, never merged — one card holding three unrelated groups would claim they
+// are one setting with three parts, and the field-domain boundary the picker and
+// the template panel rest on would stop being visible on screen.
+//
+// Each child carries `.form-section`'s own `margin-top`, so a wrapped row keeps
+// the same vertical rhythm as the stacked sections around it.
+.section-row {
+  @include form-row;
+
+  > .form-section {
+    flex: 0 1 auto;
+    // Without this a long select label makes the column refuse to shrink and the
+    // row overflows instead of wrapping.
+    min-width: 0;
+  }
+}
+
+// `form-col` carries its own collapse to full width below the tablet breakpoint.
+.section-row--thirds > .form-section {
+  @include form-col(3);
+}
+
+.section-row--halves > .form-section {
+  @include form-col(2);
+}
+
+// Deliberately unequal, so `form-col` — which only sizes equal columns — does not
+// apply. The widths are written out with the same gap-subtraction it uses:
+// `(100% - gap)` is what the two columns actually share, and splitting that
+// 20/80 leaves the row exactly full.
+//
+// The scale table is a two-column reference a teacher reads while filling the
+// six mark selects beside it; a fifth of the row is enough for it and the selects
+// need the rest.
+.section-row--grades {
+  > .section-col-narrow {
+    width: calc((100% - #{ds.$distance-16}) * 0.2);
+  }
+
+  > .section-col-wide {
+    width: calc((100% - #{ds.$distance-16}) * 0.8);
+  }
+
+  // Written out rather than inherited, because these two are not `form-col`s.
+  // Must stay below the widths above — same specificity, so source order decides.
+  @include ds.breakpoint-max-tablet() {
+    > .form-section {
+      width: 100%;
+    }
+  }
+}
+
+// `mat-radio-group` lays its buttons out inline. Stacking is for options that are
+// whole sentences, or that sit in a column too narrow to hold two of them.
+.radio-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: ds.$distance-8;
+  width: 100%;
+}
+
 // The percentage-to-grade reference table. Not a form, so it takes a bare `app-section-title` above a
 // card rather than an `app-form-wrapper` — the same composition both Teddy Eddie tables use.
 .scale-wrapper {
