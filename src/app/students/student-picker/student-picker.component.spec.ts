@@ -157,6 +157,21 @@ describe('StudentPickerComponent', () => {
 
   const submitQuickAdd = async (): Promise<void> => click('.student-picker-quick-add-submit button');
 
+  /**
+   * Enter on the first element matching `selector` inside the quick-add area.
+   *
+   * The handler is bound to the whole form element, so what it does depends on
+   * where the key came from — which makes the event target the thing under test
+   * rather than an implementation detail.
+   */
+  const enterOn = async (selector: string): Promise<void> => {
+    const host: HTMLElement = fixture.nativeElement.querySelector('.student-picker-quick-add');
+
+    host.querySelector(selector)!.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+
+    await settle();
+  };
+
   const text = (selector: string): string | null => {
     const element: HTMLElement | null = fixture.nativeElement.querySelector(selector);
 
@@ -238,17 +253,21 @@ describe('StudentPickerComponent', () => {
       expect(optionLabels()).toEqual(['Jan Kowalski']);
     });
 
-    it('loads on mount even when the roster was already cached', async () => {
-      // The recorded call, against the cheaper `hasFreshRoster()` branch the
-      // roster uses: a student added at `/students` and then picked in the same
-      // sitting has to be on the list, and the tab remounts on every visit.
+    it('does not read the collection again when the roster is already cached', async () => {
+      // The shell mounts this tab through `NgComponentOutlet`, so it is
+      // re-created on every tab switch. The service cache outlives it and is
+      // written by `create` / `update` / `remove`, so a remount is not evidence
+      // that anything changed — and a read per visit is a real cost against the
+      // Spark budget. Retry is the explicit refresh.
       gateway.list.and.resolveTo([stored('jan', JAN)]);
 
       await render();
       expect(gateway.list).toHaveBeenCalledTimes(1);
 
       await render();
-      expect(gateway.list).toHaveBeenCalledTimes(2);
+      expect(gateway.list).toHaveBeenCalledTimes(1);
+      // Still on screen, served from the cache rather than from a second read.
+      expect(optionLabels()).toEqual(['Jan Kowalski']);
     });
   });
 
@@ -454,6 +473,56 @@ describe('StudentPickerComponent', () => {
       expect(gateway.list).toHaveBeenCalledTimes(2);
       expect(optionLabels()).toEqual(['Jan Kowalski', 'Ola Nowak']);
       expect(selectedId()).toBe('new-id');
+    });
+
+    it('ignores Enter from the selects, which open their panel on it', async () => {
+      await render();
+
+      // `class` is optional, so this student would pass `validate` and be created
+      // half-finished. `mat-select` opens its panel on Enter and does not stop
+      // the event, so an unfiltered handler would submit while the dropdown was
+      // opening — and `mat-select`'s own `preventDefault` is what keeps the
+      // report's form from submitting once this handler declines to act.
+      await openQuickAdd({ studentName: 'Ola Nowak', sex: Sex.FEMALE });
+      await enterOn('mat-select');
+
+      expect(gateway.create).not.toHaveBeenCalled();
+      expect(applied).toEqual([]);
+
+      // The same key in a text field still saves, which is the whole point of the
+      // handler.
+      await enterOn('input');
+
+      expect(gateway.create).toHaveBeenCalledTimes(1);
+      expect(applied).toEqual([OLA]);
+    });
+
+    it('creates one student when Enter is pressed twice during the round-trip', async () => {
+      let releaseCreate!: (id: string) => void;
+
+      gateway.create.and.returnValue(
+        new Promise<string>((resolve: (id: string) => void) => {
+          releaseCreate = resolve;
+        }),
+      );
+
+      await render();
+
+      await openQuickAdd({ studentName: 'Ola Nowak', sex: Sex.FEMALE });
+
+      // Both before the create resolves — the buttons carry `[disabled]`, but
+      // Enter reaches the method directly and cannot see it. `StudentsService`
+      // has no uniqueness check, so a second write would be a second child.
+      await enterOn('input');
+      await enterOn('input');
+
+      expect(gateway.create).toHaveBeenCalledTimes(1);
+
+      releaseCreate('new-id');
+      await settle();
+
+      expect(gateway.create).toHaveBeenCalledTimes(1);
+      expect(applied).toEqual([OLA]);
     });
   });
 });

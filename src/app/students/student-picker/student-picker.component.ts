@@ -171,14 +171,23 @@ export class StudentPickerComponent implements OnInit {
    * the session stops being `resolving` — so the uid the service needs is
    * already known by the time this runs.
    *
-   * Loads unconditionally rather than skipping on `hasFreshRoster()`, unlike
-   * `StudentRosterComponent`. The recorded call: a teacher who just added a
-   * student at `/students` and came back to write their report must see them,
-   * and the tab remounts on every visit. The cost is one collection read per
-   * visit against the Spark budget; if it bites, `hasFreshRoster()` is the
-   * two-line change here.
+   * Skips the read when the roster is already cached, the same call
+   * `StudentRosterComponent.ngOnInit` makes. This started as an unconditional
+   * load, justified by "a teacher who just added a student at `/students` and
+   * came back must see them" — but that case never needed the read:
+   * `StudentsService` is `providedIn: 'root'`, so its cache outlives the route
+   * change, and `create` / `update` / `remove` each write it, which is exactly
+   * what `hasFreshRoster()` reports on. Meanwhile the shell mounts this tab
+   * through `NgComponentOutlet`, so it is re-created on every tab switch and the
+   * unconditional version spent a full-collection read each time against the
+   * Spark budget. What is genuinely given up is cross-device and cross-tab
+   * freshness; retry is the explicit refresh, as it is on the roster.
    */
   public ngOnInit(): void {
+    if (this.studentsService.hasFreshRoster()) {
+      return;
+    }
+
     void this.reload();
   }
 
@@ -237,6 +246,14 @@ export class StudentPickerComponent implements OnInit {
    * roster without being the one this half-written report is about.
    */
   protected async submitQuickAdd(): Promise<void> {
+    // The buttons carry `[disabled]="saving()"`, but Enter reaches this method
+    // directly and would not see it. `StudentsService` has no uniqueness check
+    // by design — two children may share a name — so a second Enter during the
+    // `create()` round-trip writes a second document rather than being rejected.
+    if (this.saving()) {
+      return;
+    }
+
     const identity: StudentIdentity = readStudentForm(this.quickAddForm);
     const localFailure: StudentsFailure | null = this.studentsService.validate(identity);
 
@@ -307,8 +324,20 @@ export class StudentPickerComponent implements OnInit {
    * submit handler downloads a PDF — so an unhandled Enter in either quick-add
    * text field generates a report instead of adding a student. The same trap
    * `TemplatePanelComponent.onNameEnter` documents at its own field.
+   *
+   * Bound to the whole form element, so it has to filter: the two `app-select`s
+   * are inside it too, and `mat-select` opens its panel on Enter with a
+   * `preventDefault()` but no `stopPropagation()`. Without the guard, Enter on
+   * the closed `class` select would submit a student the teacher had not
+   * finished — created, and applied to the report, while the dropdown opens on
+   * top of it. Leaving that Enter alone is safe precisely because `mat-select`
+   * has already suppressed the browser's implicit submit.
    */
   protected onQuickAddEnter(event: Event): void {
+    if (!(event.target instanceof HTMLInputElement)) {
+      return;
+    }
+
     event.preventDefault();
 
     void this.submitQuickAdd();

@@ -162,6 +162,14 @@ export class StudentRosterComponent implements OnInit {
 
   /** One handler for both modes — `editingId` is what decides which. */
   protected async submit(): Promise<void> {
+    // `(ngSubmit)` fires on Enter as well as on the button, and Enter does not
+    // see the button's `[disabled]="saving()"`. Without uniqueness in
+    // `StudentsService` a second submit during the round-trip writes a second
+    // document instead of being rejected.
+    if (this.saving()) {
+      return;
+    }
+
     const identity: StudentIdentity = readStudentForm(this.form);
     const localFailure: StudentsFailure | null = this.studentsService.validate(identity);
 
