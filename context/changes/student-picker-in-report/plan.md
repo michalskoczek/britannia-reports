@@ -796,14 +796,14 @@ stay at 1, and every student written by `S-03` is readable by this slice unchang
 
 #### Automated
 
-- [x] 6.1 Firestore rules tests still pass
-- [x] 6.2 Production build succeeds and `dist/browser/index.html` exists
-- [x] 6.3 `firebase deploy --only hosting` exits 0
+- [x] 6.1 Firestore rules tests still pass — 9982a38
+- [x] 6.2 Production build succeeds and `dist/browser/index.html` exists — 9982a38
+- [x] 6.3 `firebase deploy --only hosting` exits 0 — 9982a38
 
 #### Manual
 
-- [x] 6.4 Production sign-in, pick, template apply, quick-add, and PDF download all work
-- [x] 6.5 A second seeded account's picker lists only its own students in production
+- [x] 6.4 Production sign-in, pick, template apply, quick-add, and PDF download all work — 9982a38
+- [x] 6.5 A second seeded account's picker lists only its own students in production — 9982a38
 
 ### PDF fidelity check
 
