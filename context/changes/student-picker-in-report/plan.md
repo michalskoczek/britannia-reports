@@ -780,30 +780,30 @@ stay at 1, and every student written by `S-03` is readable by this slice unchang
 
 #### Automated
 
-- [x] 5.1 Unit tests pass
-- [x] 5.2 Linting passes
-- [x] 5.3 Production build type-checks
-- [x] 5.4 Development build type-checks
+- [x] 5.1 Unit tests pass — 4ddf834
+- [x] 5.2 Linting passes — 4ddf834
+- [x] 5.3 Production build type-checks — 4ddf834
+- [x] 5.4 Development build type-checks — 4ddf834
 
 #### Manual
 
-- [x] 5.5 The full flow runs against the emulators: pick, template in both orders, quick-add, PDF
-- [x] 5.6 One male and one female PDF read correctly and match the reference layout by eye
-- [x] 5.7 A second seeded account's picker lists only its own students
-- [x] 5.8 `src/CLAUDE.md`, the roadmap, and the PRD agree with what shipped
+- [x] 5.5 The full flow runs against the emulators: pick, template in both orders, quick-add, PDF — 4ddf834
+- [x] 5.6 One male and one female PDF read correctly and match the reference layout by eye — 4ddf834
+- [x] 5.7 A second seeded account's picker lists only its own students — 4ddf834
+- [x] 5.8 `src/CLAUDE.md`, the roadmap, and the PRD agree with what shipped — 4ddf834
 
 ### Phase 6: Release
 
 #### Automated
 
-- [ ] 6.1 Firestore rules tests still pass
-- [ ] 6.2 Production build succeeds and `dist/browser/index.html` exists
-- [ ] 6.3 `firebase deploy --only hosting` exits 0
+- [x] 6.1 Firestore rules tests still pass
+- [x] 6.2 Production build succeeds and `dist/browser/index.html` exists
+- [x] 6.3 `firebase deploy --only hosting` exits 0
 
 #### Manual
 
-- [ ] 6.4 Production sign-in, pick, template apply, quick-add, and PDF download all work
-- [ ] 6.5 A second seeded account's picker lists only its own students in production
+- [x] 6.4 Production sign-in, pick, template apply, quick-add, and PDF download all work
+- [x] 6.5 A second seeded account's picker lists only its own students in production
 
 ### PDF fidelity check
 
