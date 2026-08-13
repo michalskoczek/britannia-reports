@@ -506,14 +506,14 @@ default suite; keep the count driven by distinct reachable states, not by permut
 
 #### Automated
 
-- [ ] 2.1 Year-end spec passes
-- [ ] 2.2 Full suite passes
-- [ ] 2.3 Lint clean
+- [x] 2.1 Year-end spec passes
+- [x] 2.2 Full suite passes
+- [x] 2.3 Lint clean
 
 #### Manual
 
-- [ ] 2.4 Failure observed inside pdfmake (`body[0].length`) before the fix
-- [ ] 2.5 `year-maximal` still renders its six remaining rows
+- [x] 2.4 Failure observed inside pdfmake (`body[0].length`) before the fix
+- [x] 2.5 `year-maximal` still renders its six remaining rows
 
 ### Phase 3: Reachability sweep across the other three reports
 

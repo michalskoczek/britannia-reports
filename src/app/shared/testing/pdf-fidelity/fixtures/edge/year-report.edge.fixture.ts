@@ -23,4 +23,23 @@ export const yearEdgeFixtures: ReportFixture<YearReportComponent>[] = [
       // Intentionally empty. Opening the year-end tab and clicking download is the whole state.
     },
   },
+  {
+    id: 'year-all-details-deleted',
+    label: 'Year-end report with every row of the language-details table suppressed',
+    apply(component: YearReportComponent): void {
+      // The seven rows of `getBodyInSkills` are independently suppressible and nothing forces a
+      // header, so ticking all seven leaves `table.body` empty. Each control is an ordinary
+      // `mat-checkbox` defaulting to false (`year-report.component.html`), so this is the state the
+      // UI produces — no bypass, no developer tools.
+      component.form.patchValue({
+        eofEvaluationDelete: true,
+        frequencyDelete: true,
+        certificationPurposeOnThisYearDelete: true,
+        readinessToContinueOnNextLevelDelete: true,
+        examRecommendationInTableDelete: true,
+        parentDecisionDelete: true,
+        recommendationInNextYearInTableDelete: true,
+      });
+    },
+  },
 ];
