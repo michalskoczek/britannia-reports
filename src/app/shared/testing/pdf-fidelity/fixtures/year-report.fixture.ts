@@ -8,9 +8,12 @@ import { ReportFixture } from '../report-fixture';
  * Recorded states for the end-of-school-year report.
  *
  * The `class` control holds the whole `{ label, value }` object here, and the PDF builder reads
- * `form.value.class.value` (`year-report.component.ts:409`). Leaving it null throws before pdfmake is
- * ever called, which is why even the minimal fixture sets it. This differs from the trimester/semester
- * report, whose `class` control holds a plain string.
+ * `form.value.class.value` (`year-report.component.ts:409`). This differs from the trimester/semester
+ * report, whose `class` control holds a plain string, so the builder reads one level deeper here.
+ *
+ * Both fixtures below set `class`. That is a property of the states they record, not a workaround:
+ * leaving it null used to throw before pdfmake was ever called, and no longer does. The null case is
+ * covered by `year-untouched` in `edge/year-report.edge.fixture.ts`.
  *
  * `S-05b` moved that binding out of the template: the field is now `<app-select [itemList]="classOptions">`
  * (`year-report.component.html:21-27`), and the option value comes from `[value]="item.value"` inside the

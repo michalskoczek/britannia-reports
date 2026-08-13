@@ -6,6 +6,7 @@ import { FormArray, FormGroup } from '@angular/forms';
 import { YearReportComponent } from './year-report.component';
 import { translateTestingImports } from '../shared/testing/translate-testing';
 import { yearFixtures } from '../shared/testing/pdf-fidelity/fixtures/year-report.fixture';
+import { yearEdgeFixtures } from '../shared/testing/pdf-fidelity/fixtures/edge/year-report.edge.fixture';
 import { capturePdfDefinition, renderToBlob } from '../shared/testing/pdf-fidelity/render-pdf';
 
 describe('YearReportComponent — PDF fidelity smoke', () => {
@@ -33,6 +34,54 @@ describe('YearReportComponent — PDF fidelity smoke', () => {
   });
 
   yearFixtures.forEach((reportFixture) => {
+    it(`produces a renderable PDF for "${reportFixture.id}"`, async () => {
+      reportFixture.apply(component);
+
+      const definition = capturePdfDefinition(() => component.generatePDF(component.form));
+
+      expect(definition).toBeTruthy();
+
+      const blob = await renderToBlob(definition);
+
+      expect(blob.size).toBeGreaterThan(0);
+      expect(blob.type).toBe('application/pdf');
+      expect(await blob.slice(0, 4).text()).toBe('%PDF');
+    });
+  });
+});
+
+/**
+ * Risk #1 of `context/foundation/test-plan.md`: a teacher fills a report, clicks download, and no PDF
+ * appears because the builder throws on input they could legitimately enter.
+ *
+ * The assertion has to RENDER, not just capture. `capturePdfDefinition` alone would pass over any
+ * failure that happens inside pdfmake's own measurement pass — the document definition builds fine
+ * there and only `renderToBlob` reaches the throw.
+ */
+describe('YearReportComponent — reachable edge states', () => {
+  let component: YearReportComponent;
+  let fixture: ComponentFixture<YearReportComponent>;
+  let originalTimeout: number;
+
+  beforeEach(async () => {
+    originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+
+    await TestBed.configureTestingModule({
+      imports: [YearReportComponent, ...translateTestingImports],
+      providers: [provideNoopAnimations(), provideNativeDateAdapter()],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(YearReportComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
+  });
+
+  yearEdgeFixtures.forEach((reportFixture) => {
     it(`produces a renderable PDF for "${reportFixture.id}"`, async () => {
       reportFixture.apply(component);
 

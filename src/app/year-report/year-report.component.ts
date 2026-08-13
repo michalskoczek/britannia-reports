@@ -406,7 +406,10 @@ export class YearReportComponent implements OnInit {
                 { text: 'Data', style: 'tableHeader' },
                 { text: `${date}` },
                 { text: 'Klasa', style: 'tableHeader' },
-                { text: `${form.value.class.value}` },
+                // This form has no validators and no submit gate, so `class` is null on every
+                // untouched download. Guarded to the null case only: a set `class` renders exactly
+                // as before.
+                { text: form.value.class ? `${form.value.class.value}` : '' },
               ],
               [
                 { text: 'Lektor', style: 'tableHeader' },
