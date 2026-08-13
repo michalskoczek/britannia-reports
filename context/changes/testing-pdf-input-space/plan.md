@@ -493,14 +493,14 @@ default suite; keep the count driven by distinct reachable states, not by permut
 
 #### Automated
 
-- [x] 1.1 Year-end spec passes
-- [x] 1.2 Full suite passes
-- [x] 1.3 Lint clean
+- [x] 1.1 Year-end spec passes — ac2cead
+- [x] 1.2 Full suite passes — ac2cead
+- [x] 1.3 Lint clean — ac2cead
 
 #### Manual
 
-- [x] 1.4 Edge test observed red before the guard, green after
-- [x] 1.5 Guard reading confirms output unchanged for non-null `class`
+- [x] 1.4 Edge test observed red before the guard, green after — ac2cead
+- [x] 1.5 Guard reading confirms output unchanged for non-null `class` — ac2cead
 
 ### Phase 2: The empty year-end detail table
 
