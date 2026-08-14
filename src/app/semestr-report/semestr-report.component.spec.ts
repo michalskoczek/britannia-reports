@@ -127,6 +127,48 @@ describe('SemestrReportComponent — reachable edge states', () => {
 });
 
 /**
+ * The premise the edge fixtures rest on.
+ *
+ * `semestr-report.edge.fixture.ts` sets the nine required controls as its floor and gives the reason
+ * in prose: those nine carry validators, and the download button is `[disabled]="form.invalid"`
+ * (`semestr-report.component.html:408`), so an untouched form is not downloadable. Every spec above
+ * calls `generatePDF` directly and walks straight past that gate — which means nothing above would
+ * notice if the gate went away. The floor would quietly become a state a teacher *can* reach, and the
+ * suite would stay green while the input space widened underneath it.
+ *
+ * These two assertions are what make that noticeable. They read the *rendered* control rather than the
+ * binding text, so it is removing the disabled behaviour that turns them red, not respelling it.
+ */
+describe('SemestrReportComponent — the submit gate', () => {
+  let component: SemestrReportComponent;
+  let fixture: ComponentFixture<SemestrReportComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [SemestrReportComponent, ...translateTestingImports],
+      providers: [provideNoopAnimations(), provideNativeDateAdapter(), ...semestrReportTestingProviders()],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(SemestrReportComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('starts invalid on an untouched form', () => {
+    // `reportType` defaults to `TRIMESTER` and so satisfies its own validator from the start; the
+    // other eight are what hold this.
+    expect(component.form.invalid).toBeTrue();
+  });
+
+  it('renders the download control disabled while the form is invalid', () => {
+    const download = fixture.nativeElement.querySelector('.generate-btn button') as HTMLButtonElement | null;
+
+    expect(download).not.toBeNull();
+    expect(download!.disabled).toBeTrue();
+  });
+});
+
+/**
  * The form model is frozen, and the freeze has now survived two changes.
  *
  * It was written for `report-design-refresh` (roadmap `S-05b`), which rewrote all three older report

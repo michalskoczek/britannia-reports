@@ -519,24 +519,24 @@ default suite; keep the count driven by distinct reachable states, not by permut
 
 #### Automated
 
-- [x] 3.1 All four report specs pass
-- [x] 3.2 Lint clean
+- [x] 3.1 All four report specs pass — 90c364e
+- [x] 3.2 Lint clean — 90c364e
 
 #### Manual
 
-- [x] 3.3 Every changed builder line has a named failing test behind it
-- [x] 3.4 Each lean fixture checked against its form's validators
+- [x] 3.3 Every changed builder line has a named failing test behind it — 90c364e
+- [x] 3.4 Each lean fixture checked against its form's validators — 90c364e
 
 ### Phase 4: Pin the gates that make "untouched" unreachable
 
 #### Automated
 
-- [ ] 4.1 Both gated-form specs pass
-- [ ] 4.2 Lint clean
+- [x] 4.1 Both gated-form specs pass
+- [x] 4.2 Lint clean
 
 #### Manual
 
-- [ ] 4.3 Removing `[disabled]` turns the new test red
+- [x] 4.3 Removing `[disabled]` turns the new test red
 
 ### Phase 5: Input classes with no documentary basis
 

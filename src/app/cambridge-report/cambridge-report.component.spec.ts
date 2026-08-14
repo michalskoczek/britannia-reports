@@ -104,6 +104,46 @@ describe('CambridgeReportComponent — reachable edge states', () => {
 });
 
 /**
+ * The premise the edge fixtures rest on.
+ *
+ * `cambridge-report.edge.fixture.ts` sets `studentName` as its floor and gives the reason in prose:
+ * that control carries the form's one validator, and the download button is `[disabled]="form.invalid"`
+ * (`cambridge-report.component.html:285`), so an untouched form is not downloadable. Every spec above
+ * calls `generatePDF` directly and walks straight past that gate — which means nothing above would
+ * notice if the gate went away. The floor would quietly become a state a teacher *can* reach, and the
+ * suite would stay green while the input space widened underneath it.
+ *
+ * These two assertions are what make that noticeable. They read the *rendered* control rather than the
+ * binding text, so it is removing the disabled behaviour that turns them red, not respelling it.
+ */
+describe('CambridgeReportComponent — the submit gate', () => {
+  let component: CambridgeReportComponent;
+  let fixture: ComponentFixture<CambridgeReportComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [CambridgeReportComponent, ...translateTestingImports],
+      providers: [provideNoopAnimations(), provideNativeDateAdapter()],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(CambridgeReportComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('starts invalid on an untouched form', () => {
+    expect(component.form.invalid).toBeTrue();
+  });
+
+  it('renders the download control disabled while the form is invalid', () => {
+    const download = fixture.nativeElement.querySelector('.generate-btn button') as HTMLButtonElement | null;
+
+    expect(download).not.toBeNull();
+    expect(download!.disabled).toBeTrue();
+  });
+});
+
+/**
  * The form model is frozen for the duration of the `report-design-refresh` change (roadmap `S-05b`).
  * See the matching block in `semestr-report.component.spec.ts` for why this exists.
  *
