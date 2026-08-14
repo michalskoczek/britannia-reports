@@ -1,6 +1,7 @@
 import { CambridgeReportComponent } from '../../../../../cambridge-report/cambridge-report.component';
 import { ExamTypes } from '../../../../enum/exam-type.enum';
 import { ReportFixture } from '../../report-fixture';
+import { LONG_FREE_TEXT, NON_ASCII_STUDENT_NAME } from './hostile-text';
 
 /**
  * Reachable-but-hostile states for the Cambridge mock-exam report.
@@ -57,6 +58,37 @@ export const cambridgeEdgeFixtures: ReportFixture<CambridgeReportComponent>[] = 
       });
 
       component.addNextExamTerm('listeningA2B1Array');
+    },
+  },
+  {
+    id: 'cambridge-long-free-text',
+    label:
+      'Cambridge report with two long comments and a long signature line — asserts only that a PDF is produced, see `hostile-text.ts` for why nothing stronger is claimed',
+    apply(component: CambridgeReportComponent): void {
+      // `comments` is the only `FormArray` of free text in the four reports that a template actually
+      // binds (`cambridge-report.component.html:164-181`), and rows are added through the
+      // component's own `addNextComment` — the handler the "add comment" control calls — so this
+      // reaches the state the way the UI does. Two rows rather than one because the second is what
+      // shows the long text repeating down the page rather than being a one-off block.
+      component.addNextComment();
+      component.addNextComment();
+
+      component.form.patchValue({
+        studentName: 'Jan Kowalski',
+        comments: [LONG_FREE_TEXT, LONG_FREE_TEXT],
+        signature: LONG_FREE_TEXT,
+      });
+    },
+  },
+  {
+    id: 'cambridge-non-ascii-name',
+    label:
+      'Cambridge report for a student whose name carries Polish diacritics — asserts only that a PDF is produced, not that any glyph rendered',
+    apply(component: CambridgeReportComponent): void {
+      // The name also leaves the builder through the download filename here —
+      // `form.value.studentName.split(' ').join('-')` (`cambridge-report.component.ts:424`) — so a
+      // non-ASCII name reaches one surface it does not reach on the year-end report.
+      component.form.patchValue({ studentName: NON_ASCII_STUDENT_NAME });
     },
   },
 ];

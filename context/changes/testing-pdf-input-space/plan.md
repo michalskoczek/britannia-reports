@@ -531,23 +531,23 @@ default suite; keep the count driven by distinct reachable states, not by permut
 
 #### Automated
 
-- [x] 4.1 Both gated-form specs pass
-- [x] 4.2 Lint clean
+- [x] 4.1 Both gated-form specs pass — 77d95e2
+- [x] 4.2 Lint clean — 77d95e2
 
 #### Manual
 
-- [x] 4.3 Removing `[disabled]` turns the new test red
+- [x] 4.3 Removing `[disabled]` turns the new test red — 77d95e2
 
 ### Phase 5: Input classes with no documentary basis
 
 #### Automated
 
-- [ ] 5.1 Full suite passes
-- [ ] 5.2 Lint clean
+- [x] 5.1 Full suite passes
+- [x] 5.2 Lint clean
 
 #### Manual
 
-- [ ] 5.3 One long-text PDF opened by hand and observed
+- [x] 5.3 One long-text PDF opened by hand and observed
 
 ### Phase 6: Documentation and plan sync
 

@@ -3,6 +3,7 @@ import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { TeddyEddieReportComponent } from '../../../../../teddy-eddie-report/teddy-eddie-report.component';
 import { ageTE } from '../../../../development-path';
 import { ReportFixture } from '../../report-fixture';
+import { LONG_FREE_TEXT, NON_ASCII_STUDENT_NAME } from './hostile-text';
 
 /**
  * Reachable-but-hostile states for the Teddy Eddie development-path report.
@@ -56,6 +57,40 @@ export const teddyEddieEdgeFixtures: ReportFixture<TeddyEddieReportComponent>[] 
       [component.teddyEddieArray, component.developmentLanguageSkillsArray].forEach((array: FormArray) => {
         array.controls.forEach((row: AbstractControl) => (row as FormGroup).patchValue({ shouldDeleteRow: true }));
       });
+    },
+  },
+  {
+    id: 'teddy-eddie-long-free-text',
+    label:
+      'Teddy Eddie report with long free text in the one control that accepts it — the name — asserting only that a PDF is produced, see `hostile-text.ts` for why nothing stronger is claimed',
+    apply(component: TeddyEddieReportComponent): void {
+      // `studentName` is this report's ENTIRE free-text surface, and that is worth stating because
+      // it is not obvious from the builder. Two things narrow it that far:
+      //
+      // - The builder reads `additionalComment` and `realizedMaterial`
+      //   (`teddy-eddie-report.component.ts:185,199`), but no template binds either — the form is
+      //   `studentName`, `age`, `date` (`teddy-eddie-form.component.html`) plus the two tables.
+      //   Setting them would record a state no teacher can produce.
+      // - The four `<input matInput>` cells in those tables (`schoolYear`, `studentsAge`,
+      //   `classInSchool`, `schoolExam`) are all constructed `disabled` and auto-populated
+      //   (`:96-111,128-135`), so they are read-outs, not entry points — and `patchValue` skips
+      //   disabled controls anyway, so a fixture aiming at them would silently do nothing.
+      //
+      // Nothing caps the name's length, so a paste into it is where this report's long-text class
+      // actually lives. `age` is picked so both tables exist and the text has a full document
+      // around it rather than an empty one.
+      component.form.patchValue({ age: ageTE[0].value, studentName: LONG_FREE_TEXT });
+      component.setTableTE(ageTE[0].value);
+    },
+  },
+  {
+    id: 'teddy-eddie-non-ascii-name',
+    label:
+      'Teddy Eddie report for a student whose name carries Polish diacritics — asserts only that a PDF is produced, not that any glyph rendered',
+    apply(component: TeddyEddieReportComponent): void {
+      // The builder reads `form.value.name` nowhere in this report, so `studentName` is the whole
+      // name surface.
+      component.form.patchValue({ studentName: NON_ASCII_STUDENT_NAME });
     },
   },
 ];

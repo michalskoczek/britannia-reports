@@ -1,5 +1,6 @@
 import { YearReportComponent } from '../../../../../year-report/year-report.component';
 import { ReportFixture } from '../../report-fixture';
+import { LONG_FREE_TEXT, NON_ASCII_STUDENT_NAME } from './hostile-text';
 
 /**
  * Reachable-but-hostile states for the end-of-school-year report.
@@ -40,6 +41,33 @@ export const yearEdgeFixtures: ReportFixture<YearReportComponent>[] = [
         parentDecisionDelete: true,
         recommendationInNextYearInTableDelete: true,
       });
+    },
+  },
+  {
+    id: 'year-long-free-text',
+    label:
+      'Year-end report with both free-text areas filled far past the space the layout reserves — asserts only that a PDF is produced, see `hostile-text.ts` for why nothing stronger is claimed',
+    apply(component: YearReportComponent): void {
+      // `realizedMaterial` (`year-report.component.html:102-109`) and `additionalComment`
+      // (`:281-287`) are this report's two `app-textarea` controls and the only free-text surface it
+      // has beyond the name and the signature line. Neither carries a `maxlength`, so pasting a
+      // term's worth of notes into either is an ordinary thing to do.
+      component.form.patchValue({
+        studentName: 'Jan Kowalski',
+        realizedMaterial: LONG_FREE_TEXT,
+        additionalComment: LONG_FREE_TEXT,
+      });
+    },
+  },
+  {
+    id: 'year-non-ascii-name',
+    label:
+      'Year-end report for a student whose name carries Polish diacritics — asserts only that a PDF is produced, not that any glyph rendered',
+    apply(component: YearReportComponent): void {
+      // Only `studentName` is set: this builder never reads `form.value.name`, and the year-end
+      // template binds no control by that name either, so patching it would record a state the UI
+      // cannot produce.
+      component.form.patchValue({ studentName: NON_ASCII_STUDENT_NAME });
     },
   },
 ];

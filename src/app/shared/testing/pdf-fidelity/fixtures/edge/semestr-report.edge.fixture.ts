@@ -10,6 +10,7 @@ import {
   vocabularyMarks,
 } from '../../../../marks';
 import { ReportFixture } from '../../report-fixture';
+import { LONG_FREE_TEXT, NON_ASCII_DISPLAY_NAME, NON_ASCII_STUDENT_NAME } from './hostile-text';
 
 /**
  * Reachable-but-hostile states for the trimester/semester report.
@@ -35,6 +36,25 @@ import { ReportFixture } from '../../report-fixture';
  * control's own stream and rewrites those six controls whenever it fires, so a fixture that set the
  * marks first would record a state the remap immediately overwrote.
  */
+
+/**
+ * The nine required controls, in the order the remap needs them. Every fixture below starts from
+ * this — a state below it cannot be downloaded, so there is no such thing as a semester/trimester
+ * edge fixture that does not contain it. Spread it first so `sex` keeps its position ahead of the
+ * six marks.
+ */
+const REQUIRED_FLOOR = {
+  reportType: ReportType.TRIMESTER,
+  studentName: 'Jan Kowalski',
+  sex: Sex.MALE,
+  pronunciation: pronunciationMarks[2].value,
+  vocabulary: vocabularyMarks[2].value,
+  prepareToLecture: prepareToLectureMarks[2].value,
+  homeworks: homeworksMarks[2].value,
+  involvement: involvementMarks[2].value,
+  behaviour: behaviourMarks[2].value,
+};
+
 export const semestrEdgeFixtures: ReportFixture<SemestrReportComponent>[] = [
   {
     id: 'semestr-required-only',
@@ -44,17 +64,7 @@ export const semestrEdgeFixtures: ReportFixture<SemestrReportComponent>[] = [
       // `generatePDF` feeds it to `changeXToStudentName`, which reads `textValue[0]` and substitutes
       // — so this is the state that goes red if that substitution ever stops tolerating an unset
       // name. `semestr-minimal` would stay green through exactly that regression.
-      component.form.patchValue({
-        reportType: ReportType.TRIMESTER,
-        studentName: 'Jan Kowalski',
-        sex: Sex.MALE,
-        pronunciation: pronunciationMarks[2].value,
-        vocabulary: vocabularyMarks[2].value,
-        prepareToLecture: prepareToLectureMarks[2].value,
-        homeworks: homeworksMarks[2].value,
-        involvement: involvementMarks[2].value,
-        behaviour: behaviourMarks[2].value,
-      });
+      component.form.patchValue({ ...REQUIRED_FLOOR });
     },
   },
   {
@@ -65,17 +75,41 @@ export const semestrEdgeFixtures: ReportFixture<SemestrReportComponent>[] = [
       // (`semestr-report.component.html:302`) and it is what un-disables the three radio buttons
       // beneath it. Ticking it and downloading without choosing one of them renders the whole
       // recommendation table with all three checkmark images empty — one click from the floor above.
+      component.form.patchValue({ ...REQUIRED_FLOOR, isExamRecommendation: true });
+    },
+  },
+  {
+    id: 'semestr-long-free-text',
+    label:
+      'Trimester report with both free-text areas and the signature line filled far past the space reserved for them — asserts only that a PDF is produced, see `hostile-text.ts` for why nothing stronger is claimed',
+    apply(component: SemestrReportComponent): void {
+      // `realizedMaterial` (`semestr-report.component.html:156-163`) and `additionalComment`
+      // (`:288-295`) are this form's two `app-textarea` controls; neither carries a `maxlength`, and
+      // neither is one of the nine validated controls, so any length reaches the builder. The
+      // additional-comment block is what makes this report's second page, so long text there is the
+      // case most likely to push the layout.
       component.form.patchValue({
-        reportType: ReportType.TRIMESTER,
-        studentName: 'Jan Kowalski',
-        sex: Sex.MALE,
-        pronunciation: pronunciationMarks[2].value,
-        vocabulary: vocabularyMarks[2].value,
-        prepareToLecture: prepareToLectureMarks[2].value,
-        homeworks: homeworksMarks[2].value,
-        involvement: involvementMarks[2].value,
-        behaviour: behaviourMarks[2].value,
-        isExamRecommendation: true,
+        ...REQUIRED_FLOOR,
+        realizedMaterial: LONG_FREE_TEXT,
+        additionalComment: LONG_FREE_TEXT,
+        signature: LONG_FREE_TEXT,
+      });
+    },
+  },
+  {
+    id: 'semestr-non-ascii-name',
+    label:
+      'Trimester report for a student whose name carries Polish diacritics, in both name controls — asserts only that a PDF is produced, not that any glyph rendered',
+    apply(component: SemestrReportComponent): void {
+      // This is the one report that reads BOTH name controls: `studentName` heads the document and
+      // feeds the filename, while `name` is substituted into six mark sentences by
+      // `changeXToStudentName` (`semestr-report.component.ts:731,758`). `Jaś` is the PRD's own
+      // example for that second control (`prd.md:114`), so the substituted case is the one that
+      // matters here — a diacritic that fails inside a sentence fails six times over.
+      component.form.patchValue({
+        ...REQUIRED_FLOOR,
+        studentName: NON_ASCII_STUDENT_NAME,
+        name: NON_ASCII_DISPLAY_NAME,
       });
     },
   },
