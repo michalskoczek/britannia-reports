@@ -542,21 +542,21 @@ default suite; keep the count driven by distinct reachable states, not by permut
 
 #### Automated
 
-- [x] 5.1 Full suite passes
-- [x] 5.2 Lint clean
+- [x] 5.1 Full suite passes — a332d4f
+- [x] 5.2 Lint clean — a332d4f
 
 #### Manual
 
-- [x] 5.3 One long-text PDF opened by hand and observed
+- [x] 5.3 One long-text PDF opened by hand and observed — a332d4f
 
 ### Phase 6: Documentation and plan sync
 
 #### Automated
 
-- [ ] 6.1 Full suite passes
-- [ ] 6.2 Lint clean
+- [x] 6.1 Full suite passes
+- [x] 6.2 Lint clean
 
 #### Manual
 
-- [ ] 6.3 §6.1 usable for a fifth report type unaided
-- [ ] 6.4 No sentence in `test-plan.md` still describes the one-fixture-per-type shape
+- [x] 6.3 §6.1 usable for a fifth report type unaided
+- [x] 6.4 No sentence in `test-plan.md` still describes the one-fixture-per-type shape
