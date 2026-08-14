@@ -553,10 +553,10 @@ default suite; keep the count driven by distinct reachable states, not by permut
 
 #### Automated
 
-- [x] 6.1 Full suite passes
-- [x] 6.2 Lint clean
+- [x] 6.1 Full suite passes — a04d5c2
+- [x] 6.2 Lint clean — a04d5c2
 
 #### Manual
 
-- [x] 6.3 §6.1 usable for a fifth report type unaided
-- [x] 6.4 No sentence in `test-plan.md` still describes the one-fixture-per-type shape
+- [x] 6.3 §6.1 usable for a fifth report type unaided — a04d5c2
+- [x] 6.4 No sentence in `test-plan.md` still describes the one-fixture-per-type shape — a04d5c2
