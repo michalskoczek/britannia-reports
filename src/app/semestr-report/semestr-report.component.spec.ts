@@ -7,6 +7,7 @@ import { SemestrReportComponent } from './semestr-report.component';
 import { translateTestingImports } from '../shared/testing/translate-testing';
 import { semestrReportTestingProviders } from '../shared/testing/semestr-report-testing';
 import { semestrFixtures } from '../shared/testing/pdf-fidelity/fixtures/semestr-report.fixture';
+import { semestrEdgeFixtures } from '../shared/testing/pdf-fidelity/fixtures/edge/semestr-report.edge.fixture';
 import { capturePdfDefinition, renderToBlob } from '../shared/testing/pdf-fidelity/render-pdf';
 import { ReportTemplateFields } from '../model/report-template.interface';
 import { StudentIdentity } from '../model/student.interface';
@@ -56,6 +57,59 @@ describe('SemestrReportComponent — PDF fidelity smoke', () => {
   });
 
   semestrFixtures.forEach((reportFixture) => {
+    it(`produces a renderable PDF for "${reportFixture.id}"`, async () => {
+      reportFixture.apply(component);
+
+      const definition = capturePdfDefinition(() => component.generatePDF(component.form));
+
+      expect(definition).toBeTruthy();
+
+      const blob = await renderToBlob(definition);
+
+      expect(blob.size).toBeGreaterThan(0);
+      expect(blob.type).toBe('application/pdf');
+      expect(await blob.slice(0, 4).text()).toBe('%PDF');
+    });
+  });
+});
+
+/**
+ * Risk #1 of `context/foundation/test-plan.md`: a teacher fills a report, clicks download, and no PDF
+ * appears because the builder throws on input they could legitimately enter.
+ *
+ * The assertion has to RENDER, not just capture. `capturePdfDefinition` alone would pass over any
+ * failure that happens inside pdfmake's own measurement pass — the year-end report's empty detail
+ * table built a perfectly valid-looking definition and only `renderToBlob` reached the throw.
+ *
+ * There is deliberately no untouched-form case here. Nine controls are required and the download
+ * button is `[disabled]="form.invalid"`, so an untouched form is not downloadable; asserting it
+ * would only prove that this spec bypasses the gate, which it does. Phase 4's gate assertions are
+ * what hold that premise in place.
+ */
+describe('SemestrReportComponent — reachable edge states', () => {
+  let component: SemestrReportComponent;
+  let fixture: ComponentFixture<SemestrReportComponent>;
+  let originalTimeout: number;
+
+  beforeEach(async () => {
+    originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+
+    await TestBed.configureTestingModule({
+      imports: [SemestrReportComponent, ...translateTestingImports],
+      providers: [provideNoopAnimations(), provideNativeDateAdapter(), ...semestrReportTestingProviders()],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(SemestrReportComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
+  });
+
+  semestrEdgeFixtures.forEach((reportFixture) => {
     it(`produces a renderable PDF for "${reportFixture.id}"`, async () => {
       reportFixture.apply(component);
 

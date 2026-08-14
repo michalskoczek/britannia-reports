@@ -1,0 +1,62 @@
+import { CambridgeReportComponent } from '../../../../../cambridge-report/cambridge-report.component';
+import { ExamTypes } from '../../../../enum/exam-type.enum';
+import { ReportFixture } from '../../report-fixture';
+
+/**
+ * Reachable-but-hostile states for the Cambridge mock-exam report.
+ *
+ * Kept out of `cambridge-report.fixture.ts` for the same reason as the other edge modules: that
+ * array feeds the capture harness behind `docs/pdf-fidelity-check.md`, and edge states are not
+ * documents anyone reviews for layout.
+ *
+ * **Why `studentName` alone is the floor here.** `studentName` carries the form's one validator
+ * (`cambridge-report.component.ts:444`) and the download button is
+ * `[disabled]="form.invalid"` (`cambridge-report.component.html:285`), so a form with less than
+ * this cannot be submitted through the UI at all. A test for an untouched Cambridge form would
+ * therefore assert a state a teacher cannot reach — the specs call `generatePDF` directly and so
+ * walk straight past the gate — which breaks the `ReportFixture` contract at
+ * `report-fixture.ts:5-8`. Phase 4 pins that gate with its own assertions; do not lower this floor
+ * without going through it. (`generatePDF` also reads `form.value.studentName.split(' ')` for the
+ * filename, so it depends on that validator holding.)
+ */
+export const cambridgeEdgeFixtures: ReportFixture<CambridgeReportComponent>[] = [
+  {
+    id: 'cambridge-required-only',
+    label: 'Cambridge report with only the one required field filled — the validator floor, nothing below it is downloadable',
+    apply(component: CambridgeReportComponent): void {
+      // Not a copy of `cambridge-minimal`, which also sets `name` and `sex`. Neither of those
+      // carries a validator, so this is the state that goes red the moment the builder starts
+      // reading one of them the way it reads `class` — and `cambridge-minimal` would stay green
+      // through exactly that regression.
+      component.form.patchValue({ studentName: 'Jan Kowalski' });
+    },
+  },
+  {
+    id: 'cambridge-exam-type-without-terms',
+    label: 'Cambridge report with an exam type picked and no exam term added — the results table is absent from the content array entirely',
+    apply(component: CambridgeReportComponent): void {
+      // `chooseTableOfExam` returns a bare `[]` when every array for the chosen family is empty
+      // (`cambridge-report.component.ts:208`), and that `[]` sits at a content-array position. This
+      // is one select away from the fixture above, so it is the likeliest half-filled state of all.
+      component.form.patchValue({
+        studentName: 'Jan Kowalski',
+        typeOfExam: ExamTypes.A2_KEY,
+      });
+    },
+  },
+  {
+    id: 'cambridge-blank-exam-term',
+    label: 'Cambridge report with an exam term row added and left blank — date, score and result all unset',
+    apply(component: CambridgeReportComponent): void {
+      // `addNextExamTerm` is what the template's "add term" control calls, and every control in the
+      // pushed group starts null with no validator (`cambridge-report.component.ts:173-179`). A
+      // teacher who adds a row and then downloads before filling it reaches exactly this.
+      component.form.patchValue({
+        studentName: 'Jan Kowalski',
+        typeOfExam: ExamTypes.A2_KEY,
+      });
+
+      component.addNextExamTerm('listeningA2B1Array');
+    },
+  },
+];

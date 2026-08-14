@@ -506,26 +506,26 @@ default suite; keep the count driven by distinct reachable states, not by permut
 
 #### Automated
 
-- [x] 2.1 Year-end spec passes
-- [x] 2.2 Full suite passes
-- [x] 2.3 Lint clean
+- [x] 2.1 Year-end spec passes — b2d7620
+- [x] 2.2 Full suite passes — b2d7620
+- [x] 2.3 Lint clean — b2d7620
 
 #### Manual
 
-- [x] 2.4 Failure observed inside pdfmake (`body[0].length`) before the fix
-- [x] 2.5 `year-maximal` still renders its six remaining rows
+- [x] 2.4 Failure observed inside pdfmake (`body[0].length`) before the fix — b2d7620
+- [x] 2.5 `year-maximal` still renders its six remaining rows — b2d7620
 
 ### Phase 3: Reachability sweep across the other three reports
 
 #### Automated
 
-- [ ] 3.1 All four report specs pass
-- [ ] 3.2 Lint clean
+- [x] 3.1 All four report specs pass
+- [x] 3.2 Lint clean
 
 #### Manual
 
-- [ ] 3.3 Every changed builder line has a named failing test behind it
-- [ ] 3.4 Each lean fixture checked against its form's validators
+- [x] 3.3 Every changed builder line has a named failing test behind it
+- [x] 3.4 Each lean fixture checked against its form's validators
 
 ### Phase 4: Pin the gates that make "untouched" unreachable
 

@@ -6,6 +6,7 @@ import { FormArray, FormGroup } from '@angular/forms';
 import { CambridgeReportComponent } from './cambridge-report.component';
 import { translateTestingImports } from '../shared/testing/translate-testing';
 import { cambridgeFixtures } from '../shared/testing/pdf-fidelity/fixtures/cambridge-report.fixture';
+import { cambridgeEdgeFixtures } from '../shared/testing/pdf-fidelity/fixtures/edge/cambridge-report.edge.fixture';
 import { capturePdfDefinition, renderToBlob } from '../shared/testing/pdf-fidelity/render-pdf';
 
 describe('CambridgeReportComponent — PDF fidelity smoke', () => {
@@ -33,6 +34,59 @@ describe('CambridgeReportComponent — PDF fidelity smoke', () => {
   });
 
   cambridgeFixtures.forEach((reportFixture) => {
+    it(`produces a renderable PDF for "${reportFixture.id}"`, async () => {
+      reportFixture.apply(component);
+
+      const definition = capturePdfDefinition(() => component.generatePDF(component.form));
+
+      expect(definition).toBeTruthy();
+
+      const blob = await renderToBlob(definition);
+
+      expect(blob.size).toBeGreaterThan(0);
+      expect(blob.type).toBe('application/pdf');
+      expect(await blob.slice(0, 4).text()).toBe('%PDF');
+    });
+  });
+});
+
+/**
+ * Risk #1 of `context/foundation/test-plan.md`: a teacher fills a report, clicks download, and no PDF
+ * appears because the builder throws on input they could legitimately enter.
+ *
+ * The assertion has to RENDER, not just capture. `capturePdfDefinition` alone would pass over any
+ * failure that happens inside pdfmake's own measurement pass — the year-end report's empty detail
+ * table built a perfectly valid-looking definition and only `renderToBlob` reached the throw.
+ *
+ * There is deliberately no untouched-form case here. `studentName` is required and the download
+ * button is `[disabled]="form.invalid"`, so an untouched form is not downloadable; asserting it
+ * would only prove that this spec bypasses the gate, which it does. Phase 4's gate assertions below
+ * are what hold that premise in place.
+ */
+describe('CambridgeReportComponent — reachable edge states', () => {
+  let component: CambridgeReportComponent;
+  let fixture: ComponentFixture<CambridgeReportComponent>;
+  let originalTimeout: number;
+
+  beforeEach(async () => {
+    originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+
+    await TestBed.configureTestingModule({
+      imports: [CambridgeReportComponent, ...translateTestingImports],
+      providers: [provideNoopAnimations(), provideNativeDateAdapter()],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(CambridgeReportComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
+  });
+
+  cambridgeEdgeFixtures.forEach((reportFixture) => {
     it(`produces a renderable PDF for "${reportFixture.id}"`, async () => {
       reportFixture.apply(component);
 
