@@ -6,6 +6,12 @@ const angular = require('angular-eslint');
 
 module.exports = defineConfig([
   {
+    // Build artifacts, not source. `.angular/cache` holds Vite's prebundled deps, which carry
+    // inline eslint-disable comments for rules this config never defines — linting them fails
+    // with "Definition for rule ... was not found" on every run, drowning out real findings.
+    ignores: ['.angular/**', 'dist/**', 'docs/pdf-fidelity/captured/**', '.firebase/**'],
+  },
+  {
     files: ['**/*.ts'],
     extends: [
       eslint.configs.recommended,

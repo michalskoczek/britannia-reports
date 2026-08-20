@@ -1,0 +1,39 @@
+# Pre-commit quality gate — the layer behind the per-edit agent hooks in `.claude/settings.json`.
+#
+# It catches what per-edit hooks cannot see: manual edits, changes made outside the agent
+# session, and checks too slow to run on every keystroke.
+#
+# Design rule: this layer VERIFIES, it never REWRITES.
+# Auto-fixing belongs to the per-edit hook (`.claude/hooks/eslint-edited-file.js`), which runs
+# on a single file with nothing staged. Rewriting the working tree from a git hook is where
+# lefthook has open data-loss bugs with partially staged files (evilmartians/lefthook#1369,
+# #833): if the patch restore fails after a formatter touches a file, unstaged work is lost.
+# No `--fix`, no `stage_fixed:` here, and that whole class of failure cannot occur.
+#
+# Escape hatch for a genuine emergency: `LEFTHOOK=0 git commit ...`
+
+pre-commit:
+  parallel: true # typecheck (~8s) and lint (~2s) overlap, so the gate costs the slower one
+  jobs:
+    - name: typecheck
+      # Project-wide by nature: `tsc <file>` would drop tsconfig.json's options, so there is
+      # nothing to scope to {staged_files} here.
+      # Note this does NOT cover Angular templates — `strictTemplates` lives in
+      # angularCompilerOptions and is read by ngc/`ng build`, not by tsc.
+      run: npx tsc --noEmit
+
+    - name: lint
+      glob: '*.{ts,html}'
+      run: npx eslint {staged_files}
+
+    # Not enabled yet: 72 of 175 source files predate any Prettier enforcement, so this would
+    # block most commits on pre-existing formatting rather than on the change being made.
+    # To turn it on, first land a one-time `npx prettier --write .` as its own commit.
+    # - name: format
+    #   glob: '*.{ts,html,scss,json,md}'
+    #   run: npx prettier --check {staged_files}
+
+  # Nothing to gate on a merge or rebase — the content was already checked when it was authored.
+  skip:
+    - merge
+    - rebase
