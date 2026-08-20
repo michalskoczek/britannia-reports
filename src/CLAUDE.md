@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **PDF fidelity is a hard guardrail.** The four existing report types must produce visually identical PDFs before and after any change. When touching a `*-report.component.ts` file, do not modify the `pdfmake` document definition or its inputs unless the task explicitly requires it. When the task does require it, follow `docs/pdf-fidelity-check.md` — it names the recorded form inputs, the capture command, and the comparison checklist. `npm test` smoke-covers that every report type still renders a PDF; it asserts nothing about layout, so a green suite is not evidence of fidelity.
 
+There is exactly one alternative to running that procedure, and it is narrow. A guard that **changes behaviour only in states that throw today** makes every state that previously produced a PDF produce a byte-identical one, so there is nothing for a comparison to find. Claiming it requires stating the invariant in one sentence and showing the guard is no wider than the crashing state — a guard written wider breaks it silently, with a green suite either way. `context/foundation/test-plan.md` §6.6 records the conditions and the one change that has used this route (`testing-pdf-input-space`, which fixed two reachable crashes in the year-end builder). Anything you cannot argue that narrowly runs `docs/pdf-fidelity-check.md`.
+
 ## Project
 
 Britannia Reports is an Angular 20 single-page app that generates end-of-term and exam reports as PDFs for a language school. Each report type (Cambridge, semester/trimester, Teddy Eddie, year-end) has its own feature folder and produces a `pdfmake` document from a Reactive Forms data entry surface. UI is bilingual (PL/EN) via `ngx-translate`.

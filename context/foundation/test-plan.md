@@ -6,7 +6,7 @@
 >
 > Refresh: re-run `/10x-test-plan --refresh` when stale (see §8).
 >
-> Last updated: 2026-08-04
+> Last updated: 2026-08-14 (§3 Phase 1 landed — see §6.1 and §6.6)
 
 ## 1. Strategy
 
@@ -65,7 +65,7 @@ concentration.
 
 | Risk | What would prove protection | Must challenge | Context `/10x-research` must ground | Likely cheapest layer | Anti-pattern to avoid |
 |---|---|---|---|---|---|
-| #1 | For every legitimate state a teacher can put a report form into, a PDF document is produced — not merely that the code path ran. Includes minimally-filled forms, maximally-filled forms, untouched optional sections, long free text, and non-ASCII names. | "The smoke spec renders a PDF, so generation is safe." It renders one fixture per report type, from a happy-path shape. | Which form states are legitimately reachable (validators vs. defaults vs. never-bound arrays); what the PDF builder consumes vs. what the form holds; where the throw actually surfaces and what the user sees when it does. | unit / component, against the existing PDF interception helper | Asserting the document definition equals a snapshot of itself — a tautology that green-lights today's bugs. Assert that a document was produced and its content-carrying regions are non-empty *for that input*, not that bytes match a copy of the output. |
+| #1 | For every legitimate state a teacher can put a report form into, a PDF document is produced — not merely that the code path ran. Includes minimally-filled forms, maximally-filled forms, untouched optional sections, long free text, and non-ASCII names. | "The smoke spec renders a PDF, so generation is safe." *(Corrected 2026-08-14 by §3 Phase 1 — research is ground truth per §1 principle #3.)* The smoke harness renders **two** fixtures per report type, `minimal` and `maximal`, and the minimal shapes are required-fields-only rather than happy-path. The sharper challenge is that the suite was green not because generation was safe but because the fixtures encoded the states that work — `year-report.fixture.ts` said so in its own doc comment, setting `class` explicitly to step around a crash the untouched form reaches. Coverage that is curated by the same hand that wrote the code is not evidence about the input space. | Which form states are legitimately reachable (validators vs. defaults vs. never-bound arrays); what the PDF builder consumes vs. what the form holds; where the throw actually surfaces and what the user sees when it does. | unit / component, against the existing PDF interception helper | Asserting the document definition equals a snapshot of itself — a tautology that green-lights today's bugs. Assert that a document was produced and its content-carrying regions are non-empty *for that input*, not that bytes match a copy of the output. |
 | #2 | Picking a student, applying a template, and changing sex by hand — in any order — leaves every field owned by exactly one writer, and every descriptive-mark select holds a value that exists in its current option list. | "The field-partition spec passes, so pre-fill is correct." The partition proves *which fields* each writer touches; it proves nothing about *what values* land in them. | How the remap keys off the sex stream versus the patch; how each mark's option list is constructed; the confirm / cancel revert path; the quick-add path that creates and selects in one step. | component integration, on the one form where all three writers meet | Testing each writer in isolation. The risk lives in their interaction and its order-independence; single-writer specs will all pass while the composite is broken. |
 | #3 | A caller who is not the owning, allowlisted account is denied read, create, update and delete on every collection — asserted by a suite that **runs**, not one that merely exists. | "36 scenarios exist, so the rules are covered." Coverage that nothing executes before a deploy is documentation, not a control. | The current rule set per collection and which operations each allows to whom; the fixture-isolation constraint that governs adding a third rules-test file. | rules tests under the emulator (harness exists), plus a gate that runs them | Adding scenarios without giving the new file its own namespace — it will break an untouched suite, and the error will point at the rules rather than at the runner. See `context/foundation/lessons.md`. |
 | #4 | Removing an account from the allowlist denies its store reads, independently of what the client's session state believes. The rules are the boundary; the guard is user experience. | "The guard redirects, so the data is protected." A guard is client code; an attacker does not run your router. | Where authorization is actually evaluated; when the allowlist is read and what a stale read costs; whether a session signal can outlive an allowlist removal. | rules tests for the boundary, plus unit tests on the session state machine for the seam | Proving the boundary through the UI. If the assertion travels through a component, it is testing the guard, not the rule. |
@@ -80,7 +80,7 @@ orchestrator updates Status as artifacts appear on disk.
 
 | # | Phase name | Goal (one line) | Risks covered | Test types | Status | Change folder |
 |---|---|---|---|---|---|---|
-| 1 | PDF generation survives the real input space | Prove a teacher's report never fails to produce a file for input they could legitimately enter | #1 | unit, component | change opened | `context/changes/testing-pdf-input-space/` |
+| 1 | PDF generation survives the real input space | Prove a teacher's report never fails to produce a file for input they could legitimately enter | #1 | unit, component | done | `context/changes/testing-pdf-input-space/` |
 | 2 | Pre-fill correctness across the three writers | Prove that whatever order a teacher picks, applies and edits in, no field carries another child's or another gender's content | #2 | component integration | not started | — |
 | 3 | The access boundary is the rules, not the client | Prove a non-owning or de-allowlisted caller is denied at the store, regardless of client state | #3, #4 | rules tests, unit | not started | — |
 | 4 | Year-end fidelity baseline recovered | Give the one preserved report whose fidelity was never verified a real pre-change comparison | #6 | fidelity capture and diff | not started | — |
@@ -155,8 +155,63 @@ the relevant rollout phase ships; before that, the sub-section reads
 
 ### 6.1 Adding a unit test
 
-- TBD — see §3 Phase 1, for the pattern that asserts a PDF document is
-  produced for a given form state without asserting a snapshot of itself.
+**Asserting that a PDF is produced for a form state** (the Risk #1 pattern,
+shipped by §3 Phase 1). To add edge coverage for a fifth report type:
+
+1. **Capture, then render.** The assertion is
+   `capturePdfDefinition(() => component.generatePDF(component.form))`
+   followed by `await renderToBlob(definition)`, then `%PDF` on the first
+   four bytes plus a non-zero `size`. **`capturePdfDefinition` alone is not
+   enough** — Phase 2's crash built a perfectly valid document definition
+   and threw inside pdfmake's own measurement pass
+   (`node.table.body[0].length` on an empty body). A capture-only test is
+   green over it. Both helpers live in
+   `src/app/shared/testing/pdf-fidelity/render-pdf.ts`.
+2. **Put the fixture under `fixtures/edge/`, not next to the fidelity
+   fixtures.** `fixtures/<report>.fixture.ts` is shared input to two
+   runners: `npm test` and the capture harness behind
+   `docs/pdf-fidelity-check.md`, where each fixture's `id` becomes a
+   reference-PDF filename a human compares by eye. Edge states prove a
+   document is produced at all and are not reviewed for layout, so mixing
+   them in grows the manual procedure with documents nobody reads. Same
+   `ReportFixture` interface, separate array, separate `describe` block in
+   the spec.
+3. **Derive the floor state from that form's validators and gate — never
+   copy it from another report.** The specs call `generatePDF` directly and
+   walk straight past `[disabled]="form.invalid"`, so nothing at runtime
+   stops a fixture from recording a state a teacher cannot reach, which
+   would break the `ReportFixture` contract at `report-fixture.ts:5-8`. The
+   four floors are all different for real reasons: Teddy Eddie and year-end
+   have zero validators and no gate, so an **untouched form** is the floor;
+   Cambridge has one validator plus a gate, so **`studentName` only** is;
+   trimester/semester has nine validators plus a gate, so **all nine** are.
+   Check the form's `createForm` and its template's download control before
+   writing the first fixture.
+4. **Check the control is actually bound before patching it.** A builder
+   reading `form.value.X` does not mean a teacher can set `X`. Teddy
+   Eddie's builder reads `additionalComment` and `realizedMaterial` that no
+   template binds, and its table text cells are constructed `disabled` —
+   `patchValue` skips those silently, so a fixture aiming at them does
+   nothing and still passes. Grep the feature folder's `.html` for
+   `formControlName` and check the `FormControl` is not constructed
+   `{ disabled: true }`.
+5. **Drive the component's own methods for anything array-shaped**
+   (`addNextExamTerm`, `addNextComment`, `setTableTE`, `setClasses`) rather
+   than constructing rows by hand — that is what keeps the recorded state
+   equal to what the UI produces.
+6. **Raise `jasmine.DEFAULT_TIMEOUT_INTERVAL` to 30s** in the block's
+   `beforeEach` and restore it in `afterEach`. Every rendered case embeds
+   the Roboto VFS and the base64 banner and overruns the 5s default.
+7. **Keep the assertion no stronger than a source supports.** Long free
+   text and non-ASCII names have no documented expectation anywhere, so
+   their fixtures assert renderability and nothing else — see
+   `fixtures/edge/hostile-text.ts`, which states that reasoning once for
+   all four report types. A stronger assertion there would be inventing an
+   oracle out of current behaviour.
+
+Worked examples: `src/app/year-report/year-report.component.spec.ts`
+(`— reachable edge states`) and the four
+`src/app/shared/testing/pdf-fidelity/fixtures/edge/*.edge.fixture.ts`.
 
 ### 6.2 Adding a component integration test for the report form
 
@@ -189,6 +244,39 @@ the relevant rollout phase ships; before that, the sub-section reads
 (Filled in as phases land. Each `/10x-implement` run appends a two-to-three
 line note capturing anything surprising the phase taught.)
 
+**§3 Phase 1 — PDF generation survives the real input space (2026-08-14).**
+
+- **Fidelity was argued by invariant, not by capture, and that is the part
+  worth remembering.** This phase changed two PDF builders under FR-015's
+  preservation guardrail without running `docs/pdf-fidelity-check.md`. The
+  licence was a per-guard invariant: *the guard changes behaviour only in
+  states that throw today*. If it holds, every state that previously
+  produced a PDF still produces a byte-identical one, so no comparison is
+  needed — and the year-end baseline, which Risk #6 says is untrustworthy
+  anyway, never enters the argument. **This route is only available to
+  changes narrow enough that the invariant is checkable by reading the
+  guard.** A guard written wider than the crashing state breaks it
+  silently, with a green suite either way. A change that cannot state the
+  invariant in one sentence runs the capture procedure instead.
+- **Two reachable crashes existed and the suite was green over both** —
+  the untouched year-end form (`form.value.class.value` on a `null`
+  control) and every detail row suppressed (empty `table.body`, thrown
+  inside pdfmake). Both were reachable by opening a tab and clicking
+  download. The gap was never missing machinery; the harness was already
+  there. It was that the recorded inputs were a curated safe path.
+- **Submit gating differs across the four forms and the asymmetry is
+  drift, not design** — nine validators plus a gate on trimester/semester,
+  one plus a gate on Cambridge, zero and no gate on year-end and Teddy
+  Eddie. Phase 4 pinned the two gates with assertions so removing one turns
+  a silent widening of the input space into a failing test. The remedy for
+  the ungated forms was null-safety in the builder, not new validators —
+  a crash cannot plausibly be the behaviour a preservation guardrail was
+  written to preserve, and adding a validator would change what a teacher
+  is allowed to enter.
+- **The `[required]` inputs on the shared form wrappers attach no
+  validator** — they drive an asterisk and an aria attribute only. Reading
+  a template for "which fields are required" gives the wrong answer.
+
 ## 7. What We Deliberately Don't Test
 
 Exclusions agreed during the rollout. Future contributors should respect
@@ -205,8 +293,14 @@ these unless the underlying assumption changes.
   coverage plus the fidelity harness is the right level of investment.
   Re-evaluate if templates are extended past the trimester/semester form.
   Note this exclusion does **not** cover Risk #6, which is a one-time
-  baseline recovery for year-end, not ongoing coverage. (Source: Phase 2
-  interview Q5.)
+  baseline recovery for year-end, not ongoing coverage. Nor does it cover
+  Risk #1: §3 Phase 1 added edge-state generation coverage to all three,
+  because "no PDF appears" is a whole-product failure and two of the four
+  reachable crashes it found live in the ungated year-end form. **This
+  exclusion is about ongoing *feature* coverage, not generation
+  robustness** — the distinction was drawn at research time and is recorded
+  in `context/changes/testing-pdf-input-space/change.md`. (Source: Phase 2
+  interview Q5; scope clarified 2026-08-14.)
 - **PL/EN translation key completeness** — parity is verified by hand and
   currently holds; a test here would restate a check that already happens.
   Re-evaluate if the key count grows enough that manual parity stops being

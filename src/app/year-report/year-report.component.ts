@@ -406,7 +406,10 @@ export class YearReportComponent implements OnInit {
                 { text: 'Data', style: 'tableHeader' },
                 { text: `${date}` },
                 { text: 'Klasa', style: 'tableHeader' },
-                { text: `${form.value.class.value}` },
+                // This form has no validators and no submit gate, so `class` is null on every
+                // untouched download. Guarded to the null case only: a set `class` renders exactly
+                // as before.
+                { text: form.value.class ? `${form.value.class.value}` : '' },
               ],
               [
                 { text: 'Lektor', style: 'tableHeader' },
@@ -745,12 +748,26 @@ export class YearReportComponent implements OnInit {
     return arrDetails;
   }
 
-  private generateStudentLanguageDetails(form: FormGroup) {
+  private generateStudentLanguageDetails(form: FormGroup): any {
+    const body = this.getBodyInSkills(form);
+
+    // All seven rows are independently suppressible and none is a forced header, so a teacher who
+    // ticks every "usuń" checkbox leaves the body empty. pdfmake reads `table.body[0].length`
+    // unguarded (`pdfmake.js:518`), so an empty body throws before a single page is laid out and no
+    // file reaches the teacher. Emit nothing at this position instead: the teacher removed every
+    // row, so a placeholder row would put back content they explicitly deleted, and a forced header
+    // row would change the PDF for every other state too. `{}` is this file's existing way of saying
+    // "no node here" (`isAdditionalComment`, `certificationPurposeText`) — pdfmake normalises it to
+    // an empty text node. Guarded to the empty case only: one surviving row renders exactly as before.
+    if (body.length === 0) {
+      return {};
+    }
+
     return {
       style: 'tableExample',
       table: {
         widths: ['*', 'auto'],
-        body: this.getBodyInSkills(form),
+        body,
       },
     };
   }
