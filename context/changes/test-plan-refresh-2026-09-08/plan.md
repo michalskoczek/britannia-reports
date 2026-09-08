@@ -621,35 +621,35 @@ which is below the insertion point and unaffected.
 
 #### Automated
 
-- [x] 3.1 No stale phase reference survives (`required after §3 Phase 5` count is 0)
-- [x] 3.2 The gates phase is referenced by its new number (`§3 Phase 6` at least 3 times)
-- [x] 3.3 The e2e row no longer reads `not planned`
-- [x] 3.4 Both local mechanisms are named (`lefthook`, `eslint-edited-file`)
-- [x] 3.5 The visual-diff row is untouched and still reads `not planned` pointing at §7
+- [x] 3.1 No stale phase reference survives (`required after §3 Phase 5` count is 0) — e99185c
+- [x] 3.2 The gates phase is referenced by its new number (`§3 Phase 6` at least 3 times) — e99185c
+- [x] 3.3 The e2e row no longer reads `not planned` — e99185c
+- [x] 3.4 Both local mechanisms are named (`lefthook`, `eslint-edited-file`) — e99185c
+- [x] 3.5 The visual-diff row is untouched and still reads `not planned` pointing at §7 — e99185c
 
 #### Manual
 
-- [x] 3.6 A reader can answer "what stops a bad commit on my machine right now?" from §5 alone
-- [x] 3.7 The `strictTemplates` gap is stated as open, not implied covered by `npx tsc --noEmit`
-- [x] 3.8 No row in the still-planned group lacks a rollout-phase reference
+- [x] 3.6 A reader can answer "what stops a bad commit on my machine right now?" from §5 alone — e99185c
+- [x] 3.7 The `strictTemplates` gap is stated as open, not implied covered by `npx tsc --noEmit` — e99185c
+- [x] 3.8 No row in the still-planned group lacks a rollout-phase reference — e99185c
 
 ### Phase 4: Evidence, boundary, and ledger closure
 
 #### Automated
 
-- [ ] 4.1 The calibration note is dated 2026-09-08
-- [ ] 4.2 No Likelihood cell changed
-- [ ] 4.3 §7 has five bullets
-- [ ] 4.4 The §6.7 stub exists
-- [ ] 4.5 §8 carries no remaining 2026-08-04
-- [ ] 4.6 The stale docblock claim is gone from `test/e2e/seed.spec.ts`
-- [ ] 4.7 `npx tsc --noEmit` and `npx eslint test/e2e/seed.spec.ts` both exit 0
-- [ ] 4.8 `npx playwright test --list` reports one test
-- [ ] 4.9 `git diff --stat test/e2e/seed.spec.ts` shows changes confined to the header comment
+- [x] 4.1 The calibration note is dated 2026-09-08
+- [x] 4.2 No Likelihood cell changed
+- [x] 4.3 §7 has five bullets
+- [x] 4.4 The §6.7 stub exists
+- [x] 4.5 §8 carries no remaining 2026-08-04
+- [x] 4.6 The stale docblock claim is gone from `test/e2e/seed.spec.ts`
+- [x] 4.7 `npx tsc --noEmit` and `npx eslint test/e2e/seed.spec.ts` both exit 0
+- [x] 4.8 `npx playwright test --list` reports one test
+- [x] 4.9 `git diff --stat test/e2e/seed.spec.ts` shows changes confined to the header comment
 
 #### Manual
 
-- [ ] 4.10 §2's calibration note reads as re-sourcing, not as hedging
-- [ ] 4.11 §7's new bullet and §3 Phase 5's Goal bound the same thing from opposite sides
-- [ ] 4.12 Whole-document read-through finds no section contradicting another
-- [ ] 4.13 §7's new bullet does not read as the fourth exclusion Q5 declined
+- [x] 4.10 §2's calibration note reads as re-sourcing, not as hedging
+- [x] 4.11 §7's new bullet and §3 Phase 5's Goal bound the same thing from opposite sides
+- [x] 4.12 Whole-document read-through finds no section contradicting another
+- [x] 4.13 §7's new bullet does not read as the fourth exclusion Q5 declined

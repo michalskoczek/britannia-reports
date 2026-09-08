@@ -6,7 +6,8 @@
 >
 > Refresh: re-run `/10x-test-plan --refresh` when stale (see §8).
 >
-> Last updated: 2026-08-14 (§3 Phase 1 landed — see §6.1 and §6.6)
+> Last updated: 2026-09-08 (drift refresh — §4/§5 contradicted disk: a
+> Playwright suite exists and lint/typecheck are already enforced locally)
 
 ## 1. Strategy
 
@@ -41,8 +42,8 @@ research's job, see §1 principle #3).
 
 | # | Risk (failure scenario) | Impact | Likelihood | Source (evidence — not anchor) |
 |---|---|---|---|---|
-| 1 | A teacher fills a complete report, clicks download, and **no PDF appears** — the builder throws on input the teacher could legitimately enter (empty optional section, long free text, non-ASCII name, an array the form never populated). The error reaches the browser console only; the teacher gets no signal and cannot tell whether they mis-filled or the app broke. | High | High | interview Q1, interview Q3; hot-spot dir `src/app/semestr-report/` (16 commits/30d), `src/app/year-report/` (9 commits/30d); roadmap §Baseline — observability absent, only diagnostic is a console error at bootstrap; `src/CLAUDE.md` §Hard rules — "`npm test` smoke-covers that every report type still renders a PDF; it asserts nothing about layout" |
-| 2 | **Wrong-child or wrong-gender content reaches a parent.** Three writers touch one 48-control form — the student picker, template apply, and the sex-driven mark remap. A drift across the field partition, an incomplete remap, or an order-dependent interaction puts another child's data or the wrong gendered sentence into the PDF, and the `required` validator still passes so nothing complains. | High | High | PRD FR-013 amendment 2026-08-03 (this defect class already shipped once and was silent); PRD FR-011, US-01 acceptance criteria; roadmap S-02 Outcome — "a template that pre-filled a mark would turn 'the teacher missed one select' into 'a parent received another child's grade'"; hot-spot dir `src/app/students/` (37 commits/30d), `src/app/semestr-report/` (16), `src/app/templates/` (15) |
+| 1 | A teacher fills a complete report, clicks download, and **no PDF appears** — the builder throws on input the teacher could legitimately enter (empty optional section, long free text, non-ASCII name, an array the form never populated). The error reaches the browser console only; the teacher gets no signal and cannot tell whether they mis-filled or the app broke. | High | High | interview Q1 2026-09-08 — still the top worry, unchanged in wording; interview Q2 2026-09-08 — a lived burn: the untouched form crashed while the suite was green; interview Q3; churn as of 2026-08-04 (see the calibration note below): `src/app/semestr-report/` 16 commits/30d, `src/app/year-report/` 9 commits/30d; roadmap §Baseline — observability absent, only diagnostic is a console error at bootstrap; `src/CLAUDE.md` §Hard rules — "`npm test` smoke-covers that every report type still renders a PDF; it asserts nothing about layout" |
+| 2 | **Wrong-child or wrong-gender content reaches a parent.** Three writers touch one 48-control form — the student picker, template apply, and the sex-driven mark remap. A drift across the field partition, an incomplete remap, or an order-dependent interaction puts another child's data or the wrong gendered sentence into the PDF, and the `required` validator still passes so nothing complains. | High | High | interview Q2 2026-09-08 — a lived burn: a template pre-filled a mark silently, in production; interview Q4 2026-09-08 — the three writers together are the least-tested surface; PRD FR-013 amendment 2026-08-03 (this defect class already shipped once and was silent); PRD FR-011, US-01 acceptance criteria; roadmap S-02 Outcome — "a template that pre-filled a mark would turn 'the teacher missed one select' into 'a parent received another child's grade'"; churn as of 2026-08-04 (see the calibration note below): `src/app/students/` 37 commits/30d, `src/app/semestr-report/` 16, `src/app/templates/` 15 |
 | 3 | **A security-rules regression exposes one teacher's students to another.** The rules-test harness exists and covers 36 scenarios, but nothing runs it — it is not wired into `npm test` and there is no CI. A rules edit ships to production unverified, and the data behind it is minors' personal data with no export, retention, or consent story. | High | Medium | interview Q4; PRD Open Question #2 (GDPR baseline for minors' data, still open); roadmap Open Roadmap Question #1 and the residual note on #5 — "run it yourself whenever the rules change, before deploying"; hot-spot: security-rules surface, 6 commits/30d |
 | 4 | **Authenticated is not authorized.** Any Google account on the internet can complete sign-in; only the teacher allowlist separates a stranger from a roster. If the client-side session state machine is the real boundary — or an allowlist removal does not take effect for a live session — an account reads data that is not theirs. | High | Medium | PRD FR-003, FR-004, §Access Control Changes; roadmap S-01 "What it cost that the plan did not predict" — three defects reached a running browser through a fully green suite, all three in the seam between the app and Firebase; hot-spot dir `src/app/auth/` (26 commits/30d) |
 | 5 | **A release silently regresses production.** Deploying from the wrong branch rolls the app back past the sign-in gate and re-exposes all four report forms publicly; a build-output / hosting-root misalignment publishes an empty directory over the live site. The deploy command exits 0 in both cases. Four manual deploys ran in eight days with no gate between the working tree and production. | High | Medium | `src/CLAUDE.md` §Common commands and §Conventions — deploy-branch rule, build-output alignment rule, "there is no CI gate yet"; roadmap S-01…S-04 Status (deploys on 2026-07-30, 07-31, 08-04); roadmap §Parked "CI/CD pipeline"; interview Q4 |
@@ -55,6 +56,16 @@ Secret leakage was considered and deliberately excluded: the PRD and
 `src/CLAUDE.md` both record the Firebase configuration and reCAPTCHA site
 key as public by design, protected by security rules rather than by
 secrecy — testing for their exposure would encode a misunderstanding.
+
+**Likelihood recalibrated 2026-09-08 — no rating changed.** The Likelihood
+column was calibrated on 2026-08-04 against a 30-day window that contained
+S-02/S-03/S-04 feature work, and the churn counts quoted in the Source
+cells belong to that window. Re-running the same scan today returns six
+commits, all of them from the test rollout auditing itself — product code
+has been frozen since 2026-08-04, so those figures no longer reproduce and
+a reader checking them will find nothing. **No rating is demoted on that
+basis.** A frozen codebase lowers near-term likelihood; every risk here is
+about what happens when it thaws, and the ratings are set for that.
 
 `src/app/shared/` tops the churn table (44 commits/30d) but did not raise a
 risk on its own: the churn is dominated by the design-language extraction
@@ -301,6 +312,14 @@ line note capturing anything surprising the phase taught.)
   validator** — they drive an asterisk and an aria attribute only. Reading
   a template for "which fields are required" gives the wrong answer.
 
+### 6.7 Writing an end-to-end test
+
+- TBD — see §3 Phase 5, for the fixture and session-capture setup (the two
+  processes the suite needs and how the signed-in session is captured and
+  restored), the locator and waiting rules the seed spec already
+  demonstrates, and the cleanup-through-the-store pattern that keeps a run
+  from depending on the app to undo its own data.
+
 ## 7. What We Deliberately Don't Test
 
 Exclusions agreed during the rollout. Future contributors should respect
@@ -334,12 +353,23 @@ these unless the underlying assumption changes.
   rules, not by secrecy. Re-evaluate only if a genuinely secret value is
   ever introduced into the client. (Source: PRD §Constraints, `src/CLAUDE.md`
   §Conventions.)
+- **Business logic restated at the e2e layer** — e2e is scheduled (§3
+  Phase 5), and this is where it stops. It asserts only what no cheaper
+  layer can see: that the download a teacher clicks ends in a file, and
+  that the browser stays free of uncaught exceptions getting there. Logic
+  that is already covered lower down does not get a browser restatement —
+  field ownership and the sex-driven remap belong to §3 Phase 2, the access
+  boundary to §3 Phase 3, PDF fidelity to §3 Phase 4. This is a ceiling on
+  what e2e may assert, not a ban on the layer: e2e was offered as a fourth
+  exclusion in the 2026-09-08 interview and deliberately **not** chosen.
+  Re-evaluate if a risk surfaces whose failure is invisible to every layer
+  below the browser. (Source: 2026-09-08 interview Q5; §1 principle #1.)
 
 ## 8. Freshness Ledger
 
-- Strategy (§1–§5) last reviewed: 2026-08-04
-- Stack versions last verified: 2026-08-04
-- AI-native tool references last verified: 2026-08-04
+- Strategy (§1–§5) last reviewed: 2026-09-08
+- Stack versions last verified: 2026-09-08
+- AI-native tool references last verified: 2026-09-08
 
 Refresh (`/10x-test-plan --refresh`) when:
 
