@@ -84,7 +84,8 @@ orchestrator updates Status as artifacts appear on disk.
 | 2 | Pre-fill correctness across the three writers | Prove that whatever order a teacher picks, applies and edits in, no field carries another child's or another gender's content | #2 | component integration | not started | — |
 | 3 | The access boundary is the rules, not the client | Prove a non-owning or de-allowlisted caller is denied at the store, regardless of client state | #3, #4 | rules tests, unit | not started | — |
 | 4 | Year-end fidelity baseline recovered | Give the one preserved report whose fidelity was never verified a real pre-change comparison | #6 | fidelity capture and diff | not started | — |
-| 5 | Quality gates wired | Make it impossible to reach production through a red lint, red types, red suite, red rules suite, or the wrong build tree | #5, and enforcement for #1–#4 and #6 | gates | not started | — |
+| 5 | The click ends in a file | Prove the delivery half of Risk #1 in a real browser: that the download a teacher actually clicks produces a file, and that the page stays free of uncaught exceptions while doing it | #1 (delivery half only; Phase 1 closed the builder half) | e2e | not started | — |
+| 6 | Quality gates wired | Put on a server the checks nothing yet runs there: CI, the rules suite on a gate (`npm run test:rules` exists and nothing invokes it), and deploy preconditions on branch and build output — lint and types are already enforced on this machine by the per-edit hook and lefthook `pre-commit`, so the gap is CI, not the checks themselves | #5, and enforcement for #1–#4, #6, and the e2e layer Phase 5 builds | gates | not started | — |
 
 Ordering rationale: Phase 1 attacks the highest-rated risk against a
 harness that already exists, so it is the cheapest real signal available.
@@ -92,17 +93,25 @@ Phase 2 carries the highest-consequence risk but needs composite scenarios,
 so it costs more and runs second. Phase 3 has its harness already and must
 land before gates, so there is something worth gating. Phase 4 is a
 one-shot verification with no ongoing surface, which is why it ranks below
-the three phases that build durable coverage. Phase 5 runs last because it
-gates what the previous four phases built — locking a floor under a thin
-suite buys very little.
+the three phases that build durable coverage. Phase 5 ranks below all four
+because e2e is the most expensive layer to run and to keep, and it earns its
+place on exactly one thing no cheaper layer reaches — the delivery half of
+Risk #1 (§1 principle #1). It ranks above the gates phase because a gate
+over a layer that does not exist yet buys nothing: the e2e layer has to
+exist before Phase 6 can require it. Phase 6 runs last because it gates
+what the previous five phases built — locking a floor under a thin suite
+buys very little.
 
 **No AI-native rollout phase is scheduled.** Every risk in §2 has a cheaper
 deterministic answer: the PDF interception helper reaches the document
 definition directly, the field partition is already machine-checked, and
 the rules harness runs under the emulator. Layering a vision model over any
-of those would cost more per run and give a weaker signal. See §4 for the
-one AI-native option that was considered and left unscheduled, and §7 for
-the visual-testing exclusion that rules out the usual candidates.
+of those would cost more per run and give a weaker signal. Phase 5 does add
+a browser-driven layer, but deterministic Playwright assertions are not
+AI-native and do not change this. See §4 for the vision/VLM option that
+remains unscheduled — distinct from the deterministic browser automation
+Phase 5 schedules — and §7 for the visual-testing exclusion that rules out
+the usual candidates.
 
 ## 4. Stack
 

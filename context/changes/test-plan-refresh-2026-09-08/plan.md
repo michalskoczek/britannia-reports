@@ -589,33 +589,33 @@ which is below the insertion point and unaffected.
 
 #### Automated
 
-- [x] 1.1 The stale e2e claim is gone from §4
-- [x] 1.2 Playwright is named in §4
-- [x] 1.3 The grounding lines and AI-native row are re-dated (`checked: 2026-09-08` count is 5)
-- [x] 1.4 No line still carries `checked: 2026-08-04`
-- [x] 1.5 The §4 table is still well-formed
+- [x] 1.1 The stale e2e claim is gone from §4 — 3e1f694
+- [x] 1.2 Playwright is named in §4 — 3e1f694
+- [x] 1.3 The grounding lines and AI-native row are re-dated (`checked: 2026-09-08` count is 5) — 3e1f694
+- [x] 1.4 No line still carries `checked: 2026-08-04` — 3e1f694
+- [x] 1.5 The §4 table is still well-formed — 3e1f694
 
 #### Manual
 
-- [x] 1.6 The e2e row tells a first-time reader what to run and what must be running first
-- [x] 1.7 The AI-native row's *When NOT to use* guidance still reads as advice, not a reversed decision
-- [x] 1.8 The provider line ties the Firebase MCP to Risks #3/#4 without implying it replaces the emulator
+- [x] 1.6 The e2e row tells a first-time reader what to run and what must be running first — 3e1f694
+- [x] 1.7 The AI-native row's *When NOT to use* guidance still reads as advice, not a reversed decision — 3e1f694
+- [x] 1.8 The provider line ties the Firebase MCP to Risks #3/#4 without implying it replaces the emulator — 3e1f694
 
 ### Phase 2: §3 Rollout — e2e becomes Phase 5, gates become Phase 6
 
 #### Automated
 
-- [ ] 2.1 The §3 table has six phase rows
-- [ ] 2.2 A Phase 6 exists and is "Quality gates wired"
-- [ ] 2.3 Phases 1–4 are untouched in name and status
-- [ ] 2.4 Phase 1's change-folder reference survives renumbering
-- [ ] 2.5 No §6 cross-reference broke (§6.2→2, §6.3→3, §6.4→3, §6.5→4)
+- [x] 2.1 The §3 table has six phase rows
+- [x] 2.2 A Phase 6 exists and is "Quality gates wired"
+- [x] 2.3 Phases 1–4 are untouched in name and status
+- [x] 2.4 Phase 1's change-folder reference survives renumbering
+- [x] 2.5 No §6 cross-reference broke (§6.2→2, §6.3→3, §6.4→3, §6.5→4)
 
 #### Manual
 
-- [ ] 2.6 The Phase 5 Goal is narrow enough not to read as "test the app end to end"
-- [ ] 2.7 The ordering rationale explains the insertion point, not merely that a phase was added
-- [ ] 2.8 Phase 6's Goal no longer promises what the per-edit hook and lefthook already deliver
+- [x] 2.6 The Phase 5 Goal is narrow enough not to read as "test the app end to end"
+- [x] 2.7 The ordering rationale explains the insertion point, not merely that a phase was added
+- [x] 2.8 Phase 6's Goal no longer promises what the per-edit hook and lefthook already deliver
 
 ### Phase 3: §5 Quality Gates — split enforced-today from still-needs-CI
 
