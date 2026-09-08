@@ -95,7 +95,7 @@ orchestrator updates Status as artifacts appear on disk.
 | 2 | Pre-fill correctness across the three writers | Prove that whatever order a teacher picks, applies and edits in, no field carries another child's or another gender's content | #2 | component integration | not started | — |
 | 3 | The access boundary is the rules, not the client | Prove a non-owning or de-allowlisted caller is denied at the store, regardless of client state | #3, #4 | rules tests, unit | not started | — |
 | 4 | Year-end fidelity baseline recovered | Give the one preserved report whose fidelity was never verified a real pre-change comparison | #6 | fidelity capture and diff | not started | — |
-| 5 | The click ends in a file | Prove the delivery half of Risk #1 in a real browser: that the download a teacher actually clicks produces a file, and that the page stays free of uncaught exceptions while doing it | #1 (delivery half only; Phase 1 closed the builder half) | e2e | not started | — |
+| 5 | The click ends in a file | Prove the delivery half of Risk #1 in a real browser: that the download a teacher actually clicks produces a file, and that the page stays free of uncaught exceptions while doing it | #1 (delivery half only; Phase 1 closed the builder half) | e2e | done | `context/changes/testing-click-ends-in-file/` |
 | 6 | Quality gates wired | Put on a server the checks nothing yet runs there: CI, the rules suite on a gate (`npm run test:rules` exists and nothing invokes it), and deploy preconditions on branch and build output — lint and types are already enforced on this machine by the per-edit hook and lefthook `pre-commit`, so the gap is CI, not the checks themselves | #5, and enforcement for #1–#4, #6, and the e2e layer Phase 5 builds | gates | not started | — |
 
 Ordering rationale: Phase 1 attacks the highest-rated risk against a
@@ -136,9 +136,9 @@ The classic test base for this project. AI-native tools (if any) carry a
 | emulation | Firebase Emulator Suite via `firebase-tools` | 15.18.0 | Auth + Firestore + UI. Local development already depends on it; App Check is skipped entirely while emulators are on. |
 | PDF fidelity | Project-owned capture harness (separate Karma configuration) | n/a | Reference inputs plus committed reference PDFs and a written comparison procedure under `docs/`. Excluded from the default test run; headed Chrome only. |
 | lint + typecheck | ESLint + `angular-eslint`, TypeScript | eslint 9.39, angular-eslint 20.7, typescript 5.8 | Lint is clean and that is a maintained invariant, enforced by habit only. Note that a plain production build type-checks one environment file and not the other. |
-| e2e | Playwright (`@playwright/test`; `@playwright/cli` for the session-capture workflow) | @playwright/test 1.63, @playwright/cli 0.1.19 | No coverage today. `test/e2e/seed.spec.ts` exists but is the **exemplar**, excluded from every run by `testIgnore` in `playwright.config.ts` — a pattern for generated specs, not protection for Risk #1. It keeps its `.spec.ts` name so the local ESLint and `tsc --noEmit` gates still check it. A run needs two processes already running (`npm run emulators` and `npm start`) plus a hand-captured signed-in session (`npm run e2e:auth:save`, restored by `e2e:auth:restore`), which is why `playwright.config.ts` deliberately carries no `webServer` block; `fullyParallel` is off because the specs share one teacher account and therefore one roster. Run the suite with `npm run e2e` — it lists zero tests until §3 Phase 5 lands. **Not** wired into `npm test` and not on any §5 gate yet. §3 Phase 5 builds the layer out; §7 says where it stops. |
+| e2e | Playwright (`@playwright/test`; `@playwright/cli` for the session-capture workflow) | @playwright/test 1.63, @playwright/cli 0.1.19 | Four tests, shipped by §3 Phase 5 (2026-09-08): one download-delivery spec per report type (`test/e2e/{semester,cambridge,year-end,teddy-eddie}-download.spec.ts`), covering the delivery half of Risk #1 and nothing else. `test/e2e/seed.spec.ts` is the **exemplar**, excluded from every run by `testIgnore` in `playwright.config.ts` — a pattern for new specs, not coverage. It keeps its `.spec.ts` name so the local ESLint and `tsc --noEmit` gates still check it. A run needs two processes already running (`npm run emulators` and `npm start`) plus a hand-captured signed-in session (`npm run e2e:auth:save`, restored by `e2e:auth:restore`), which is why `playwright.config.ts` deliberately carries no `webServer` block; `fullyParallel` is off because the specs share one teacher account and therefore one roster. Run the suite with `npm run e2e` — it reports 4 passed. **Not** wired into `npm test` and not on any §5 gate yet — that is §3 Phase 6. §6.7 is the procedure for adding a fifth; §7 says where the layer stops. |
 | accessibility | none — not in scope | — | Not raised by the PRD, the roadmap, or the interview. Absence is recorded, not planned away. |
-| (optional) AI-native | Vision/VLM review of a rendered page — checked: 2026-09-08 | n/a | **Still unscheduled.** Deterministic browser automation is no longer hypothetical: Playwright is an installed, pinned project dependency with committed configuration, scheduled as §3 Phase 5. That is a deterministic assertion, not an AI-native one, and it does not change the judgement here. *When NOT to use:* when the assertion can be made against the PDF document definition or the reactive form directly — which is every risk in §2 — or when a deterministic browser assertion already reaches it. A vision model earns its cost only on a surface none of those reach; §7 records that this project does not have one. |
+| (optional) AI-native | Vision/VLM review of a rendered page — checked: 2026-09-08 | n/a | **Still unscheduled.** Deterministic browser automation is no longer hypothetical: Playwright is an installed, pinned project dependency with committed configuration, and §3 Phase 5 has shipped four specs on it. That is a deterministic assertion, not an AI-native one, and it does not change the judgement here. *When NOT to use:* when the assertion can be made against the PDF document definition or the reactive form directly — which is every risk in §2 — or when a deterministic browser assertion already reaches it. A vision model earns its cost only on a surface none of those reach; §7 records that this project does not have one. |
 
 **Stack grounding tools (current session):**
 - Docs: none — no Context7 or framework-docs MCP is available in current session; stack facts come from the local manifest, the Angular workspace configuration, and `src/CLAUDE.md`. The connected Firebase MCP does expose `developerknowledge_*`, which is a docs surface for the Firebase half of the stack only; checked: 2026-09-08
@@ -172,7 +172,7 @@ everything else still needs CI.
 | security-rules suite under the emulator | local, then CI | required after §3 Phase 6 | cross-teacher access regressions; this is the gate Risk #3 is entirely about |
 | PDF fidelity capture and diff | local, before merge | required after §3 Phase 4, for any change touching a report component or its inputs | silent layout or content drift in a report covered by the preservation guardrail |
 | deploy preconditions (branch, build output present) | between merge and production | required after §3 Phase 6 | the two failure modes in Risk #5 that the deploy command reports as success |
-| e2e on critical flows | local-first — the suite needs `npm run emulators`, `npm start` and a hand-captured session, so it cannot be lifted into CI naively | required after §3 Phase 6 | the delivery half of Risk #1: a download click that ends in no file, and uncaught browser exceptions on the way there. §3 Phase 5 builds the layer; §7 bounds what it may assert. |
+| e2e on critical flows | local-first — the suite needs `npm run emulators`, `npm start` and a hand-captured session, so it cannot be lifted into CI naively | required after §3 Phase 6 | the delivery half of Risk #1: a download click that ends in no file, and uncaught browser exceptions on the way there. §3 Phase 5 built the layer — four specs, one per report type, green as of 2026-09-08; §7 bounds what it may assert and §6.7 records how to extend it. |
 | visual diff / multimodal visual review | — | not planned | intentionally absent; see §7 |
 
 No row in this table is aspirational. Every row in the still-planned group
@@ -312,13 +312,193 @@ line note capturing anything surprising the phase taught.)
   validator** — they drive an asterisk and an aria attribute only. Reading
   a template for "which fields are required" gives the wrong answer.
 
+
+**§3 Phase 5 — The click ends in a file (2026-09-08).**
+
+- **The seam that made this phase legitimate is also what bounds it.**
+  `src/app/shared/testing/pdf-fidelity/render-pdf.ts:29-36` replaces
+  `pdfMake.createPdf` wholesale, so the handle every unit spec receives has
+  an inert `download()` — `() => Promise.resolve()` — and all four report
+  component specs stop at `.getBlob()`. Three things therefore executed
+  nowhere in this repository before this phase: the click on the real
+  download control, the real `pdfMake.createPdf(dd).download(fileName)`
+  call, and the browser delivering a file with the builder's computed name.
+  That is precisely the gap §7's ceiling licenses e2e to close, and
+  precisely why the four specs assert *delivery* and never *generation*.
+  If that stub is ever replaced with a real download, re-read this layer's
+  justification before adding to it.
+- **The Teddy Eddie download button renders `PDF`, and the locator had to
+  be written against the bug.** `teddy-eddie-report.component.html:38` sets
+  `[translateKey]="'PDF'"`, a key that exists in neither `pl.json` nor
+  `en.json` (both carry only `downloadPDF`), so ngx-translate echoes the
+  key; the projected `{{ 'downloadPDF' | translate }}` is dropped because
+  `ButtonComponent` has no `<ng-content>`. Polish and English users both
+  see `PDF`. The defect is tracked in
+  `context/changes/teddy-eddie-pdf-button-label/` and deliberately not
+  fixed here — fixing it changes the accessible name, so that change owns
+  updating `test/e2e/teddy-eddie-download.spec.ts`. The trap underneath is
+  general: `getByRole`'s `name` is a **substring** match, so the loose
+  `{ name: 'PDF' }` kept finding the button after the defect was fixed and
+  testified to nothing. Confirmed empirically — under a rename of
+  `[translateKey]` to `'downloadPDF'` the loose locator stayed green and
+  `{ name: 'PDF', exact: true }` went red. Wherever a spec hard-codes a name
+  it also calls a bug, `exact` is what makes the claim checkable.
+- **The gate asymmetry decides how a spec waits, not just what it asserts.**
+  Semester and Cambridge bind `[disabled]="form.invalid"`, so
+  `toBeEnabled()` on the download control is the app's own completeness
+  signal and a legitimate wait. Year-end and Teddy Eddie have no validators
+  and no binding: the same assertion passes on an untouched form and proves
+  nothing, so those two wait on the filled field's value instead. Copying
+  the gated shape onto an ungated report produces a spec that looks careful
+  and checks nothing. (The *disabled* direction stays where it already
+  lives, in `cambridge-report.component.spec.ts:135-142` and
+  `semestr-report.component.spec.ts:160-170`; only the enabled direction is
+  browser-only.)
+- **The student picker's quick-add flow has no browser coverage, by
+  decision.** Excluding `seed.spec.ts` from runs by `testIgnore` removed the
+  only browser exercise of the picker and quick-add path, and none of the
+  four delivery specs restores it: each fills `studentName` by hand and
+  writes nothing to the roster, which also designs the shared-fixture hazard
+  in `context/foundation/lessons.md` out rather than managing it. That flow
+  is Risk #2 territory, owned by §3 Phase 2 at the component-integration
+  level, where the composite of picker, template apply and sex-driven remap
+  can be exercised far more cheaply than in a browser. Recorded here so the
+  absence reads as the §7 ceiling being honoured, not as an oversight.
+
 ### 6.7 Writing an end-to-end test
 
-- TBD — see §3 Phase 5, for the fixture and session-capture setup (the two
-  processes the suite needs and how the signed-in session is captured and
-  restored), the locator and waiting rules the seed spec already
-  demonstrates, and the cleanup-through-the-store pattern that keeps a run
-  from depending on the app to undo its own data.
+**Asserting that a download control ends in a file** (the Risk #1 delivery
+pattern, shipped by §3 Phase 5). The four specs in `test/e2e/` —
+`semester-download`, `cambridge-download`, `year-end-download`,
+`teddy-eddie-download` — are the shape; `test/e2e/seed.spec.ts` is the
+exemplar for everything they have in common. To add a fifth:
+
+1. **Start the two processes the runner will not start for you.**
+   `npm run emulators` (Auth + Firestore, needs a JDK, imports
+   `.emulator-data/`) and `npm start` (dev server on `:4200`). There is
+   deliberately **no `webServer` block** in `playwright.config.ts`: starting
+   the emulator behind the runner's back would either export over the
+   developer's local seed — which holds the allowlist that makes sign-in
+   possible at all — or fail with a stack trace instead of an instruction.
+   The `localStack` fixture is `auto`, probes both ports plus the Firestore
+   REST root before any test body runs, and names the missing command.
+
+2. **Have a captured session on disk.** Sign-in is a Google popup through
+   the Auth emulator and cannot be scripted, so the suite borrows a session
+   captured by hand once:
+
+   ```
+   npx playwright-cli open http://localhost:4200    # sign in by hand
+   npm run e2e:auth:save                            # → test/e2e/.auth/firebase-session.json
+   ```
+
+   `npm run e2e:auth:restore` puts it back into a fresh CLI browser. The
+   file is one `firebaseLocalStorageDb` row, not cookies or localStorage:
+   Playwright's `storageState` does not carry IndexedDB, which is where the
+   Firebase Web SDK keeps its session — so `playwright-cli state-save`
+   produces an empty file against this app and the next browser lands on
+   `/sign-in`. The stored access token expires in an hour; the emulator's
+   refresh token does not, so the saved file keeps working until the
+   emulator data is wiped or the account leaves the allowlist.
+
+3. **Take `signedIn` and `uncaughtErrors`, and nothing you don't need.**
+   `signedIn` is the `Page` with the session already seeded into IndexedDB
+   and reloaded. `uncaughtErrors` collects `pageerror` messages so the spec
+   can assert `toEqual([])` — the silent failure mode Risk #1 is named
+   after; without it a thrown exception reaches the console only and the
+   test still passes. Take `student` / `roster` **only if the spec writes to
+   the store** (step 7); none of the four delivery specs does.
+
+4. **Click the report's tab explicitly, even when it is the default.**
+   Teddy Eddie is `defaultActive: true` in `tab-data.ts`, and its spec
+   clicks its tab anyway: relying on the default couples the spec to
+   configuration it has no opinion about and breaks silently when the
+   default moves. Do **not** navigate away from the shell mid-test — leaving
+   to `/students` destroys the form and resets the tab bar.
+
+5. **Locate by role, and check what the control actually renders.**
+   `getByRole` / `getByLabel` / `getByText` first; `getByTestId` only when
+   the accessibility attributes are ambiguous; never CSS or XPath. Two traps
+   this layer has already hit. `getByRole`'s `name` is a **substring** match,
+   so `{ name: 'PDF' }` also matches `Generuj PDF` — pass `exact: true`
+   whenever one candidate name is a substring of another, or the locator
+   stops discriminating without ever going red. And the label a control
+   renders is not always the label the template names: Teddy Eddie's button
+   renders the literal `PDF` because `[translateKey]="'PDF'"` names a
+   missing key (see the §6.6 Phase 5 note). Read the rendered name; do not
+   infer it from the i18n file.
+
+6. **Wait on state, never on a duration.** `page.waitForTimeout()` is banned
+   outright. What counts as the readiness signal depends on the report's
+   gate, and the asymmetry is real:
+
+   - **Gated** (semester, Cambridge — `[disabled]="form.invalid"` on an
+     `(ngSubmit)` button): `await expect(downloadButton).toBeEnabled()`.
+     That is the app's own answer to "is this report complete", and the
+     *enabled* direction is the half no cheaper layer covers — the disabled
+     direction is already asserted in the component specs.
+   - **Ungated** (year-end, Teddy Eddie — no validators, no `[disabled]`):
+     `toBeEnabled()` passes on an untouched form and proves nothing. Wait on
+     the filled field instead: `await expect(field).toHaveValue(value)`.
+
+   For a `mat-select`, click the combobox, click the option inside
+   `getByRole('listbox')`, then wait for `expect(listbox).toHaveCount(0)`
+   and read the value back with `toContainText` — the open overlay blocks
+   the next click until it closes, and the read-back keeps a positional
+   `.first()` pick from silently changing meaning when the option list is
+   reordered or emptied. Fill order can be load-bearing: on the semester
+   form `markOptions()` rebuilds every mark's option list from `sex`, so
+   `sex` is set before the six marks.
+
+7. **Stamp the data, and clean up through the store if you wrote any.**
+   Fill the student name with a per-run stamp
+   (`` `E2E Delivery ${Date.now().toString(36)}` ``) — the asserted filename
+   then doubles as evidence that the delivered file came from this run
+   rather than from a leftover. A spec that writes to the roster takes the
+   `student` fixture, which deletes **by name over the Firestore REST API as
+   `owner`** in teardown and then asserts the roster is clean. Cleanup
+   through the UI can only run when the app works, which is the one thing a
+   failing test has just disproved. `fullyParallel` is off and `workers: 1`
+   because every spec shares one teacher account and therefore one roster; a
+   spec that writes nothing designs that hazard out instead of managing it.
+
+8. **Assert delivery, and confirm the filename empirically.**
+
+   ```ts
+   const downloadPromise = page.waitForEvent('download');
+   await downloadButton.click();
+   const download = await downloadPromise;
+
+   expect(download.suggestedFilename()).toBe(/* the exact delivered name */);
+   const bytes = await readFile(await download.path());
+   expect(bytes.subarray(0, 4).toString('latin1')).toBe('%PDF');
+   expect(bytes.byteLength).toBeGreaterThan(1024);
+   expect(uncaughtErrors).toEqual([]);
+   ```
+
+   Assert the name by **full equality**, and take the string from a real
+   `suggestedFilename()` before writing it down rather than from the
+   builder's source. The two shapes this product produces differ —
+   `<name-with-dashes>_semester_report.pdf` against
+   `Raport końcowy 2025-26 - <name>.pdf`, which retains its spaces and its
+   diacritic — and if a browser ever transforms one, that is a finding to
+   record, never a licence to weaken the assertion to a substring.
+
+9. **Run it, then break it on purpose.** `npm run e2e` (`playwright test`)
+   runs the suite; `npx playwright test test/e2e/<file>` runs one.
+   `seed.spec.ts` is excluded from every run by `testIgnore` — it is the
+   exemplar, not coverage — but keeps its `.spec.ts` name so ESLint and
+   `npx tsc --noEmit` still check it. A new spec is not finished until its
+   target has been inverted and the spec confirmed red for the right
+   reason: a spec that stays green over a broken behaviour protects nothing.
+   Do not reach for `test.skip()` or `test.fixme()` — a spec that cannot be
+   made to pass is a signal to investigate.
+
+10. **Stay under §7's ceiling.** E2E asserts only what no cheaper layer can
+    see. Field ownership and the sex-driven remap belong to §3 Phase 2, the
+    access boundary to §3 Phase 3, PDF content and fidelity to §3 Phase 4.
+    One delivery assertion per report type is the whole budget — do not add
+    a spec per page or per control.
 
 ## 7. What We Deliberately Don't Test
 
@@ -354,7 +534,7 @@ these unless the underlying assumption changes.
   ever introduced into the client. (Source: PRD §Constraints, `src/CLAUDE.md`
   §Conventions.)
 - **Business logic restated at the e2e layer** — e2e is scheduled (§3
-  Phase 5), and this is where it stops. It asserts only what no cheaper
+  Phase 5, shipped 2026-09-08), and this is where it stops. It asserts only what no cheaper
   layer can see: that the download a teacher clicks ends in a file, and
   that the browser stays free of uncaught exceptions getting there. Logic
   that is already covered lower down does not get a browser restatement —

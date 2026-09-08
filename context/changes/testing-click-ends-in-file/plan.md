@@ -457,32 +457,32 @@ Not applicable — no production code, schema, or data changes.
 
 #### Automated
 
-- [x] 2.1 The year-end spec passes: `npx playwright test test/e2e/year-end-download.spec.ts`
-- [x] 2.2 The Teddy Eddie spec passes: `npx playwright test test/e2e/teddy-eddie-download.spec.ts`
-- [x] 2.3 The whole suite passes: `npm run e2e` reports 4 passed
-- [x] 2.4 Type checking passes: `npx tsc --noEmit`
-- [x] 2.5 Linting passes: `npx eslint test/e2e`
-- [x] 2.6 The Teddy Eddie spec targets the real button name `PDF`
-- [x] 2.7 The defect change folder exists
+- [x] 2.1 The year-end spec passes: `npx playwright test test/e2e/year-end-download.spec.ts` — 4026d37
+- [x] 2.2 The Teddy Eddie spec passes: `npx playwright test test/e2e/teddy-eddie-download.spec.ts` — 4026d37
+- [x] 2.3 The whole suite passes: `npm run e2e` reports 4 passed — 4026d37
+- [x] 2.4 Type checking passes: `npx tsc --noEmit` — 4026d37
+- [x] 2.5 Linting passes: `npx eslint test/e2e` — 4026d37
+- [x] 2.6 The Teddy Eddie spec targets the real button name `PDF` — 4026d37
+- [x] 2.7 The defect change folder exists — 4026d37
 
 #### Manual
 
-- [x] 2.8 Deliberate break, year-end: confirmed red, then reverted
-- [x] 2.9 Deliberate break, Teddy Eddie: confirmed red; renaming its `translateKey` also breaks the spec
-- [x] 2.10 Delivered filenames match the builders' computed names, including the diacritic; any transformation recorded
-- [x] 2.11 All four specs pass on a second consecutive run
+- [x] 2.8 Deliberate break, year-end: confirmed red, then reverted — 4026d37
+- [x] 2.9 Deliberate break, Teddy Eddie: confirmed red; renaming its `translateKey` also breaks the spec — 4026d37
+- [x] 2.10 Delivered filenames match the builders' computed names, including the diacritic; any transformation recorded — 4026d37
+- [x] 2.11 All four specs pass on a second consecutive run — 4026d37
 
 ### Phase 3: Document the layer
 
 #### Automated
 
-- [ ] 3.1 §6.7 no longer reads TBD
-- [ ] 3.2 The §3 Phase 5 row cites this change folder
-- [ ] 3.3 The full suite still passes: `npm run e2e` reports 4 passed
-- [ ] 3.4 Type checking and linting still pass
+- [x] 3.1 §6.7 no longer reads TBD
+- [x] 3.2 The §3 Phase 5 row cites this change folder
+- [x] 3.3 The full suite still passes: `npm run e2e` reports 4 passed
+- [x] 3.4 Type checking and linting still pass
 
 #### Manual
 
-- [ ] 3.5 §6.7 is specific enough to add a fifth spec from it without reading this plan
-- [ ] 3.6 No section of `test-plan.md` contradicts another after this change
-- [ ] 3.7 The picker gap is stated as a decision with reasoning, not as an omission
+- [x] 3.5 §6.7 is specific enough to add a fifth spec from it without reading this plan
+- [x] 3.6 No section of `test-plan.md` contradicts another after this change
+- [x] 3.7 The picker gap is stated as a decision with reasoning, not as an omission
