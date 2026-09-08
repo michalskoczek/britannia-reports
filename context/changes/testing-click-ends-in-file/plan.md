@@ -1,4 +1,4 @@
-# The Click Ends In A File — E2E Delivery Layer Implementation Plan
+# The Click Ends In A File — E2E Delivery Layer Implementation   Plan
 
 ## Overview
 
@@ -188,7 +188,8 @@ Expected filename, from `cambridge-report.component.ts:424-425`:
 - Type checking passes: `npx tsc --noEmit`
 - Linting passes: `npx eslint test/e2e`
 - Neither spec destructures the `student` or `roster` fixture:
-  `grep -c "^  roster,\|^  student,\|^  roster:\|^  student:" test/e2e/semester-download.spec.ts test/e2e/cambridge-download.spec.ts` returns `0` for both.
+  `grep -c "^  roster,\|^  student,\|^  roster:\|^  student:" test/e2e/semester-download.spec.ts test/e2e/cambridge-download.spec.ts`
+  returns `0` for both.
   (Corrected during Phase 1. The original form, `grep -L "roster\|student:"`, matched the bare
   word in a doc comment explaining *why* the spec avoids the roster — it tested prose, not
   fixture usage, and would have been satisfied by deleting the comment that documents the
@@ -258,11 +259,17 @@ component `teddy-eddie-form.component.html:3`, reached by role like any other fi
 download control, which must be located by the name it actually renders:
 
 ```ts
-page.getByRole('button', {name: 'PDF'})
+page.getByRole('button', {name: 'PDF', exact: true})
 ```
 
 A carried-over `{ name: 'Generuj PDF' }` will not find this control. The spec carries a comment
-stating why, pointing at the change folder opened below. Produces the same filename shape as
+stating why, pointing at the change folder opened below.
+
+`exact` was added during Phase 2 and is load-bearing. `getByRole`'s `name` substring-matches, and
+`PDF` is a substring of `Generuj PDF` — so the loose form written here still found the button after
+the defect was *fixed*. Confirmed empirically: under a rename of `[translateKey]` to `'downloadPDF'`
+the loose locator stayed green and the exact one went red. Without `exact`, criterion 2.9 cannot be
+satisfied, and the spec would hard-code a name it calls a bug while testifying to nothing. Produces the same filename shape as
 year-end (`teddy-eddie-report.component.ts:333-334`), so the same VERIFY confirmation applies.
 
 #### 3. Change folder for the translate-key defect
@@ -289,7 +296,7 @@ record that fixing it changes the button's accessible name and therefore require
 - Type checking passes: `npx tsc --noEmit`
 - Linting passes: `npx eslint test/e2e`
 - The Teddy Eddie spec targets the real button name: `grep -c "name: 'PDF'" test/e2e/teddy-eddie-download.spec.ts`
-  returns `1`
+  returns `1` (satisfied by the `exact: true` form, which is what makes the locator discriminate)
 - The defect change folder exists: `test -f context/changes/<new-change-id>/change.md`
 
 #### Manual Verification:
@@ -432,38 +439,38 @@ Not applicable — no production code, schema, or data changes.
 
 #### Automated
 
-- [x] 1.1 The semester spec passes: `npx playwright test test/e2e/semester-download.spec.ts`
-- [x] 1.2 The Cambridge spec passes: `npx playwright test test/e2e/cambridge-download.spec.ts`
-- [x] 1.3 Type checking passes: `npx tsc --noEmit`
-- [x] 1.4 Linting passes: `npx eslint test/e2e`
-- [x] 1.5 Neither spec destructures the `student` or `roster` fixture
-- [x] 1.6 No time-based waiting in either spec
+- [x] 1.1 The semester spec passes: `npx playwright test test/e2e/semester-download.spec.ts` — ac211ea
+- [x] 1.2 The Cambridge spec passes: `npx playwright test test/e2e/cambridge-download.spec.ts` — ac211ea
+- [x] 1.3 Type checking passes: `npx tsc --noEmit` — ac211ea
+- [x] 1.4 Linting passes: `npx eslint test/e2e` — ac211ea
+- [x] 1.5 Neither spec destructures the `student` or `roster` fixture — ac211ea
+- [x] 1.6 No time-based waiting in either spec — ac211ea
 
 #### Manual
 
-- [x] 1.7 Deliberate break, semester: confirmed red for the right reason, then reverted
-- [x] 1.8 Deliberate break, Cambridge: confirmed red, then reverted
-- [x] 1.9 The delivered file opens as a valid PDF naming the run's student
-- [x] 1.10 Both specs pass on a second consecutive run with no manual cleanup
+- [x] 1.7 Deliberate break, semester: confirmed red for the right reason, then reverted — ac211ea
+- [x] 1.8 Deliberate break, Cambridge: confirmed red, then reverted — ac211ea
+- [x] 1.9 The delivered file opens as a valid PDF naming the run's student — ac211ea
+- [x] 1.10 Both specs pass on a second consecutive run with no manual cleanup — ac211ea
 
 ### Phase 2: Ungated reports — year-end and Teddy Eddie
 
 #### Automated
 
-- [ ] 2.1 The year-end spec passes: `npx playwright test test/e2e/year-end-download.spec.ts`
-- [ ] 2.2 The Teddy Eddie spec passes: `npx playwright test test/e2e/teddy-eddie-download.spec.ts`
-- [ ] 2.3 The whole suite passes: `npm run e2e` reports 4 passed
-- [ ] 2.4 Type checking passes: `npx tsc --noEmit`
-- [ ] 2.5 Linting passes: `npx eslint test/e2e`
-- [ ] 2.6 The Teddy Eddie spec targets the real button name `PDF`
-- [ ] 2.7 The defect change folder exists
+- [x] 2.1 The year-end spec passes: `npx playwright test test/e2e/year-end-download.spec.ts`
+- [x] 2.2 The Teddy Eddie spec passes: `npx playwright test test/e2e/teddy-eddie-download.spec.ts`
+- [x] 2.3 The whole suite passes: `npm run e2e` reports 4 passed
+- [x] 2.4 Type checking passes: `npx tsc --noEmit`
+- [x] 2.5 Linting passes: `npx eslint test/e2e`
+- [x] 2.6 The Teddy Eddie spec targets the real button name `PDF`
+- [x] 2.7 The defect change folder exists
 
 #### Manual
 
-- [ ] 2.8 Deliberate break, year-end: confirmed red, then reverted
-- [ ] 2.9 Deliberate break, Teddy Eddie: confirmed red; renaming its `translateKey` also breaks the spec
-- [ ] 2.10 Delivered filenames match the builders' computed names, including the diacritic; any transformation recorded
-- [ ] 2.11 All four specs pass on a second consecutive run
+- [x] 2.8 Deliberate break, year-end: confirmed red, then reverted
+- [x] 2.9 Deliberate break, Teddy Eddie: confirmed red; renaming its `translateKey` also breaks the spec
+- [x] 2.10 Delivered filenames match the builders' computed names, including the diacritic; any transformation recorded
+- [x] 2.11 All four specs pass on a second consecutive run
 
 ### Phase 3: Document the layer
 
