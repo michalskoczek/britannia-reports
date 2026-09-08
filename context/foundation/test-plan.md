@@ -137,24 +137,39 @@ The classic test base for this project. AI-native tools (if any) carry a
 
 ## 5. Quality Gates
 
-The full set of gates that must pass before a change reaches production.
-"Required after §3 Phase N" means the gate is enforced once that rollout
-phase lands; before that, the gate is planned.
+The full set of gates that must pass before a change reaches production,
+split by whether the gate is live right now or still waiting on a rollout
+phase. "Required after §3 Phase N" means the gate is enforced once that
+phase lands; before that, it is planned. The split exists because
+"required" otherwise means two different things in one table — lint,
+typecheck and the per-edit hook are already enforced on this machine, while
+everything else still needs CI.
+
+**Enforced on this machine today** (no CI server runs any of these):
 
 | Gate | Where | Required? | Catches |
 |---|---|---|---|
-| lint + typecheck (both build configurations) | local, then CI | required after §3 Phase 5 | syntactic and type drift, including errors that live only in the non-default environment file |
-| unit + component suite, headless | local, then CI | required after §3 Phase 5 | logic regressions, including everything Phases 1 and 2 add |
-| security-rules suite under the emulator | local, then CI | required after §3 Phase 5 | cross-teacher access regressions; this is the gate Risk #3 is entirely about |
+| lint (ESLint + `angular-eslint`) | local — per-edit hook, then `pre-commit` | **enforced today** | syntactic and lint-rule drift. Two mechanisms: `.claude/hooks/eslint-edited-file.js` runs as a `PostToolUse` hook on `Write`/`Edit`, linting and auto-fixing the single edited file; lefthook `pre-commit` runs `npx eslint {staged_files}`. Both reach `test/e2e/*.ts` — `eslint.config.js` matches `**/*.ts` with no `test/` exclusion. The `.mjs` rules tests escape both, deliberately — see §4. |
+| typecheck | local — `pre-commit` | **enforced today** | type drift project-wide. lefthook `pre-commit` runs `npx tsc --noEmit`, in parallel with the lint job. Two gaps stay open, both CI-side: `npx tsc --noEmit` does **not** read `angularCompilerOptions`, so `strictTemplates` is still unchecked by this gate; and it type-checks one environment file and not the other, so an error living only in the non-default build configuration still gets through. |
+| post-edit hook | local, agent loop | **enforced today — inside an agent session only** | lints and auto-fixes the file just edited, and exits 2 to feed unfixable errors back to the agent. Its one real limitation is its trigger: it fires only inside an agent session, so a hand edit made outside one is caught by lefthook at commit time or not at all. Never a substitute for a CI gate — which is why this table is split. |
+
+**Still planned — nothing runs these on a server yet:**
+
+| Gate | Where | Required? | Catches |
+|---|---|---|---|
+| unit + component suite, headless | local, then CI | required after §3 Phase 6 | logic regressions, including everything Phases 1 and 2 add |
+| security-rules suite under the emulator | local, then CI | required after §3 Phase 6 | cross-teacher access regressions; this is the gate Risk #3 is entirely about |
 | PDF fidelity capture and diff | local, before merge | required after §3 Phase 4, for any change touching a report component or its inputs | silent layout or content drift in a report covered by the preservation guardrail |
-| deploy preconditions (branch, build output present) | between merge and production | required after §3 Phase 5 | the two failure modes in Risk #5 that the deploy command reports as success |
-| post-edit hook | local, agent loop | optional | fast feedback at edit time; a convenience, never a substitute for the CI gates above |
-| e2e on critical flows | — | not planned | intentionally absent; see §4 |
+| deploy preconditions (branch, build output present) | between merge and production | required after §3 Phase 6 | the two failure modes in Risk #5 that the deploy command reports as success |
+| e2e on critical flows | local-first — the suite needs `npm run emulators`, `npm start` and a hand-captured session, so it cannot be lifted into CI naively | required after §3 Phase 6 | the delivery half of Risk #1: a download click that ends in no file, and uncaught browser exceptions on the way there. §3 Phase 5 builds the layer; §7 bounds what it may assert. |
 | visual diff / multimodal visual review | — | not planned | intentionally absent; see §7 |
 
-The first five rows are all wired by §3 Phase 5, except the fidelity row,
-which Phase 4 wires. No row in this table is aspirational — every required
-gate names the rollout phase that makes it real.
+No row in this table is aspirational. Every row in the still-planned group
+names the rollout phase that makes it real — Phase 6 for the three CI gates
+and the e2e gate, Phase 4 for the fidelity row — with one exception: the
+visual-diff row names no phase because it is not planned at all, and §7
+says why. The enforced group names its mechanism instead of a phase,
+because for those rows the phase already happened.
 
 ## 6. Cookbook Patterns
 

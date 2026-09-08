@@ -605,33 +605,33 @@ which is below the insertion point and unaffected.
 
 #### Automated
 
-- [x] 2.1 The §3 table has six phase rows
-- [x] 2.2 A Phase 6 exists and is "Quality gates wired"
-- [x] 2.3 Phases 1–4 are untouched in name and status
-- [x] 2.4 Phase 1's change-folder reference survives renumbering
-- [x] 2.5 No §6 cross-reference broke (§6.2→2, §6.3→3, §6.4→3, §6.5→4)
+- [x] 2.1 The §3 table has six phase rows — a9abc00
+- [x] 2.2 A Phase 6 exists and is "Quality gates wired" — a9abc00
+- [x] 2.3 Phases 1–4 are untouched in name and status — a9abc00
+- [x] 2.4 Phase 1's change-folder reference survives renumbering — a9abc00
+- [x] 2.5 No §6 cross-reference broke (§6.2→2, §6.3→3, §6.4→3, §6.5→4) — a9abc00
 
 #### Manual
 
-- [x] 2.6 The Phase 5 Goal is narrow enough not to read as "test the app end to end"
-- [x] 2.7 The ordering rationale explains the insertion point, not merely that a phase was added
-- [x] 2.8 Phase 6's Goal no longer promises what the per-edit hook and lefthook already deliver
+- [x] 2.6 The Phase 5 Goal is narrow enough not to read as "test the app end to end" — a9abc00
+- [x] 2.7 The ordering rationale explains the insertion point, not merely that a phase was added — a9abc00
+- [x] 2.8 Phase 6's Goal no longer promises what the per-edit hook and lefthook already deliver — a9abc00
 
 ### Phase 3: §5 Quality Gates — split enforced-today from still-needs-CI
 
 #### Automated
 
-- [ ] 3.1 No stale phase reference survives (`required after §3 Phase 5` count is 0)
-- [ ] 3.2 The gates phase is referenced by its new number (`§3 Phase 6` at least 3 times)
-- [ ] 3.3 The e2e row no longer reads `not planned`
-- [ ] 3.4 Both local mechanisms are named (`lefthook`, `eslint-edited-file`)
-- [ ] 3.5 The visual-diff row is untouched and still reads `not planned` pointing at §7
+- [x] 3.1 No stale phase reference survives (`required after §3 Phase 5` count is 0)
+- [x] 3.2 The gates phase is referenced by its new number (`§3 Phase 6` at least 3 times)
+- [x] 3.3 The e2e row no longer reads `not planned`
+- [x] 3.4 Both local mechanisms are named (`lefthook`, `eslint-edited-file`)
+- [x] 3.5 The visual-diff row is untouched and still reads `not planned` pointing at §7
 
 #### Manual
 
-- [ ] 3.6 A reader can answer "what stops a bad commit on my machine right now?" from §5 alone
-- [ ] 3.7 The `strictTemplates` gap is stated as open, not implied covered by `npx tsc --noEmit`
-- [ ] 3.8 No row in the still-planned group lacks a rollout-phase reference
+- [x] 3.6 A reader can answer "what stops a bad commit on my machine right now?" from §5 alone
+- [x] 3.7 The `strictTemplates` gap is stated as open, not implied covered by `npx tsc --noEmit`
+- [x] 3.8 No row in the still-planned group lacks a rollout-phase reference
 
 ### Phase 4: Evidence, boundary, and ledger closure
 
