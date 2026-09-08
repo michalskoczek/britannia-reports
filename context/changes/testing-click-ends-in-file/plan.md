@@ -476,13 +476,13 @@ Not applicable — no production code, schema, or data changes.
 
 #### Automated
 
-- [x] 3.1 §6.7 no longer reads TBD
-- [x] 3.2 The §3 Phase 5 row cites this change folder
-- [x] 3.3 The full suite still passes: `npm run e2e` reports 4 passed
-- [x] 3.4 Type checking and linting still pass
+- [x] 3.1 §6.7 no longer reads TBD — 03f5b81
+- [x] 3.2 The §3 Phase 5 row cites this change folder — 03f5b81
+- [x] 3.3 The full suite still passes: `npm run e2e` reports 4 passed — 03f5b81
+- [x] 3.4 Type checking and linting still pass — 03f5b81
 
 #### Manual
 
-- [x] 3.5 §6.7 is specific enough to add a fifth spec from it without reading this plan
-- [x] 3.6 No section of `test-plan.md` contradicts another after this change
-- [x] 3.7 The picker gap is stated as a decision with reasoning, not as an omission
+- [x] 3.5 §6.7 is specific enough to add a fifth spec from it without reading this plan — 03f5b81
+- [x] 3.6 No section of `test-plan.md` contradicts another after this change — 03f5b81
+- [x] 3.7 The picker gap is stated as a decision with reasoning, not as an omission — 03f5b81
