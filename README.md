@@ -1,22 +1,62 @@
-# BritanniaReports
+# Britannia Reports
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.6.
+A web app that lets teachers at the Britannia language school fill structured forms and
+download per-student end-of-period reports as PDF, replacing the prior workflow of
+writing each report by hand in MS Word. Four report types are supported: end-of-trimester
+/ semester, end-of-school-year, post-Cambridge-exam, and Teddy Eddie.
 
-## Development server
+Teachers sign in with a Google account (and must additionally be on the `allowedUsers`
+allowlist), keep their own student roster, and save reusable phrasing as templates — so
+each report is only the per-student delta rather than 80% retyped boilerplate. Student
+data and templates live under `users/{uid}/...` in Firestore and are owned per teacher;
+PDFs are produced client-side with pdfmake and are not retained anywhere.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+The written foundation this app is built from lives in `context/foundation/`:
 
-## Code scaffolding
+- [`prd.md`](context/foundation/prd.md) — problem, personas, scope, FR-001…FR-015, non-goals
+- [`roadmap.md`](context/foundation/roadmap.md) — slices and their status
+- [`test-plan.md`](context/foundation/test-plan.md) — the risk map and the phased test rollout
+- [`infrastructure.md`](context/foundation/infrastructure.md) — the verified deploy story
+- [`stack-assessment.md`](context/foundation/stack-assessment.md), [`health-check.md`](context/foundation/health-check.md), [`lessons.md`](context/foundation/lessons.md)
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Project conventions for anyone (or anything) writing code here are in
+[`src/CLAUDE.md`](src/CLAUDE.md). Operational runbooks — seeding the teacher allowlist,
+the PDF fidelity check, the design language — are in [`docs/`](docs/).
+
+## Stack
+
+Angular 20.3 (standalone, no `AppModule`), Angular Material + CDK, ngx-translate
+(Polish / English), Bootstrap 5, moment, pdfmake, Firebase (Auth, Firestore, Hosting).
+
+## Running it locally
+
+```bash
+npm install
+npm run emulators   # terminal 1 — Firebase Auth + Firestore emulators
+npm start           # terminal 2 — dev server on http://localhost:4200
+```
+
+Sign-in goes through the Auth emulator, so the emulators have to be up before the app is
+useful. The account you sign in with must exist in the `allowedUsers` collection of your
+Firestore emulator — see [`docs/teacher-allowlist-runbook.md`](docs/teacher-allowlist-runbook.md).
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+```bash
+npm run build       # artifacts in dist/ — Firebase Hosting serves dist/browser
+```
 
-## Running unit tests
+## Tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+```bash
+npm test            # unit / component suite (Karma + Jasmine)
+npm run test:rules  # firestore.rules against the emulator (needs a JDK)
+npm run lint
+npm run e2e         # Playwright — see below for the session setup it needs
+```
+
+`npm run test:rules` is not wired into `npm test` and there is no CI yet: run it yourself
+whenever `firestore.rules` changes, before deploying.
 
 ## Driving the app in a browser (Playwright CLI)
 
@@ -71,7 +111,3 @@ emulator instead of through the UI. It keeps its `.spec.ts` name so ESLint and
 `npx tsc --noEmit` still check it, because an exemplar nothing verifies rots into wrong
 advice. It is the reference shape §3 Phase 5 of the test plan builds on; §7 bounds what
 e2e may assert, and no quality gate in §5 runs the suite yet.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
