@@ -61,12 +61,16 @@ The suite reuses the session saved above, so run `npm run e2e:auth:save` once be
 the first run. Neither process is started by `playwright.config.ts` on purpose — see the
 comment there.
 
-`test/e2e/seed.spec.ts` is the one worked example, covering Risk #1 from
-`context/foundation/test-plan.md` §2 (a filled report that produces no PDF). Copy its
-shape: role-based locators, waits on application state rather than on time, per-run
-unique test data, and cleanup that goes straight at the emulator instead of through the
-UI. It is the reference shape §3 Phase 5 of the test plan builds on; §7 bounds what e2e
-may assert, and no quality gate in §5 runs it yet.
+`test/e2e/seed.spec.ts` is the worked example every spec here is modelled on — and it is
+**excluded from every run** by `testIgnore` in `playwright.config.ts`. It is a pattern,
+not coverage: it demonstrates the shape against Risk #1 from
+`context/foundation/test-plan.md` §2 (a filled report that produces no PDF) without being
+counted as protecting it. Copy its shape: role-based locators, waits on application state
+rather than on time, per-run unique test data, and cleanup that goes straight at the
+emulator instead of through the UI. It keeps its `.spec.ts` name so ESLint and
+`npx tsc --noEmit` still check it, because an exemplar nothing verifies rots into wrong
+advice. It is the reference shape §3 Phase 5 of the test plan builds on; §7 bounds what
+e2e may assert, and no quality gate in §5 runs the suite yet.
 
 ## Further help
 

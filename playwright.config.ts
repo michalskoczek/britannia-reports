@@ -16,6 +16,18 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './test/e2e',
+  /**
+   * `seed.spec.ts` is the exemplar new specs are modelled on, not coverage of
+   * anything — so it is excluded from every run rather than counted as a test.
+   *
+   * Excluded here rather than renamed on purpose. Keeping the `.spec.ts` name
+   * keeps the file matched by `eslint.config.js` (`**\/*.ts`) and by
+   * `npx tsc --noEmit` (`tsconfig.json` declares no `include`, so it compiles
+   * the whole tree) — both run on this machine as `pre-commit` gates. An
+   * exemplar nothing type-checks is an exemplar that rots into wrong advice,
+   * which is the one failure mode a quality lever cannot afford.
+   */
+  testIgnore: '**/seed.spec.ts',
   outputDir: './test/e2e/.output',
   fullyParallel: false,
   workers: 1,
