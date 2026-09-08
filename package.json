@@ -9,6 +9,9 @@
     "test": "ng test",
     "test:capture": "ng test --configuration capture --watch=false",
     "test:rules": "firebase emulators:exec --only firestore \"node --test test/rules\"",
+    "e2e": "playwright test",
+    "e2e:auth:save": "node test/e2e/auth-session.mjs save",
+    "e2e:auth:restore": "node test/e2e/auth-session.mjs restore",
     "emulators": "firebase emulators:start --import=./.emulator-data --export-on-exit",
     "lint": "ng lint"
   },
@@ -42,6 +45,8 @@
     "@angular/compiler-cli": "^20.3.21",
     "@eslint/js": "~9.39.4",
     "@firebase/rules-unit-testing": "^5.0.1",
+    "@playwright/cli": "^0.1.19",
+    "@playwright/test": "^1.63.0",
     "@types/jasmine": "~4.3.0",
     "angular-eslint": "~20.7.0",
     "eslint": "^9.28.0",

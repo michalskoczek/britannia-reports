@@ -65,7 +65,7 @@ test at a time.
 | 1. Edge seam + `class` guard | Fixture seam, red test for the untouched year-end form, guard at `:409` | A guard written wider than the crashing state silently breaks the fidelity invariant |
 | 2. Empty detail table | Table node suppressed when every row is deleted | Expressing "no node" inside a pdfmake content array is not obvious; `null` is not it |
 | 3. Reachability sweep | Edge coverage for Cambridge, semester, Teddy Eddie; guards only where red | Fixture floors must be derived per form; copying one across reports makes it unreachable |
-| 4. Gate pinning | Untouched-is-invalid and control-is-disabled assertions | Overlaps slightly with what §3 Phase 5 will enforce via CI |
+| 4. Gate pinning | Untouched-is-invalid and control-is-disabled assertions | Overlaps slightly with what §3 Phase 6 will enforce via CI (written as Phase 5; the gates phase was renumbered to 6 by the 2026-09-08 test-plan refresh) |
 | 5. Undocumented input classes | Long-text and non-ASCII cases | A pass proves no throw, not that diacritics rendered |
 | 6. Documentation | §6.1 cookbook, §2 correction, invariant recorded, statuses closed | Prose that nothing verifies — the exact failure this phase is fixing |
 

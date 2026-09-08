@@ -58,3 +58,16 @@ testem.log
 .DS_Store
 Thumbs.db
 
+
+# Playwright CLI scratch output (snapshots, console logs) — regenerated on every run
+/.playwright-cli
+
+# Signed-in emulator session for the Playwright CLI browser (`npm run e2e:auth:save`).
+# Machine-local and short-lived: it holds real Auth-emulator tokens for your own
+# account, and it is worthless on another machine anyway, since the emulator data
+# it points at is not shared.
+/test/e2e/.auth
+
+# Playwright run artifacts (traces, error contexts) — `npm run e2e` rewrites them
+/test/e2e/.output
+/playwright-report
