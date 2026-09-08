@@ -637,19 +637,19 @@ which is below the insertion point and unaffected.
 
 #### Automated
 
-- [x] 4.1 The calibration note is dated 2026-09-08
-- [x] 4.2 No Likelihood cell changed
-- [x] 4.3 §7 has five bullets
-- [x] 4.4 The §6.7 stub exists
-- [x] 4.5 §8 carries no remaining 2026-08-04
-- [x] 4.6 The stale docblock claim is gone from `test/e2e/seed.spec.ts`
-- [x] 4.7 `npx tsc --noEmit` and `npx eslint test/e2e/seed.spec.ts` both exit 0
-- [x] 4.8 `npx playwright test --list` reports one test
-- [x] 4.9 `git diff --stat test/e2e/seed.spec.ts` shows changes confined to the header comment
+- [x] 4.1 The calibration note is dated 2026-09-08 — 5e886b8
+- [x] 4.2 No Likelihood cell changed — 5e886b8
+- [x] 4.3 §7 has five bullets — 5e886b8
+- [x] 4.4 The §6.7 stub exists — 5e886b8
+- [x] 4.5 §8 carries no remaining 2026-08-04 — 5e886b8
+- [x] 4.6 The stale docblock claim is gone from `test/e2e/seed.spec.ts` — 5e886b8
+- [x] 4.7 `npx tsc --noEmit` and `npx eslint test/e2e/seed.spec.ts` both exit 0 — 5e886b8
+- [x] 4.8 `npx playwright test --list` reports one test — 5e886b8
+- [x] 4.9 `git diff --stat test/e2e/seed.spec.ts` shows changes confined to the header comment — 5e886b8
 
 #### Manual
 
-- [x] 4.10 §2's calibration note reads as re-sourcing, not as hedging
-- [x] 4.11 §7's new bullet and §3 Phase 5's Goal bound the same thing from opposite sides
-- [x] 4.12 Whole-document read-through finds no section contradicting another
-- [x] 4.13 §7's new bullet does not read as the fourth exclusion Q5 declined
+- [x] 4.10 §2's calibration note reads as re-sourcing, not as hedging — 5e886b8
+- [x] 4.11 §7's new bullet and §3 Phase 5's Goal bound the same thing from opposite sides — 5e886b8
+- [x] 4.12 Whole-document read-through finds no section contradicting another — 5e886b8
+- [x] 4.13 §7's new bullet does not read as the fourth exclusion Q5 declined — 5e886b8
