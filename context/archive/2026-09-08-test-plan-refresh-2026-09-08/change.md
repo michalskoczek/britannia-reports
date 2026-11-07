@@ -1,10 +1,10 @@
 ---
 change_id: test-plan-refresh-2026-09-08
 title: Refresh test-plan.md for the e2e layer, local gates, and stack drift
-status: implemented
+status: archived
 created: 2026-09-08
-updated: 2026-09-08
-archived_at: null
+updated: 2026-11-07
+archived_at: 2026-11-07T11:13:16Z
 ---
 
 ## Notes
