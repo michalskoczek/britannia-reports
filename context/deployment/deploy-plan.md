@@ -20,7 +20,7 @@ This runbook covers publishing the current SPA — the four report types (Cambri
 
 - **Firebase project: `britannia-reports`.** It is the *only* project on the account. `.firebaserc` sets it as `default`; there are no other aliases and none are needed.
 - **Live site: https://britannia-reports.web.app** — already in production. Deploys are **not** first deploys.
-- **Deploy source branch is `dev`, not `master`.** `dev` is ~156 commits ahead. Deploying from `master` would ship a much older app (it predates the Angular 20 upgrade and has no `year-report` component).
+- **Deploy source branch is `master` (since 2026-11-07).** It was fast-forwarded to the former integration branch `10xdevs`; `dev` and `10xdevs` are retired. `develop` is the integration branch and has no deploy yet (staging is planned in `docs/PLAN-AUTOMATYZACJI.md`). Before 2026-11-07 `master` was a 2023 snapshot, so any old instruction saying "never deploy from `master`" is obsolete.
 - **Signed in** as `mwskoczek@gmail.com` (`firebase login:list`). `firebase login` is only needed on a fresh machine.
 - **`firebase-tools` 15.19.0**, installed as a devDependency. Invoke via `npx firebase`; there is no `deploy` script in `package.json`.
 - **Build output is `dist/browser`.** `angular.json` sets `outputPath.base: "dist"` and `@angular/build:application` appends `browser`. `firebase.json` points `hosting.public` at `dist/browser`. **These two are coupled — never change one without the other in the same commit.**
@@ -168,7 +168,7 @@ Scoped to a hosting deploy. Auth/Firestore/Functions risks live in `infrastructu
 |---|---|---|---|
 | Silent empty deploy from a build-output path mismatch | Low (paths verified aligned 2026-07-10) | High | Step 3 file-existence gate; step 4's `found N files` line. Never edit `outputPath` and `hosting.public` apart. |
 | PDF fidelity regression — the hard guardrail | Low on a no-code deploy; **real whenever a report component changed** | High | Steps 6 and 10: explicit visual PDF diff against local output, all four reports. One mismatch ⇒ reject the deploy. |
-| Deploying the wrong branch (`master` instead of `dev`) | Medium — `master` is the repo's default branch, so tooling and habit both point at it | High | Confirm `git branch --show-current` prints `dev` before step 1. `master` lacks `year-report` entirely. |
+| Deploying the wrong branch (a feature branch, `develop`, or a stale local `master`) | Medium | High | Confirm `git branch --show-current` prints `master` and that it matches `origin/master` before step 1. |
 | An agent "fixes" `firebase.json` to `dist/britannia-reports/browser` on the strength of a stale doc | Low (source corrected) | High | Called out in Standing facts above and in `src/CLAUDE.md`. The path is `dist/browser`. |
 | Preview channel URL is public — harmless now, load-bearing once Auth lands | N/A today | Medium later | Noted in step 4. FR-001/FR-002 work must gate Auth before the next preview deploy. |
 
@@ -200,7 +200,7 @@ The old plan did get one important thing right, and it was the only document in 
 
 - **Project ID:** `britannia-reports` (global, irreversible; baked into `britannia-reports.firebaseapp.com`)
 - **Live URL:** https://britannia-reports.web.app
-- **Deploy source branch:** `dev`
+- **Deploy source branch:** `master` (since 2026-11-07; `dev` until 2026-07, then `10xdevs`)
 - **First live deploy:** 2026-06-19 12:59:43 (per `firebase hosting:channel:list`; `firebase-tools` version at that time not recorded)
 - **firebase-tools version (current):** 15.19.0
 - **Firestore:** not provisioned. Location decision recorded as `eur3`, not executed.

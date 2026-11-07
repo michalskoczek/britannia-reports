@@ -68,7 +68,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Backend / API:** absent — client-only SPA. `provideHttpClient()` (`app.config.ts:27`) serves the i18n loader, not a backend. No server, no serverless functions, no Cloud Functions directory.
 - **Data:** absent — no `firebase` or `@angular/fire` dependency in `package.json`; no `firestore.rules`, no indexes file, no migrations. `firebase firestore:databases:list` returns `No databases found`.
 - **Auth:** absent — no provider integration, no sign-in path, no session or token handling, no route-level guard.
-- **Deploy / infra:** partial — Firebase Hosting is **live** at `https://britannia-reports.web.app`, deployed from the `dev` branch. `firebase.json` (public dir `dist/browser`, SPA rewrite) and `.firebaserc` (project `britannia-reports`) are on disk; `firebase-tools` 15.19.0 is a devDependency. No CI/CD — `.github/` does not exist.
+- **Deploy / infra:** partial — Firebase Hosting is **live** at `https://britannia-reports.web.app`, deployed from the `master` branch (since 2026-11-07; earlier `dev`, then `10xdevs`). `firebase.json` (public dir `dist/browser`, SPA rewrite) and `.firebaserc` (project `britannia-reports`) are on disk; `firebase-tools` 15.19.0 is a devDependency. No CI/CD — `.github/` does not exist.
 - **Observability:** absent — no logging library, no error tracking, no analytics. The only diagnostic in the tree is `console.error(err)` at `src/main.ts:6`.
 
 Two decisions already recorded upstream and treated as settled by this roadmap:
