@@ -3,7 +3,7 @@ project: "Britannia Reports"
 version: 1
 status: draft
 created: 2026-07-10
-updated: 2026-08-03
+updated: 2026-11-07
 prd_version: 1
 main_goal: low-complexity
 top_blocker: time
@@ -34,7 +34,7 @@ The change turns a stateless public tool into a stateful, signed-in product. The
 
 | ID   | Change ID                     | Outcome (user can …)                                                          | Prerequisites | PRD refs                                          | Status   |
 | ---- | ----------------------------- | ----------------------------------------------------------------------------- | ------------- | ------------------------------------------------- | -------- |
-| F-01 | `identity-and-data-platform`  | (foundation) an identity provider and a persistent store exist, and deny by default | —             | §Access Control Changes, FR-001, FR-002, OQ-3     | ready    |
+| F-01 | `identity-and-data-platform`  | (foundation) an identity provider and a persistent store exist, and deny by default | —             | §Access Control Changes, FR-001, FR-002, OQ-3     | done |
 | F-02 | `pdf-fidelity-baseline`       | (foundation) a repeatable before/after PDF comparison exists for all four report types | —             | §Success Criteria (Guardrails), FR-015, FR-016, FR-017 | ready    |
 | S-05a | `report-design-language`     | (enabling) the visual language is extracted from the Teddy Eddie form into tokens, mixins, and shared patterns, and written down | F-01, F-02    | OQ-1                                              | merged, **deployed 2026-07-30** |
 | S-05b | `report-design-refresh`      | fill the semester, year-end, and Cambridge **forms** in that same visual language | S-05a         | OQ-1, FR-014, FR-015, FR-016, FR-017              | done, **deployed 2026-07-30** |
@@ -89,7 +89,7 @@ Two decisions already recorded upstream and treated as settled by this roadmap:
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** The store's region is a **one-way door** — `infrastructure.md` records `eur3`, and changing it later means a new database plus a data migration, not a config edit. That irreversibility is the entire reason this is a foundation rather than the first step of `S-01`: it must be decided deliberately, once, before any slice writes a byte. Enabling the identity provider is a manual console step with no CLI equivalent, so it needs a human's hands before any agent can proceed. Scope discipline matters here: the temptation is to design the whole data model now. Resist it — every collection this MVP needs is introduced by the slice that first reads or writes it, and `S-01`, `S-02`, and `S-03` each still integrate this layer through real user capabilities.
-- **Status:** ready
+- **Status:** done — archived 2026-11-07
 
 ### F-02: PDF fidelity baseline
 
@@ -274,3 +274,4 @@ Two decisions already recorded upstream and treated as settled by this roadmap:
 
 - **S-05b: A teacher filling the semester, year-end, or Cambridge form sees the same visual language the Teddy Eddie form already uses — colours, component styling, table styling — instead of the older design those three forms still carry. The generated PDFs are visually identical to today's.** — Archived 2026-07-29 → `context/archive/2026-07-28-report-design-refresh/`. Lesson: a plan's own stop-condition is only a guardrail if the phase that trips it stops — the year-end `mat-table` conversion tripped one and merged anyway (Open Roadmap Question #7).
 - **S-01: A teacher signs in with a Google account and reaches the four existing report forms; a visitor who is not signed in lands on a sign-in screen and cannot reach any form.** — Archived 2026-07-29 → `context/archive/2026-07-28-google-sign-in-gate/`. Lesson: a green unit suite says nothing about the Firebase seam — three defects reached a running browser through it.
+- **F-01: (foundation) a Google identity provider is enabled and a persistent store exists in the recorded region, wired into the app's global providers, with access rules that deny everything by default. No collections, no schemas, no queries — those arrive with the slices that need them.** — Archived 2026-11-07 → `context/archive/2026-07-21-identity-and-data-platform/`. Lesson: —.
