@@ -28,7 +28,7 @@ Brownfield change to an existing Angular web app: turn a stateless public PDF-fo
 
 **Tech stack.** Angular 20.3, Angular Material + Angular CDK, ngx-translate v17 (Polish / English i18n; provider-based API — `provideTranslateService` / `provideTranslateHttpLoader`), Bootstrap 5, moment + `@angular/material-moment-adapter` (locale `pl-PL`, date display `DD.MM.YYYY`), pdfmake (PDF generation), TypeScript throughout.
 
-**Deployment surface.** Firebase Hosting is live, not merely tooling on disk: `firebase.json` (`hosting.public` → `dist/browser`) and `.firebaserc` (project `britannia-reports`) are committed, and the app serves at https://britannia-reports.web.app. Deploys ship from the `dev` branch. See `context/foundation/infrastructure.md` for the verified deploy story.
+**Deployment surface.** Firebase Hosting is live, not merely tooling on disk: `firebase.json` (`hosting.public` → `dist/browser`) and `.firebaserc` (project `britannia-reports`) are committed, and the app serves at https://britannia-reports.web.app. Deploys ship from the `master` branch (since 2026-11-07; earlier from `dev`). See `context/foundation/infrastructure.md` for the verified deploy story.
 
 **Current user base.** Teachers at Britannia language school — a single-tenant deployment. There are no accounts today: the app is accessible to anyone who has the URL.
 

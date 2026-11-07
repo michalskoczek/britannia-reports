@@ -10,7 +10,7 @@ archived_at: null
 ## Notes
 
 Found while writing `test/e2e/teddy-eddie-download.spec.ts`
-(`context/changes/testing-click-ends-in-file/` Phase 2). Recorded, not fixed —
+(`context/archive/2026-09-08-testing-click-ends-in-file/` Phase 2). Recorded, not fixed —
 that plan changes no production code.
 
 - **Symptom:** the Teddy Eddie report's download button reads **`PDF`** to both

@@ -1,10 +1,10 @@
 ---
 change_id: testing-pdf-input-space
 title: PDF generation survives the real input space
-status: implemented
+status: archived
 created: 2026-08-11
-updated: 2026-08-14
-archived_at: null
+updated: 2026-11-07
+archived_at: 2026-11-07T11:12:50Z
 ---
 
 ## Notes

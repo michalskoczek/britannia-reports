@@ -1,10 +1,10 @@
 ---
 change_id: student-picker-in-report
 title: Pre-fill student-identity fields from the roster in the trimester/semester report
-status: impl_reviewed
+status: archived
 created: 2026-07-31
-updated: 2026-08-04
-archived_at: null
+updated: 2026-11-07
+archived_at: 2026-11-07T11:12:38Z
 ---
 
 ## Notes
