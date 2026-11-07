@@ -1,10 +1,10 @@
 ---
 change_id: testing-click-ends-in-file
 title: E2E — the download click a teacher makes ends in a file
-status: implemented
+status: archived
 created: 2026-09-08
-updated: 2026-09-08
-archived_at: null
+updated: 2026-11-07
+archived_at: 2026-11-07T11:13:03Z
 ---
 
 ## Notes
