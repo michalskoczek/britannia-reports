@@ -3,7 +3,7 @@ project: "Britannia Reports"
 version: 1
 status: draft
 created: 2026-07-10
-updated: 2026-08-03
+updated: 2026-11-07
 prd_version: 1
 main_goal: low-complexity
 top_blocker: time
@@ -34,9 +34,9 @@ The change turns a stateless public tool into a stateful, signed-in product. The
 
 | ID   | Change ID                     | Outcome (user can …)                                                          | Prerequisites | PRD refs                                          | Status   |
 | ---- | ----------------------------- | ----------------------------------------------------------------------------- | ------------- | ------------------------------------------------- | -------- |
-| F-01 | `identity-and-data-platform`  | (foundation) an identity provider and a persistent store exist, and deny by default | —             | §Access Control Changes, FR-001, FR-002, OQ-3     | ready    |
-| F-02 | `pdf-fidelity-baseline`       | (foundation) a repeatable before/after PDF comparison exists for all four report types | —             | §Success Criteria (Guardrails), FR-015, FR-016, FR-017 | ready    |
-| S-05a | `report-design-language`     | (enabling) the visual language is extracted from the Teddy Eddie form into tokens, mixins, and shared patterns, and written down | F-01, F-02    | OQ-1                                              | merged, **deployed 2026-07-30** |
+| F-01 | `identity-and-data-platform`  | (foundation) an identity provider and a persistent store exist, and deny by default | —             | §Access Control Changes, FR-001, FR-002, OQ-3     | done |
+| F-02 | `pdf-fidelity-baseline`       | (foundation) a repeatable before/after PDF comparison exists for all four report types | —             | §Success Criteria (Guardrails), FR-015, FR-016, FR-017 | done |
+| S-05a | `report-design-language`     | (enabling) the visual language is extracted from the Teddy Eddie form into tokens, mixins, and shared patterns, and written down | F-01, F-02    | OQ-1                                              | done, **deployed 2026-07-30** |
 | S-05b | `report-design-refresh`      | fill the semester, year-end, and Cambridge **forms** in that same visual language | S-05a         | OQ-1, FR-014, FR-015, FR-016, FR-017              | done, **deployed 2026-07-30** |
 | S-01 | `google-sign-in-gate`         | sign in with Google and reach the four existing report forms; unauthenticated visitors cannot | F-01, F-02    | FR-001, FR-002, FR-003, FR-004, FR-014, FR-015, FR-016, FR-017, FR-018 | done, **deployed 2026-07-30** |
 | S-02 | `trimester-report-templates`  | save a trimester/semester report as a named template, list, apply, and delete templates | S-01          | US-01, FR-009, FR-010, FR-011, FR-012, FR-014, FR-018 | done, **deployed 2026-07-30** |
@@ -68,7 +68,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Backend / API:** absent — client-only SPA. `provideHttpClient()` (`app.config.ts:27`) serves the i18n loader, not a backend. No server, no serverless functions, no Cloud Functions directory.
 - **Data:** absent — no `firebase` or `@angular/fire` dependency in `package.json`; no `firestore.rules`, no indexes file, no migrations. `firebase firestore:databases:list` returns `No databases found`.
 - **Auth:** absent — no provider integration, no sign-in path, no session or token handling, no route-level guard.
-- **Deploy / infra:** partial — Firebase Hosting is **live** at `https://britannia-reports.web.app`, deployed from the `dev` branch. `firebase.json` (public dir `dist/browser`, SPA rewrite) and `.firebaserc` (project `britannia-reports`) are on disk; `firebase-tools` 15.19.0 is a devDependency. No CI/CD — `.github/` does not exist.
+- **Deploy / infra:** partial — Firebase Hosting is **live** at `https://britannia-reports.web.app`, deployed from the `master` branch (since 2026-11-07; earlier `dev`, then `10xdevs`). `firebase.json` (public dir `dist/browser`, SPA rewrite) and `.firebaserc` (project `britannia-reports`) are on disk; `firebase-tools` 15.19.0 is a devDependency. No CI/CD — `.github/` does not exist.
 - **Observability:** absent — no logging library, no error tracking, no analytics. The only diagnostic in the tree is `console.error(err)` at `src/main.ts:6`.
 
 Two decisions already recorded upstream and treated as settled by this roadmap:
@@ -89,7 +89,7 @@ Two decisions already recorded upstream and treated as settled by this roadmap:
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** The store's region is a **one-way door** — `infrastructure.md` records `eur3`, and changing it later means a new database plus a data migration, not a config edit. That irreversibility is the entire reason this is a foundation rather than the first step of `S-01`: it must be decided deliberately, once, before any slice writes a byte. Enabling the identity provider is a manual console step with no CLI equivalent, so it needs a human's hands before any agent can proceed. Scope discipline matters here: the temptation is to design the whole data model now. Resist it — every collection this MVP needs is introduced by the slice that first reads or writes it, and `S-01`, `S-02`, and `S-03` each still integrate this layer through real user capabilities.
-- **Status:** ready
+- **Status:** done — archived 2026-11-07
 
 ### F-02: PDF fidelity baseline
 
@@ -102,7 +102,7 @@ Two decisions already recorded upstream and treated as settled by this roadmap:
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Sequenced first because a regression barrier captured *after* the first change has already lost the thing it was supposed to protect. The scope trap is building a pixel-diff harness; under `main_goal: low-complexity` this is reference inputs plus committed reference PDFs and a written comparison procedure — `src/CLAUDE.md` already prescribes the manual before/after check, and this foundation just makes it reproducible rather than remembered.
-- **Status:** ready
+- **Status:** done — archived 2026-11-07
 
 ## Slices
 
@@ -120,7 +120,7 @@ Two decisions already recorded upstream and treated as settled by this roadmap:
   - The Teddy Eddie form is the reference design, but it was never written down as one — which parts are the intended language and which are incidental to that form is unrecorded. Deciding that boundary *is* this slice's work. — Owner: implementer. Block: no.
 - **Risk:** This slice exists because of a contract, not a feature. `src/assets/styles/utils/` currently holds six flat colour variables and is `@use`d by twelve component stylesheets; `src/CLAUDE.md` already names Teddy Eddie the styling reference and the older three "not the reference". Extracting that into a stable, additive token set is what lets `S-05b` and `S-01` proceed without fighting over the same files. **The token names it publishes are a contract** — once `S-01` compiles against them, renaming one is a breaking change, so prefer additive extension afterwards. Keep it genuinely small: this is extraction and naming, not a design system. If it grows past the shared style layer and the shared form/UI components, it has absorbed `S-05b`'s work and the split has stopped paying for itself.
 - **Outcome (2026-07-28):** delivered in three phases plus an epilogue (`675444a`, `b677cd4`, `f34ffd1`, `36c2c9b`) and merged into `10xdevs-m2l5`. The published contract is `src/assets/styles/utils/` (six token files behind `index.scss`) plus `src/assets/styles/patterns/` (composite mixins, forwarded through `mixins.scss` so existing `@use` paths keep resolving), documented in `docs/design-language.md`. The split paid off exactly as predicted: `S-01` and `S-05b` then ran concurrently and collided on only four files, all resolved mechanically at merge time on 2026-07-29.
-- **Status:** merged into `10xdevs-m2l5`, **deployed 2026-07-30** as part of `S-02`'s Phase 6
+- **Status:** done — archived 2026-11-07; merged into `10xdevs-m2l5`, **deployed 2026-07-30** as part of `S-02`'s Phase 6
 
 ### S-05b: UI improvements — apply the language to the three forms
 
@@ -175,7 +175,7 @@ Two decisions already recorded upstream and treated as settled by this roadmap:
   - **The field-domain boundary is machine-checked, not documented.** `src/app/templates/template-domain.ts` partitions all 48 controls of the trimester/semester form into four disjoint sets — `TEMPLATE_DOMAIN` (10), `STUDENT_IDENTITY_FIELDS` (4), `PER_STUDENT_FIELDS` (12), `UNREACHABLE_FIELDS` (22) — and `semestr-report.component.spec.ts` asserts pairwise disjointness plus that the union equals `Object.keys(form.controls)` exactly. See the note under `S-04`.
   - **The domain was narrowed below what FR-011 permits.** Every per-student assessment field stays out: a template that pre-filled a mark would turn "the teacher missed one select" into "a parent received another child's grade". `realizedMaterial` and every organizational select are in, so the mechanical bulk of the retyping is still removed.
   - **Rules enforce more than the UI does.** `allow update: if false` on `users/{uid}/reportTemplates/{templateId}`, with the normalized name as the document id, makes PRD's write-once non-goal and the uniqueness of template names one store-level invariant rather than two UI checks.
-- **Status:** done — implemented and **deployed 2026-07-30**. Phase 6 ran: Firestore rules released first, then hosting (28 files from `dist/browser`), publishing `S-05b` + `S-01` + `S-02` in one release; App Check enforcement enabled after confirming verified requests. Shipped **without** the FR-004 cutover message, deliberately — see Open Roadmap Question #2. Post-deploy verification against production passed, including a second seeded account seeing only its own templates.
+- **Status:** done — archived 2026-11-07; implemented and **deployed 2026-07-30**. Phase 6 ran: Firestore rules released first, then hosting (28 files from `dist/browser`), publishing `S-05b` + `S-01` + `S-02` in one release; App Check enforcement enabled after confirming verified requests. Shipped **without** the FR-004 cutover message, deliberately — see Open Roadmap Question #2. Post-deploy verification against production passed, including a second seeded account seeing only its own templates.
 
 ### S-03: Student roster
 
@@ -197,7 +197,7 @@ Two decisions already recorded upstream and treated as settled by this roadmap:
   - **The `S-04` seam is machine-checked, not documented.** `src/app/students/student-domain.spec.ts` asserts `STUDENT_IDENTITY_DOMAIN` names exactly the same four controls as `templates/template-domain.ts`'s `STUDENT_IDENTITY_FIELDS`. If either side drifts, a spec fails instead of the picker silently ceasing to fill a field.
 - **What it cost that the plan did not predict:** adding a second file to `test/rules/` broke the first one. `node --test` runs one process per file in parallel against one emulator, and `@firebase/rules-unit-testing` namespaces by `projectId` — so two files sharing an id share a dataset, and each `clearFirestore()` deleted the other's fixtures mid-test. The symptom appeared in the untouched templates suite. Recorded in `context/foundation/lessons.md` and at the bottom of `firestore.rules`.
 - **Known consequence, deliberately not solved here:** navigating to `/students` destroys `ShellComponent`, so the active tab resets to Teddy Eddie and any half-filled report form is lost. Tolerable for `S-03` — roster management happens *before* report writing. **Not tolerable for `S-04`**, where "this student isn't in my roster yet" arrives mid-report; that slice needs either an in-form quick-add or preserved form state. Recorded in `src/CLAUDE.md`. **Resolved 2026-08-03 by `S-04`'s quick-add** — the picker creates a student in place, so the mid-report case never navigates. The shell reset itself is unchanged and still not a bug.
-- **Status:** done — implemented and **deployed 2026-07-31**. Phase 5 ran: `10xdevs-S03` fast-forwarded into `10xdevs` (`3c67a3e`), Firestore rules released first, then hosting. Post-deploy verification against production passed, including a second seeded account seeing only its own roster and the four report forms still rendering and downloading a PDF.
+- **Status:** done — archived 2026-11-07; implemented and **deployed 2026-07-31**. Phase 5 ran: `10xdevs-S03` fast-forwarded into `10xdevs` (`3c67a3e`), Firestore rules released first, then hosting. Post-deploy verification against production passed, including a second seeded account seeing only its own roster and the four report forms still rendering and downloading a PDF.
 
 ### S-04: Student picker in the trimester/semester report
 
@@ -218,7 +218,7 @@ Two decisions already recorded upstream and treated as settled by this roadmap:
   - **The shell-reset cost was paid with quick-add, not with preserved state.** The note above budgeted for "either an in-form quick-add or preserved shell state". Quick-add won: the picker mounts the same `StudentFormComponent` the roster uses, calls `validate()` then `create()`, selects the new student, and routes through the same confirm path a manual pick uses. No `RouteReuseStrategy`, no preserved shell, no navigation — so the form is never destroyed. Leaving the shell still drops the form; that is unchanged and now unnecessary for this case. `src/CLAUDE.md` records the resolution so the open question is not rebuilt as a navigation refactor.
   - **The PDF-fidelity check was narrowed, not skipped — and it came back byte-identical.** `src/CLAUDE.md` puts the `pdfmake` document definition *and its inputs* behind `docs/pdf-fidelity-check.md`, and the remap rewrites inputs. A four-type baseline was captured in Phase 1 from the branch point `67588f4`, before any edit, and re-captured in Phase 3: all eight files identical in size, with every differing byte inside the two documented non-deterministic regions (`/CreationDate`, the trailer `/ID`). No content stream differs by a byte. What was *not* done is a field-by-field re-verification of the other three report types, which this slice cannot reach.
 - **Extra beyond the plan (2026-08-03):** one unplanned commit, `89aaa48`, laid the trimester/semester form's sections out in columns (`.section-row` wrappers plus `--thirds` / `--halves` / `--grades` through the published `form-col` mixin). Template and SCSS only — no form control moved, so the 48-control partition and the `pdfmake` document definition are untouched, and the eight fidelity fixtures re-captured byte-identical. Disclosed here because it is scope the plan did not contain, not because anything about it is unresolved.
-- **Status:** done — implemented 2026-08-03 on `10xdevs-S04` and **deployed 2026-08-04**. Phase 6 ran: `10xdevs-S04` fast-forwarded into `10xdevs` (`4ddf834`), then hosting alone — no `firestore.rules` change, so the rules-first ordering `S-02` and `S-03` needed did not apply, and `npm run test:rules` was run as a regression check only (36/36). Post-deploy verification against production passed, including a second seeded account seeing only its own roster in the picker.
+- **Status:** done — archived 2026-11-07; implemented 2026-08-03 on `10xdevs-S04` and **deployed 2026-08-04**. Phase 6 ran: `10xdevs-S04` fast-forwarded into `10xdevs` (`4ddf834`), then hosting alone — no `firestore.rules` change, so the rules-first ordering `S-02` and `S-03` needed did not apply, and `npm run test:rules` was run as a regression check only (36/36). Post-deploy verification against production passed, including a second seeded account seeing only its own roster in the picker.
 
 ## Backlog Handoff
 
@@ -274,3 +274,9 @@ Two decisions already recorded upstream and treated as settled by this roadmap:
 
 - **S-05b: A teacher filling the semester, year-end, or Cambridge form sees the same visual language the Teddy Eddie form already uses — colours, component styling, table styling — instead of the older design those three forms still carry. The generated PDFs are visually identical to today's.** — Archived 2026-07-29 → `context/archive/2026-07-28-report-design-refresh/`. Lesson: a plan's own stop-condition is only a guardrail if the phase that trips it stops — the year-end `mat-table` conversion tripped one and merged anyway (Open Roadmap Question #7).
 - **S-01: A teacher signs in with a Google account and reaches the four existing report forms; a visitor who is not signed in lands on a sign-in screen and cannot reach any form.** — Archived 2026-07-29 → `context/archive/2026-07-28-google-sign-in-gate/`. Lesson: a green unit suite says nothing about the Firebase seam — three defects reached a running browser through it.
+- **F-01: (foundation) a Google identity provider is enabled and a persistent store exists in the recorded region, wired into the app's global providers, with access rules that deny everything by default. No collections, no schemas, no queries — those arrive with the slices that need them.** — Archived 2026-11-07 → `context/archive/2026-07-21-identity-and-data-platform/`. Lesson: —.
+- **F-02: (foundation) a repeatable procedure exists for comparing a report's PDF before and after a change, with reference form inputs and reference PDFs captured for all four report types.** — Archived 2026-11-07 → `context/archive/2026-07-24-pdf-fidelity-baseline/`. Lesson: —.
+- **S-05a: (enabling) The visual language the Teddy Eddie form already embodies exists as a named, documented set of design tokens, mixins, and shared component patterns that any surface can `@use` — instead of living implicitly in one feature folder. No user-visible change.** — Archived 2026-11-07 → `context/archive/2026-07-27-report-design-language/`. Lesson: —.
+- **S-02: A teacher saves a filled-out trimester/semester report as a named template, sees a list of their own templates, applies one to a new report (with a confirmation prompt before overwriting non-empty fields), deletes templates they no longer want, and downloads the resulting PDF.** — Archived 2026-11-07 → `context/archive/2026-07-30-trimester-report-templates/`. Lesson: —.
+- **S-03: A teacher adds a student with a name and a free-text class label, views a list of their own students, edits a student's information, and deletes a student.** — Archived 2026-11-07 → `context/archive/2026-07-31-student-roster/`. Lesson: —.
+- **S-04: A teacher picks a student from their roster when starting a trimester/semester report, and the student-identity fields pre-fill from the picked student — completing the full flow described in US-01 and in the PRD's primary success criterion.** — Archived 2026-11-07 → `context/archive/2026-07-31-student-picker-in-report/`. Lesson: —.

@@ -91,11 +91,11 @@ orchestrator updates Status as artifacts appear on disk.
 
 | # | Phase name | Goal (one line) | Risks covered | Test types | Status | Change folder |
 |---|---|---|---|---|---|---|
-| 1 | PDF generation survives the real input space | Prove a teacher's report never fails to produce a file for input they could legitimately enter | #1 | unit, component | done | `context/changes/testing-pdf-input-space/` |
+| 1 | PDF generation survives the real input space | Prove a teacher's report never fails to produce a file for input they could legitimately enter | #1 | unit, component | done | `context/archive/2026-08-11-testing-pdf-input-space/` |
 | 2 | Pre-fill correctness across the three writers | Prove that whatever order a teacher picks, applies and edits in, no field carries another child's or another gender's content | #2 | component integration | not started | — |
 | 3 | The access boundary is the rules, not the client | Prove a non-owning or de-allowlisted caller is denied at the store, regardless of client state | #3, #4 | rules tests, unit | not started | — |
 | 4 | Year-end fidelity baseline recovered | Give the one preserved report whose fidelity was never verified a real pre-change comparison | #6 | fidelity capture and diff | not started | — |
-| 5 | The click ends in a file | Prove the delivery half of Risk #1 in a real browser: that the download a teacher actually clicks produces a file, and that the page stays free of uncaught exceptions while doing it | #1 (delivery half only; Phase 1 closed the builder half) | e2e | done | `context/changes/testing-click-ends-in-file/` |
+| 5 | The click ends in a file | Prove the delivery half of Risk #1 in a real browser: that the download a teacher actually clicks produces a file, and that the page stays free of uncaught exceptions while doing it | #1 (delivery half only; Phase 1 closed the builder half) | e2e | done | `context/archive/2026-09-08-testing-click-ends-in-file/` |
 | 6 | Quality gates wired | Put on a server the checks nothing yet runs there: CI, the rules suite on a gate (`npm run test:rules` exists and nothing invokes it), and deploy preconditions on branch and build output — lint and types are already enforced on this machine by the per-edit hook and lefthook `pre-commit`, so the gap is CI, not the checks themselves | #5, and enforcement for #1–#4, #6, and the e2e layer Phase 5 builds | gates | not started | — |
 
 Ordering rationale: Phase 1 attacks the highest-rated risk against a
@@ -522,7 +522,7 @@ these unless the underlying assumption changes.
   reachable crashes it found live in the ungated year-end form. **This
   exclusion is about ongoing *feature* coverage, not generation
   robustness** — the distinction was drawn at research time and is recorded
-  in `context/changes/testing-pdf-input-space/change.md`. (Source: Phase 2
+  in `context/archive/2026-08-11-testing-pdf-input-space/change.md`. (Source: Phase 2
   interview Q5; scope clarified 2026-08-14.)
 - **PL/EN translation key completeness** — parity is verified by hand and
   currently holds; a test here would restate a check that already happens.

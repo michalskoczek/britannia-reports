@@ -1,10 +1,10 @@
 ---
 change_id: pdf-fidelity-baseline
 title: PDF fidelity baseline — reference inputs, reference PDFs, and a before/after comparison procedure
-status: impl_reviewed
+status: archived
 created: 2026-07-24
-updated: 2026-07-27
-archived_at: null
+updated: 2026-11-07
+archived_at: 2026-11-07T11:11:47Z
 ---
 
 ## Notes

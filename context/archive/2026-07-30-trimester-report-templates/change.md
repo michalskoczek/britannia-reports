@@ -1,10 +1,10 @@
 ---
 change_id: trimester-report-templates
 title: Save, list, apply, and delete trimester/semester report templates
-status: impl_reviewed
+status: archived
 created: 2026-07-30
-updated: 2026-07-30
-archived_at: null
+updated: 2026-11-07
+archived_at: 2026-11-07T11:12:12Z
 ---
 
 ## Notes

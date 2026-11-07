@@ -1,10 +1,10 @@
 ---
 change_id: report-design-language
 title: Report design language
-status: implemented
+status: archived
 created: 2026-07-27
-updated: 2026-07-27
-archived_at: null
+updated: 2026-11-07
+archived_at: 2026-11-07T11:12:00Z
 ---
 
 ## Notes
