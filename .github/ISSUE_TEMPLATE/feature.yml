@@ -1,0 +1,51 @@
+name: Feature / change
+description: Something a teacher, the director or the developer should be able to do
+labels: [enhancement]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: Who needs what, and why. One or two sentences.
+      placeholder: A teacher picks a class and gets one PDF per student, so end-of-term reports take minutes instead of an evening.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Observable outcomes. Each line should be checkable in the app or by a test.
+      value: |
+        - [ ]
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Report forms / PDF
+        - Templates
+        - Student roster
+        - Sign-in / access
+        - Infrastructure / CI
+        - Other
+    validations:
+      required: true
+  - type: checkboxes
+    id: guardrails
+    attributes:
+      label: Guardrails
+      options:
+        - label: Changes a report's PDF output (needs the PDF-fidelity check, docs/pdf-fidelity-check.md)
+        - label: Changes firestore.rules (needs npm run test:rules and a rules-first deploy)
+  - type: input
+    id: design
+    attributes:
+      label: Design reference
+      description: Claude Design project, exported files under design/, or a Notion page. Optional.
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Context, open questions, out of scope.
