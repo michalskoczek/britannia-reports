@@ -85,11 +85,11 @@ after it.
 
 #### Automated Verification:
 
-- [ ] All four jobs green on the PR that introduces them
+- [x] All four jobs green on the PR that introduces them
 
 #### Manual Verification:
 
-- [ ] A deliberately broken gate turns its job red (e.g. a lint error pushed to a scratch branch)
+- [x] A deliberately broken gate turns its job red (e.g. a lint error pushed to a scratch branch)
 
 ## Phase 3: Make the gates required
 
@@ -104,7 +104,7 @@ after it.
 
 #### Automated Verification:
 
-- [ ] `gh api .../rulesets/26757011` lists the four required checks
+- [x] `gh api .../rulesets/26757011` lists the four required checks
 
 ## References
 
@@ -128,11 +128,11 @@ after it.
 
 #### Manual
 
-- [ ] 2.2 A deliberately broken gate turns its job red
+- [x] 2.2 A deliberately broken gate turns its job red — 405d3b2 (the rules job went red on the broken `node --test test/rules` before the fix)
 
 ### Phase 3: Make the gates required
 
 #### Automated
 
-- [ ] 3.1 Ruleset requires the four checks
-- [ ] 3.2 Docs describe the CI gates and the firebase-tools install correctly
+- [x] 3.1 Ruleset requires the four checks — set via gh api 2026-11-20
+- [x] 3.2 Docs describe the CI gates and the firebase-tools install correctly — c380530

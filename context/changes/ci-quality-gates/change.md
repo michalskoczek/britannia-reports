@@ -1,7 +1,7 @@
 ---
 change_id: ci-quality-gates
 title: Run the quality gates in GitHub Actions on every PR to develop and master
-status: planned
+status: implemented
 created: 2026-11-20
 updated: 2026-11-20
 archived_at: null
