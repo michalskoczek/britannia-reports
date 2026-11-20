@@ -16,8 +16,8 @@
  * App Check uses reCAPTCHA ENTERPRISE here (`appCheckProvider`), not the classic v3 provider
  * production runs on: Firebase stopped accepting new classic registrations, and the staging
  * project is new. The key is created in Google Cloud → Security → Fraud Defense (score-based,
- * Web, no checkbox) and has no secret half. `recaptchaSiteKey` stays empty until that key
- * exists; until then App Check cannot attest on staging, so its enforcement must stay OFF.
+ * Web, no checkbox, domain verification ON) and has no secret half. Until the staging app has
+ * produced real verified attestations, App Check enforcement must stay OFF in that project.
  */
 import { Environment } from './environment.model';
 
@@ -32,6 +32,6 @@ export const environment: Environment = {
     messagingSenderId: '272690012215',
     appId: '1:272690012215:web:7ac29c82b2b36b35a25fb2',
   },
-  recaptchaSiteKey: '',
+  recaptchaSiteKey: '6LeeASouAAAAAMQkF3UtoQDLInilQobfJ0bOL7jq',
   appCheckProvider: 'recaptcha-enterprise',
 };
