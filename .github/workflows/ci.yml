@@ -1,0 +1,120 @@
+# Quality gates on every PR into develop or master (test-plan Phase 6, change ci-quality-gates).
+#
+# Four independent jobs, so a failure names the gate that broke and the branch ruleset can
+# require each one by name. Nothing here deploys and nothing needs a secret: the rules and
+# e2e jobs run entirely against local Firebase emulators.
+name: CI
+
+on:
+  pull_request:
+    branches: [develop, master]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: '22'
+  JAVA_VERSION: '21'
+  # firebase-tools is not a project dependency (it is installed globally on the dev machine);
+  # pin the same major/minor here so emulator behaviour matches local runs.
+  FIREBASE_TOOLS_VERSION: '15.26.0'
+
+jobs:
+  static:
+    name: Lint, types, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Typecheck (tsc, default environment)
+        run: npx tsc --noEmit
+      # tsc does not read angularCompilerOptions (strictTemplates) and type-checks only one
+      # environment file — the two builds cover templates and both environments.
+      - name: Production build
+        run: npm run build
+      - name: Build output exists
+        run: test -f dist/browser/index.html
+      - name: Development build
+        run: npm run build -- --configuration development
+
+  unit:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm test -- --watch=false --browsers=ChromeHeadless
+
+  rules:
+    name: Firestore rules
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/firebase/emulators
+          key: firebase-emulators-${{ env.FIREBASE_TOOLS_VERSION }}
+      - run: npm ci
+      - run: npm install -g firebase-tools@${{ env.FIREBASE_TOOLS_VERSION }}
+      - run: npm run test:rules
+
+  e2e:
+    name: E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/firebase/emulators
+          key: firebase-emulators-${{ env.FIREBASE_TOOLS_VERSION }}
+      - run: npm ci
+      - run: npm install -g firebase-tools@${{ env.FIREBASE_TOOLS_VERSION }}
+      - run: npx playwright install --with-deps chromium
+      # Empty emulators (no --import): ci-session.mjs seeds the one allowlisted teacher the
+      # suite needs, then signs in through the emulator's account chooser.
+      - name: Emulators, dev server, session, suite
+        run: >-
+          firebase emulators:exec --only auth,firestore --project britannia-reports
+          "bash test/e2e/run-ci.sh"
+      - name: Playwright traces
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-output
+          path: test/e2e/.output/
+          retention-days: 7
