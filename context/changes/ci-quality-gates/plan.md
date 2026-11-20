@@ -124,7 +124,7 @@ after it.
 
 #### Automated
 
-- [ ] 2.1 All four CI jobs green on the introducing PR
+- [x] 2.1 All four CI jobs green on the introducing PR — 405d3b2
 
 #### Manual
 
