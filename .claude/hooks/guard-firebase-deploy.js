@@ -22,11 +22,34 @@ const { execFileSync } = require('child_process');
 
 const LIVE_DEPLOY = /\bfirebase(\.cmd)?\s+deploy\b/;
 const RELEASE_BRANCH = 'master';
-// Deploys to the staging project (client testbed, separate data) are allowed from any branch.
-// Matched per command segment, so `deploy --project staging && deploy` cannot smuggle a
-// production deploy past the check.
-const STAGING_TARGET = /(?:--project|-P)(?:=|\s+)["']?(?:staging|britannia-reports-staging)["']?(?=\s|$)/;
-const SEGMENT_SEPARATOR = /&&|\|\||;|\||\r?\n/;
+const STAGING_PROJECTS = new Set(['staging', 'britannia-reports-staging']);
+// Every shell/PowerShell command separator: `;`, `&`, `&&`, `|`, `||`, newline. Splitting on the
+// single characters covers the doubled forms too.
+const SEGMENT_SEPARATOR = /[;&|]|\r?\n/;
+// `-m "…"` / `--message "…"` carry free text that must not be read as a flag.
+const MESSAGE_ARG = /(?:^|\s)(?:-m|--message)(?:=|\s+)(?:"[^"]*"|'[^']*'|\S+)/g;
+const PROJECT_FLAG = /(?:^|\s)(?:--project|-P)(?:=|\s+)["']?([^\s"']+)["']?/g;
+
+/**
+ * True when a single command segment deploys ONLY to the staging project: it names at least one
+ * project, and every project it names is staging. A segment with no `--project` deploys to the
+ * `.firebaserc` default — production.
+ */
+function targetsOnlyStaging(segment) {
+  const flags = segment.replace(MESSAGE_ARG, ' ');
+  const projects = [...flags.matchAll(PROJECT_FLAG)].map((match) => match[1]);
+  return projects.length > 0 && projects.every((project) => STAGING_PROJECTS.has(project));
+}
+
+/**
+ * The segments of a command that would deploy to production. Checked per segment, so
+ * `deploy --project staging & deploy` cannot smuggle a production deploy past the check.
+ */
+function productionDeploySegments(command) {
+  return command
+    .split(SEGMENT_SEPARATOR)
+    .filter((segment) => LIVE_DEPLOY.test(segment) && !targetsOnlyStaging(segment));
+}
 
 function readStdin() {
   return new Promise((resolve, reject) => {
@@ -61,10 +84,7 @@ function deny(reason) {
 async function main() {
   const raw = await readStdin();
   const command = JSON.parse(raw || '{}')?.tool_input?.command ?? '';
-  const productionDeploys = command
-    .split(SEGMENT_SEPARATOR)
-    .filter((segment) => LIVE_DEPLOY.test(segment) && !STAGING_TARGET.test(segment));
-  if (productionDeploys.length === 0) return;
+  if (productionDeploySegments(command).length === 0) return;
 
   const branch = currentBranch();
   if (branch === RELEASE_BRANCH) return;
@@ -77,6 +97,11 @@ async function main() {
   );
 }
 
-main().catch((error) => {
-  deny(`guard-firebase-deploy failed, blocking to be safe: ${error?.message || error}`);
-});
+module.exports = { productionDeploySegments };
+
+// Run only as a hook, not when the test file requires the module.
+if (require.main === module) {
+  main().catch((error) => {
+    deny(`guard-firebase-deploy failed, blocking to be safe: ${error?.message || error}`);
+  });
+}

@@ -44,6 +44,14 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
       - run: npm ci
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/firebase/emulators
+          key: firebase-emulators-${{ env.FIREBASE_TOOLS_VERSION }}
       - run: npm install -g firebase-tools@${{ env.FIREBASE_TOOLS_VERSION }}
 
       - name: Build (production configuration)
@@ -62,6 +70,11 @@ jobs:
           printf '%s' "$SERVICE_ACCOUNT" > "$RUNNER_TEMP/sa.json"
           echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/sa.json" >> "$GITHUB_ENV"
 
+      # src/CLAUDE.md: run the rules suite before deploying rules. The rest of CI (lint, builds,
+      # unit, e2e) already gated the PR through the ruleset's required checks; the rules suite is
+      # repeated here because a rules deploy is the one step that cannot be rolled back with hosting.
+      - name: Firestore rules tests
+        run: npm run test:rules
       - name: Deploy Firestore rules
         run: firebase deploy --only firestore:rules --project "$FIREBASE_PROJECT" --non-interactive
       - name: Deploy hosting
