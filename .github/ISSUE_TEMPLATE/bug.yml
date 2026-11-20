@@ -1,0 +1,40 @@
+name: Bug
+description: Something in the app does not work as it should
+labels: [bug]
+body:
+  - type: textarea
+    id: observed
+    attributes:
+      label: What happened
+      description: What you saw. Paste the error text if there was one.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What should have happened
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      value: |
+        1.
+    validations:
+      required: true
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Where
+      options:
+        - Production (britannia-reports.web.app)
+        - Staging
+        - Local
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Browser, which report, which student data (no real children's names, please).
