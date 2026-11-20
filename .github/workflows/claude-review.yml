@@ -1,0 +1,72 @@
+# Automatic code review by the pr-reviewer agent (.claude/agents/pr-reviewer.md), once CI is green.
+#
+# Runs on `workflow_run`, i.e. after the CI workflow completes — so review only spends the Claude
+# subscription on PRs that already pass every hard gate. The review is advisory: it posts one
+# comment and never blocks a merge (CI is the gate).
+#
+# Security: `workflow_run` runs with this repository's secrets even when the triggering PR came
+# from a fork, so the job only proceeds for PRs whose head branch lives in this repository and
+# whose run was triggered by the repository owner. Code from anyone else is never checked out
+# with the token present.
+#
+# Cost: one review per head commit — a re-run of CI on the same commit does not review again.
+# Requires the CLAUDE_CODE_OAUTH_TOKEN secret (installed by `/install-github-app`).
+name: Claude review
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  id-token: write
+  actions: read
+
+jobs:
+  review:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.run_attempt == 1 &&
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      github.event.workflow_run.actor.login == github.repository_owner &&
+      github.event.workflow_run.pull_requests[0].number
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
+      HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+
+      - name: Skip if this commit was already reviewed
+        id: seen
+        run: |
+          if gh pr view "$PR_NUMBER" --json comments \
+              --jq ".comments[].body" | grep -q "pr-reviewer: $HEAD_SHA"; then
+            echo "reviewed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: anthropics/claude-code-action@v1
+        if: steps.seen.outputs.reviewed != 'true'
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            Use the pr-reviewer agent to review pull request #${{ env.PR_NUMBER }} of
+            ${{ github.repository }} at commit ${{ env.HEAD_SHA }}. CI is already green, so do not
+            re-run builds or tests.
+
+            Post the agent's review as ONE comment on the PR with
+            `gh pr comment ${{ env.PR_NUMBER }} --body-file <file>`, and end the comment with the
+            line `<!-- pr-reviewer: ${{ env.HEAD_SHA }} -->` so the next run can tell this commit
+            was reviewed. Do not approve, request changes, edit files, or push.
+          claude_args: >-
+            --max-turns 40
+            --allowedTools "Read,Glob,Grep,Task,Write,Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*),Bash(git diff:*),Bash(git log:*),Bash(git show:*)"

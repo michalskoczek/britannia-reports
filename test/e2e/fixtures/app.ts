@@ -8,8 +8,13 @@ import { environment } from '../../../src/environments/environment';
 // `__dirname`, not `import.meta.url`: Playwright transpiles specs to CommonJS.
 const REPO_ROOT = join(__dirname, '..', '..', '..');
 
-/** Written by `npm run e2e:auth:save`. See `test/e2e/auth-session.mjs`. */
-const SESSION_FILE = join(REPO_ROOT, 'test', 'e2e', '.auth', 'firebase-session.json');
+/**
+ * Written by `npm run e2e:auth:save` locally (see `test/e2e/auth-session.mjs`), or headlessly
+ * by `test/e2e/ci-session.mjs` in CI. `E2E_SESSION_FILE` points both at another file, so a
+ * dry run of the CI path cannot overwrite a session captured by hand.
+ */
+const SESSION_FILE =
+  process.env['E2E_SESSION_FILE'] ?? join(REPO_ROOT, 'test', 'e2e', '.auth', 'firebase-session.json');
 
 /**
  * Ports come from `firebase.json` rather than from constants here, so a port

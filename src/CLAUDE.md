@@ -22,7 +22,7 @@ npm test                                                   # Karma + Jasmine, in
 npm test -- --watch=false --browsers=ChromeHeadless        # headless single-run (use in CI / for verification)
 npm run test:capture                                       # PDF-fidelity capture → docs/pdf-fidelity/captured/ (headed Chrome only)
 npm run emulators                                          # Firebase Auth + Firestore emulators + UI (needs a JDK; run alongside npm start)
-npm run test:rules                                         # Firestore rules tests: node --test test/rules, behind emulators:exec (needs a JDK)
+npm run test:rules                                         # Firestore rules tests: node --test test/rules/*.test.mjs, behind emulators:exec (needs a JDK)
 npm run lint                                               # ESLint over **/*.ts and **/*.html
 npm run lint -- --fix                                      # auto-fix what is auto-fixable
 npx firebase deploy --only firestore:rules                 # deploy rules FIRST, before hosting (run npm run test:rules beforehand)
@@ -39,6 +39,9 @@ stale checkout can silently roll production back — in the worst case past the 
 re-exposing all four report forms publicly. `firebase deploy` cannot detect this: it publishes whatever
 is in `dist/browser` and exits 0. Firestore data does not roll back with hosting. Before building a
 release, check that `git branch --show-current` prints `master` and that it matches `origin/master`.
+For the agent this is enforced: the `PreToolUse` hook `.claude/hooks/guard-firebase-deploy.js` denies
+any `firebase deploy` command outside `master` (preview channels stay allowed). It sees only agent tool
+calls, not commands typed by hand.
 
 Running a single spec: `npm test -- --include='**/teddy-eddie-form.component.spec.ts' --watch=false --browsers=ChromeHeadless`.
 
