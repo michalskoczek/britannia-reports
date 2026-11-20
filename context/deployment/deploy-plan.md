@@ -1,5 +1,13 @@
 # Deploy Runbook — britannia-reports → Firebase Hosting
 
+> **Superseded for routine deploys on 2026-11-20.** Deploys are automated: a push to `develop` runs
+> `.github/workflows/deploy-staging.yml` (→ `britannia-reports-staging`), a push to `master` runs
+> `.github/workflows/deploy-production.yml` (→ `britannia-reports`); both run the rules suite, deploy rules
+> then hosting, and smoke-test the live site. See `docs/PLAN-AUTOMATYZACJI.md` for the whole pipeline.
+> Keep this runbook for a **manual emergency deploy** only. Parts of it predate Auth and Firestore
+> (the "Out of scope" list and the Deploy record below say they do not exist — they do, since July 2026);
+> the PDF-fidelity checks and the build-output gate in Phase 1 are still accurate.
+
 This is a **living runbook**, not a one-time plan. Follow it for every deploy of the static SPA to Firebase Hosting. It replaces the original "walking-skeleton first deploy" plan (2026-06), which described a project-creation flow that was **planned but never executed** — see [Historical note](#historical-note-what-changed-from-the-original-plan).
 
 ## Context
@@ -22,7 +30,7 @@ This runbook covers publishing the current SPA — the four report types (Cambri
 - **Live site: https://britannia-reports.web.app** — already in production. Deploys are **not** first deploys.
 - **Deploy source branch is `master` (since 2026-11-07).** It was fast-forwarded to the former integration branch `10xdevs`; `dev` and `10xdevs` are retired. `develop` is the integration branch and has no deploy yet (staging is planned in `docs/PLAN-AUTOMATYZACJI.md`). Before 2026-11-07 `master` was a 2023 snapshot, so any old instruction saying "never deploy from `master`" is obsolete.
 - **Signed in** as `mwskoczek@gmail.com` (`firebase login:list`). `firebase login` is only needed on a fresh machine.
-- **`firebase-tools` 15.19.0**, installed as a devDependency. Invoke via `npx firebase`; there is no `deploy` script in `package.json`.
+- **`firebase-tools` is installed globally** (15.26.0 as of 2026-11-20; it was removed from `devDependencies`). Invoke via `firebase` (or `npx firebase` if a global install is on the PATH); there is no `deploy` script in `package.json`.
 - **Build output is `dist/browser`.** `angular.json` sets `outputPath.base: "dist"` and `@angular/build:application` appends `browser`. `firebase.json` points `hosting.public` at `dist/browser`. **These two are coupled — never change one without the other in the same commit.**
   Note: `infrastructure.md` once called this configuration a "day-0 bug" and instructed changing `public` to `dist/britannia-reports/browser`. That was wrong and has since been corrected in that document. Do not reintroduce it: `dist/britannia-reports/` does not exist, and `firebase deploy` publishes an empty directory **without erroring**.
 - **`firebase.json`** — single `hosting` block, SPA rewrite (`**` → `/index.html`) wired correctly.
