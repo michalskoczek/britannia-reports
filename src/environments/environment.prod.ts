@@ -29,4 +29,5 @@ export const environment: Environment = {
     appId: '1:1039458477078:web:90de33b8569b522a060137',
   },
   recaptchaSiteKey: '6LfffGEtAAAAAHj0u6_WmNZLrw6FM9BbLukS05ZL',
+  appCheckProvider: 'recaptcha-v3',
 };

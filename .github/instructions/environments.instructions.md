@@ -8,6 +8,8 @@ Source: `src/CLAUDE.md` §Environments.
 
 When reviewing a change to these files:
 
+- `environment.staging.ts` must point only at the `britannia-reports-staging` project, never at
+  `britannia-reports` (production data belongs to real children) — **blocking**.
 - `environment.prod.ts` must keep `useEmulators: false`. `true` there points the live app at a
   localhost that does not exist and no gate catches it — **blocking**.
 - The Firebase config values and the reCAPTCHA site key are **public by design** (they ship in

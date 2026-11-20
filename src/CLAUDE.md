@@ -149,6 +149,8 @@ The Teddy Eddie report is the styling reference for which tokens get used togeth
 
 **Configuration lives in `src/environments/`, and the three files there have distinct jobs.** `environment.ts` (dev, `production: false`) and `environment.prod.ts` (`production: true`) each export a const named `environment`; both hold the Firebase SDK config, the reCAPTCHA site key, and the `useEmulators` flag. `environment.model.ts` exports the `Environment` interface that both files type themselves against.
 
+**Since 2026-11-20 there is a fourth file, `environment.staging.ts`**, swapped in by the `staging` build configuration (`npm run build -- --configuration staging`). It points at a **separate Firebase project, `britannia-reports-staging`** (alias `staging` in `.firebaserc`), with its own Auth, Firestore and allowlist — the client's testbed, built from `develop`. It must never point at `britannia-reports`; CI fails the build if the staging bundle contains the production project. The "dev and prod share one project" statements below remain true for those two files only.
+
 Three rules govern this, and each exists because breaking it fails silently:
 
 - **`environment.model.ts` must never be merged into either environment file.** `fileReplacements` in `angular.json` swaps `environment.ts` for `environment.prod.ts` on production builds — so the prod file *becomes* `environment.ts`, and an import between the two would resolve to the module itself. A third, never-replaced file is the only arrangement that gives them a shared compile-time contract. Without it, file replacement offers no guarantee whatsoever that the replacement matches the original's shape.

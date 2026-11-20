@@ -34,4 +34,13 @@ export interface Environment {
     appId: string;
   };
   recaptchaSiteKey: string;
+
+  /**
+   * Which App Check provider `recaptchaSiteKey` belongs to — the two key types are not
+   * interchangeable (see `src/app/app-check-provider.ts`). Production is registered with the
+   * classic `recaptcha-v3`; staging, created after Firebase stopped accepting new classic
+   * registrations, uses `recaptcha-enterprise`. Changing it requires re-registering the app in
+   * Firebase Console → App Check first.
+   */
+  appCheckProvider: 'recaptcha-v3' | 'recaptcha-enterprise';
 }

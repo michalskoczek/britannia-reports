@@ -8,10 +8,11 @@ import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
-import { ReCaptchaV3Provider, provideAppCheck, initializeAppCheck } from '@angular/fire/app-check';
+import { provideAppCheck, initializeAppCheck } from '@angular/fire/app-check';
 import { connectAuthEmulator, getAuth, provideAuth } from '@angular/fire/auth';
 import { connectFirestoreEmulator, getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { environment } from '../environments/environment';
+import { appCheckProviderFor } from './app-check-provider';
 import 'moment/locale/pl';
 import moment from 'moment';
 
@@ -72,7 +73,7 @@ export const appConfig: ApplicationConfig = {
       : [
           provideAppCheck(() =>
             initializeAppCheck(undefined, {
-              provider: new ReCaptchaV3Provider(environment.recaptchaSiteKey),
+              provider: appCheckProviderFor(environment),
               isTokenAutoRefreshEnabled: true,
             }),
           ),
