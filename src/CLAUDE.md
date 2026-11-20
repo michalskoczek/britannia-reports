@@ -39,6 +39,9 @@ stale checkout can silently roll production back — in the worst case past the 
 re-exposing all four report forms publicly. `firebase deploy` cannot detect this: it publishes whatever
 is in `dist/browser` and exits 0. Firestore data does not roll back with hosting. Before building a
 release, check that `git branch --show-current` prints `master` and that it matches `origin/master`.
+For the agent this is enforced: the `PreToolUse` hook `.claude/hooks/guard-firebase-deploy.js` denies
+any `firebase deploy` command outside `master` (preview channels stay allowed). It sees only agent tool
+calls, not commands typed by hand.
 
 Running a single spec: `npm test -- --include='**/teddy-eddie-form.component.spec.ts' --watch=false --browsers=ChromeHeadless`.
 
