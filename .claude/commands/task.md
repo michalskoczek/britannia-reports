@@ -18,5 +18,9 @@ Work on GitHub issue #$ARGUMENTS of this repository.
 5. **Verify locally** with the same gates CI runs: `npm run lint`, `npx tsc --noEmit`,
    `npm run build`, `npm test -- --watch=false --browsers=ChromeHeadless`, plus `npm run test:rules`
    when rules changed. Report anything red as red.
-6. **Open the PR into `develop`.** Conventional Commits title; body with a short summary, how it
-   was verified, and `Closes #$ARGUMENTS`. Then stop: merging is mine.
+6. **Review before the PR.** Run `/10x-impl-review <slug>` (implementation against the plan), then
+   the `pr-reviewer` agent on the branch against `origin/develop`. Fix every **Blocking** finding
+   and re-run the gates; list **Should fix** items you leave open in the PR body with a reason.
+7. **Open the PR into `develop`.** Conventional Commits title; body with a short summary, how it
+   was verified, the review outcome, and `Closes #$ARGUMENTS`. CI and the automatic
+   `Claude review` workflow then run on the PR. Stop there: merging is mine.
