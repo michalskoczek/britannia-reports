@@ -22,7 +22,7 @@ npm test                                                   # Karma + Jasmine, in
 npm test -- --watch=false --browsers=ChromeHeadless        # headless single-run (use in CI / for verification)
 npm run test:capture                                       # PDF-fidelity capture → docs/pdf-fidelity/captured/ (headed Chrome only)
 npm run emulators                                          # Firebase Auth + Firestore emulators + UI (needs a JDK; run alongside npm start)
-npm run test:rules                                         # Firestore rules tests: node --test test/rules, behind emulators:exec (needs a JDK)
+npm run test:rules                                         # Firestore rules tests: node --test test/rules/*.test.mjs, behind emulators:exec (needs a JDK)
 npm run lint                                               # ESLint over **/*.ts and **/*.html
 npm run lint -- --fix                                      # auto-fix what is auto-fixable
 npx firebase deploy --only firestore:rules                 # deploy rules FIRST, before hosting (run npm run test:rules beforehand)

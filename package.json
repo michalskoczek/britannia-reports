@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test:capture": "ng test --configuration capture --watch=false",
-    "test:rules": "firebase emulators:exec --only firestore \"node --test test/rules\"",
+    "test:rules": "firebase emulators:exec --only firestore \"node --test test/rules/*.test.mjs\"",
     "e2e": "playwright test",
     "e2e:auth:save": "node test/e2e/auth-session.mjs save",
     "e2e:auth:restore": "node test/e2e/auth-session.mjs restore",
