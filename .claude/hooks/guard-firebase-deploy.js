@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * PreToolUse hook (matcher `Bash|PowerShell`): a live Firebase deploy may only run from `master`.
+ * PreToolUse hook (matcher `Bash|PowerShell`): a PRODUCTION Firebase deploy may only run from
+ * `master`; deploys to the staging project (`--project staging`) are allowed from any branch.
  *
  * `firebase deploy` publishes whatever is in dist/browser and exits 0, so a deploy from the wrong
  * branch silently rolls production back. No GitHub ruleset can see this — the deploy runs from the
@@ -21,6 +22,11 @@ const { execFileSync } = require('child_process');
 
 const LIVE_DEPLOY = /\bfirebase(\.cmd)?\s+deploy\b/;
 const RELEASE_BRANCH = 'master';
+// Deploys to the staging project (client testbed, separate data) are allowed from any branch.
+// Matched per command segment, so `deploy --project staging && deploy` cannot smuggle a
+// production deploy past the check.
+const STAGING_TARGET = /(?:--project|-P)(?:=|\s+)["']?(?:staging|britannia-reports-staging)["']?(?=\s|$)/;
+const SEGMENT_SEPARATOR = /&&|\|\||;|\||\r?\n/;
 
 function readStdin() {
   return new Promise((resolve, reject) => {
@@ -55,15 +61,19 @@ function deny(reason) {
 async function main() {
   const raw = await readStdin();
   const command = JSON.parse(raw || '{}')?.tool_input?.command ?? '';
-  if (!LIVE_DEPLOY.test(command)) return;
+  const productionDeploys = command
+    .split(SEGMENT_SEPARATOR)
+    .filter((segment) => LIVE_DEPLOY.test(segment) && !STAGING_TARGET.test(segment));
+  if (productionDeploys.length === 0) return;
 
   const branch = currentBranch();
   if (branch === RELEASE_BRANCH) return;
 
   deny(
-    `Live Firebase deploys run only from \`${RELEASE_BRANCH}\`; current branch is ` +
+    `Production Firebase deploys run only from \`${RELEASE_BRANCH}\`; current branch is ` +
       `\`${branch || 'unknown (git failed)'}\`. Switch to ${RELEASE_BRANCH}, pull, rebuild, ` +
-      'then deploy — or use `firebase hosting:channel:deploy` for a preview.',
+      'then deploy. To deploy to staging instead, pass `--project staging`; for a preview use ' +
+      '`firebase hosting:channel:deploy`.',
   );
 }
 

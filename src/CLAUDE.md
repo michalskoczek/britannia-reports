@@ -32,16 +32,19 @@ npx firebase deploy --only hosting                         # deploy (requires `n
 **Deploy production from `master`, and from nothing else.** Since 2026-11-07 `master` is the production
 branch: it was fast-forwarded to the former integration branch `10xdevs`, which is retired. **`develop`
 is the integration branch** — feature branches start from `develop`, PRs target `develop`, and
-`develop` reaches production by being merged into `master`. `develop` is meant to get its own staging
-deploy for the client to try features on; that is planned in `docs/PLAN-AUTOMATYZACJI.md` and **not
-built yet**, so today nothing deploys from `develop`. Building a release from any other branch or from a
+`develop` reaches production by being merged into `master`. **Deploys are automated:** a push to
+`develop` runs `.github/workflows/deploy-staging.yml` (→ `britannia-reports-staging`, the client's
+testbed at https://britannia-reports-staging.web.app), and a push to `master` runs
+`.github/workflows/deploy-production.yml` (→ production, no manual approval). Both deploy rules, then
+hosting, then smoke-test the live site. A manual deploy is the exception, not the routine.
+Building a release from any other branch or from a
 stale checkout can silently roll production back — in the worst case past the sign-in gate,
 re-exposing all four report forms publicly. `firebase deploy` cannot detect this: it publishes whatever
 is in `dist/browser` and exits 0. Firestore data does not roll back with hosting. Before building a
 release, check that `git branch --show-current` prints `master` and that it matches `origin/master`.
 For the agent this is enforced: the `PreToolUse` hook `.claude/hooks/guard-firebase-deploy.js` denies
-any `firebase deploy` command outside `master` (preview channels stay allowed). It sees only agent tool
-calls, not commands typed by hand.
+any production `firebase deploy` outside `master`; deploys with `--project staging` and preview
+channels stay allowed from any branch. It sees only agent tool calls, not commands typed by hand.
 
 Running a single spec: `npm test -- --include='**/teddy-eddie-form.component.spec.ts' --watch=false --browsers=ChromeHeadless`.
 
@@ -147,7 +150,9 @@ Three root-level `::ng-deep` blocks do escape today, and all three are **deliber
 
 The Teddy Eddie report is the styling reference for which tokens get used together. Its **tables** are the pattern to copy for new Material tables. The three older report types (Cambridge, semester/trimester, year-end) now compose the same language on their **forms** — `S-05b` converted them — so they are safe to read for the form-row / form-col layout idiom. What is still not a model there is anything outside those forms.
 
-**Configuration lives in `src/environments/`, and the three files there have distinct jobs.** `environment.ts` (dev, `production: false`) and `environment.prod.ts` (`production: true`) each export a const named `environment`; both hold the Firebase SDK config, the reCAPTCHA site key, and the `useEmulators` flag. `environment.model.ts` exports the `Environment` interface that both files type themselves against.
+**Configuration lives in `src/environments/`, and the four files there have distinct jobs.** `environment.ts` (dev, `production: false`), `environment.prod.ts` and `environment.staging.ts` (both `production: true`) each export a const named `environment`; each holds the Firebase SDK config, the reCAPTCHA key, the `useEmulators` flag and `appCheckProvider`. `environment.model.ts` exports the `Environment` interface that all three type themselves against.
+
+**`appCheckProvider` names which App Check provider the reCAPTCHA key belongs to, and the two are not interchangeable.** Production is registered with the classic `recaptcha-v3` provider; staging, created after Firebase stopped accepting new classic registrations, uses `recaptcha-enterprise`. `src/app/app-check-provider.ts` maps the field to `ReCaptchaV3Provider` or `ReCaptchaEnterpriseProvider`. Changing the field or the key without re-registering the app in Firebase Console → App Check makes every attestation fail — `permission-denied` on Firestore once enforcement is on.
 
 **Since 2026-11-20 there is a fourth file, `environment.staging.ts`**, swapped in by the `staging` build configuration (`npm run build -- --configuration staging`). It points at a **separate Firebase project, `britannia-reports-staging`** (alias `staging` in `.firebaserc`), with its own Auth, Firestore and allowlist — the client's testbed, built from `develop`. It must never point at `britannia-reports`; CI fails the build if the staging bundle contains the production project. The "dev and prod share one project" statements below remain true for those two files only.
 

@@ -55,7 +55,8 @@ jobs:
       - name: Staging bundle targets the staging project only
         run: |
           grep -lq 'britannia-reports-staging' dist/browser/*.js
-          ! grep -lq '"britannia-reports\.firebaseapp\.com"\|projectId:"britannia-reports"' dist/browser/*.js
+          # the production web app id is unique and survives any minifier quoting change
+          ! grep -lq '90de33b8569b522a060137' dist/browser/*.js
 
   unit:
     name: Unit tests
