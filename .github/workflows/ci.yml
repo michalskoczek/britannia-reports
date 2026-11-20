@@ -55,7 +55,11 @@ jobs:
       - name: Staging bundle targets the staging project only
         run: |
           grep -lq 'britannia-reports-staging' dist/browser/*.js
-          ! grep -lq '"britannia-reports\.firebaseapp\.com"\|projectId:"britannia-reports"' dist/browser/*.js
+          # neither the production web app id nor the production auth domain may ship in staging
+          ! grep -lq '90de33b8569b522a060137' dist/browser/*.js
+          ! grep -lq 'britannia-reports\.firebaseapp\.com' dist/browser/*.js
+      - name: Deploy-guard hook tests
+        run: node --test ".claude/hooks/*.test.js"
 
   unit:
     name: Unit tests

@@ -1,0 +1,97 @@
+# Deploy develop to staging (britannia-reports-staging) — the client's testbed.
+#
+# Runs on every push to develop, i.e. after a PR has passed the required CI checks and been merged.
+# Order matters: Firestore rules first, then hosting, so a client that depends on a new rule never
+# goes live ahead of it. Then a smoke test proves the new build is what the site serves.
+#
+# Credentials: the `staging` GitHub environment holds FIREBASE_SERVICE_ACCOUNT — a key for a
+# service account in the staging project only. It cannot touch production.
+name: Deploy staging
+
+on:
+  push:
+    branches: [develop]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: '22'
+  FIREBASE_TOOLS_VERSION: '15.26.0'
+  FIREBASE_PROJECT: britannia-reports-staging
+  SITE_URL: https://britannia-reports-staging.web.app
+
+jobs:
+  deploy:
+    name: Build and deploy to staging
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: staging
+      url: ${{ env.SITE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/firebase/emulators
+          key: firebase-emulators-${{ env.FIREBASE_TOOLS_VERSION }}
+      - run: npm install -g firebase-tools@${{ env.FIREBASE_TOOLS_VERSION }}
+
+      - name: Build (staging configuration)
+        run: npm run build -- --configuration staging
+      - name: Build output exists and targets staging only
+        run: |
+          test -f dist/browser/index.html
+          grep -lq 'britannia-reports-staging' dist/browser/*.js
+          # production web app id — must never ship in the staging bundle
+          ! grep -lq '90de33b8569b522a060137' dist/browser/*.js
+          ! grep -lq 'britannia-reports.firebaseapp.com' dist/browser/*.js
+
+      - name: Service account credentials
+        env:
+          SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          test -n "$SERVICE_ACCOUNT" || { echo "FIREBASE_SERVICE_ACCOUNT is not set in the staging environment" >&2; exit 1; }
+          printf '%s' "$SERVICE_ACCOUNT" > "$RUNNER_TEMP/sa.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/sa.json" >> "$GITHUB_ENV"
+
+      # src/CLAUDE.md: run the rules suite before deploying rules. The rest of CI (lint, builds,
+      # unit, e2e) already gated the PR through the ruleset's required checks; the rules suite is
+      # repeated here because a rules deploy is the one step that cannot be rolled back with hosting.
+      - name: Firestore rules tests
+        run: npm run test:rules
+      - name: Deploy Firestore rules
+        run: firebase deploy --only firestore:rules --project "$FIREBASE_PROJECT" --non-interactive
+      - name: Deploy hosting
+        run: firebase deploy --only hosting --project "$FIREBASE_PROJECT" --non-interactive
+
+      - name: Smoke test — the site serves this build
+        run: |
+          main=$(ls dist/browser | grep -E '^main-.*\.js$')
+          for attempt in 1 2 3 4 5 6; do
+            if curl -fsS "$SITE_URL/" | grep -q "$main"; then
+              echo "Live site serves $main"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Live site does not reference $main after deploy" >&2
+          exit 1
+
+      - name: Remove credentials
+        if: always()
+        run: rm -f "$RUNNER_TEMP/sa.json"

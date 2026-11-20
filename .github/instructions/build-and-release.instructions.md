@@ -13,7 +13,10 @@ When reviewing a change to these files:
   then publishes an empty directory over the live site and exits 0.
 - Production deploys only from `master`; `develop` is the integration branch and PR target.
   A workflow that deploys live from any other branch is **blocking**.
-- Rules deploy before hosting.
+- Rules deploy before hosting. Deploys run only from `deploy-staging.yml` (push to `develop` →
+  `britannia-reports-staging`) and `deploy-production.yml` (push to `master` → `britannia-reports`),
+  each with its own environment-scoped service account; a workflow deploying to the other
+  project, or production without the `refs/heads/master` guard, is **blocking**.
 - Workflows that run with secrets on `pull_request_target` or `workflow_run` must not check out
   and execute code from forks or from non-owner PRs.
 - No new dependency without an explicit request in the issue or PR; the Angular set
