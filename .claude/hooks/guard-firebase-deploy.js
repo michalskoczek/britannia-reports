@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * PreToolUse hook (matcher `Bash|PowerShell`): a live Firebase deploy may only run from `master`.
+ * PreToolUse hook (matcher `Bash|PowerShell`): a PRODUCTION Firebase deploy may only run from
+ * `master`; deploys to the staging project (`--project staging`) are allowed from any branch.
  *
  * `firebase deploy` publishes whatever is in dist/browser and exits 0, so a deploy from the wrong
  * branch silently rolls production back. No GitHub ruleset can see this — the deploy runs from the
@@ -21,6 +22,34 @@ const { execFileSync } = require('child_process');
 
 const LIVE_DEPLOY = /\bfirebase(\.cmd)?\s+deploy\b/;
 const RELEASE_BRANCH = 'master';
+const STAGING_PROJECTS = new Set(['staging', 'britannia-reports-staging']);
+// Every shell/PowerShell command separator: `;`, `&`, `&&`, `|`, `||`, newline. Splitting on the
+// single characters covers the doubled forms too.
+const SEGMENT_SEPARATOR = /[;&|]|\r?\n/;
+// `-m "…"` / `--message "…"` carry free text that must not be read as a flag.
+const MESSAGE_ARG = /(?:^|\s)(?:-m|--message)(?:=|\s+)(?:"[^"]*"|'[^']*'|\S+)/g;
+const PROJECT_FLAG = /(?:^|\s)(?:--project|-P)(?:=|\s+)["']?([^\s"']+)["']?/g;
+
+/**
+ * True when a single command segment deploys ONLY to the staging project: it names at least one
+ * project, and every project it names is staging. A segment with no `--project` deploys to the
+ * `.firebaserc` default — production.
+ */
+function targetsOnlyStaging(segment) {
+  const flags = segment.replace(MESSAGE_ARG, ' ');
+  const projects = [...flags.matchAll(PROJECT_FLAG)].map((match) => match[1]);
+  return projects.length > 0 && projects.every((project) => STAGING_PROJECTS.has(project));
+}
+
+/**
+ * The segments of a command that would deploy to production. Checked per segment, so
+ * `deploy --project staging & deploy` cannot smuggle a production deploy past the check.
+ */
+function productionDeploySegments(command) {
+  return command
+    .split(SEGMENT_SEPARATOR)
+    .filter((segment) => LIVE_DEPLOY.test(segment) && !targetsOnlyStaging(segment));
+}
 
 function readStdin() {
   return new Promise((resolve, reject) => {
@@ -55,18 +84,24 @@ function deny(reason) {
 async function main() {
   const raw = await readStdin();
   const command = JSON.parse(raw || '{}')?.tool_input?.command ?? '';
-  if (!LIVE_DEPLOY.test(command)) return;
+  if (productionDeploySegments(command).length === 0) return;
 
   const branch = currentBranch();
   if (branch === RELEASE_BRANCH) return;
 
   deny(
-    `Live Firebase deploys run only from \`${RELEASE_BRANCH}\`; current branch is ` +
+    `Production Firebase deploys run only from \`${RELEASE_BRANCH}\`; current branch is ` +
       `\`${branch || 'unknown (git failed)'}\`. Switch to ${RELEASE_BRANCH}, pull, rebuild, ` +
-      'then deploy — or use `firebase hosting:channel:deploy` for a preview.',
+      'then deploy. To deploy to staging instead, pass `--project staging`; for a preview use ' +
+      '`firebase hosting:channel:deploy`.',
   );
 }
 
-main().catch((error) => {
-  deny(`guard-firebase-deploy failed, blocking to be safe: ${error?.message || error}`);
-});
+module.exports = { productionDeploySegments };
+
+// Run only as a hook, not when the test file requires the module.
+if (require.main === module) {
+  main().catch((error) => {
+    deny(`guard-firebase-deploy failed, blocking to be safe: ${error?.message || error}`);
+  });
+}
