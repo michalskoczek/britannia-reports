@@ -48,6 +48,14 @@ jobs:
         run: test -f dist/browser/index.html
       - name: Development build
         run: npm run build -- --configuration development
+      - name: Staging build
+        run: npm run build -- --configuration staging
+      # The staging bundle must never carry the production project — staging is where the
+      # client clicks around, production holds real children's data.
+      - name: Staging bundle targets the staging project only
+        run: |
+          grep -lq 'britannia-reports-staging' dist/browser/*.js
+          ! grep -lq '"britannia-reports\.firebaseapp\.com"\|projectId:"britannia-reports"' dist/browser/*.js
 
   unit:
     name: Unit tests

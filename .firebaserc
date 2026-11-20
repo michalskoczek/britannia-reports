@@ -1,5 +1,6 @@
 {
-"projects": {
-    "default": "britannia-reports"
+  "projects": {
+    "default": "britannia-reports",
+    "staging": "britannia-reports-staging"
   }
 }
