@@ -13,9 +13,11 @@
  * token, no emulators). The Firebase config values and the reCAPTCHA site key are PUBLIC BY
  * DESIGN, exactly as in `environment.prod.ts`.
  *
- * `recaptchaSiteKey` stays empty until the staging reCAPTCHA v3 key exists (Firebase Console →
- * App Check, see `docs/PLAN-AUTOMATYZACJI.md`). Until then App Check cannot attest on staging,
- * so App Check enforcement must stay OFF in the staging project.
+ * App Check uses reCAPTCHA ENTERPRISE here (`appCheckProvider`), not the classic v3 provider
+ * production runs on: Firebase stopped accepting new classic registrations, and the staging
+ * project is new. The key is created in Google Cloud → Security → Fraud Defense (score-based,
+ * Web, no checkbox) and has no secret half. `recaptchaSiteKey` stays empty until that key
+ * exists; until then App Check cannot attest on staging, so its enforcement must stay OFF.
  */
 import { Environment } from './environment.model';
 
@@ -31,4 +33,5 @@ export const environment: Environment = {
     appId: '1:272690012215:web:7ac29c82b2b36b35a25fb2',
   },
   recaptchaSiteKey: '',
+  appCheckProvider: 'recaptcha-enterprise',
 };
